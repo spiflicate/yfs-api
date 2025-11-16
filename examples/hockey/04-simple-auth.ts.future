@@ -1,6 +1,16 @@
 /**
  * Example: Simplified Authentication with YahooFantasyClient
  *
+ * ⚠️ **PLANNED FEATURE - NOT YET IMPLEMENTED**
+ * This example demonstrates a planned feature that is not yet available in v1.0.0.
+ * The `authenticateWithLocalServer()` method will be added in a future release.
+ *
+ * For working authentication examples, see:
+ * - examples/hockey/01-authentication.ts (manual OAuth flow)
+ * - examples/token-storage/file-storage.ts (token storage implementation)
+ *
+ * ---
+ *
  * This example shows the simplest way to authenticate using the YahooFantasyClient.
  * Everything is handled automatically - just call authenticateWithLocalServer()!
  *

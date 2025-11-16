@@ -36,8 +36,7 @@ import {
 const config = {
    clientId: process.env.YAHOO_CONSUMER_KEY || '',
    clientSecret: process.env.YAHOO_CONSUMER_SECRET || '',
-   redirectUri:
-      process.env.YAHOO_REDIRECT_URI || 'oob',
+   redirectUri: process.env.YAHOO_REDIRECT_URI || 'oob',
 };
 
 // Simple file-based token storage (example only - use secure storage in production)
@@ -71,6 +70,10 @@ async function loadTokens(): Promise<OAuth2Tokens | null> {
    }
 }
 
+/**
+ * Optional utility function to clear saved tokens
+ * Uncomment and call this if you want to force re-authentication
+ */
 async function clearTokens(): Promise<void> {
    console.log('[TokenStorage] Clearing tokens...');
    try {

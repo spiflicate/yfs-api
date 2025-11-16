@@ -1,6 +1,16 @@
 /**
  * Example: OAuth 2.0 Authentication with Local Server
  *
+ * ⚠️ **PLANNED FEATURE - NOT YET IMPLEMENTED**
+ * This example demonstrates a planned feature that is not yet available in v1.0.0.
+ * The `authenticateWithLocalServer()` method will be added in a future release.
+ *
+ * For working authentication examples, see:
+ * - examples/hockey/01-authentication.ts (manual OAuth flow)
+ * - examples/hockey/02-client-test.ts (using saved tokens)
+ *
+ * ---
+ *
  * This example demonstrates the simplified OAuth flow using a local HTTP server.
  * This eliminates the need to manually copy/paste authorization codes!
  *

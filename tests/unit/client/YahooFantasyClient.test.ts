@@ -174,7 +174,7 @@ describe('YahooFantasyClient', () => {
          );
          expect(authUrl).toContain(`client_id=${config.clientId}`);
          expect(authUrl).toContain(
-            `redirect_uri=${encodeURIComponent(config.redirectUri)}`,
+            `redirect_uri=${encodeURIComponent(config.redirectUri || '')}`,
          );
       });
 
