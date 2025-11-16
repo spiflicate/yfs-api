@@ -1,0 +1,216 @@
+/**
+ * Example: Using Token Storage
+ *
+ * This example demonstrates how to use token storage with the YahooFantasyClient.
+ *
+ * It shows:
+ * 1. Creating a token storage implementation
+ * 2. Using it with the client
+ * 3. Automatic token saving on authentication
+ * 4. Loading existing tokens on startup
+ * 5. Automatic token refresh and re-saving
+ *
+ * To run this example:
+ * ```bash
+ * # Set your encryption key (generate one with: openssl rand -hex 32)
+ * export TOKEN_ENCRYPTION_KEY=your-64-character-hex-key
+ *
+ * # Set your Yahoo credentials
+ * export YAHOO_CONSUMER_KEY=your-client-id
+ * export YAHOO_CONSUMER_SECRET=your-client-secret
+ *
+ * # Run the example
+ * bun run examples/token-storage/usage-example.ts
+ * ```
+ */
+
+import { YahooFantasyClient } from '../../src/index.js';
+import {
+   FileTokenStorage,
+   SimpleFileTokenStorage,
+} from './file-storage.js';
+
+async function main() {
+   console.log('='.repeat(70));
+   console.log('Yahoo Fantasy Sports - Token Storage Example');
+   console.log('='.repeat(70));
+   console.log();
+
+   // Get configuration from environment
+   const clientId = process.env.YAHOO_CONSUMER_KEY;
+   const clientSecret = process.env.YAHOO_CONSUMER_SECRET;
+   const encryptionKey = process.env.TOKEN_ENCRYPTION_KEY;
+
+   if (!clientId || !clientSecret) {
+      console.error('Error: Missing environment variables');
+      console.error('Set YAHOO_CONSUMER_KEY and YAHOO_CONSUMER_SECRET');
+      process.exit(1);
+   }
+
+   console.log('Configuration:');
+   console.log(`  Client ID: ${clientId.substring(0, 20)}...`);
+   console.log(`  Client Secret: ${clientSecret.substring(0, 10)}...`);
+
+   // Choose storage implementation
+   let storage;
+   if (encryptionKey) {
+      console.log('  Storage: Encrypted file storage');
+      console.log(`  Encryption Key: ${encryptionKey.substring(0, 16)}...`);
+      storage = new FileTokenStorage(
+         '.tokens.enc', // File path
+         encryptionKey, // 64-character hex encryption key
+         true, // Debug logging
+      );
+   } else {
+      console.log('  Storage: Simple file storage (unencrypted)');
+      console.warn(
+         '  WARNING: Tokens are stored unencrypted! Set TOKEN_ENCRYPTION_KEY for production.',
+      );
+      storage = new SimpleFileTokenStorage('.oauth2-tokens.json', true);
+   }
+
+   console.log();
+
+   // Create client with storage
+   const client = new YahooFantasyClient(
+      {
+         clientId,
+         clientSecret,
+         redirectUri: 'http://localhost:3000/callback',
+         debug: true,
+      },
+      storage, // Pass storage to constructor
+   );
+
+   console.log('Step 1: Attempting to load existing tokens...');
+   console.log();
+
+   // Try to load existing tokens
+   const loaded = await client.loadTokens();
+
+   if (loaded) {
+      console.log('✓ Loaded existing tokens from storage!');
+      console.log();
+
+      // Check if tokens are expired
+      if (client.isTokenExpired()) {
+         console.log('⚠ Access token is expired');
+         console.log(
+            '  HttpClient will automatically refresh it on the next request',
+         );
+      } else {
+         console.log('✓ Access token is still valid');
+      }
+      console.log();
+   } else {
+      console.log('✗ No existing tokens found');
+      console.log();
+
+      console.log('Step 2: Starting authentication...');
+      console.log();
+      console.log('Your browser will open automatically.');
+      console.log('Please authorize the application.');
+      console.log();
+
+      // Authenticate with local server
+      // This will automatically save tokens via storage.save()
+      await client.authenticateWithLocalServer({
+         port: 3000,
+         path: '/callback',
+      });
+
+      console.log();
+      console.log('✓ Authentication complete!');
+      console.log('✓ Tokens automatically saved to storage');
+      console.log();
+   }
+
+   // Make API calls
+   console.log('Step 3: Making API calls...');
+   console.log();
+
+   console.log('Fetching user information...');
+   const user = await client.user.getCurrentUser();
+   console.log(`✓ User GUID: ${user.guid}`);
+   console.log();
+
+   console.log('Fetching user games...');
+   const games = await client.user.getGames();
+   console.log(`✓ Found ${games.length} game(s)`);
+   for (const game of games) {
+      console.log(
+         `  - Game ${game.gameKey}: ${game.gameCode} (Season ${game.season})`,
+      );
+   }
+   console.log();
+
+   if (games.length > 0 && games[0]) {
+      console.log('Fetching teams for first game...');
+      const teams = await client.user.getTeams({
+         gameCode: games[0].gameCode,
+         season: games[0].season,
+      });
+      console.log(`✓ Found ${teams.length} team(s)`);
+      for (const team of teams) {
+         console.log(`  - ${team.name} (${team.teamKey})`);
+      }
+      console.log();
+   }
+
+   // Demonstrate token refresh
+   console.log('Step 4: Token Management');
+   console.log();
+
+   const tokens = client.getTokens();
+   if (tokens) {
+      const expiresIn = Math.floor((tokens.expiresAt - Date.now()) / 1000);
+      const minutes = Math.floor(expiresIn / 60);
+      const seconds = expiresIn % 60;
+
+      console.log('Current Token Status:');
+      console.log(
+         `  Access Token: ${tokens.accessToken.substring(0, 30)}...`,
+      );
+      console.log(`  Expires in: ${minutes}m ${seconds}s`);
+      console.log(
+         `  Refresh Token: ${tokens.refreshToken.substring(0, 30)}...`,
+      );
+      console.log();
+
+      console.log('Token Refresh Behavior:');
+      console.log(
+         '  ✓ HttpClient automatically checks expiration before requests',
+      );
+      console.log('  ✓ Tokens are refreshed automatically when expired');
+      console.log(
+         '  ✓ Refreshed tokens are automatically saved to storage',
+      );
+      console.log('  ✓ No manual token management needed!');
+      console.log();
+   }
+
+   // Demonstrate logout (clearing tokens)
+   console.log('Step 5: Cleanup (optional)');
+   console.log();
+   console.log('You can clear stored tokens with:');
+   console.log('  await client.logout();');
+   console.log();
+   console.log('For this demo, we will keep the tokens for next time.');
+   console.log();
+
+   console.log('='.repeat(70));
+   console.log('Example Complete!');
+   console.log('='.repeat(70));
+   console.log();
+   console.log('Next Steps:');
+   console.log('  1. Run this script again - it will use stored tokens');
+   console.log('  2. Wait 1 hour and run again - tokens will auto-refresh');
+   console.log('  3. Call client.logout() to clear stored tokens');
+   console.log();
+}
+
+// Run the example
+main().catch((error) => {
+   console.error('Error:', error);
+   process.exit(1);
+});

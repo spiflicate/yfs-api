@@ -28,13 +28,23 @@
  *
  * // Manage your roster
  * const roster = await client.team.getRoster(teams[0].teamKey);
- * await client.roster.setLineup({
- *   teamKey: teams[0].teamKey,
+ *
+ * // Update roster positions
+ * await client.team.updateRoster(teams[0].teamKey, {
+ *   coverageType: 'date',
  *   date: '2024-11-20',
- *   positions: {
- *     '423.p.8888': 'C',
- *     '423.p.7777': 'LW',
- *   },
+ *   players: [
+ *     { playerKey: '423.p.8888', position: 'C' },
+ *     { playerKey: '423.p.7777', position: 'LW' },
+ *   ],
+ * });
+ *
+ * // Make transactions
+ * await client.transaction.addDropPlayer({
+ *   teamKey: teams[0].teamKey,
+ *   addPlayerKey: '423.p.9999',
+ *   dropPlayerKey: '423.p.7777',
+ *   faabBid: 15,
  * });
  * ```
  */
@@ -45,6 +55,15 @@ export {
    type TokenStorage,
 } from './client/YahooFantasyClient.js';
 export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
+
+// Export OAuth utilities
+export {
+   startLocalOAuthServer,
+   openBrowser,
+   type LocalOAuthServerOptions,
+   type OAuthCallbackResult,
+   type OAuthCallbackError,
+} from './utils/localOAuthServer.js';
 
 // Export all types
 export type {

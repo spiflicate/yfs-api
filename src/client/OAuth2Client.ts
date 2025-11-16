@@ -99,28 +99,25 @@ interface TokenResponse {
 export class OAuth2Client {
    private clientId: string;
    private clientSecret: string;
-   private redirectUri: string;
+   private redirectUri?: string;
 
    /**
     * Creates a new OAuth 2.0 client
     *
     * @param clientId - OAuth client ID (Consumer Key) from Yahoo Developer
     * @param clientSecret - OAuth client secret (Consumer Secret) from Yahoo Developer
-    * @param redirectUri - Redirect URI registered in Yahoo Developer app
+    * @param redirectUri - Optional redirect URI (required for user auth methods)
     */
    constructor(
       clientId: string,
       clientSecret: string,
-      redirectUri: string,
+      redirectUri?: string,
    ) {
       if (!clientId) {
          throw new ConfigError('OAuth client ID is required');
       }
       if (!clientSecret) {
          throw new ConfigError('OAuth client secret is required');
-      }
-      if (!redirectUri) {
-         throw new ConfigError('OAuth redirect URI is required');
       }
 
       this.clientId = clientId;
@@ -134,6 +131,7 @@ export class OAuth2Client {
     * @param state - Optional state parameter for CSRF protection
     * @param language - Optional language code (default: 'en-us')
     * @returns Authorization URL to redirect user to
+    * @throws {ConfigError} If redirectUri was not provided in constructor
     *
     * @example
     * ```typescript
@@ -142,6 +140,12 @@ export class OAuth2Client {
     * ```
     */
    getAuthorizationUrl(state?: string, language = 'en-us'): string {
+      if (!this.redirectUri) {
+         throw new ConfigError(
+            'Redirect URI is required for user authentication',
+         );
+      }
+
       const params = new URLSearchParams({
          client_id: this.clientId,
          redirect_uri: this.redirectUri,
@@ -162,6 +166,7 @@ export class OAuth2Client {
     * @param code - Authorization code from the redirect callback
     * @returns OAuth 2.0 tokens
     * @throws {AuthenticationError} If the token exchange fails
+    * @throws {ConfigError} If redirectUri was not provided in constructor
     *
     * @example
     * ```typescript
@@ -173,6 +178,11 @@ export class OAuth2Client {
    async exchangeCodeForToken(code: string): Promise<OAuth2Tokens> {
       if (!code) {
          throw new ConfigError('Authorization code is required');
+      }
+      if (!this.redirectUri) {
+         throw new ConfigError(
+            'Redirect URI is required for user authentication',
+         );
       }
 
       const body = new URLSearchParams({
@@ -190,6 +200,7 @@ export class OAuth2Client {
     * @param refreshToken - The refresh token from previous authentication
     * @returns New OAuth 2.0 tokens (includes new refresh token)
     * @throws {AuthenticationError} If the token refresh fails
+    * @throws {ConfigError} If redirectUri was not provided in constructor
     *
     * @example
     * ```typescript
@@ -199,6 +210,11 @@ export class OAuth2Client {
    async refreshAccessToken(refreshToken: string): Promise<OAuth2Tokens> {
       if (!refreshToken) {
          throw new ConfigError('Refresh token is required');
+      }
+      if (!this.redirectUri) {
+         throw new ConfigError(
+            'Redirect URI is required for user authentication',
+         );
       }
 
       const body = new URLSearchParams({

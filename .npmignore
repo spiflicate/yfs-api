@@ -1,0 +1,38 @@
+# Source files (we ship dist/ only)
+src/
+tsconfig.json
+
+# Tests
+tests/
+*.test.ts
+
+# Examples
+examples/
+
+# Design docs
+design/
+
+# Scripts
+scripts/
+
+# Environment and config files
+.env
+.env.*
+.oauth2-tokens.json
+*.json
+!package.json
+
+# Development files
+.vscode/
+.idea/
+*.log
+*.swp
+.DS_Store
+
+# Build artifacts
+node_modules/
+bun.lockb
+
+# Debug files
+debug-*.json
+api-response-samples.json

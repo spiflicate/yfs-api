@@ -25,12 +25,33 @@ describe('validators', () => {
          expect(() => validateResourceKey('423.p.8888')).not.toThrow();
       });
 
-      test('should reject invalid keys', () => {
+      test('should reject empty or non-string keys', () => {
          expect(() => validateResourceKey('')).toThrow(ValidationError);
+         expect(() => validateResourceKey(null as any)).toThrow(
+            ValidationError,
+         );
+         expect(() => validateResourceKey(undefined as any)).toThrow(
+            ValidationError,
+         );
+         expect(() => validateResourceKey(123 as any)).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with insufficient parts', () => {
          expect(() => validateResourceKey('invalid')).toThrow(
             ValidationError,
          );
+         expect(() => validateResourceKey('423.l')).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with non-numeric game ID', () => {
          expect(() => validateResourceKey('abc.l.123')).toThrow(
+            ValidationError,
+         );
+         expect(() => validateResourceKey('nfl.l.12345')).toThrow(
             ValidationError,
          );
       });
@@ -65,11 +86,45 @@ describe('validators', () => {
          expect(() => validateTeamKey('423.l.12345.t.1')).not.toThrow();
       });
 
-      test('should reject non-team keys', () => {
+      test('should reject empty or non-string keys', () => {
+         expect(() => validateTeamKey('')).toThrow(ValidationError);
+         expect(() => validateTeamKey(null as any)).toThrow(
+            ValidationError,
+         );
+         expect(() => validateTeamKey(undefined as any)).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with insufficient parts', () => {
          expect(() => validateTeamKey('423.l.12345')).toThrow(
             ValidationError,
          );
+         expect(() => validateTeamKey('423.l.12345.t')).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject non-team keys', () => {
          expect(() => validateTeamKey('423.p.8888')).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with non-numeric game ID', () => {
+         expect(() => validateTeamKey('abc.l.12345.t.1')).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with wrong league type', () => {
+         expect(() => validateTeamKey('423.p.12345.t.1')).toThrow(
+            ValidationError,
+         );
+      });
+
+      test('should reject keys with wrong team type', () => {
+         expect(() => validateTeamKey('423.l.12345.p.1')).toThrow(
             ValidationError,
          );
       });
@@ -111,11 +166,39 @@ describe('validators', () => {
          expect(() => validateDate('2024-12-31')).not.toThrow();
       });
 
+      test('should reject empty or non-string dates', () => {
+         expect(() => validateDate('')).toThrow(ValidationError);
+         expect(() => validateDate(null as any)).toThrow(ValidationError);
+         expect(() => validateDate(undefined as any)).toThrow(
+            ValidationError,
+         );
+      });
+
       test('should reject invalid date formats', () => {
          expect(() => validateDate('11/15/2024')).toThrow(ValidationError);
-         expect(() => validateDate('2024-13-01')).toThrow(ValidationError);
-         expect(() => validateDate('2024-11-32')).toThrow(ValidationError);
          expect(() => validateDate('invalid')).toThrow(ValidationError);
+         expect(() => validateDate('2024-1-1')).toThrow(ValidationError);
+         expect(() => validateDate('24-11-15')).toThrow(ValidationError);
+      });
+
+      test('should reject invalid month values', () => {
+         expect(() => validateDate('2024-13-01')).toThrow(ValidationError);
+         expect(() => validateDate('2024-00-01')).toThrow(ValidationError);
+      });
+
+      test('should reject invalid day values', () => {
+         expect(() => validateDate('2024-11-32')).toThrow(ValidationError);
+         expect(() => validateDate('2024-11-00')).toThrow(ValidationError);
+      });
+
+      test('should use custom field name in error message', () => {
+         try {
+            validateDate('invalid', 'startDate');
+            expect.unreachable('Should have thrown');
+         } catch (error) {
+            expect(error).toBeInstanceOf(ValidationError);
+            expect((error as ValidationError).field).toBe('startDate');
+         }
       });
    });
 
@@ -140,10 +223,29 @@ describe('validators', () => {
          expect(() => validatePagination()).not.toThrow();
       });
 
-      test('should reject invalid pagination params', () => {
+      test('should accept only start parameter', () => {
+         expect(() => validatePagination(0)).not.toThrow();
+         expect(() => validatePagination(10)).not.toThrow();
+      });
+
+      test('should accept only count parameter', () => {
+         expect(() => validatePagination(undefined, 25)).not.toThrow();
+         expect(() => validatePagination(undefined, 100)).not.toThrow();
+      });
+
+      test('should reject negative start values', () => {
          expect(() => validatePagination(-1, 25)).toThrow(ValidationError);
+         expect(() => validatePagination(-10)).toThrow(ValidationError);
+      });
+
+      test('should reject zero or negative count values', () => {
          expect(() => validatePagination(0, 0)).toThrow(ValidationError);
+         expect(() => validatePagination(0, -1)).toThrow(ValidationError);
+      });
+
+      test('should reject non-integer values', () => {
          expect(() => validatePagination(1.5, 25)).toThrow(ValidationError);
+         expect(() => validatePagination(0, 10.5)).toThrow(ValidationError);
       });
    });
 

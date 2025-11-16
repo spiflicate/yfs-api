@@ -174,7 +174,11 @@ export interface ApiResponse<T> {
 }
 
 /**
- * Configuration options for OAuth 2.0 authentication
+ * Configuration options for Yahoo Fantasy Sports API client
+ *
+ * Supports two authentication modes:
+ * 1. User Authentication (OAuth 2.0) - Full access to all endpoints
+ * 2. Public Mode (OAuth 1.0) - Access to public endpoints only
  */
 export interface Config {
    /**
@@ -188,23 +192,48 @@ export interface Config {
    clientSecret: string;
 
    /**
+    * Enable public mode (OAuth 1.0 2-legged authentication)
+    *
+    * When true:
+    * - Uses OAuth 1.0 with HMAC-SHA1 signing
+    * - No user authorization required
+    * - Access limited to public endpoints only
+    * - redirectUri is not required
+    *
+    * When false (default):
+    * - Uses OAuth 2.0 Authorization Code Grant
+    * - Requires user authorization
+    * - Full access to all endpoints
+    * - redirectUri is required
+    *
+    * @default false
+    */
+   publicMode?: boolean;
+
+   /**
     * Redirect URI for OAuth 2.0 flow
     * Must match the URI configured in Yahoo Developer app
+    *
+    * Required when publicMode is false (default)
+    * Not used when publicMode is true
     */
-   redirectUri: string;
+   redirectUri?: string;
 
    /**
     * Optional: Access token if already authenticated
+    * Only used in user authentication mode (publicMode: false)
     */
    accessToken?: string;
 
    /**
     * Optional: Refresh token for getting new access tokens
+    * Only used in user authentication mode (publicMode: false)
     */
    refreshToken?: string;
 
    /**
     * Optional: Token expiration timestamp (milliseconds since epoch)
+    * Only used in user authentication mode (publicMode: false)
     */
    expiresAt?: number;
 

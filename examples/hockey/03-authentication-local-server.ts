@@ -1,0 +1,262 @@
+/**
+ * Example: OAuth 2.0 Authentication with Local Server
+ *
+ * This example demonstrates the simplified OAuth flow using a local HTTP server.
+ * This eliminates the need to manually copy/paste authorization codes!
+ *
+ * Prerequisites:
+ * 1. Create a Yahoo Developer Application at https://developer.yahoo.com/apps/
+ * 2. Set the Redirect URI to: http://localhost:3000/callback
+ *    (You can use any port, just update the port parameter below)
+ * 3. Get your Consumer Key (Client ID) and Consumer Secret (Client Secret)
+ * 4. Set them as environment variables:
+ *    - YAHOO_CONSUMER_KEY=your-client-id
+ *    - YAHOO_CONSUMER_SECRET=your-client-secret
+ *
+ * To run this example:
+ * ```bash
+ * bun run examples/hockey/03-authentication-local-server.ts
+ * ```
+ *
+ * What happens:
+ * 1. Script starts a local HTTP server on http://localhost:3000/callback
+ * 2. Script opens your browser to Yahoo's authorization page
+ * 3. You authorize the application
+ * 4. Yahoo redirects back to http://localhost:3000/callback with the code
+ * 5. Script automatically receives the code and exchanges it for tokens
+ * 6. Script saves tokens to .oauth2-tokens.json
+ * 7. Script makes a test API call to verify authentication
+ * 8. Local server shuts down automatically
+ *
+ * On subsequent runs, the script will load tokens from the file and skip authentication!
+ */
+
+import {
+   OAuth2Client,
+   type OAuth2Tokens,
+} from '../../src/client/OAuth2Client.js';
+
+// Configuration from environment variables
+const config = {
+   clientId: process.env.YAHOO_CONSUMER_KEY || '',
+   clientSecret: process.env.YAHOO_CONSUMER_SECRET || '',
+   // IMPORTANT: This must match your Yahoo Developer app redirect URI
+   redirectUri: 'http://localhost:3000/callback',
+};
+
+// Simple file-based token storage
+const TOKEN_FILE = '.oauth2-tokens.json';
+
+async function saveTokens(tokens: OAuth2Tokens): Promise<void> {
+   console.log('[TokenStorage] Saving OAuth 2.0 tokens...');
+   try {
+      await Bun.write(TOKEN_FILE, JSON.stringify(tokens, null, 2));
+      console.log('✓ Tokens saved successfully');
+   } catch (error) {
+      console.error('✗ Failed to save tokens:', error);
+   }
+}
+
+async function loadTokens(): Promise<OAuth2Tokens | null> {
+   try {
+      const file = Bun.file(TOKEN_FILE);
+      const exists = await file.exists();
+      if (!exists) {
+         return null;
+      }
+      const content = await file.text();
+      const tokens = JSON.parse(content) as OAuth2Tokens;
+      return tokens;
+   } catch {
+      return null;
+   }
+}
+
+async function main() {
+   console.log('='.repeat(70));
+   console.log('Yahoo Fantasy Sports API - Local Server Authentication');
+   console.log('='.repeat(70));
+   console.log();
+
+   // Validate configuration
+   if (!config.clientId || !config.clientSecret) {
+      console.error('✗ Error: Missing OAuth credentials');
+      console.error();
+      console.error('Please set the following environment variables:');
+      console.error('  - YAHOO_CONSUMER_KEY=your-client-id');
+      console.error('  - YAHOO_CONSUMER_SECRET=your-client-secret');
+      console.error();
+      console.error('You can also create a .env file with these values.');
+      process.exit(1);
+   }
+
+   console.log('Configuration:');
+   console.log(`  Client ID: ${config.clientId.substring(0, 20)}...`);
+   console.log(
+      `  Client Secret: ${config.clientSecret.substring(0, 10)}...`,
+   );
+   console.log(`  Redirect URI: ${config.redirectUri}`);
+   console.log();
+
+   // Create OAuth 2.0 client
+   const oauth2 = new OAuth2Client(
+      config.clientId,
+      config.clientSecret,
+      config.redirectUri,
+   );
+
+   // Step 1: Check for existing tokens
+   console.log('Step 1: Checking for existing tokens...');
+   let tokens = await loadTokens();
+
+   if (tokens) {
+      console.log('✓ Found existing tokens!');
+      console.log();
+
+      // Check if token is expired
+      if (oauth2.isTokenExpired(tokens)) {
+         console.log('⚠ Access token is expired, refreshing...');
+         try {
+            tokens = await oauth2.refreshAccessToken(tokens.refreshToken);
+            await saveTokens(tokens);
+            console.log('✓ Token refreshed successfully!');
+            console.log();
+         } catch (error) {
+            console.error('✗ Token refresh failed:', error);
+            console.log('  Need to re-authenticate...');
+            tokens = null;
+         }
+      } else {
+         const expiresIn = oauth2.getTimeUntilExpiration(tokens);
+         console.log(
+            `✓ Access token is still valid (expires in ${Math.floor(expiresIn / 60)} minutes)`,
+         );
+         console.log();
+      }
+   } else {
+      console.log('✗ No existing tokens found.');
+      console.log();
+   }
+
+   // Step 2: If no valid tokens, authenticate with local server
+   if (!tokens) {
+      console.log('Step 2: Starting local OAuth server...');
+      console.log();
+      console.log('='.repeat(70));
+      console.log('AUTHENTICATION REQUIRED');
+      console.log('='.repeat(70));
+      console.log();
+      console.log('A browser window will open automatically.');
+      console.log('Please authorize the application when prompted.');
+      console.log();
+      console.log('If the browser does not open, visit this URL:');
+      console.log(oauth2.getAuthorizationUrl());
+      console.log();
+      console.log('Waiting for authorization...');
+      console.log('='.repeat(70));
+      console.log();
+
+      try {
+         // This will:
+         // 1. Start local server
+         // 2. Open browser to auth URL
+         // 3. Wait for callback
+         // 4. Exchange code for tokens
+         // 5. Shut down server
+         tokens = await oauth2.authenticateWithLocalServer({
+            port: 3000,
+            path: '/callback',
+            timeout: 300000, // 5 minutes
+            debug: true,
+         });
+
+         console.log();
+         console.log('✓ Authentication successful!');
+         console.log();
+
+         // Save tokens
+         await saveTokens(tokens);
+      } catch (error) {
+         console.error('✗ Authentication failed:', error);
+         process.exit(1);
+      }
+   }
+
+   // Display token information
+   if (tokens) {
+      console.log('='.repeat(70));
+      console.log('AUTHENTICATION SUCCESSFUL');
+      console.log('='.repeat(70));
+      console.log();
+      console.log('Token Information:');
+      console.log(
+         `  Access Token: ${tokens.accessToken.substring(0, 20)}...`,
+      );
+      console.log(`  Token Type: ${tokens.tokenType}`);
+      console.log(
+         `  Expires In: ${Math.floor(tokens.expiresIn / 60)} minutes`,
+      );
+      console.log(
+         `  Refresh Token: ${tokens.refreshToken.substring(0, 20)}...`,
+      );
+      if (tokens.yahooGuid) {
+         console.log(`  Yahoo GUID: ${tokens.yahooGuid}`);
+      }
+      console.log();
+
+      const expiresIn = oauth2.getTimeUntilExpiration(tokens);
+      console.log(
+         `Token expires in: ${Math.floor(expiresIn / 60)} minutes ${expiresIn % 60} seconds`,
+      );
+      console.log();
+
+      console.log('You can now use these tokens to make API calls!');
+      console.log();
+
+      // Test API access
+      console.log('Testing API access...');
+      try {
+         const response = await fetch(
+            'https://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1?format=json',
+            {
+               headers: {
+                  Authorization: `Bearer ${tokens.accessToken}`,
+               },
+            },
+         );
+
+         if (response.ok) {
+            console.log('✓ API test successful!');
+            const data = await response.json();
+            console.log();
+            console.log('User Information:');
+            console.log(JSON.stringify(data, null, 2));
+         } else {
+            console.log(
+               `✗ API test failed with status: ${response.status}`,
+            );
+            const error = await response.text();
+            console.log('Error:', error.substring(0, 200));
+         }
+      } catch (error) {
+         console.error('✗ API test failed:', error);
+      }
+   }
+
+   console.log();
+   console.log('='.repeat(70));
+   console.log('Example completed');
+   console.log('='.repeat(70));
+   console.log();
+   console.log(
+      'Next time you run this script, it will use the saved tokens',
+   );
+   console.log('and skip the authentication step (unless they expire).');
+   console.log();
+}
+
+// Run the example
+main().catch((error) => {
+   console.error('Fatal error:', error);
+   process.exit(1);
+});

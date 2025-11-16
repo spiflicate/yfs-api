@@ -133,6 +133,90 @@ Yahoo Fantasy Sports API - OAuth 2.0 Authentication Example
 ======================================================================
 
 Configuration:
+  Client ID: dj0yJmk9SmVPcUg5Zmps...
+  Client Secret: 8fe14fcb05...
+  Redirect URI: https://jbru.cloud/yfs-redirect
+
+Step 1: Checking for existing tokens...
+✗ No existing tokens found.
+
+Step 2: Getting authorization URL...
+
+Please visit this URL to authorize the application:
+https://api.login.yahoo.com/oauth2/request_auth?client_id=...&redirect_uri=...
+
+After authorizing, you will be redirected to:
+  https://jbru.cloud/yfs-redirect?code=AUTHORIZATION_CODE
+
+Copy the AUTHORIZATION_CODE and run:
+  YAHOO_AUTH_CODE=<code> bun run examples/hockey/02-authentication-oauth2.ts
+```
+
+## Simplified Authentication with Local Server
+
+The easiest way to authenticate is using the local server flow. This eliminates the need to manually copy/paste authorization codes.
+
+### Quick Start
+
+```typescript
+import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+
+const client = new YahooFantasyClient({
+  clientId: process.env.YAHOO_CLIENT_ID!,
+  clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+  redirectUri: 'http://localhost:3000/callback', // IMPORTANT: Must match Yahoo app config
+});
+
+// This handles everything automatically:
+// 1. Starts local server on port 3000
+// 2. Opens browser to auth URL
+// 3. Receives callback automatically
+// 4. Exchanges code for tokens
+await client.authenticateWithLocalServer({ port: 3000 });
+
+// Now make API calls!
+const user = await client.user.getCurrentUser();
+```
+
+### How It Works
+
+1. **Start Server**: A temporary HTTP server starts on `localhost:{port}{path}`
+2. **Open Browser**: Your default browser opens to Yahoo's authorization page
+3. **User Authorizes**: You click "Agree" to authorize the application
+4. **Automatic Callback**: Yahoo redirects to the local server with the code
+5. **Exchange Code**: The code is automatically exchanged for tokens
+6. **Server Shuts Down**: The temporary server stops after receiving the callback
+
+### Configuration Requirements
+
+**In Yahoo Developer Console:**
+- Set Redirect URI to: `http://localhost:3000/callback`
+  - Port can be any available port (3000, 8080, etc.)
+  - Path can be anything (/callback, /oauth, etc.)
+  - **Must match exactly** what you use in the code
+
+**In Your Code:**
+```typescript
+const client = new YahooFantasyClient({
+  redirectUri: 'http://localhost:3000/callback', // Must match Yahoo app
+});
+
+await client.authenticateWithLocalServer({
+  port: 3000,           // Must match redirectUri
+  path: '/callback',    // Must match redirectUri
+  timeout: 300000,      // Optional: 5 minutes (default)
+  openBrowser: true,    // Optional: auto-open browser (default: true)
+});
+```
+
+### Complete Example
+
+See `examples/hockey/03-authentication-local-server.ts` or `examples/hockey/04-simple-auth.ts` for complete working examples.
+======================================================================
+Yahoo Fantasy Sports API - OAuth 2.0 Authentication Example
+======================================================================
+
+Configuration:
   Client ID: dj0yJmk9SmVPcUg5Wmps...
   Client Secret: 8fe14fcb05...
   Redirect URI: https://jbru.cloud/yfs-redirect
@@ -180,14 +264,32 @@ const response = await fetch(
 - [x] File-based token storage example
 - [x] API access testing
 - [x] Comprehensive documentation
+- [x] **Local HTTP server for automatic callback handling**
+- [x] **Automatic browser opening**
+- [x] **Automatic token refresh in HttpClient**
+- [x] **Full YahooFantasyClient integration**
+
+### 🎉 New Features (2024-11-16)
+
+#### Local OAuth Server
+No more manual code copy/pasting! The new `authenticateWithLocalServer()` method:
+- Starts a temporary local HTTP server
+- Automatically opens the browser to the authorization URL
+- Receives the OAuth callback automatically
+- Exchanges the code for tokens
+- Shuts down the server
+
+#### Automatic Token Refresh
+The `HttpClient` now automatically refreshes expired tokens before making API requests:
+- Checks token expiration before each request
+- Automatically calls refresh token endpoint if needed
+- Updates tokens in storage automatically
+- No manual refresh logic required
 
 ### ⏳ Pending
 
-- [ ] Integrate OAuth2Client into YahooFantasyClient
 - [ ] Unified TokenStorage for both OAuth 1.0a and 2.0
 - [ ] Auto-detection of OAuth version
-- [ ] Automatic token refresh on expiration
-- [ ] HttpClient integration for OAuth 2.0
 
 ## Token Management
 

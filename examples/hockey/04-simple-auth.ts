@@ -1,0 +1,129 @@
+/**
+ * Example: Simplified Authentication with YahooFantasyClient
+ *
+ * This example shows the simplest way to authenticate using the YahooFantasyClient.
+ * Everything is handled automatically - just call authenticateWithLocalServer()!
+ *
+ * Prerequisites:
+ * 1. Create a Yahoo Developer Application at https://developer.yahoo.com/apps/
+ * 2. Set the Redirect URI to: http://localhost:3000/callback
+ * 3. Set environment variables:
+ *    - YAHOO_CONSUMER_KEY=your-client-id
+ *    - YAHOO_CONSUMER_SECRET=your-client-secret
+ *
+ * To run this example:
+ * ```bash
+ * bun run examples/hockey/04-simple-auth.ts
+ * ```
+ */
+
+import { YahooFantasyClient } from '../../src/index.js';
+import type { TokenStorage } from '../../src/client/YahooFantasyClient.js';
+import type { OAuth2Tokens } from '../../src/client/OAuth2Client.js';
+
+// Simple file-based token storage
+const TOKEN_FILE = '.oauth2-tokens.json';
+
+const tokenStorage: TokenStorage = {
+   async save(tokens: OAuth2Tokens): Promise<void> {
+      await Bun.write(TOKEN_FILE, JSON.stringify(tokens, null, 2));
+   },
+
+   async load(): Promise<OAuth2Tokens | null> {
+      try {
+         const file = Bun.file(TOKEN_FILE);
+         const exists = await file.exists();
+         if (!exists) {
+            return null;
+         }
+         const content = await file.text();
+         return JSON.parse(content) as OAuth2Tokens;
+      } catch {
+         return null;
+      }
+   },
+
+   async clear(): Promise<void> {
+      try {
+         await Bun.write(TOKEN_FILE, '');
+      } catch {
+         // Ignore errors
+      }
+   },
+};
+
+async function main() {
+   console.log(
+      'Yahoo Fantasy Sports API - Simple Authentication Example\n',
+   );
+
+   // Validate configuration
+   const clientId = process.env.YAHOO_CONSUMER_KEY;
+   const clientSecret = process.env.YAHOO_CONSUMER_SECRET;
+
+   if (!clientId || !clientSecret) {
+      console.error('Error: Missing environment variables');
+      console.error('Set YAHOO_CONSUMER_KEY and YAHOO_CONSUMER_SECRET');
+      process.exit(1);
+   }
+
+   // Create client
+   const client = new YahooFantasyClient(
+      {
+         clientId,
+         clientSecret,
+         redirectUri: 'http://localhost:3000/callback',
+         debug: true,
+      },
+      tokenStorage,
+   );
+
+   // Try to load existing tokens
+   const loaded = await client.loadTokens();
+
+   if (loaded && !client.isTokenExpired()) {
+      console.log('✓ Using existing tokens\n');
+   } else {
+      console.log('Starting authentication...\n');
+      console.log('Your browser will open automatically.');
+      console.log('Please authorize the application.\n');
+
+      // This handles everything:
+      // - Starts local server
+      // - Opens browser
+      // - Receives callback
+      // - Exchanges code for tokens
+      // - Saves tokens via tokenStorage
+      await client.authenticateWithLocalServer({
+         port: 3000,
+         path: '/callback',
+      });
+
+      console.log('\n✓ Authentication complete!\n');
+   }
+
+   // Now make API calls!
+   console.log('Fetching user information...');
+   const user = await client.user.getCurrentUser();
+   console.log(`\nWelcome, ${user.guid}!\n`);
+
+   // Get user's games
+   console.log('Fetching your games...');
+   const games = await client.user.getGames();
+   console.log(`You are in ${games.length} game(s):\n`);
+
+   for (const game of games) {
+      console.log(
+         `  - Game ${game.gameKey} (${game.gameCode}) - Season ${game.season}`,
+      );
+   }
+
+   console.log(
+      '\nDone! Run this script again to see token refresh in action.',
+   );
+}
+
+main().catch((error) => {
+   console.error('Error:', error);
+   process.exit(1);
+});
