@@ -34,10 +34,11 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .DS_Store
 
 # Test configuration and tokens
+.env
 .env.test
 .oauth2-tokens.json
 
 # Debug and API response files
+api_test_response.json
 api-response-samples.json
 debug-teams-response.json
-api_test_response.json
