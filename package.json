@@ -1,7 +1,7 @@
 {
-   "name": "yahoo-fantasy-sports",
-   "version": "0.1.0",
-   "description": "Fully typed TypeScript wrapper for Yahoo Fantasy Sports API with excellent developer experience",
+   "name": "yfs-api",
+   "version": "1.0.0",
+   "description": "Fully typed TypeScript wrapper for Yahoo Fantasy Sports API with OAuth 1.0 and 2.0 support",
    "type": "module",
    "main": "./dist/index.js",
    "types": "./dist/index.d.ts",
@@ -18,16 +18,17 @@
    ],
    "scripts": {
       "dev": "bun run src/index.ts",
-      "build": "bun build src/index.ts --outdir dist --target node --sourcemap=external",
+      "build": "tsc -p tsconfig.build.json",
       "type-check": "tsc --noEmit",
-      "test": "bun test",
+      "test": "bun test tests/unit",
+      "test:integration": "bun test tests/integration",
       "test:watch": "bun test --watch",
       "test:coverage": "bun test --coverage",
       "lint": "biome check .",
       "lint:fix": "biome check --write .",
       "format": "biome format --write .",
       "clean": "rm -rf dist",
-      "prepublishOnly": "bun run clean && bun run build && bun run test"
+      "prepublishOnly": "npm run clean && npm run build && npm run test"
    },
    "keywords": [
       "yahoo",
@@ -44,18 +45,20 @@
       "api",
       "wrapper",
       "typescript",
-      "oauth"
+      "oauth",
+      "oauth2",
+      "fantasy-sports"
    ],
    "author": "jbru",
    "license": "MIT",
    "repository": {
       "type": "git",
-      "url": "https://github.com/yourusername/yfs-api.git"
+      "url": "https://github.com/spiflicate/yfs-api.git"
    },
    "bugs": {
-      "url": "https://github.com/yourusername/yfs-api/issues"
+      "url": "https://github.com/spiflicate/yfs-api/issues"
    },
-   "homepage": "https://github.com/yourusername/yfs-api#readme",
+   "homepage": "https://github.com/spiflicate/yfs-api#readme",
    "devDependencies": {
       "@biomejs/biome": "^2.3.5",
       "@types/bun": "latest",

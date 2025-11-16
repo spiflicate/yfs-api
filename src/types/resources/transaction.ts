@@ -1,5 +1,9 @@
 /**
  * Transaction resource types
+ *
+ * ⚠️ **EXPERIMENTAL** - Transaction operations have not been extensively tested
+ * in integration environments. Use with caution and please report any issues.
+ *
  * @module
  */
 

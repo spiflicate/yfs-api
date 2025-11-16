@@ -1,35 +1,75 @@
-# Yahoo Fantasy Sports API Wrapper
+# yfs-api
 
-A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with excellent developer experience, built with Bun.
+A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2.0 support.
 
-> **Status:** 🚧 In Development - v0.1.0 (NHL MVP)  
-> **Current Phase:** Phase 1 - Core Infrastructure
+[![npm version](https://img.shields.io/npm/v/yfs-api.svg)](https://www.npmjs.com/package/yfs-api)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Status:** 🚀 v1.0.0 - Production Ready  
+> **Tested Sports:** NHL (primary), NBA (basic)  
+> **Integration Tests:** 45 passing
 
 ## Features
 
-- ✅ **Fully Typed** - Complete TypeScript types with inference
+- ✅ **Fully Typed** - Complete TypeScript types with excellent IDE support
 - ✅ **Self-Documenting** - Comprehensive JSDoc on every type and method
-- ✅ **Modern Tooling** - Built with Bun for speed and simplicity
-- ✅ **OAuth 2.0** - Secure authentication with Yahoo (fully implemented)
-- 🚧 **NHL First** - Prioritizing fantasy hockey support
-- 📋 **Multi-Sport** - NFL, MLB, NBA support planned
-- 📋 **Resource-Based API** - Intuitive, fluent interface
+- ✅ **OAuth 1.0 & 2.0** - Public API access and user authentication
+- ✅ **Auto Token Refresh** - Automatic OAuth 2.0 token refresh
+- ✅ **Resource Clients** - User, League, Team, Player, Transaction, Game
+- ✅ **Production Ready** - 45 integration tests passing
+- 🏒 **NHL Tested** - Thoroughly tested with NHL fantasy leagues
+- ⚠️ **Transaction APIs** - Experimental (add/drop/trade operations)
 
 ## Installation
 
 ```bash
-bun add yahoo-fantasy-sports
+npm install yfs-api
+# or
+yarn add yfs-api
+# or
+pnpm add yfs-api
+# or
+bun add yfs-api
 ```
 
 ## Quick Start
 
+### Public API Access (OAuth 1.0 - No User Auth Required)
+
+Perfect for public data like game info, player search, and league metadata:
+
 ```typescript
-import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+import { YahooFantasyClient } from 'yfs-api';
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-  redirectUri: 'https://example.com/callback',
+  publicMode: true, // OAuth 1.0 for public endpoints
+});
+
+// Get available games
+const games = await client.game.getGames({ isAvailable: true });
+
+// Search for players
+const players = await client.game.searchPlayers('nhl', {
+  search: 'mcdavid',
+  count: 10,
+});
+
+console.log(`Found ${players.length} players`);
+```
+
+### User Authentication (OAuth 2.0)
+
+For accessing user-specific data (teams, leagues, rosters):
+
+```typescript
+import { YahooFantasyClient } from 'yfs-api';
+
+const client = new YahooFantasyClient({
+  clientId: process.env.YAHOO_CLIENT_ID!,
+  clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+  redirectUri: 'oob', // or your callback URL
 });
 
 // Step 1: Get authorization URL
@@ -39,60 +79,144 @@ console.log('Visit this URL to authorize:', authUrl);
 // Step 2: After user authorizes, exchange code for tokens
 await client.authenticate(authorizationCode);
 
-// Get your teams (once implemented)
+// Step 3: Use authenticated endpoints
+const user = await client.user.getCurrentUser();
 const teams = await client.user.getTeams({ gameCode: 'nhl' });
 
-// Manage your roster (once implemented)
+console.log(`Found ${teams.length} teams for user ${user.guid}`);
+
+// Get league details
+const league = await client.league.get(teams[0].league.leagueKey);
+console.log(`League: ${league.name} (${league.season})`);
+
+// Get team roster
 const roster = await client.team.getRoster(teams[0].teamKey);
+console.log(`Roster has ${roster.players.length} players`);
+
+// Get league standings
+const standings = await client.league.getStandings(league.leagueKey);
+console.log(`${standings.length} teams in standings`);
+
+// Search for players in league
+const freeAgents = await client.player.search(league.leagueKey, {
+  status: 'FA',
+  position: 'C',
+  count: 25,
+});
 ```
 
-For detailed authentication examples, see `/examples/hockey/01-authentication.ts`.
+### Token Storage & Persistence
 
-## Project Status
+Save and restore tokens between sessions:
 
-### ✅ Completed (Phase 1 - Core Infrastructure)
+```typescript
+import { YahooFantasyClient } from 'yfs-api';
+import * as fs from 'fs/promises';
 
-- [x] Project structure and tooling setup
-- [x] Comprehensive design documentation (see `/design` directory)
-- [x] Base type system (common types, error types)
-- [x] Error handling classes with type guards
-- [x] Package configuration
-- [x] **OAuth 2.0 authentication client** (fully implemented)
-- [x] HTTP client with retry logic, rate limiting, and automatic token refresh
-- [x] Utility functions (validators, formatters, constants)
-- [x] Main client with OAuth 2.0 authentication flow
-- [x] Token storage interface for persisting authentication
-- [x] Unit tests for utilities (38 tests passing)
-- [x] Working authentication examples
+// Create token storage
+const tokenStorage = {
+  save: async (tokens) => {
+    await fs.writeFile('.tokens.json', JSON.stringify(tokens));
+  },
+  load: async () => {
+    try {
+      const data = await fs.readFile('.tokens.json', 'utf-8');
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
+  },
+  clear: async () => {
+    await fs.unlink('.tokens.json').catch(() => {});
+  },
+};
 
-**Phase 1 is complete!** The core infrastructure is ready for building resource clients.
+const client = new YahooFantasyClient(
+  {
+    clientId: process.env.YAHOO_CLIENT_ID!,
+    clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+    redirectUri: 'oob',
+  },
+  tokenStorage
+);
 
-### 📋 Next Steps (Phase 2 - NHL Support)
+// Try to load existing tokens
+await client.loadTokens();
 
-- [ ] NHL-specific types (positions, stats, etc.)
-- [ ] User resource (get teams, user info)
-- [ ] League resource (settings, standings, scoreboard)
-- [ ] Team resource (metadata, roster management)
-- [ ] Player resource (search, stats)
-- [ ] Basic transactions (add/drop, FAAB waiver bids)
+// If no tokens, authenticate
+if (!client.hasValidTokens()) {
+  const authUrl = client.getAuthUrl();
+  console.log('Visit:', authUrl);
+  // ... get authorization code ...
+  await client.authenticate(code);
+}
 
-### 📋 Future (Phase 3+)
+// Tokens are automatically saved and refreshed
+const teams = await client.user.getTeams({ gameCode: 'nhl' });
+```
 
-- [ ] Advanced transactions (trades, trade voting)
-- [ ] NFL, MLB, NBA support
-- [ ] Performance optimizations
-- [ ] Production-ready release (v1.0.0)
+## API Coverage
 
-See [design/plans/release-roadmap.md](design/plans/release-roadmap.md) for detailed roadmap.
+### ✅ Fully Implemented
+
+| Resource | Methods | Status |
+|----------|---------|--------|
+| **User** | getCurrentUser, getGames, getTeams | ✅ Tested |
+| **League** | get, getSettings, getStandings, getScoreboard, getTeams | ✅ Tested |
+| **Team** | get, getRoster, getMatchups, getStats | ✅ Tested |
+| **Player** | get, search, getStats, getOwnership | ✅ Tested |
+| **Game** | get, getGames, searchPlayers, getPositionTypes, getStatCategories | ✅ Tested |
+
+### ⚠️ Experimental (Untested)
+
+| Resource | Methods | Status |
+|----------|---------|--------|
+| **Transaction** | addPlayer, dropPlayer, addDropPlayer, proposeTradeWithVote | ⚠️ Experimental |
+
+Transaction operations are implemented but haven't been tested in integration tests. Use with caution and please report any issues.
+
+## Supported Sports
+
+| Sport | Status | Notes |
+|-------|--------|-------|
+| 🏒 **NHL** | ✅ Fully Tested | All features tested with real leagues |
+| 🏀 **NBA** | ✅ Basic Support | Core endpoints work, not extensively tested |
+| 🏈 **NFL** | 🟡 Untested | Should work, types may need refinement |
+| ⚾ **MLB** | 🟡 Untested | Should work, types may need refinement |
+
+We welcome contributions to improve support for NFL, MLB, and other sports!
+
+## Getting Yahoo API Credentials
+
+1. Go to [Yahoo Developer Network](https://developer.yahoo.com/apps/)
+2. Create a new app
+3. Get your **Client ID** (Consumer Key) and **Client Secret** (Consumer Secret)
+4. Set your **Redirect URI** (use `oob` for out-of-band if testing locally)
+
+## Examples
+
+Check out the `/examples` directory for complete working examples:
+
+- `examples/hockey/01-authentication.ts` - Traditional OAuth 2.0 flow
+- `examples/hockey/02-client-test.ts` - Testing API endpoints
+- `examples/public-api/01-public-endpoints.ts` - Public API without auth
+- `examples/token-storage/usage-example.ts` - Token persistence
+
+## Documentation
+
+- **[Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)** - Running integration tests
+- **[OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)** - OAuth details
+- **[Design Documentation](design/)** - Architecture and design decisions
+- **[API Coverage Matrix](design/plans/api-coverage-matrix.md)** - Detailed API mapping
+- **[Test Summary](TEST_SUMMARY.md)** - Test coverage report
 
 ## Development
 
-This project uses Bun for all development tasks.
-
 ### Prerequisites
 
-- [Bun](https://bun.sh) v1.0.0 or later
-- Yahoo Developer Application (for API keys)
+- [Bun](https://bun.sh) v1.0.0 or later (for development)
+- Node.js >= 18.0.0 (for runtime)
+- Yahoo Developer Application credentials
 
 ### Setup
 
@@ -103,97 +227,104 @@ bun install
 # Run type checking
 bun run type-check
 
-# Run tests
-bun test
+# Run unit tests
+bun test tests/unit
 
-# Run tests in watch mode
-bun test --watch
+# Run integration tests (requires .env.test)
+bun test tests/integration
 
-# Lint code
+# Lint and format
 bun run lint
-
-# Format code
 bun run format
+
+# Build for production
+bun run build
 ```
 
-### Project Structure
+### Running Integration Tests
+
+See [docs/INTEGRATION_TEST_SETUP.md](docs/INTEGRATION_TEST_SETUP.md) for detailed setup instructions.
+
+```bash
+# 1. Copy environment template
+cp .env.test.example .env.test
+
+# 2. Add your credentials to .env.test
+# 3. Discover your league and team keys
+bun run scripts/discover-test-resources.ts
+
+# 4. Run tests
+source .env.test && bun test tests/integration
+```
+
+## Project Structure
 
 ```
 yfs-api/
 ├── src/
-│   ├── client/              # Main client and entry point
-│   ├── resources/           # Resource-specific clients (league, team, etc.)
+│   ├── client/              # OAuth clients and main client
+│   ├── resources/           # Resource-specific clients
 │   ├── types/               # TypeScript type definitions
-│   │   ├── resources/       # Resource types
-│   │   ├── sports/          # Sport-specific types
+│   │   ├── resources/       # Resource types (league, team, etc.)
+│   │   ├── sports/          # Sport-specific types (NHL, etc.)
 │   │   ├── common.ts        # Common types
 │   │   └── errors.ts        # Error types
-│   └── utils/               # Utilities (parsers, validators, etc.)
+│   └── utils/               # Utilities (validators, formatters)
 ├── tests/
-│   ├── unit/                # Unit tests
-│   ├── integration/         # Integration tests
-│   └── fixtures/            # Test fixtures
-├── examples/
-│   └── hockey/              # NHL examples
+│   ├── unit/                # Unit tests (38 passing)
+│   └── integration/         # Integration tests (45 passing)
+├── examples/                # Usage examples
 ├── design/                  # Design documentation
-│   ├── decisions/           # Architecture Decision Records (ADRs)
-│   ├── plans/               # Planning documents
-│   ├── research/            # Research and analysis
-│   ├── diagrams/            # Architecture diagrams
-│   └── api-mappings/        # Yahoo API to wrapper mappings
 └── docs/                    # User documentation
 ```
 
-## Design Documentation
-
-This project includes comprehensive design documentation:
-
-- **[Design Overview](design/README.md)** - Introduction to design docs
-- **[Architecture Decisions](design/decisions/)** - ADRs explaining key choices
-- **[Plans & Roadmap](design/plans/)** - Implementation plans and release roadmap
-- **[Architecture Diagram](design/diagrams/architecture-overview.mmd)** - Visual overview
-
-Key design decisions:
-- **[ADR 001](design/decisions/001-typescript-over-javascript.md)** - Why TypeScript
-- **[ADR 002](design/decisions/002-resource-based-api-design.md)** - API design philosophy
-- **[ADR 008](design/decisions/008-bun-as-runtime.md)** - Why Bun
-
 ## Philosophy
 
-This library is built with one core philosophy:
+This library is built with one core principle:
 
-> **The library should be fully self-documenting and provide excellent DX**
+> **The library should be fully self-documenting with excellent developer experience**
 
 This means:
-- Every type has comprehensive JSDoc comments with examples
+- Every type has comprehensive JSDoc with examples
 - IDE autocomplete guides you through the API
-- Type inference prevents errors at compile time
-- Clear, descriptive names throughout
-- Examples embedded in documentation
-
-You shouldn't need to constantly refer to Yahoo's API documentation - the types and IntelliSense should tell you everything you need.
+- Type inference catches errors at compile time
+- Clear, descriptive naming throughout
+- You rarely need to check Yahoo's docs
 
 ## Contributing
 
-Contributions are welcome! Please read our design documentation to understand the architecture and philosophy.
+Contributions welcome! Please:
 
-### Development Workflow
-
-1. Check the [API Coverage Matrix](design/plans/api-coverage-matrix.md) for what needs implementation
-2. Review relevant [ADRs](design/decisions/) for architectural context
-3. Follow the existing patterns in the codebase
+1. Check the [API Coverage Matrix](design/plans/api-coverage-matrix.md) for what needs work
+2. Review [Architecture Decision Records](design/decisions/) for context
+3. Follow existing code patterns and style
 4. Add comprehensive JSDoc comments
-5. Include tests for all new functionality
-6. Update documentation as needed
+5. Include tests for new functionality
+6. Update documentation
+
+## Known Limitations
+
+1. **Transaction APIs** are experimental and untested
+2. **NFL/MLB** types may need refinement based on real usage
+3. **Stat Categories** are sport-specific and may vary
+4. **League Settings** support most options but some edge cases may exist
+
+Please report issues or contribute improvements!
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) file for details
 
 ## Credits
 
-Built by [jbru](https://github.com/yourusername) with love for fantasy hockey ⁣🏒
+Built by [jbru](https://github.com/spiflicate) for the fantasy sports community 🏒⚾🏈🏀
+
+## Changelog
+
+See [CHANGELOG.md](design/CHANGELOG.md) for release history.
 
 ---
 
-*Last Updated: 2024-11-15*
+**Star this repo** if you find it helpful! ⭐
+
+*Last Updated: 2025-11-16*

@@ -361,24 +361,29 @@ export class PlayerResource {
       const playerObj: Record<string, unknown> = {};
 
       for (const item of playerData) {
-         if (item !== null && typeof item === 'object') {
+         if (Array.isArray(item)) {
+            // Yahoo API sometimes wraps data in nested arrays
+            for (const nestedItem of item) {
+               if (nestedItem !== null && typeof nestedItem === 'object') {
+                  Object.assign(playerObj, nestedItem);
+               }
+            }
+         } else if (item !== null && typeof item === 'object') {
             Object.assign(playerObj, item);
          }
       }
+
+      // Extract name object with safe defaults
+      const nameObj = (playerObj.name as Record<string, unknown>) || {};
 
       const player: Player = {
          playerKey: playerObj.player_key as ResourceKey,
          playerId: playerObj.player_id as string,
          name: {
-            full: (playerObj.name as Record<string, unknown>)
-               .full as string,
-            first: (playerObj.name as Record<string, unknown>)
-               .first as string,
-            last: (playerObj.name as Record<string, unknown>)
-               .last as string,
-            ascii: (playerObj.name as Record<string, unknown>).ascii as
-               | string
-               | undefined,
+            full: (nameObj.full as string) || '',
+            first: (nameObj.first as string) || '',
+            last: (nameObj.last as string) || '',
+            ascii: nameObj.ascii as string | undefined,
          },
          editorialPlayerKey: playerObj.editorial_player_key as
             | string

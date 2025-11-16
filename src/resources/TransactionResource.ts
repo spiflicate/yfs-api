@@ -1,5 +1,10 @@
 /**
  * Transaction resource client for Yahoo Fantasy Sports API
+ *
+ * ⚠️ **EXPERIMENTAL** - Transaction operations have not been extensively tested
+ * in integration environments. The API surface is stable, but edge cases and error
+ * handling may need refinement. Please report any issues you encounter.
+ *
  * @module
  */
 
@@ -29,7 +34,8 @@ import type {
 /**
  * Transaction resource client
  *
- * Provides methods to interact with Yahoo Fantasy transaction operations
+ * Provides methods to interact with Yahoo Fantasy transaction operations including
+ * add/drop, waivers, trades, and commissioner actions.
  *
  * @example
  * ```typescript
@@ -50,6 +56,11 @@ import type {
  *   addPlayerKey: '423.p.8888',
  *   dropPlayerKey: '423.p.7777',
  *   faabBid: 15,
+ * });
+ *
+ * // Commissioner approve trade
+ * await transactionClient.allowTrade({
+ *   transactionKey: '423.l.12345.tr.123',
  * });
  * ```
  */

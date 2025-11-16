@@ -527,12 +527,31 @@ export class GameResource {
     *
     * @private
     */
-   private parseGame(gameData: Array<unknown>): Game {
+   private parseGame(gameData: Array<unknown> | unknown): Game {
       const gameObj: Record<string, unknown> = {};
 
-      for (const item of gameData) {
-         if (item !== null && typeof item === 'object') {
-            Object.assign(gameObj, item);
+      // Handle case where gameData might not be an array
+      if (!Array.isArray(gameData)) {
+         // If it's an object, use it directly
+         if (gameData && typeof gameData === 'object') {
+            Object.assign(gameObj, gameData);
+         }
+      } else {
+         // Process array of game data
+         for (const item of gameData) {
+            if (Array.isArray(item)) {
+               // Yahoo API sometimes wraps data in nested arrays
+               for (const nestedItem of item) {
+                  if (
+                     nestedItem !== null &&
+                     typeof nestedItem === 'object'
+                  ) {
+                     Object.assign(gameObj, nestedItem);
+                  }
+               }
+            } else if (item !== null && typeof item === 'object') {
+               Object.assign(gameObj, item);
+            }
          }
       }
 
@@ -636,24 +655,29 @@ export class GameResource {
       const playerObj: Record<string, unknown> = {};
 
       for (const item of playerData) {
-         if (item !== null && typeof item === 'object') {
+         if (Array.isArray(item)) {
+            // Yahoo API sometimes wraps data in nested arrays
+            for (const nestedItem of item) {
+               if (nestedItem !== null && typeof nestedItem === 'object') {
+                  Object.assign(playerObj, nestedItem);
+               }
+            }
+         } else if (item !== null && typeof item === 'object') {
             Object.assign(playerObj, item);
          }
       }
+
+      // Extract name object with safe defaults
+      const nameObj = (playerObj.name as Record<string, unknown>) || {};
 
       return {
          playerKey: playerObj.player_key as string,
          playerId: playerObj.player_id as string,
          name: {
-            full: (playerObj.name as Record<string, unknown>)
-               .full as string,
-            first: (playerObj.name as Record<string, unknown>)
-               .first as string,
-            last: (playerObj.name as Record<string, unknown>)
-               .last as string,
-            ascii: (playerObj.name as Record<string, unknown>).ascii as
-               | string
-               | undefined,
+            full: (nameObj.full as string) || '',
+            first: (nameObj.first as string) || '',
+            last: (nameObj.last as string) || '',
+            ascii: nameObj.ascii as string | undefined,
          },
          editorialPlayerKey: playerObj.editorial_player_key as
             | string

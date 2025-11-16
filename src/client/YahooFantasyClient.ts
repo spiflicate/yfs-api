@@ -26,14 +26,16 @@
  * // Step 3: Exchange code for tokens
  * await client.authenticate(code);
  *
- * // Now you can make API calls (resources to be implemented in Phase 2)
- * // const leagues = await client.league.get('423.l.12345');
+ * // Make API calls
+ * const leagues = await client.league.get('423.l.12345');
+ * const roster = await client.team.getRoster('423.l.12345.t.1');
  * ```
  */
 
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
 import { OAuth2Client, type OAuth2Tokens } from './OAuth2Client.js';
+import { OAuth1Client } from './OAuth1Client.js';
 import { HttpClient } from './HttpClient.js';
 import { UserResource } from '../resources/UserResource.js';
 import { LeagueResource } from '../resources/LeagueResource.js';
@@ -87,8 +89,9 @@ export interface TokenStorage {
  * // Step 3: Complete authentication
  * await client.authenticate(code);
  *
- * // Now you can make API calls (resources to be implemented in Phase 2)
- * // const leagues = await client.league.get('423.l.12345');
+ * // Use resource clients
+ * const league = await client.league.get('423.l.12345');
+ * const teams = await client.user.getTeams({ gameCode: 'nhl' });
  * ```
  */
 export class YahooFantasyClient {
@@ -98,7 +101,8 @@ export class YahooFantasyClient {
       maxRetries: number;
    };
 
-   private oauth2Client: OAuth2Client;
+   private oauth2Client?: OAuth2Client;
+   private oauth1Client?: OAuth1Client;
    private httpClient: HttpClient;
    private tokenStorage?: TokenStorage;
    private tokens?: OAuth2Tokens;
@@ -291,14 +295,25 @@ export class YahooFantasyClient {
       if (!config.clientSecret) {
          throw new ConfigError('clientSecret is required');
       }
-      if (!config.redirectUri) {
-         throw new ConfigError('redirectUri is required');
+
+      // Validate mode-specific requirements
+      const isPublicMode = config.publicMode ?? false;
+
+      if (!isPublicMode && !config.redirectUri) {
+         throw new ConfigError(
+            'redirectUri is required for user authentication mode',
+         );
+      }
+
+      if (isPublicMode && config.redirectUri) {
+         console.warn('redirectUri is ignored in public mode');
       }
 
       // Set defaults for optional config
       this.config = {
          clientId: config.clientId,
          clientSecret: config.clientSecret,
+         publicMode: isPublicMode,
          redirectUri: config.redirectUri,
          accessToken: config.accessToken,
          refreshToken: config.refreshToken,
@@ -310,22 +325,37 @@ export class YahooFantasyClient {
 
       this.tokenStorage = tokenStorage;
 
-      // Initialize OAuth 2.0 client
-      this.oauth2Client = new OAuth2Client(
-         this.config.clientId,
-         this.config.clientSecret,
-         this.config.redirectUri,
-      );
+      // Initialize the appropriate OAuth client based on mode
+      if (isPublicMode) {
+         // Public mode: OAuth 1.0 2-legged authentication
+         this.oauth1Client = new OAuth1Client(
+            this.config.clientId,
+            this.config.clientSecret,
+         );
+      } else {
+         // User auth mode: OAuth 2.0 Authorization Code Grant
+         this.oauth2Client = new OAuth2Client(
+            this.config.clientId,
+            this.config.clientSecret,
+            this.config.redirectUri!,
+         );
 
-      // Build tokens if available in config
-      if (config.accessToken && config.refreshToken && config.expiresAt) {
-         this.tokens = {
-            accessToken: config.accessToken,
-            refreshToken: config.refreshToken,
-            expiresAt: config.expiresAt,
-            tokenType: 'bearer',
-            expiresIn: Math.floor((config.expiresAt - Date.now()) / 1000),
-         };
+         // Build tokens if available in config
+         if (
+            config.accessToken &&
+            config.refreshToken &&
+            config.expiresAt
+         ) {
+            this.tokens = {
+               accessToken: config.accessToken,
+               refreshToken: config.refreshToken,
+               expiresAt: config.expiresAt,
+               tokenType: 'bearer',
+               expiresIn: Math.floor(
+                  (config.expiresAt - Date.now()) / 1000,
+               ),
+            };
+         }
       }
 
       // Initialize HTTP client with token refresh callback
@@ -333,6 +363,11 @@ export class YahooFantasyClient {
          this.oauth2Client,
          this.tokens,
          async () => {
+            if (!this.oauth2Client) {
+               throw new ConfigError(
+                  'OAuth 2.0 client is not available in public mode',
+               );
+            }
             if (!this.tokens?.refreshToken) {
                throw new ConfigError('No refresh token available');
             }
@@ -346,6 +381,7 @@ export class YahooFantasyClient {
             timeout: this.config.timeout,
             maxRetries: this.config.maxRetries,
             debug: this.config.debug,
+            oauth1Client: this.oauth1Client,
          },
       );
 
@@ -361,12 +397,15 @@ export class YahooFantasyClient {
    /**
     * Gets the authorization URL for the OAuth 2.0 flow
     *
+    * Only available in user authentication mode (not in public mode).
+    *
     * Step 1 of the OAuth flow. The user must visit this URL and authorize the application.
     * After authorization, Yahoo will redirect to your redirectUri with a code parameter.
     *
     * @param state - Optional state parameter for CSRF protection
     * @param language - Optional language code (default: 'en-us')
     * @returns Authorization URL that the user must visit
+    * @throws {ConfigError} If called in public mode
     *
     * @example
     * ```typescript
@@ -376,6 +415,11 @@ export class YahooFantasyClient {
     * ```
     */
    getAuthUrl(state?: string, language = 'en-us'): string {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'getAuthUrl is not available in public mode',
+         );
+      }
       return this.oauth2Client.getAuthorizationUrl(state, language);
    }
 
@@ -402,7 +446,38 @@ export class YahooFantasyClient {
     * console.log('Authenticated successfully!');
     * ```
     */
+   /**
+    * Completes authentication with the authorization code
+    *
+    * Only available in user authentication mode (not in public mode).
+    *
+    * Step 2 of the OAuth flow. After the user authorizes and is redirected with a code,
+    * call this method to exchange it for access and refresh tokens.
+    *
+    * @param code - Authorization code from Yahoo OAuth redirect
+    * @throws {AuthenticationError} If authentication fails
+    * @throws {ConfigError} If called in public mode
+    *
+    * @example
+    * ```typescript
+    * const authUrl = client.getAuthUrl();
+    * console.log('Visit:', authUrl);
+    *
+    * // After user authorizes and is redirected to:
+    * // https://your-redirect-uri?code=AUTHORIZATION_CODE
+    *
+    * const code = '...'; // Extract from redirect URL
+    * await client.authenticate(code);
+    *
+    * console.log('Authenticated successfully!');
+    * ```
+    */
    async authenticate(code: string): Promise<void> {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'authenticate is not available in public mode',
+         );
+      }
       const tokens = await this.oauth2Client.exchangeCodeForToken(code);
       await this.setTokens(tokens);
    }
@@ -444,6 +519,8 @@ export class YahooFantasyClient {
    /**
     * Refreshes the access token using the refresh token
     *
+    * Only available in user authentication mode (not in public mode).
+    *
     * OAuth 2.0 access tokens expire after 1 hour. Use this method to get a new access token
     * without requiring the user to re-authenticate.
     *
@@ -451,7 +528,7 @@ export class YahooFantasyClient {
     * so you typically don't need to call this manually.
     *
     * @throws {AuthenticationError} If refresh fails
-    * @throws {ConfigError} If no refresh token is available
+    * @throws {ConfigError} If no refresh token is available or if called in public mode
     *
     * @example
     * ```typescript
@@ -465,6 +542,11 @@ export class YahooFantasyClient {
     * ```
     */
    async refreshToken(): Promise<void> {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'refreshToken is not available in public mode',
+         );
+      }
       if (!this.tokens?.refreshToken) {
          throw new ConfigError(
             'No refresh token available. Cannot refresh without re-authenticating.',
@@ -480,7 +562,10 @@ export class YahooFantasyClient {
    /**
     * Checks if the client is currently authenticated
     *
-    * @returns True if the client has valid access tokens
+    * In public mode (OAuth 1.0), always returns true since no user auth is needed.
+    * In user auth mode (OAuth 2.0), returns true if valid access tokens exist.
+    *
+    * @returns True if the client can make authenticated requests
     *
     * @example
     * ```typescript
@@ -490,11 +575,19 @@ export class YahooFantasyClient {
     * ```
     */
    isAuthenticated(): boolean {
+      // In public mode, we're always "authenticated" (no user auth needed)
+      if (this.oauth1Client) {
+         return true;
+      }
+      // In user auth mode, check for access token
       return !!this.tokens?.accessToken;
    }
 
    /**
     * Checks if the access token is expired or will expire soon
+    *
+    * Only applicable in user authentication mode (OAuth 2.0).
+    * In public mode (OAuth 1.0), always returns false (tokens don't expire).
     *
     * @param bufferSeconds - Time buffer in seconds before actual expiration (default: 60)
     * @returns True if the token is expired or will expire within the buffer time
@@ -507,7 +600,12 @@ export class YahooFantasyClient {
     * ```
     */
    isTokenExpired(bufferSeconds = 60): boolean {
-      if (!this.tokens) {
+      // In public mode, tokens don't expire
+      if (this.oauth1Client) {
+         return false;
+      }
+      // In user auth mode, check token expiration
+      if (!this.tokens || !this.oauth2Client) {
          return true;
       }
       return this.oauth2Client.isTokenExpired(this.tokens, bufferSeconds);

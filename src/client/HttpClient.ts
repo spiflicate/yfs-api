@@ -4,6 +4,7 @@
  */
 
 import type { OAuth2Client, OAuth2Tokens } from './OAuth2Client.js';
+import type { OAuth1Client } from './OAuth1Client.js';
 import {
    YahooApiError,
    NetworkError,
@@ -113,12 +114,12 @@ export type TokenRefreshCallback = () => Promise<OAuth2Tokens>;
  * @example
  * ```typescript
  * const http = new HttpClient(oauth2Client, tokens, refreshCallback);
- *
  * const data = await http.get('/users;use_login=1/games');
  * ```
  */
 export class HttpClient {
-   private oauth2Client: OAuth2Client;
+   private oauth2Client?: OAuth2Client;
+   private oauth1Client?: OAuth1Client;
    private tokens?: OAuth2Tokens;
    private tokenRefreshCallback?: TokenRefreshCallback;
    private rateLimiter: RateLimiter;
@@ -129,22 +130,24 @@ export class HttpClient {
    /**
     * Creates a new HTTP client
     *
-    * @param oauth2Client - OAuth 2.0 client for token management
+    * @param oauth2Client - OAuth 2.0 client for token management (optional in public mode)
     * @param tokens - OAuth 2.0 tokens (optional, can be set later)
     * @param tokenRefreshCallback - Callback to refresh tokens when expired
     * @param options - Additional options
     */
    constructor(
-      oauth2Client: OAuth2Client,
+      oauth2Client?: OAuth2Client,
       tokens?: OAuth2Tokens,
       tokenRefreshCallback?: TokenRefreshCallback,
       options?: {
          timeout?: number;
          maxRetries?: number;
          debug?: boolean;
+         oauth1Client?: OAuth1Client;
       },
    ) {
       this.oauth2Client = oauth2Client;
+      this.oauth1Client = options?.oauth1Client;
       this.tokens = tokens;
       this.tokenRefreshCallback = tokenRefreshCallback;
       this.rateLimiter = new RateLimiter();
@@ -280,7 +283,7 @@ export class HttpClient {
             await this.rateLimiter.wait();
 
             // Build URL with query params
-            const url = this.buildUrl(path, params);
+            let url = this.buildUrl(path, params);
 
             // Build headers
             const requestHeaders: Record<string, string> = {
@@ -288,34 +291,51 @@ export class HttpClient {
                ...headers,
             };
 
-            // Add OAuth 2.0 Bearer authorization if not skipped
+            // Add OAuth authorization if not skipped
             if (!skipAuth) {
-               // Check if tokens need refresh
-               if (
-                  this.tokens &&
-                  this.oauth2Client.isTokenExpired(this.tokens)
-               ) {
-                  if (this.tokenRefreshCallback) {
-                     if (this.debug) {
-                        console.log(
-                           '[HttpClient] Token expired, refreshing...',
-                        );
-                     }
-                     this.tokens = await this.tokenRefreshCallback();
-                  } else {
-                     throw new AuthenticationError(
-                        'Access token expired and no refresh callback available.',
-                     );
+               // OAuth 1.0 (public mode)
+               if (this.oauth1Client) {
+                  // Sign the URL with OAuth 1.0
+                  url = this.oauth1Client.signRequest(method, url);
+                  if (this.debug) {
+                     console.log('[HttpClient] Using OAuth 1.0 signing');
                   }
                }
+               // OAuth 2.0 (user auth mode)
+               else if (this.oauth2Client) {
+                  // Check if tokens need refresh
+                  if (
+                     this.tokens &&
+                     this.oauth2Client.isTokenExpired(this.tokens)
+                  ) {
+                     if (this.tokenRefreshCallback) {
+                        if (this.debug) {
+                           console.log(
+                              '[HttpClient] Token expired, refreshing...',
+                           );
+                        }
+                        this.tokens = await this.tokenRefreshCallback();
+                     } else {
+                        throw new AuthenticationError(
+                           'Access token expired and no refresh callback available.',
+                        );
+                     }
+                  }
 
-               if (!this.tokens?.accessToken) {
+                  if (!this.tokens?.accessToken) {
+                     throw new AuthenticationError(
+                        'No access token available. Please authenticate first.',
+                     );
+                  }
+
+                  requestHeaders.Authorization = `Bearer ${this.tokens.accessToken}`;
+               }
+               // No auth client configured
+               else {
                   throw new AuthenticationError(
-                     'No access token available. Please authenticate first.',
+                     'No OAuth client configured. Please provide either OAuth 1.0 or OAuth 2.0 client.',
                   );
                }
-
-               requestHeaders.Authorization = `Bearer ${this.tokens.accessToken}`;
             }
 
             // Build request

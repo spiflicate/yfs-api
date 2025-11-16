@@ -289,7 +289,14 @@ export class UserResource {
       const teamObj: Record<string, unknown> = {};
 
       for (const item of teamData) {
-         if (item !== null && typeof item === 'object') {
+         if (Array.isArray(item)) {
+            // Yahoo API wraps team data in a nested array
+            for (const nestedItem of item) {
+               if (nestedItem !== null && typeof nestedItem === 'object') {
+                  Object.assign(teamObj, nestedItem);
+               }
+            }
+         } else if (item !== null && typeof item === 'object') {
             Object.assign(teamObj, item);
          }
       }
@@ -298,7 +305,7 @@ export class UserResource {
          teamKey: teamObj.team_key as string,
          teamId: teamObj.team_id as string,
          name: teamObj.name as string,
-         teamLogoUrl: teamObj.team_logo_url as string | undefined,
+         teamLogoUrl: this.extractTeamLogoUrl(teamObj),
          waiverPriority: teamObj.waiver_priority
             ? Number.parseInt(teamObj.waiver_priority as string)
             : undefined,
@@ -311,23 +318,73 @@ export class UserResource {
          numberOfTrades: teamObj.number_of_trades
             ? Number.parseInt(teamObj.number_of_trades as string)
             : undefined,
-         league: {
-            leagueKey:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.league_key as string) || '',
-            leagueId:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.league_id as string) || '',
-            name:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.name as string) || '',
-            url:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.url as string) || '',
-         },
+         league: this.extractLeagueInfo(teamObj),
          url: teamObj.url as string,
       };
 
       return team;
    }
+
+   /**
+    * Extract team logo URL from team_logos array
+    *
+    * @private
+    */
+   private extractTeamLogoUrl(
+      teamObj: Record<string, unknown>,
+   ): string | undefined {
+      const teamLogos = teamObj.team_logos as Array<unknown> | undefined;
+      if (
+         !teamLogos ||
+         !Array.isArray(teamLogos) ||
+         teamLogos.length === 0
+      ) {
+         return undefined;
+      }
+
+      const firstLogo = teamLogos[0];
+      if (!firstLogo || typeof firstLogo !== 'object') {
+         return undefined;
+      }
+
+      const logoData = (firstLogo as Record<string, unknown>).team_logo as
+         | Record<string, unknown>
+         | undefined;
+      return logoData?.url as string | undefined;
+   }
+
+   /**
+    * Extract league info from team data
+    * The Yahoo API doesn't always include full league details in team objects,
+    * so we extract what we can from the team_key and any available league object
+    *
+    * @private
+    */
+   private extractLeagueInfo(teamObj: Record<string, unknown>): {
+      leagueKey: string;
+      leagueId: string;
+      name: string;
+      url: string;
+   } {
+      // Extract league key from team key (e.g., "419.l.5634.t.2" -> "419.l.5634")
+      const teamKey = teamObj.team_key as string;
+      const leagueKey = teamKey ? teamKey.split('.t.')[0] : '';
+
+      // Extract league ID from league key (e.g., "419.l.5634" -> "5634")
+      const leagueIdParts = leagueKey ? leagueKey.split('.l.') : [];
+      const leagueId = leagueIdParts.length > 1 ? leagueIdParts[1] : '';
+
+      // Try to get league info from embedded league object if present
+      const leagueObj = teamObj.league as
+         | Record<string, unknown>
+         | undefined;
+
+      return {
+         leagueKey: ((leagueObj?.league_key as string) || leagueKey) || '',
+         leagueId: ((leagueObj?.league_id as string) || leagueId) || '',
+         name: (leagueObj?.name as string) || '',
+         url: (leagueObj?.url as string) || '',
+      };
+   }
 }
+
