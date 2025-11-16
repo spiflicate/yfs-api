@@ -102,16 +102,15 @@ This is the first release, so there's no migration needed. See the README for ge
 
 ## Future Releases
 
-### Planned for 1.1.0
+Future updates may include:
 - Enhanced NFL/MLB/NBA support based on community feedback
 - Integration tests for Transaction APIs
 - Performance optimizations
 - Additional examples and documentation
-
-### Planned for 2.0.0
-- Breaking changes will be clearly documented
 - Improved TypeScript inference
 - Additional Yahoo Fantasy features
+
+Breaking changes will be clearly documented in major version releases.
 
 ---
 
