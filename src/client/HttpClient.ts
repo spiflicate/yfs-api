@@ -3,7 +3,7 @@
  * @module
  */
 
-import type { OAuthClient } from './OAuthClient.js';
+import type { OAuth2Client, OAuth2Tokens } from './OAuth2Client.js';
 import {
    YahooApiError,
    NetworkError,
@@ -103,19 +103,24 @@ class RateLimiter {
 }
 
 /**
+ * Callback for refreshing expired tokens
+ */
+export type TokenRefreshCallback = () => Promise<OAuth2Tokens>;
+
+/**
  * HTTP client for making API requests with retry logic and rate limiting
  *
  * @example
  * ```typescript
- * const http = new HttpClient(oauthClient, accessToken, accessTokenSecret);
+ * const http = new HttpClient(oauth2Client, tokens, refreshCallback);
  *
  * const data = await http.get('/users;use_login=1/games');
  * ```
  */
 export class HttpClient {
-   private oauthClient: OAuthClient;
-   private accessToken?: string;
-   private accessTokenSecret?: string;
+   private oauth2Client: OAuth2Client;
+   private tokens?: OAuth2Tokens;
+   private tokenRefreshCallback?: TokenRefreshCallback;
    private rateLimiter: RateLimiter;
    private timeout: number;
    private maxRetries: number;
@@ -124,24 +129,24 @@ export class HttpClient {
    /**
     * Creates a new HTTP client
     *
-    * @param oauthClient - OAuth client for authentication
-    * @param accessToken - OAuth access token (optional, can be set later)
-    * @param accessTokenSecret - OAuth access token secret (optional, can be set later)
+    * @param oauth2Client - OAuth 2.0 client for token management
+    * @param tokens - OAuth 2.0 tokens (optional, can be set later)
+    * @param tokenRefreshCallback - Callback to refresh tokens when expired
     * @param options - Additional options
     */
    constructor(
-      oauthClient: OAuthClient,
-      accessToken?: string,
-      accessTokenSecret?: string,
+      oauth2Client: OAuth2Client,
+      tokens?: OAuth2Tokens,
+      tokenRefreshCallback?: TokenRefreshCallback,
       options?: {
          timeout?: number;
          maxRetries?: number;
          debug?: boolean;
       },
    ) {
-      this.oauthClient = oauthClient;
-      this.accessToken = accessToken;
-      this.accessTokenSecret = accessTokenSecret;
+      this.oauth2Client = oauth2Client;
+      this.tokens = tokens;
+      this.tokenRefreshCallback = tokenRefreshCallback;
       this.rateLimiter = new RateLimiter();
       this.timeout = options?.timeout ?? DEFAULT_TIMEOUT;
       this.maxRetries = options?.maxRetries ?? DEFAULT_MAX_RETRIES;
@@ -149,14 +154,21 @@ export class HttpClient {
    }
 
    /**
-    * Sets the OAuth access tokens
+    * Sets the OAuth 2.0 tokens
     *
-    * @param accessToken - OAuth access token
-    * @param accessTokenSecret - OAuth access token secret
+    * @param tokens - OAuth 2.0 tokens
     */
-   setTokens(accessToken: string, accessTokenSecret: string): void {
-      this.accessToken = accessToken;
-      this.accessTokenSecret = accessTokenSecret;
+   setTokens(tokens: OAuth2Tokens): void {
+      this.tokens = tokens;
+   }
+
+   /**
+    * Sets the token refresh callback
+    *
+    * @param callback - Callback to refresh tokens
+    */
+   setTokenRefreshCallback(callback: TokenRefreshCallback): void {
+      this.tokenRefreshCallback = callback;
    }
 
    /**
@@ -276,22 +288,34 @@ export class HttpClient {
                ...headers,
             };
 
-            // Add OAuth authorization if not skipped
+            // Add OAuth 2.0 Bearer authorization if not skipped
             if (!skipAuth) {
-               if (!this.accessToken || !this.accessTokenSecret) {
+               // Check if tokens need refresh
+               if (
+                  this.tokens &&
+                  this.oauth2Client.isTokenExpired(this.tokens)
+               ) {
+                  if (this.tokenRefreshCallback) {
+                     if (this.debug) {
+                        console.log(
+                           '[HttpClient] Token expired, refreshing...',
+                        );
+                     }
+                     this.tokens = await this.tokenRefreshCallback();
+                  } else {
+                     throw new AuthenticationError(
+                        'Access token expired and no refresh callback available.',
+                     );
+                  }
+               }
+
+               if (!this.tokens?.accessToken) {
                   throw new AuthenticationError(
-                     'No access tokens available. Please authenticate first.',
+                     'No access token available. Please authenticate first.',
                   );
                }
 
-               const authHeader = await this.oauthClient.getAuthHeader(
-                  method,
-                  url,
-                  this.accessToken,
-                  this.accessTokenSecret,
-               );
-
-               requestHeaders.Authorization = authHeader;
+               requestHeaders.Authorization = `Bearer ${this.tokens.accessToken}`;
             }
 
             // Build request

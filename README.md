@@ -10,10 +10,10 @@ A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with excellent
 - ✅ **Fully Typed** - Complete TypeScript types with inference
 - ✅ **Self-Documenting** - Comprehensive JSDoc on every type and method
 - ✅ **Modern Tooling** - Built with Bun for speed and simplicity
+- ✅ **OAuth 2.0** - Secure authentication with Yahoo (fully implemented)
 - 🚧 **NHL First** - Prioritizing fantasy hockey support
 - 📋 **Multi-Sport** - NFL, MLB, NBA support planned
 - 📋 **Resource-Based API** - Intuitive, fluent interface
-- 📋 **OAuth 2.0** - Secure authentication with Yahoo
 
 ## Installation
 
@@ -27,12 +27,17 @@ bun add yahoo-fantasy-sports
 import { YahooFantasyClient } from 'yahoo-fantasy-sports';
 
 const client = new YahooFantasyClient({
-  consumerKey: process.env.YAHOO_CONSUMER_KEY!,
-  consumerSecret: process.env.YAHOO_CONSUMER_SECRET!,
+  clientId: process.env.YAHOO_CLIENT_ID!,
+  clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+  redirectUri: 'https://example.com/callback',
 });
 
-// Authenticate (OAuth flow)
-await client.authenticate();
+// Step 1: Get authorization URL
+const authUrl = client.getAuthUrl();
+console.log('Visit this URL to authorize:', authUrl);
+
+// Step 2: After user authorizes, exchange code for tokens
+await client.authenticate(authorizationCode);
 
 // Get your teams (once implemented)
 const teams = await client.user.getTeams({ gameCode: 'nhl' });
@@ -40,6 +45,8 @@ const teams = await client.user.getTeams({ gameCode: 'nhl' });
 // Manage your roster (once implemented)
 const roster = await client.team.getRoster(teams[0].teamKey);
 ```
+
+For detailed authentication examples, see `/examples/hockey/01-authentication.ts`.
 
 ## Project Status
 
@@ -50,12 +57,13 @@ const roster = await client.team.getRoster(teams[0].teamKey);
 - [x] Base type system (common types, error types)
 - [x] Error handling classes with type guards
 - [x] Package configuration
-- [x] OAuth 1.0a authentication client
-- [x] HTTP client with retry logic and rate limiting
+- [x] **OAuth 2.0 authentication client** (fully implemented)
+- [x] HTTP client with retry logic, rate limiting, and automatic token refresh
 - [x] Utility functions (validators, formatters, constants)
-- [x] Main client with authentication flow
+- [x] Main client with OAuth 2.0 authentication flow
+- [x] Token storage interface for persisting authentication
 - [x] Unit tests for utilities (38 tests passing)
-- [x] Example authentication flow
+- [x] Working authentication examples
 
 **Phase 1 is complete!** The core infrastructure is ready for building resource clients.
 

@@ -30,7 +30,7 @@ export type ScoringType = 'head' | 'point' | 'roto';
 /**
  * Draft status values
  */
-export type DraftStatus = 'predraft' | 'postdraft';
+export type DraftStatus = 'predraft' | 'drafting' | 'postdraft';
 
 /**
  * Player status in league context
@@ -174,18 +174,24 @@ export interface ApiResponse<T> {
 }
 
 /**
- * Configuration options
+ * Configuration options for OAuth 2.0 authentication
  */
 export interface Config {
    /**
-    * OAuth consumer key from Yahoo Developer
+    * OAuth client ID (Consumer Key) from Yahoo Developer
     */
-   consumerKey: string;
+   clientId: string;
 
    /**
-    * OAuth consumer secret from Yahoo Developer
+    * OAuth client secret (Consumer Secret) from Yahoo Developer
     */
-   consumerSecret: string;
+   clientSecret: string;
+
+   /**
+    * Redirect URI for OAuth 2.0 flow
+    * Must match the URI configured in Yahoo Developer app
+    */
+   redirectUri: string;
 
    /**
     * Optional: Access token if already authenticated
@@ -193,14 +199,14 @@ export interface Config {
    accessToken?: string;
 
    /**
-    * Optional: Access token secret
+    * Optional: Refresh token for getting new access tokens
     */
-   accessTokenSecret?: string;
+   refreshToken?: string;
 
    /**
-    * Optional: Session handle for token refresh
+    * Optional: Token expiration timestamp (milliseconds since epoch)
     */
-   sessionHandle?: string;
+   expiresAt?: number;
 
    /**
     * Optional: Enable debug logging

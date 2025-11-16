@@ -11,11 +11,17 @@
  * import { YahooFantasyClient } from 'yahoo-fantasy-sports';
  *
  * const client = new YahooFantasyClient({
- *   consumerKey: process.env.YAHOO_CONSUMER_KEY!,
- *   consumerSecret: process.env.YAHOO_CONSUMER_SECRET!,
+ *   clientId: process.env.YAHOO_CLIENT_ID!,
+ *   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+ *   redirectUri: 'https://example.com/callback',
  * });
  *
- * await client.authenticate();
+ * // Get authorization URL
+ * const authUrl = client.getAuthUrl();
+ * console.log('Visit:', authUrl);
+ *
+ * // After user authorizes, exchange code for tokens
+ * await client.authenticate(code);
  *
  * // Get your NHL teams
  * const teams = await client.user.getTeams({ gameCode: 'nhl' });
@@ -38,7 +44,7 @@ export {
    YahooFantasyClient,
    type TokenStorage,
 } from './client/YahooFantasyClient.js';
-export type { OAuthTokens } from './client/OAuthClient.js';
+export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
 
 // Export all types
 export type {
@@ -79,11 +85,58 @@ export {
    isValidationError,
 } from './types/index.js';
 
-// Resource types will be exported as they're implemented
-// export type { Game } from './types/index.js';
-// export type { League } from './types/index.js';
-// export type { Team } from './types/index.js';
-// export type { Player } from './types/index.js';
-// export type { Transaction } from './types/index.js';
-// export type { User } from './types/index.js';
-// export type { Roster } from './types/index.js';
+// Resource types
+export type {
+   User,
+   UserGame,
+   UserTeam,
+   GetUserGamesParams,
+   GetUserTeamsParams,
+   League,
+   LeagueSettings,
+   GetLeagueParams,
+   Team,
+   TeamRoster,
+   RosterPlayer,
+   GetTeamParams,
+   GetTeamRosterParams,
+   Player,
+   PlayerStats,
+   SearchPlayersParams,
+   GetPlayerParams,
+   Transaction,
+   TransactionPlayer,
+   GetTransactionsParams,
+   AddDropPlayerParams,
+   WaiverClaimParams,
+   ProposeTradeParams,
+   AcceptTradeParams,
+   RejectTradeParams,
+   CancelTradeParams,
+   AllowTradeParams,
+   DisallowTradeParams,
+   VoteAgainstTradeParams,
+   EditWaiverClaimParams,
+   TransactionResponse,
+   Game,
+   GetGameParams,
+   GetGamesParams,
+   SearchGamePlayersParams,
+   GameWeek,
+   GameStatCategory,
+   GamePositionType,
+} from './types/index.js';
+
+// NHL-specific types
+export type {
+   NHLPosition,
+   NHLPositionType,
+   NHLInjuryStatus,
+   NHLSkaterStat,
+   NHLGoalieStat,
+   NHLStat,
+   NHLPlayer,
+   NHLPlayerStats,
+   NHLGame,
+   NHLLeagueSettings,
+} from './types/index.js';
