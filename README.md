@@ -5,7 +5,7 @@ A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0
 [![npm version](https://img.shields.io/npm/v/yfs-api.svg)](https://www.npmjs.com/package/yfs-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Status:** 🚀 v1.0.0 - Production Ready  
+> **Status:** 🚀 v1.0.0
 > **Tested Sports:** NHL (primary), NBA (basic)  
 > **Integration Tests:** 45 passing
 
@@ -16,7 +16,6 @@ A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0
 - ✅ **OAuth 1.0 & 2.0** - Public API access and user authentication
 - ✅ **Auto Token Refresh** - Automatic OAuth 2.0 token refresh
 - ✅ **Resource Clients** - User, League, Team, Player, Transaction, Game
-- ✅ **Production Ready** - 45 integration tests passing
 - 🏒 **NHL Tested** - Thoroughly tested with NHL fantasy leagues
 - ⚠️ **Transaction APIs** - Experimental (add/drop/trade operations)
 
@@ -39,7 +38,7 @@ bun add yfs-api
 Perfect for public data like game info, player search, and league metadata:
 
 ```typescript
-import { YahooFantasyClient } from 'yfs-api';
+import { YahooFantasyClient } from "yfs-api";
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
@@ -51,8 +50,8 @@ const client = new YahooFantasyClient({
 const games = await client.game.getGames({ isAvailable: true });
 
 // Search for players
-const players = await client.game.searchPlayers('nhl', {
-  search: 'mcdavid',
+const players = await client.game.searchPlayers("nhl", {
+  search: "mcdavid",
   count: 10,
 });
 
@@ -64,24 +63,24 @@ console.log(`Found ${players.length} players`);
 For accessing user-specific data (teams, leagues, rosters):
 
 ```typescript
-import { YahooFantasyClient } from 'yfs-api';
+import { YahooFantasyClient } from "yfs-api";
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-  redirectUri: 'oob', // or your callback URL
+  redirectUri: "oob", // or your callback URL
 });
 
 // Step 1: Get authorization URL
 const authUrl = client.getAuthUrl();
-console.log('Visit this URL to authorize:', authUrl);
+console.log("Visit this URL to authorize:", authUrl);
 
 // Step 2: After user authorizes, exchange code for tokens
 await client.authenticate(authorizationCode);
 
 // Step 3: Use authenticated endpoints
 const user = await client.user.getCurrentUser();
-const teams = await client.user.getTeams({ gameCode: 'nhl' });
+const teams = await client.user.getTeams({ gameCode: "nhl" });
 
 console.log(`Found ${teams.length} teams for user ${user.guid}`);
 
@@ -99,8 +98,8 @@ console.log(`${standings.length} teams in standings`);
 
 // Search for players in league
 const freeAgents = await client.player.search(league.leagueKey, {
-  status: 'FA',
-  position: 'C',
+  status: "FA",
+  position: "C",
   count: 25,
 });
 ```
@@ -110,24 +109,24 @@ const freeAgents = await client.player.search(league.leagueKey, {
 Save and restore tokens between sessions:
 
 ```typescript
-import { YahooFantasyClient } from 'yfs-api';
-import * as fs from 'fs/promises';
+import { YahooFantasyClient } from "yfs-api";
+import * as fs from "fs/promises";
 
 // Create token storage
 const tokenStorage = {
   save: async (tokens) => {
-    await fs.writeFile('.tokens.json', JSON.stringify(tokens));
+    await fs.writeFile(".tokens.json", JSON.stringify(tokens));
   },
   load: async () => {
     try {
-      const data = await fs.readFile('.tokens.json', 'utf-8');
+      const data = await fs.readFile(".tokens.json", "utf-8");
       return JSON.parse(data);
     } catch {
       return null;
     }
   },
   clear: async () => {
-    await fs.unlink('.tokens.json').catch(() => {});
+    await fs.unlink(".tokens.json").catch(() => {});
   },
 };
 
@@ -135,7 +134,7 @@ const client = new YahooFantasyClient(
   {
     clientId: process.env.YAHOO_CLIENT_ID!,
     clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-    redirectUri: 'oob',
+    redirectUri: "oob",
   },
   tokenStorage
 );
@@ -146,43 +145,43 @@ await client.loadTokens();
 // If no tokens, authenticate
 if (!client.hasValidTokens()) {
   const authUrl = client.getAuthUrl();
-  console.log('Visit:', authUrl);
+  console.log("Visit:", authUrl);
   // ... get authorization code ...
   await client.authenticate(code);
 }
 
 // Tokens are automatically saved and refreshed
-const teams = await client.user.getTeams({ gameCode: 'nhl' });
+const teams = await client.user.getTeams({ gameCode: "nhl" });
 ```
 
 ## API Coverage
 
 ### ✅ Fully Implemented
 
-| Resource | Methods | Status |
-|----------|---------|--------|
-| **User** | getCurrentUser, getGames, getTeams | ✅ Tested |
-| **League** | get, getSettings, getStandings, getScoreboard, getTeams | ✅ Tested |
-| **Team** | get, getRoster, getMatchups, getStats | ✅ Tested |
-| **Player** | get, search, getStats, getOwnership | ✅ Tested |
-| **Game** | get, getGames, searchPlayers, getPositionTypes, getStatCategories | ✅ Tested |
+| Resource   | Methods                                                           | Status    |
+| ---------- | ----------------------------------------------------------------- | --------- |
+| **User**   | getCurrentUser, getGames, getTeams                                | ✅ Tested |
+| **League** | get, getSettings, getStandings, getScoreboard, getTeams           | ✅ Tested |
+| **Team**   | get, getRoster, getMatchups, getStats                             | ✅ Tested |
+| **Player** | get, search, getStats, getOwnership                               | ✅ Tested |
+| **Game**   | get, getGames, searchPlayers, getPositionTypes, getStatCategories | ✅ Tested |
 
 ### ⚠️ Experimental (Untested)
 
-| Resource | Methods | Status |
-|----------|---------|--------|
+| Resource        | Methods                                                    | Status          |
+| --------------- | ---------------------------------------------------------- | --------------- |
 | **Transaction** | addPlayer, dropPlayer, addDropPlayer, proposeTradeWithVote | ⚠️ Experimental |
 
 Transaction operations are implemented but haven't been tested in integration tests. Use with caution and please report any issues.
 
 ## Supported Sports
 
-| Sport | Status | Notes |
-|-------|--------|-------|
-| 🏒 **NHL** | ✅ Fully Tested | All features tested with real leagues |
+| Sport      | Status           | Notes                                       |
+| ---------- | ---------------- | ------------------------------------------- |
+| 🏒 **NHL** | ✅ Fully Tested  | All features tested with real leagues       |
 | 🏀 **NBA** | ✅ Basic Support | Core endpoints work, not extensively tested |
-| 🏈 **NFL** | 🟡 Untested | Should work, types may need refinement |
-| ⚾ **MLB** | 🟡 Untested | Should work, types may need refinement |
+| 🏈 **NFL** | 🟡 Untested      | Should work, types may need refinement      |
+| ⚾ **MLB** | 🟡 Untested      | Should work, types may need refinement      |
 
 We welcome contributions to improve support for NFL, MLB, and other sports!
 
@@ -237,7 +236,7 @@ bun test tests/integration
 bun run lint
 bun run format
 
-# Build for production
+# Build the project
 bun run build
 ```
 
@@ -285,6 +284,7 @@ This library is built with one core principle:
 > **The library should be fully self-documenting with excellent developer experience**
 
 This means:
+
 - Every type has comprehensive JSDoc with examples
 - IDE autocomplete guides you through the API
 - Type inference catches errors at compile time
@@ -319,6 +319,8 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 Built by [jbru](https://github.com/spiflicate) for the fantasy sports community 🏒⚾🏈🏀
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R01DV0JD)
+
 ## Changelog
 
 See [CHANGELOG.md](design/CHANGELOG.md) for release history.
@@ -327,4 +329,4 @@ See [CHANGELOG.md](design/CHANGELOG.md) for release history.
 
 **Star this repo** if you find it helpful! ⭐
 
-*Last Updated: 2025-11-16*
+_Last Updated: 2025-11-16_
