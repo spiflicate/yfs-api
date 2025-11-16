@@ -28,7 +28,7 @@ Be respectful, professional, and constructive in all interactions.
 ### Prerequisites
 
 - [Bun](https://bun.sh) v1.0.0 or later
-- Yahoo Developer Application (for API testing)
+- Yahoo Developer [Application](https://developer.yahoo.com/apps/create/) (for API testing)
 
 ### Running Tests
 
@@ -62,6 +62,7 @@ bun run format
 When adding or modifying types:
 
 1. Add JSDoc comments with:
+
    - Clear description
    - `@example` with code samples
    - Links to Yahoo API docs if applicable
@@ -70,7 +71,7 @@ When adding or modifying types:
 
 3. Use unions for known values:
    ```typescript
-   type Status = 'active' | 'inactive' | 'suspended';
+   type Status = "active" | "inactive" | "suspended";
    ```
 
 ### Adding New Resources
@@ -129,6 +130,7 @@ When adding functionality:
 ### README Updates
 
 Update README.md if you:
+
 - Add new features
 - Change API surface
 - Add new examples
@@ -136,6 +138,7 @@ Update README.md if you:
 ### Design Documentation
 
 For architectural changes, add or update:
+
 - Architecture Decision Records (ADRs) in `design/decisions/`
 - Plans in `design/plans/`
 
