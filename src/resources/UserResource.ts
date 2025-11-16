@@ -380,11 +380,10 @@ export class UserResource {
          | undefined;
 
       return {
-         leagueKey: ((leagueObj?.league_key as string) || leagueKey) || '',
-         leagueId: ((leagueObj?.league_id as string) || leagueId) || '',
+         leagueKey: (leagueObj?.league_key as string) || leagueKey || '',
+         leagueId: (leagueObj?.league_id as string) || leagueId || '',
          name: (leagueObj?.name as string) || '',
          url: (leagueObj?.url as string) || '',
       };
    }
 }
-

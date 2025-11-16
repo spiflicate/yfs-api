@@ -1,6 +1,15 @@
 /**
  * Example: Using Token Storage
  *
+ * ⚠️ **PARTIAL IMPLEMENTATION**
+ * This example demonstrates token storage, which works in v1.0.0.
+ * However, the `authenticateWithLocalServer()` method shown here is not yet implemented.
+ *
+ * For a working token storage example, see:
+ * - examples/token-storage/file-storage.ts
+ *
+ * ---
+ *
  * This example demonstrates how to use token storage with the YahooFantasyClient.
  *
  * It shows:
