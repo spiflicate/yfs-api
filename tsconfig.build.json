@@ -1,25 +1,51 @@
 {
    "extends": "./tsconfig.json",
    "compilerOptions": {
+      // Output configuration
       "outDir": "./dist",
       "declaration": true,
       "declarationMap": true,
       "sourceMap": true,
+      // Module system - ESM output for modern Node.js
       "module": "ESNext",
-      "moduleResolution": "node",
-      "target": "ES2020",
-      "lib": ["ES2020"],
+      "moduleResolution": "Bundler",
+      "target": "ES2022",
+      "lib": [
+         "ES2022"
+      ],
+      // Build-specific overrides
       "noEmit": false,
       "allowImportingTsExtensions": false,
-      "verbatimModuleSyntax": false
+      "verbatimModuleSyntax": true,
+      // Additional strictness for library code
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      // Ensure compatibility
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      // Performance & DX
+      "skipLibCheck": true,
+      "incremental": true,
+      "tsBuildInfoFile": "./dist/.tsbuildinfo",
+      // Remove internal paths from declarations
+      "declarationDir": "./dist",
+      "stripInternal": true
    },
-   "include": ["src/**/*"],
+   "include": [
+      "src/**/*"
+   ],
    "exclude": [
       "node_modules",
       "dist",
       "**/*.test.ts",
+      "**/*.spec.ts",
       "tests",
       "examples",
-      "scripts"
+      "scripts",
+      "coverage"
    ]
 }
