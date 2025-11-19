@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384" time="21.621942520142ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <league>
+  <league_key>465.l.121384</league_key>
+  <league_id>121384</league_id>
+  <name>KKUPFL - T4 Jinesjö</name>
+  <url>https://hockey.fantasysports.yahoo.com/hockey/121384</url>
+  <logo_url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png</logo_url>
+  <draft_status>postdraft</draft_status>
+  <num_teams>14</num_teams>
+  <edit_key>2025-11-17</edit_key>
+  <weekly_deadline>intraday</weekly_deadline>
+  <roster_type>date</roster_type>
+  <league_update_timestamp>1763369872</league_update_timestamp>
+  <scoring_type>headpoint</scoring_type>
+  <league_type>private</league_type>
+  <renew/>
+  <renewed/>
+  <felo_tier>platinum</felo_tier>
+  <is_highscore></is_highscore>
+  <matchup_week>6</matchup_week>
+  <iris_group_chat_id/>
+  <allow_add_to_dl_extra_pos>0</allow_add_to_dl_extra_pos>
+  <is_pro_league>0</is_pro_league>
+  <is_cash_league>0</is_cash_league>
+  <current_week>7</current_week>
+  <start_week>1</start_week>
+  <start_date>2025-10-07</start_date>
+  <end_week>23</end_week>
+  <end_date>2026-04-05</end_date>
+  <current_date>2025-11-17</current_date>
+  <is_plus_league>0</is_plus_league>
+  <game_code>nhl</game_code>
+  <season>2025</season>
+ </league>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-676499c948-89s2r Tue Nov 18 04:26:37 UTC 2025 -->

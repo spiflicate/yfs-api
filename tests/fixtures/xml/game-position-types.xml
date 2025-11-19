@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nhl/position_types" time="10.398149490356ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <game>
+  <game_key>465</game_key>
+  <game_id>465</game_id>
+  <name>Hockey</name>
+  <code>nhl</code>
+  <type>full</type>
+  <url>https://hockey.fantasysports.yahoo.com/hockey</url>
+  <season>2025</season>
+  <is_registration_over>0</is_registration_over>
+  <is_game_over>0</is_game_over>
+  <is_offseason>0</is_offseason>
+  <is_live_draft_lobby_active>1</is_live_draft_lobby_active>
+  <position_types>
+   <position_type>
+    <type>P</type>
+    <display_name>Forwards/Defensemen</display_name>
+   </position_type>
+   <position_type>
+    <type>G</type>
+    <display_name>Goaltenders</display_name>
+   </position_type>
+  </position_types>
+ </game>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-676499c948-9xqxp Tue Nov 18 04:26:37 UTC 2025 -->

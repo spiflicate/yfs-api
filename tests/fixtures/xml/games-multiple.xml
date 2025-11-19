@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/games;game_keys=nhl,nba,mlb" time="26.86619758606ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <games count="3">
+  <game>
+   <game_key>465</game_key>
+   <game_id>465</game_id>
+   <name>Hockey</name>
+   <code>nhl</code>
+   <type>full</type>
+   <url>https://hockey.fantasysports.yahoo.com/hockey</url>
+   <season>2025</season>
+   <is_registration_over>0</is_registration_over>
+   <is_game_over>0</is_game_over>
+   <is_offseason>0</is_offseason>
+   <is_live_draft_lobby_active>1</is_live_draft_lobby_active>
+  </game>
+  <game>
+   <game_key>466</game_key>
+   <game_id>466</game_id>
+   <name>Basketball</name>
+   <code>nba</code>
+   <type>full</type>
+   <url>https://basketball.fantasysports.yahoo.com/nba</url>
+   <season>2025</season>
+   <is_registration_over>0</is_registration_over>
+   <is_game_over>0</is_game_over>
+   <is_offseason>0</is_offseason>
+   <is_live_draft_lobby_active>1</is_live_draft_lobby_active>
+  </game>
+  <game>
+   <game_key>458</game_key>
+   <game_id>458</game_id>
+   <name>Baseball</name>
+   <code>mlb</code>
+   <type>full</type>
+   <url>https://baseball.fantasysports.yahoo.com/b1</url>
+   <season>2025</season>
+   <is_registration_over>1</is_registration_over>
+   <is_game_over>1</is_game_over>
+   <is_offseason>1</is_offseason>
+   <alternate_start_deadline>2025-03-26</alternate_start_deadline>
+  </game>
+ </games>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-676499c948-c9xwd Tue Nov 18 04:26:36 UTC 2025 -->
