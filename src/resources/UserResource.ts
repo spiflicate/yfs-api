@@ -4,14 +4,15 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { GameCode } from '../types/common.js';
 import type {
+   GetUserGamesParams,
+   GetUserTeamsParams,
    User,
    UserGame,
    UserTeam,
-   GetUserGamesParams,
-   GetUserTeamsParams,
 } from '../types/resources/user.js';
-import type { GameCode } from '../types/common.js';
+import { ensureArray, getInteger } from '../utils/xmlParser.js';
 
 /**
  * User resource client
@@ -54,10 +55,12 @@ export class UserResource {
     */
    async getCurrentUser(): Promise<User> {
       const response = await this.http.get<{
-         fantasy_content: { users: { 0: { user: Array<unknown> } } };
+         users: { user: unknown };
       }>('/users;use_login=1');
 
-      return this.parseUser(response.fantasy_content.users[0].user);
+      // In XML, user is directly accessible (no numeric keys)
+      const users = ensureArray(response.users.user);
+      return this.parseUser(users[0]);
    }
 
    /**
@@ -98,46 +101,27 @@ export class UserResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: {
-            users: {
-               0: {
-                  user: Array<{ games: { 0: { game: Array<unknown> } } }>;
-               };
-            };
-         };
+         users: { user: unknown };
       }>(path);
 
-      const userData = response.fantasy_content.users[0].user;
-      const gamesData = userData.find(
-         (item) =>
-            item !== null && typeof item === 'object' && 'games' in item,
-      ) as Record<string, unknown> | undefined;
+      // In XML, user is directly accessible
+      const users = ensureArray(response.users.user);
+      const userData = users[0] as Record<string, unknown>;
 
-      if (!gamesData || !('games' in gamesData)) {
+      if (!userData?.games) {
          return [];
       }
 
-      const games = gamesData.games as unknown as Record<string, unknown>;
-      const gamesList: UserGame[] = [];
-
-      // Parse games (numbered keys)
-      for (const key in games) {
-         if (key === 'count') continue;
-         const gameEntry = games[key];
-         if (
-            gameEntry &&
-            typeof gameEntry === 'object' &&
-            'game' in gameEntry
-         ) {
-            const game = this.parseGame(
-               (gameEntry as { game: Array<unknown> }).game,
-               params?.includeTeams,
-            );
-            gamesList.push(game);
-         }
+      const gamesData = userData.games as Record<string, unknown>;
+      if (!gamesData.game) {
+         return [];
       }
 
-      return gamesList;
+      // Games are in a simple array structure in XML
+      const gamesArray = ensureArray(gamesData.game);
+      return gamesArray.map((game) =>
+         this.parseGame(game, params?.includeTeams),
+      );
    }
 
    /**
@@ -172,40 +156,29 @@ export class UserResource {
       path += '/teams';
 
       const response = await this.http.get<{
-         fantasy_content: {
-            users: { 0: { user: Array<unknown> } };
-         };
+         users: { user: unknown };
       }>(path);
 
-      const userData = response.fantasy_content.users[0].user;
-      const gamesData = userData.find(
-         (item) =>
-            item !== null && typeof item === 'object' && 'games' in item,
-      ) as Record<string, unknown> | undefined;
+      // In XML, user is directly accessible
+      const users = ensureArray(response.users.user);
+      const userData = users[0] as Record<string, unknown>;
 
-      if (!gamesData || !('games' in gamesData)) {
+      if (!userData?.games) {
          return [];
       }
 
-      const games = gamesData.games as unknown as Record<string, unknown>;
-      const allTeams: UserTeam[] = [];
+      const gamesData = userData.games as Record<string, unknown>;
+      if (!gamesData.game) {
+         return [];
+      }
 
-      // Parse games (numbered keys)
-      for (const key in games) {
-         if (key === 'count') continue;
-         const gameEntry = games[key];
-         if (
-            gameEntry &&
-            typeof gameEntry === 'object' &&
-            'game' in gameEntry
-         ) {
-            const game = this.parseGame(
-               (gameEntry as { game: Array<unknown> }).game,
-               true,
-            );
-            if (game.teams) {
-               allTeams.push(...game.teams);
-            }
+      const allTeams: UserTeam[] = [];
+      const gamesArray = ensureArray(gamesData.game);
+
+      for (const game of gamesArray) {
+         const parsedGame = this.parseGame(game, true);
+         if (parsedGame.teams) {
+            allTeams.push(...parsedGame.teams);
          }
       }
 
@@ -217,18 +190,12 @@ export class UserResource {
     *
     * @private
     */
-   private parseUser(userData: Array<unknown>): User {
-      const userObj: Record<string, unknown> = {};
-
-      for (const item of userData) {
-         if (item !== null && typeof item === 'object') {
-            Object.assign(userObj, item);
-         }
-      }
-
+   private parseUser(userData: unknown): User {
+      // XML structure is direct - no array flattening needed
+      const data = userData as Record<string, unknown>;
       return {
-         guid: userObj.guid as string,
-         url: userObj.url as string,
+         guid: data.guid as string,
+         url: data.url as string,
       };
    }
 
@@ -237,43 +204,22 @@ export class UserResource {
     *
     * @private
     */
-   private parseGame(
-      gameData: Array<unknown>,
-      includeTeams?: boolean,
-   ): UserGame {
-      const gameObj: Record<string, unknown> = {};
-
-      for (const item of gameData) {
-         if (item !== null && typeof item === 'object') {
-            Object.assign(gameObj, item);
-         }
-      }
-
+   private parseGame(gameData: unknown, includeTeams?: boolean): UserGame {
+      // XML structure is direct - no array flattening needed
+      const data = gameData as Record<string, unknown>;
       const game: UserGame = {
-         gameKey: gameObj.game_key as string,
-         gameId: gameObj.game_id as string,
-         gameCode: gameObj.code as GameCode,
-         season: Number.parseInt(gameObj.season as string),
+         gameKey: data.game_key as string,
+         gameId: data.game_id as string,
+         gameCode: data.code as GameCode,
+         season: getInteger(data.season),
       };
 
       // Parse teams if included
-      if (includeTeams && gameObj.teams) {
-         const teamsData = gameObj.teams as Record<string, unknown>;
-         game.teams = [];
-
-         for (const key in teamsData) {
-            if (key === 'count') continue;
-            const teamEntry = teamsData[key];
-            if (
-               teamEntry &&
-               typeof teamEntry === 'object' &&
-               'team' in teamEntry
-            ) {
-               const team = this.parseTeam(
-                  (teamEntry as { team: Array<unknown> }).team,
-               );
-               game.teams.push(team);
-            }
+      if (includeTeams && data.teams) {
+         const teamsData = data.teams as Record<string, unknown>;
+         if (teamsData.team) {
+            const teamsArray = ensureArray(teamsData.team);
+            game.teams = teamsArray.map((team) => this.parseTeam(team));
          }
       }
 
@@ -285,72 +231,52 @@ export class UserResource {
     *
     * @private
     */
-   private parseTeam(teamData: Array<unknown>): UserTeam {
-      const teamObj: Record<string, unknown> = {};
-
-      for (const item of teamData) {
-         if (Array.isArray(item)) {
-            // Yahoo API wraps team data in a nested array
-            for (const nestedItem of item) {
-               if (nestedItem !== null && typeof nestedItem === 'object') {
-                  Object.assign(teamObj, nestedItem);
-               }
-            }
-         } else if (item !== null && typeof item === 'object') {
-            Object.assign(teamObj, item);
-         }
-      }
-
+   private parseTeam(teamData: unknown): UserTeam {
+      // XML structure is direct - no array flattening or double-nesting
+      const data = teamData as Record<string, unknown>;
       const team: UserTeam = {
-         teamKey: teamObj.team_key as string,
-         teamId: teamObj.team_id as string,
-         name: teamObj.name as string,
-         teamLogoUrl: this.extractTeamLogoUrl(teamObj),
-         waiverPriority: teamObj.waiver_priority
-            ? Number.parseInt(teamObj.waiver_priority as string)
+         teamKey: data.team_key as string,
+         teamId: data.team_id as string,
+         name: data.name as string,
+         teamLogoUrl: this.extractTeamLogoUrl(data),
+         waiverPriority: data.waiver_priority
+            ? getInteger(data.waiver_priority)
             : undefined,
-         faabBalance: teamObj.faab_balance
-            ? Number.parseInt(teamObj.faab_balance as string)
+         faabBalance: data.faab_balance
+            ? getInteger(data.faab_balance)
             : undefined,
-         numberOfMoves: teamObj.number_of_moves
-            ? Number.parseInt(teamObj.number_of_moves as string)
+         numberOfMoves: data.number_of_moves
+            ? getInteger(data.number_of_moves)
             : undefined,
-         numberOfTrades: teamObj.number_of_trades
-            ? Number.parseInt(teamObj.number_of_trades as string)
+         numberOfTrades: data.number_of_trades
+            ? getInteger(data.number_of_trades)
             : undefined,
-         league: this.extractLeagueInfo(teamObj),
-         url: teamObj.url as string,
+         league: this.extractLeagueInfo(data),
+         url: data.url as string,
       };
 
       return team;
    }
 
    /**
-    * Extract team logo URL from team_logos array
+    * Extract team logo URL from team_logos
     *
     * @private
     */
    private extractTeamLogoUrl(
-      teamObj: Record<string, unknown>,
+      teamData: Record<string, unknown>,
    ): string | undefined {
-      const teamLogos = teamObj.team_logos as Array<unknown> | undefined;
-      if (
-         !teamLogos ||
-         !Array.isArray(teamLogos) ||
-         teamLogos.length === 0
-      ) {
-         return undefined;
-      }
-
-      const firstLogo = teamLogos[0];
-      if (!firstLogo || typeof firstLogo !== 'object') {
-         return undefined;
-      }
-
-      const logoData = (firstLogo as Record<string, unknown>).team_logo as
+      // In XML, team_logos.team_logo might be single object or array
+      const teamLogos = teamData.team_logos as
          | Record<string, unknown>
          | undefined;
-      return logoData?.url as string | undefined;
+      if (!teamLogos || !teamLogos.team_logo) {
+         return undefined;
+      }
+
+      const logos = ensureArray(teamLogos.team_logo);
+      const firstLogo = logos[0] as Record<string, unknown> | undefined;
+      return firstLogo?.url as string | undefined;
    }
 
    /**
@@ -360,14 +286,14 @@ export class UserResource {
     *
     * @private
     */
-   private extractLeagueInfo(teamObj: Record<string, unknown>): {
+   private extractLeagueInfo(teamData: Record<string, unknown>): {
       leagueKey: string;
       leagueId: string;
       name: string;
       url: string;
    } {
       // Extract league key from team key (e.g., "419.l.5634.t.2" -> "419.l.5634")
-      const teamKey = teamObj.team_key as string;
+      const teamKey = teamData.team_key as string;
       const leagueKey = teamKey ? teamKey.split('.t.')[0] : '';
 
       // Extract league ID from league key (e.g., "419.l.5634" -> "5634")
@@ -375,7 +301,7 @@ export class UserResource {
       const leagueId = leagueIdParts.length > 1 ? leagueIdParts[1] : '';
 
       // Try to get league info from embedded league object if present
-      const leagueObj = teamObj.league as
+      const leagueObj = teamData.league as
          | Record<string, unknown>
          | undefined;
 

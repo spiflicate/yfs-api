@@ -4,21 +4,22 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { GameCode } from '../types/common.js';
 import type {
    Game,
+   GamePositionType,
+   GameStatCategory,
+   GameWeek,
    GetGameParams,
    GetGamesParams,
    SearchGamePlayersParams,
-   GameWeek,
-   GameStatCategory,
-   GamePositionType,
 } from '../types/resources/game.js';
 import type { League } from '../types/resources/league.js';
 import type {
    Player,
    PlayerCollectionResponse,
 } from '../types/resources/player.js';
-import type { GameCode } from '../types/common.js';
+import { ensureArray, getBoolean, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Game resource client
@@ -99,10 +100,10 @@ export class GameResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: unknown;
       }>(path);
 
-      return this.parseGame(response.fantasy_content.game);
+      return this.parseGame(response.game);
    }
 
    /**
@@ -158,28 +159,11 @@ export class GameResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { games: Record<string, unknown> };
+         games: { game: unknown };
       }>(path);
 
-      const gamesData = response.fantasy_content.games;
-      const games: Game[] = [];
-
-      for (const key in gamesData) {
-         if (key === 'count') continue;
-         const gameEntry = gamesData[key];
-         if (
-            gameEntry &&
-            typeof gameEntry === 'object' &&
-            'game' in gameEntry
-         ) {
-            const game = this.parseGame(
-               (gameEntry as { game: Array<unknown> }).game,
-            );
-            games.push(game);
-         }
-      }
-
-      return games;
+      const gamesArray = ensureArray(response.games.game);
+      return gamesArray.map((game) => this.parseGame(game));
    }
 
    /**
@@ -195,38 +179,15 @@ export class GameResource {
     */
    async getLeagues(gameKey: string): Promise<League[]> {
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: { leagues?: { league: unknown } };
       }>(`/game/${gameKey}/leagues`);
 
-      const gameData = response.fantasy_content.game;
-      const leaguesObj = gameData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null && typeof item === 'object' && 'leagues' in item,
-      );
-
-      if (!leaguesObj || !('leagues' in leaguesObj)) {
+      if (!response.game.leagues?.league) {
          return [];
       }
 
-      const leagues: League[] = [];
-      const leaguesData = leaguesObj.leagues as Record<string, unknown>;
-
-      for (const key in leaguesData) {
-         if (key === 'count') continue;
-         const leagueEntry = leaguesData[key];
-         if (
-            leagueEntry &&
-            typeof leagueEntry === 'object' &&
-            'league' in leagueEntry
-         ) {
-            const league = this.parseLeague(
-               (leagueEntry as { league: Array<unknown> }).league,
-            );
-            leagues.push(league);
-         }
-      }
-
-      return leagues;
+      const leaguesArray = ensureArray(response.game.leagues.league);
+      return leaguesArray.map((league) => this.parseLeague(league));
    }
 
    /**
@@ -316,39 +277,21 @@ export class GameResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: { players?: { count?: string; player: unknown } };
       }>(path);
 
-      const gameData = response.fantasy_content.game;
-      const playersObj = gameData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null && typeof item === 'object' && 'players' in item,
-      );
-
-      if (!playersObj || !('players' in playersObj)) {
+      if (!response.game.players?.player) {
          return { count: 0, players: [] };
       }
 
-      const playersData = playersObj.players as Record<string, unknown>;
-      const count = playersData.count
-         ? Number.parseInt(playersData.count as string)
+      const count = response.game.players.count
+         ? getInteger(response.game.players.count)
          : 0;
-      const players: Player[] = [];
 
-      for (const key in playersData) {
-         if (key === 'count') continue;
-         const playerEntry = playersData[key];
-         if (
-            playerEntry &&
-            typeof playerEntry === 'object' &&
-            'player' in playerEntry
-         ) {
-            const player = this.parsePlayer(
-               (playerEntry as { player: Array<unknown> }).player,
-            );
-            players.push(player);
-         }
-      }
+      const playersArray = ensureArray(response.game.players.player);
+      const players = playersArray.map((player) =>
+         this.parsePlayer(player),
+      );
 
       return { count, players };
    }
@@ -366,45 +309,23 @@ export class GameResource {
     */
    async getGameWeeks(gameKey: string): Promise<GameWeek[]> {
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: { game_weeks?: { game_week: unknown } };
       }>(`/game/${gameKey}/game_weeks`);
 
-      const gameData = response.fantasy_content.game;
-      const weeksObj = gameData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'game_weeks' in item,
-      );
-
-      if (!weeksObj || !('game_weeks' in weeksObj)) {
+      if (!response.game.game_weeks?.game_week) {
          return [];
       }
 
-      const weeks: GameWeek[] = [];
-      const weeksData = weeksObj.game_weeks as Record<string, unknown>;
-
-      for (const key in weeksData) {
-         if (key === 'count') continue;
-         const weekEntry = weeksData[key];
-         if (
-            weekEntry &&
-            typeof weekEntry === 'object' &&
-            'game_week' in weekEntry
-         ) {
-            const weekData = (
-               weekEntry as { game_week: Record<string, unknown> }
-            ).game_week;
-            weeks.push({
-               week: Number.parseInt(weekData.week as string),
-               start: weekData.start as string | undefined,
-               end: weekData.end as string | undefined,
-               displayName: weekData.display_name as string | undefined,
-            });
-         }
-      }
-
-      return weeks;
+      const weeksArray = ensureArray(response.game.game_weeks.game_week);
+      return weeksArray.map((weekData: unknown) => {
+         const data = weekData as Record<string, unknown>;
+         return {
+            week: getInteger(data.week),
+            start: data.start as string | undefined,
+            end: data.end as string | undefined,
+            displayName: data.display_name as string | undefined,
+         };
+      });
    }
 
    /**
@@ -420,51 +341,29 @@ export class GameResource {
     */
    async getStatCategories(gameKey: string): Promise<GameStatCategory[]> {
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: { stat_categories?: { stats?: { stat: unknown } } };
       }>(`/game/${gameKey}/stat_categories`);
 
-      const gameData = response.fantasy_content.game;
-      const statsObj = gameData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'stat_categories' in item,
-      );
-
-      if (!statsObj || !('stat_categories' in statsObj)) {
+      if (!response.game.stat_categories?.stats?.stat) {
          return [];
       }
 
-      const stats: GameStatCategory[] = [];
-      const statsData = (
-         statsObj.stat_categories as Record<string, unknown>
-      ).stats as Record<string, unknown>;
-
-      for (const key in statsData) {
-         if (key === 'count') continue;
-         const statEntry = statsData[key];
-         if (
-            statEntry &&
-            typeof statEntry === 'object' &&
-            'stat' in statEntry
-         ) {
-            const statData = (
-               statEntry as { stat: Record<string, unknown> }
-            ).stat;
-            stats.push({
-               statId: Number.parseInt(statData.stat_id as string),
-               enabled: Boolean(Number(statData.enabled)),
-               name: statData.name as string,
-               displayName: statData.display_name as string | undefined,
-               sortOrder: statData.sort_order
-                  ? Number.parseInt(statData.sort_order as string)
-                  : undefined,
-               positionType: statData.position_type as string | undefined,
-            });
-         }
-      }
-
-      return stats;
+      const statsArray = ensureArray(
+         response.game.stat_categories.stats.stat,
+      );
+      return statsArray.map((statData: unknown) => {
+         const data = statData as Record<string, unknown>;
+         return {
+            statId: getInteger(data.stat_id),
+            enabled: getBoolean(data.enabled),
+            name: data.name as string,
+            displayName: data.display_name as string | undefined,
+            sortOrder: data.sort_order
+               ? getInteger(data.sort_order)
+               : undefined,
+            positionType: data.position_type as string | undefined,
+         };
+      });
    }
 
    /**
@@ -480,46 +379,23 @@ export class GameResource {
     */
    async getPositionTypes(gameKey: string): Promise<GamePositionType[]> {
       const response = await this.http.get<{
-         fantasy_content: { game: Array<unknown> };
+         game: { position_types?: { position_type: unknown } };
       }>(`/game/${gameKey}/position_types`);
 
-      const gameData = response.fantasy_content.game;
-      const posTypesObj = gameData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'position_types' in item,
-      );
-
-      if (!posTypesObj || !('position_types' in posTypesObj)) {
+      if (!response.game.position_types?.position_type) {
          return [];
       }
 
-      const posTypes: GamePositionType[] = [];
-      const posTypesData = posTypesObj.position_types as Record<
-         string,
-         unknown
-      >;
-
-      for (const key in posTypesData) {
-         if (key === 'count') continue;
-         const posEntry = posTypesData[key];
-         if (
-            posEntry &&
-            typeof posEntry === 'object' &&
-            'position_type' in posEntry
-         ) {
-            const posData = (
-               posEntry as { position_type: Record<string, unknown> }
-            ).position_type;
-            posTypes.push({
-               type: posData.type as string,
-               displayName: posData.display_name as string,
-            });
-         }
-      }
-
-      return posTypes;
+      const posTypesArray = ensureArray(
+         response.game.position_types.position_type,
+      );
+      return posTypesArray.map((posData: unknown) => {
+         const data = posData as Record<string, unknown>;
+         return {
+            type: data.type as string,
+            displayName: data.display_name as string,
+         };
+      });
    }
 
    /**
@@ -527,65 +403,39 @@ export class GameResource {
     *
     * @private
     */
-   private parseGame(gameData: Array<unknown> | unknown): Game {
-      const gameObj: Record<string, unknown> = {};
-
-      // Handle case where gameData might not be an array
-      if (!Array.isArray(gameData)) {
-         // If it's an object, use it directly
-         if (gameData && typeof gameData === 'object') {
-            Object.assign(gameObj, gameData);
-         }
-      } else {
-         // Process array of game data
-         for (const item of gameData) {
-            if (Array.isArray(item)) {
-               // Yahoo API sometimes wraps data in nested arrays
-               for (const nestedItem of item) {
-                  if (
-                     nestedItem !== null &&
-                     typeof nestedItem === 'object'
-                  ) {
-                     Object.assign(gameObj, nestedItem);
-                  }
-               }
-            } else if (item !== null && typeof item === 'object') {
-               Object.assign(gameObj, item);
-            }
-         }
-      }
+   private parseGame(gameData: unknown): Game {
+      // XML structure is direct - no array flattening needed
+      const data = gameData as Record<string, unknown>;
 
       const game: Game = {
-         gameKey: gameObj.game_key as string,
-         gameId: gameObj.game_id as string,
-         name: gameObj.name as string,
-         code: gameObj.code as GameCode,
-         type: gameObj.type as
+         gameKey: data.game_key as string,
+         gameId: data.game_id as string,
+         name: data.name as string,
+         code: data.code as GameCode,
+         type: data.type as
             | 'full'
             | 'pickem-team'
             | 'pickem-group'
             | 'pickem-team-list',
-         season: Number.parseInt(gameObj.season as string),
-         url: gameObj.url as string,
+         season: getInteger(data.season),
+         url: data.url as string,
       };
 
-      if (gameObj.is_available !== undefined) {
-         game.isAvailable = Boolean(Number(gameObj.is_available));
+      if (data.is_available !== undefined) {
+         game.isAvailable = getBoolean(data.is_available);
       }
 
-      if (gameObj.is_game_over !== undefined) {
-         game.isGameOver = Boolean(Number(gameObj.is_game_over));
+      if (data.is_game_over !== undefined) {
+         game.isGameOver = getBoolean(data.is_game_over);
       }
 
-      if (gameObj.is_registration_over !== undefined) {
-         game.isRegistrationOver = Boolean(
-            Number(gameObj.is_registration_over),
-         );
+      if (data.is_registration_over !== undefined) {
+         game.isRegistrationOver = getBoolean(data.is_registration_over);
       }
 
-      if (gameObj.is_live_draft_lobby_active !== undefined) {
-         game.isLiveDraftLobbyActive = Boolean(
-            Number(gameObj.is_live_draft_lobby_active),
+      if (data.is_live_draft_lobby_active !== undefined) {
+         game.isLiveDraftLobbyActive = getBoolean(
+            data.is_live_draft_lobby_active,
          );
       }
 
@@ -597,51 +447,44 @@ export class GameResource {
     *
     * @private
     */
-   private parseLeague(leagueData: Array<unknown>): League {
-      const leagueObj: Record<string, unknown> = {};
-
-      for (const item of leagueData) {
-         if (item !== null && typeof item === 'object') {
-            Object.assign(leagueObj, item);
-         }
-      }
+   private parseLeague(leagueData: unknown): League {
+      // XML structure is direct - no array flattening needed
+      const data = leagueData as Record<string, unknown>;
 
       return {
-         leagueKey: leagueObj.league_key as string,
-         leagueId: leagueObj.league_id as string,
-         name: leagueObj.name as string,
-         gameKey: leagueObj.game_key as string,
-         gameCode: leagueObj.game_code as GameCode,
-         season: Number.parseInt(leagueObj.season as string),
-         scoringType: leagueObj.scoring_type as 'head' | 'roto' | 'point',
-         leagueType: leagueObj.league_type as 'private' | 'public',
-         numberOfTeams: Number.parseInt(leagueObj.num_teams as string),
-         currentWeek: Number.parseInt(leagueObj.current_week as string),
-         draftStatus: leagueObj.draft_status as
+         leagueKey: data.league_key as string,
+         leagueId: data.league_id as string,
+         name: data.name as string,
+         gameKey: data.game_key as string,
+         gameCode: data.game_code as GameCode,
+         season: getInteger(data.season),
+         scoringType: data.scoring_type as 'head' | 'roto' | 'point',
+         leagueType: data.league_type as 'private' | 'public',
+         numberOfTeams: getInteger(data.num_teams),
+         currentWeek: getInteger(data.current_week),
+         draftStatus: data.draft_status as
             | 'predraft'
             | 'drafting'
             | 'postdraft',
-         isFinished: Boolean(Number(leagueObj.is_finished)),
-         url: leagueObj.url as string,
-         startWeek: leagueObj.start_week
-            ? Number.parseInt(leagueObj.start_week as string)
+         isFinished: getBoolean(data.is_finished),
+         url: data.url as string,
+         startWeek: data.start_week
+            ? getInteger(data.start_week)
             : undefined,
-         endWeek: leagueObj.end_week
-            ? Number.parseInt(leagueObj.end_week as string)
-            : undefined,
-         startDate: leagueObj.start_date as string | undefined,
-         endDate: leagueObj.end_date as string | undefined,
-         logoUrl: leagueObj.logo_url as string | undefined,
-         password: leagueObj.password as string | undefined,
-         renewUrl: leagueObj.renew as string | undefined,
-         shortInvitationUrl: leagueObj.short_invitation_url as
+         endWeek: data.end_week ? getInteger(data.end_week) : undefined,
+         startDate: data.start_date as string | undefined,
+         endDate: data.end_date as string | undefined,
+         logoUrl: data.logo_url as string | undefined,
+         password: data.password as string | undefined,
+         renewUrl: data.renew as string | undefined,
+         shortInvitationUrl: data.short_invitation_url as
             | string
             | undefined,
-         isProLeague: leagueObj.is_pro_league
-            ? Boolean(Number(leagueObj.is_pro_league))
+         isProLeague: data.is_pro_league
+            ? getBoolean(data.is_pro_league)
             : undefined,
-         isCashLeague: leagueObj.is_cash_league
-            ? Boolean(Number(leagueObj.is_cash_league))
+         isCashLeague: data.is_cash_league
+            ? getBoolean(data.is_cash_league)
             : undefined,
       };
    }
@@ -651,66 +494,46 @@ export class GameResource {
     *
     * @private
     */
-   private parsePlayer(playerData: Array<unknown>): Player {
-      const playerObj: Record<string, unknown> = {};
-
-      for (const item of playerData) {
-         if (Array.isArray(item)) {
-            // Yahoo API sometimes wraps data in nested arrays
-            for (const nestedItem of item) {
-               if (nestedItem !== null && typeof nestedItem === 'object') {
-                  Object.assign(playerObj, nestedItem);
-               }
-            }
-         } else if (item !== null && typeof item === 'object') {
-            Object.assign(playerObj, item);
-         }
-      }
-
-      // Extract name object with safe defaults
-      const nameObj = (playerObj.name as Record<string, unknown>) || {};
+   private parsePlayer(playerData: unknown): Player {
+      // XML structure is direct - no array flattening needed
+      const data = playerData as Record<string, unknown>;
+      const nameData = (data.name as Record<string, unknown>) || {};
 
       return {
-         playerKey: playerObj.player_key as string,
-         playerId: playerObj.player_id as string,
+         playerKey: data.player_key as string,
+         playerId: data.player_id as string,
          name: {
-            full: (nameObj.full as string) || '',
-            first: (nameObj.first as string) || '',
-            last: (nameObj.last as string) || '',
-            ascii: nameObj.ascii as string | undefined,
+            full: (nameData.full as string) || '',
+            first: (nameData.first as string) || '',
+            last: (nameData.last as string) || '',
+            ascii: nameData.ascii as string | undefined,
          },
-         editorialPlayerKey: playerObj.editorial_player_key as
+         editorialPlayerKey: data.editorial_player_key as
             | string
             | undefined,
-         editorialTeamKey: playerObj.editorial_team_key as
+         editorialTeamKey: data.editorial_team_key as string | undefined,
+         editorialTeamFullName: data.editorial_team_full_name as
             | string
             | undefined,
-         editorialTeamFullName: playerObj.editorial_team_full_name as
-            | string
-            | undefined,
-         editorialTeamAbbr: playerObj.editorial_team_abbr as
-            | string
-            | undefined,
-         byeWeek: playerObj.bye_week
-            ? Number.parseInt(playerObj.bye_week as string)
+         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
+         byeWeek: data.bye_week ? getInteger(data.bye_week) : undefined,
+         uniformNumber: data.uniform_number as string | undefined,
+         displayPosition: data.display_position as string,
+         headshotUrl: data.headshot_url as string | undefined,
+         imageUrl: data.image_url as string | undefined,
+         isUndroppable: data.is_undroppable
+            ? getBoolean(data.is_undroppable)
             : undefined,
-         uniformNumber: playerObj.uniform_number as string | undefined,
-         displayPosition: playerObj.display_position as string,
-         headshotUrl: playerObj.headshot_url as string | undefined,
-         imageUrl: playerObj.image_url as string | undefined,
-         isUndroppable: playerObj.is_undroppable
-            ? Boolean(Number(playerObj.is_undroppable))
+         positionType: data.position_type as string | undefined,
+         primaryPosition: data.primary_position as string | undefined,
+         hasPlayerNotes: data.has_player_notes
+            ? getBoolean(data.has_player_notes)
             : undefined,
-         positionType: playerObj.position_type as string | undefined,
-         primaryPosition: playerObj.primary_position as string | undefined,
-         hasPlayerNotes: playerObj.has_player_notes
-            ? Boolean(Number(playerObj.has_player_notes))
+         hasRecentPlayerNotes: data.has_recent_player_notes
+            ? getBoolean(data.has_recent_player_notes)
             : undefined,
-         hasRecentPlayerNotes: playerObj.has_recent_player_notes
-            ? Boolean(Number(playerObj.has_recent_player_notes))
-            : undefined,
-         injuryNote: playerObj.injury_note as string | undefined,
-         url: playerObj.url as string,
+         injuryNote: data.injury_note as string | undefined,
+         url: data.url as string,
       };
    }
 }

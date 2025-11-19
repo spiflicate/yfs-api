@@ -32,17 +32,17 @@
  * ```
  */
 
+import { GameResource } from '../resources/GameResource.js';
+import { LeagueResource } from '../resources/LeagueResource.js';
+import { PlayerResource } from '../resources/PlayerResource.js';
+import { TeamResource } from '../resources/TeamResource.js';
+import { TransactionResource } from '../resources/TransactionResource.js';
+import { UserResource } from '../resources/UserResource.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
-import { OAuth2Client, type OAuth2Tokens } from './OAuth2Client.js';
-import { OAuth1Client } from './OAuth1Client.js';
 import { HttpClient } from './HttpClient.js';
-import { UserResource } from '../resources/UserResource.js';
-import { LeagueResource } from '../resources/LeagueResource.js';
-import { TeamResource } from '../resources/TeamResource.js';
-import { PlayerResource } from '../resources/PlayerResource.js';
-import { TransactionResource } from '../resources/TransactionResource.js';
-import { GameResource } from '../resources/GameResource.js';
+import { OAuth1Client } from './OAuth1Client.js';
+import { OAuth2Client, type OAuth2Tokens } from './OAuth2Client.js';
 
 /**
  * Callback interface for storing and retrieving OAuth 2.0 tokens
@@ -97,6 +97,7 @@ export interface TokenStorage {
 export class YahooFantasyClient {
    private config: Config & {
       debug: boolean;
+      rawXml: boolean;
       timeout: number;
       maxRetries: number;
    };
@@ -319,6 +320,7 @@ export class YahooFantasyClient {
          refreshToken: config.refreshToken,
          expiresAt: config.expiresAt,
          debug: config.debug ?? false,
+         rawXml: config.rawXml ?? false,
          timeout: config.timeout ?? 30000,
          maxRetries: config.maxRetries ?? 3,
       };
@@ -334,10 +336,12 @@ export class YahooFantasyClient {
          );
       } else {
          // User auth mode: OAuth 2.0 Authorization Code Grant
+         // redirectUri is guaranteed to exist due to validation above
+         const redirectUri = this.config.redirectUri || '';
          this.oauth2Client = new OAuth2Client(
             this.config.clientId,
             this.config.clientSecret,
-            this.config.redirectUri!,
+            redirectUri,
          );
 
          // Build tokens if available in config
@@ -381,6 +385,7 @@ export class YahooFantasyClient {
             timeout: this.config.timeout,
             maxRetries: this.config.maxRetries,
             debug: this.config.debug,
+            rawXml: this.config.rawXml,
             oauth1Client: this.oauth1Client,
          },
       );

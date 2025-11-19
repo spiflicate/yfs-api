@@ -10,26 +10,27 @@
 
 import type { HttpClient } from '../client/HttpClient.js';
 import type {
+   ResourceKey,
+   TransactionStatus,
+   TransactionType,
+} from '../types/common.js';
+import type {
+   AcceptTradeParams,
+   AddDropPlayerParams,
+   AllowTradeParams,
+   CancelTradeParams,
+   DisallowTradeParams,
+   EditWaiverClaimParams,
+   GetTransactionsParams,
+   ProposeTradeParams,
+   RejectTradeParams,
    Transaction,
    TransactionPlayer,
-   GetTransactionsParams,
-   AddDropPlayerParams,
-   WaiverClaimParams,
-   ProposeTradeParams,
-   AcceptTradeParams,
-   RejectTradeParams,
-   CancelTradeParams,
-   AllowTradeParams,
-   DisallowTradeParams,
-   VoteAgainstTradeParams,
-   EditWaiverClaimParams,
    TransactionResponse,
+   VoteAgainstTradeParams,
+   WaiverClaimParams,
 } from '../types/resources/transaction.js';
-import type {
-   ResourceKey,
-   TransactionType,
-   TransactionStatus,
-} from '../types/common.js';
+import { ensureArray, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Transaction resource client
@@ -136,44 +137,19 @@ export class TransactionResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { league: Array<unknown> };
+         league: { transactions?: { transaction: unknown } };
       }>(path);
 
-      const leagueData = response.fantasy_content.league;
-      const transactionsObj = leagueData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'transactions' in item,
-      );
-
-      if (!transactionsObj || !('transactions' in transactionsObj)) {
+      if (!response.league.transactions?.transaction) {
          return [];
       }
 
-      const transactions: Transaction[] = [];
-      const transactionsData = transactionsObj.transactions as Record<
-         string,
-         unknown
-      >;
-
-      for (const key in transactionsData) {
-         if (key === 'count') continue;
-         const transEntry = transactionsData[key];
-         if (
-            transEntry &&
-            typeof transEntry === 'object' &&
-            'transaction' in transEntry
-         ) {
-            const transaction = this.parseTransaction(
-               (transEntry as { transaction: Record<string, unknown> })
-                  .transaction,
-            );
-            transactions.push(transaction);
-         }
-      }
-
-      return transactions;
+      const transactionsArray = ensureArray(
+         response.league.transactions.transaction,
+      );
+      return transactionsArray.map((trans) =>
+         this.parseTransaction(trans as Record<string, unknown>),
+      );
    }
 
    /**
@@ -189,10 +165,12 @@ export class TransactionResource {
     */
    async get(transactionKey: ResourceKey): Promise<Transaction> {
       const response = await this.http.get<{
-         fantasy_content: { transaction: Record<string, unknown> };
+         transaction: unknown;
       }>(`/transaction/${transactionKey}`);
 
-      return this.parseTransaction(response.fantasy_content.transaction);
+      return this.parseTransaction(
+         response.transaction as Record<string, unknown>,
+      );
    }
 
    /**
@@ -479,7 +457,7 @@ export class TransactionResource {
 
       try {
          const response = await this.http.post<{
-            fantasy_content: { transaction: Record<string, unknown> };
+            transaction: unknown;
          }>(path, undefined, {
             body: xml,
             headers: {
@@ -488,7 +466,7 @@ export class TransactionResource {
          });
 
          const transaction = this.parseTransaction(
-            response.fantasy_content.transaction,
+            response.transaction as Record<string, unknown>,
          );
 
          return {
@@ -534,7 +512,7 @@ export class TransactionResource {
 
       try {
          const response = await this.http.put<{
-            fantasy_content: { transaction: Record<string, unknown> };
+            transaction: unknown;
          }>(`/transaction/${params.transactionKey}`, undefined, {
             body: xml,
             headers: {
@@ -543,7 +521,7 @@ export class TransactionResource {
          });
 
          const transaction = this.parseTransaction(
-            response.fantasy_content.transaction,
+            response.transaction as Record<string, unknown>,
          );
 
          return {
@@ -591,7 +569,7 @@ export class TransactionResource {
 
       try {
          const response = await this.http.put<{
-            fantasy_content: { transaction: Record<string, unknown> };
+            transaction: unknown;
          }>(`/transaction/${params.transactionKey}`, undefined, {
             body: xml,
             headers: {
@@ -600,7 +578,7 @@ export class TransactionResource {
          });
 
          const transaction = this.parseTransaction(
-            response.fantasy_content.transaction,
+            response.transaction as Record<string, unknown>,
          );
 
          return {
@@ -882,48 +860,32 @@ export class TransactionResource {
          transactionId: transactionData.transaction_id as string,
          type: transactionData.type as TransactionType,
          status: transactionData.status as TransactionStatus,
-         timestamp: Number.parseInt(transactionData.timestamp as string),
+         timestamp: getInteger(transactionData.timestamp),
          url: transactionData.url as string,
       };
 
       // Parse FAAB bid
       if (transactionData.faab_bid) {
-         transaction.faabBid = Number.parseInt(
-            transactionData.faab_bid as string,
-         );
+         transaction.faabBid = getInteger(transactionData.faab_bid);
       }
 
       // Parse players
       if (transactionData.players) {
-         transaction.players = [];
-         const playersData = transactionData.players as Record<
-            string,
-            unknown
-         >;
-         for (const key in playersData) {
-            if (key === 'count') continue;
-            const playerEntry = playersData[key];
-            if (
-               playerEntry &&
-               typeof playerEntry === 'object' &&
-               'player' in playerEntry
-            ) {
-               const player = this.parseTransactionPlayer(
-                  (playerEntry as { player: Array<unknown> }).player,
-               );
-               transaction.players.push(player);
-            }
-         }
+         const playersData = transactionData.players as { player: unknown };
+         const playersArray = ensureArray(playersData.player);
+         transaction.players = playersArray.map((player) =>
+            this.parseTransactionPlayer(player),
+         );
       }
 
       // Parse waiver details
       if (transactionData.type === 'waiver') {
          transaction.waiver = {
             waiverPriority: transactionData.waiver_priority
-               ? Number.parseInt(transactionData.waiver_priority as string)
+               ? getInteger(transactionData.waiver_priority)
                : undefined,
             waiverDate: transactionData.waiver_date
-               ? Number.parseInt(transactionData.waiver_date as string)
+               ? getInteger(transactionData.waiver_date)
                : undefined,
          };
       }
@@ -937,14 +899,10 @@ export class TransactionResource {
             teams: [],
             tradeNote: transactionData.trade_note as string | undefined,
             tradeProposedTime: transactionData.trade_proposed_time
-               ? Number.parseInt(
-                    transactionData.trade_proposed_time as string,
-                 )
+               ? getInteger(transactionData.trade_proposed_time)
                : undefined,
             tradeAcceptedTime: transactionData.trade_accepted_time
-               ? Number.parseInt(
-                    transactionData.trade_accepted_time as string,
-                 )
+               ? getInteger(transactionData.trade_accepted_time)
                : undefined,
          };
 
@@ -972,43 +930,30 @@ export class TransactionResource {
     *
     * @private
     */
-   private parseTransactionPlayer(
-      playerData: Array<unknown>,
-   ): TransactionPlayer {
-      const playerObj: Record<string, unknown> = {};
-
-      for (const item of playerData) {
-         if (item !== null && typeof item === 'object') {
-            Object.assign(playerObj, item);
-         }
-      }
+   private parseTransactionPlayer(playerData: unknown): TransactionPlayer {
+      // XML structure is direct - no array flattening needed
+      const data = playerData as Record<string, unknown>;
+      const nameData = (data.name as Record<string, unknown>) || {};
 
       const player: TransactionPlayer = {
-         playerKey: playerObj.player_key as ResourceKey,
-         playerId: playerObj.player_id as string,
+         playerKey: data.player_key as ResourceKey,
+         playerId: data.player_id as string,
          name: {
-            full: (playerObj.name as Record<string, unknown>)
-               .full as string,
-            first: (playerObj.name as Record<string, unknown>)
-               .first as string,
-            last: (playerObj.name as Record<string, unknown>)
-               .last as string,
+            full: (nameData.full as string) || '',
+            first: (nameData.first as string) || '',
+            last: (nameData.last as string) || '',
          },
          transactionData: {
             type: 'add',
          },
-         editorialTeamAbbr: playerObj.editorial_team_abbr as
-            | string
-            | undefined,
-         displayPosition: playerObj.display_position as string | undefined,
-         headshotUrl: playerObj.headshot_url as string | undefined,
+         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
+         displayPosition: data.display_position as string | undefined,
+         headshotUrl: data.headshot_url as string | undefined,
       };
 
       // Parse transaction data
-      if (playerObj.transaction_data) {
-         const transData = (
-            playerObj.transaction_data as Array<unknown>
-         )[0] as Record<string, unknown>;
+      if (data.transaction_data) {
+         const transData = data.transaction_data as Record<string, unknown>;
          player.transactionData = {
             type: transData.type as 'add' | 'drop' | 'trade',
             sourceType: transData.source_type as

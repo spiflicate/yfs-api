@@ -4,17 +4,18 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { PlayerStatus, ResourceKey } from '../types/common.js';
 import type {
-   Player,
-   PlayerStats,
-   PlayerOwnership,
-   PlayerPercentOwned,
-   SearchPlayersParams,
    GetPlayerParams,
    GetPlayerStatsParams,
+   Player,
    PlayerCollectionResponse,
+   PlayerOwnership,
+   PlayerPercentOwned,
+   PlayerStats,
+   SearchPlayersParams,
 } from '../types/resources/player.js';
-import type { ResourceKey, PlayerStatus } from '../types/common.js';
+import { ensureArray, getBoolean, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Player resource client
@@ -102,10 +103,10 @@ export class PlayerResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { player: Array<unknown> };
+         player: unknown;
       }>(path);
 
-      return this.parsePlayer(response.fantasy_content.player);
+      return this.parsePlayer(response.player);
    }
 
    /**
@@ -210,39 +211,21 @@ export class PlayerResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { league: Array<unknown> };
+         league: { players?: { count?: string; player: unknown } };
       }>(path);
 
-      const leagueData = response.fantasy_content.league;
-      const playersObj = leagueData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null && typeof item === 'object' && 'players' in item,
-      );
-
-      if (!playersObj || !('players' in playersObj)) {
+      if (!response.league.players?.player) {
          return { count: 0, players: [] };
       }
 
-      const playersData = playersObj.players as Record<string, unknown>;
-      const count = playersData.count
-         ? Number.parseInt(playersData.count as string)
+      const count = response.league.players.count
+         ? getInteger(response.league.players.count)
          : 0;
-      const players: Player[] = [];
 
-      for (const key in playersData) {
-         if (key === 'count') continue;
-         const playerEntry = playersData[key];
-         if (
-            playerEntry &&
-            typeof playerEntry === 'object' &&
-            'player' in playerEntry
-         ) {
-            const player = this.parsePlayer(
-               (playerEntry as { player: Array<unknown> }).player,
-            );
-            players.push(player);
-         }
-      }
+      const playersArray = ensureArray(response.league.players.player);
+      const players = playersArray.map((player) =>
+         this.parsePlayer(player),
+      );
 
       return { count, players };
    }
@@ -297,23 +280,15 @@ export class PlayerResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { player: Array<unknown> };
+         player: { player_stats?: unknown };
       }>(path);
 
-      const playerData = response.fantasy_content.player;
-      const statsObj = playerData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'player_stats' in item,
-      );
-
-      if (!statsObj || !('player_stats' in statsObj)) {
+      if (!response.player.player_stats) {
          throw new Error('Stats not found in response');
       }
 
       return this.parseStats(
-         statsObj.player_stats as Record<string, unknown>,
+         response.player.player_stats as Record<string, unknown>,
       );
    }
 
@@ -332,23 +307,15 @@ export class PlayerResource {
     */
    async getOwnership(playerKey: ResourceKey): Promise<PlayerOwnership> {
       const response = await this.http.get<{
-         fantasy_content: { player: Array<unknown> };
+         player: { ownership?: unknown };
       }>(`/player/${playerKey}/ownership`);
 
-      const playerData = response.fantasy_content.player;
-      const ownershipObj = playerData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'ownership' in item,
-      );
-
-      if (!ownershipObj || !('ownership' in ownershipObj)) {
+      if (!response.player.ownership) {
          throw new Error('Ownership not found in response');
       }
 
       return this.parseOwnership(
-         ownershipObj.ownership as Record<string, unknown>,
+         response.player.ownership as Record<string, unknown>,
       );
    }
 
@@ -357,112 +324,82 @@ export class PlayerResource {
     *
     * @private
     */
-   private parsePlayer(playerData: Array<unknown>): Player {
-      const playerObj: Record<string, unknown> = {};
-
-      for (const item of playerData) {
-         if (Array.isArray(item)) {
-            // Yahoo API sometimes wraps data in nested arrays
-            for (const nestedItem of item) {
-               if (nestedItem !== null && typeof nestedItem === 'object') {
-                  Object.assign(playerObj, nestedItem);
-               }
-            }
-         } else if (item !== null && typeof item === 'object') {
-            Object.assign(playerObj, item);
-         }
-      }
-
-      // Extract name object with safe defaults
-      const nameObj = (playerObj.name as Record<string, unknown>) || {};
+   private parsePlayer(playerData: unknown): Player {
+      // XML structure is direct - no array flattening needed
+      const data = playerData as Record<string, unknown>;
+      const nameData = (data.name as Record<string, unknown>) || {};
 
       const player: Player = {
-         playerKey: playerObj.player_key as ResourceKey,
-         playerId: playerObj.player_id as string,
+         playerKey: data.player_key as ResourceKey,
+         playerId: data.player_id as string,
          name: {
-            full: (nameObj.full as string) || '',
-            first: (nameObj.first as string) || '',
-            last: (nameObj.last as string) || '',
-            ascii: nameObj.ascii as string | undefined,
+            full: (nameData.full as string) || '',
+            first: (nameData.first as string) || '',
+            last: (nameData.last as string) || '',
+            ascii: nameData.ascii as string | undefined,
          },
-         editorialPlayerKey: playerObj.editorial_player_key as
+         editorialPlayerKey: data.editorial_player_key as
             | string
             | undefined,
-         editorialTeamKey: playerObj.editorial_team_key as
+         editorialTeamKey: data.editorial_team_key as string | undefined,
+         editorialTeamFullName: data.editorial_team_full_name as
             | string
             | undefined,
-         editorialTeamFullName: playerObj.editorial_team_full_name as
-            | string
-            | undefined,
-         editorialTeamAbbr: playerObj.editorial_team_abbr as
-            | string
-            | undefined,
-         byeWeek: playerObj.bye_week
-            ? Number.parseInt(playerObj.bye_week as string)
+         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
+         byeWeek: data.bye_week ? getInteger(data.bye_week) : undefined,
+         uniformNumber: data.uniform_number as string | undefined,
+         displayPosition: data.display_position as string,
+         headshotUrl: data.headshot_url as string | undefined,
+         imageUrl: data.image_url as string | undefined,
+         isUndroppable: data.is_undroppable
+            ? getBoolean(data.is_undroppable)
             : undefined,
-         uniformNumber: playerObj.uniform_number as string | undefined,
-         displayPosition: playerObj.display_position as string,
-         headshotUrl: playerObj.headshot_url as string | undefined,
-         imageUrl: playerObj.image_url as string | undefined,
-         isUndroppable: playerObj.is_undroppable
-            ? Boolean(Number(playerObj.is_undroppable))
+         positionType: data.position_type as string | undefined,
+         primaryPosition: data.primary_position as string | undefined,
+         hasPlayerNotes: data.has_player_notes
+            ? getBoolean(data.has_player_notes)
             : undefined,
-         positionType: playerObj.position_type as string | undefined,
-         primaryPosition: playerObj.primary_position as string | undefined,
-         hasPlayerNotes: playerObj.has_player_notes
-            ? Boolean(Number(playerObj.has_player_notes))
+         hasRecentPlayerNotes: data.has_recent_player_notes
+            ? getBoolean(data.has_recent_player_notes)
             : undefined,
-         hasRecentPlayerNotes: playerObj.has_recent_player_notes
-            ? Boolean(Number(playerObj.has_recent_player_notes))
-            : undefined,
-         injuryNote: playerObj.injury_note as string | undefined,
-         url: playerObj.url as string,
+         injuryNote: data.injury_note as string | undefined,
+         url: data.url as string,
       };
 
       // Parse eligible positions
-      if (playerObj.eligible_positions) {
-         const positions: string[] = [];
-         const positionsData = playerObj.eligible_positions as Record<
-            string,
-            unknown
-         >;
-         for (const key in positionsData) {
-            if (key === 'count') continue;
-            const posEntry = positionsData[key];
-            if (
-               posEntry &&
-               typeof posEntry === 'object' &&
-               'position' in posEntry
-            ) {
-               positions.push((posEntry as { position: string }).position);
-            }
-         }
-         player.eligiblePositions = positions;
+      if (data.eligible_positions) {
+         const positionsData = data.eligible_positions as {
+            position: unknown;
+         };
+         const positionsArray = ensureArray(positionsData.position);
+         player.eligiblePositions = positionsArray.map(
+            (pos) => pos as string,
+         );
       }
 
       // Parse player status (in league context)
-      if (playerObj.status) {
-         player.status = playerObj.status as PlayerStatus;
+      if (data.status) {
+         player.status = data.status as PlayerStatus;
       }
 
       // Parse stats if included
-      if (playerObj.player_stats) {
+      if (data.player_stats) {
          player.stats = this.parseStats(
-            playerObj.player_stats as Record<string, unknown>,
+            data.player_stats as Record<string, unknown>,
          );
       }
 
       // Parse ownership if included
-      if (playerObj.ownership) {
+      if (data.ownership) {
          player.ownership = this.parseOwnership(
-            playerObj.ownership as Record<string, unknown>,
+            data.ownership as Record<string, unknown>,
          );
       }
 
       // Parse percent owned if included
-      if (playerObj.percent_owned) {
+      if (data.percent_owned) {
          player.percentOwned = this.parsePercentOwned(
-            playerObj.percent_owned as Record<string, unknown>,
+            data.percent_owned as Record<string, unknown>,
          );
       }
 
@@ -486,11 +423,11 @@ export class PlayerResource {
       };
 
       if (statsData.season) {
-         stats.season = Number.parseInt(statsData.season as string);
+         stats.season = getInteger(statsData.season);
       }
 
       if (statsData.week) {
-         stats.week = Number.parseInt(statsData.week as string);
+         stats.week = getInteger(statsData.week);
       }
 
       if (statsData.date) {
@@ -499,21 +436,12 @@ export class PlayerResource {
 
       // Parse stats array
       if (statsData.stats) {
-         const statsArray = statsData.stats as Record<string, unknown>;
-         for (const key in statsArray) {
-            if (key === 'count') continue;
-            const statEntry = statsArray[key];
-            if (
-               statEntry &&
-               typeof statEntry === 'object' &&
-               'stat' in statEntry
-            ) {
-               const statData = (
-                  statEntry as { stat: Record<string, unknown> }
-               ).stat;
-               const statId = Number.parseInt(statData.stat_id as string);
-               stats.stats[statId] = statData.value as string | number;
-            }
+         const statsObj = statsData.stats as { stat: unknown };
+         const statsArray = ensureArray(statsObj.stat);
+         for (const statEntry of statsArray) {
+            const statData = statEntry as Record<string, unknown>;
+            const statId = getInteger(statData.stat_id);
+            stats.stats[statId] = statData.value as string | number;
          }
       }
 
