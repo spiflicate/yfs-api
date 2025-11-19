@@ -2,9 +2,9 @@
  * Unit tests for UserResource
  */
 
-import { describe, test, expect, mock } from 'bun:test';
-import { UserResource } from '../../../src/resources/UserResource.js';
+import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
+import { UserResource } from '../../../src/resources/UserResource.js';
 
 describe('UserResource', () => {
    const createMockHttpClient = (): HttpClient => {
@@ -19,18 +19,10 @@ describe('UserResource', () => {
    describe('getCurrentUser()', () => {
       test('should fetch current user profile', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           url: 'https://sports.yahoo.com/user/ABC123XYZ',
-                        },
-                     ],
-                  },
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  url: 'https://sports.yahoo.com/user/ABC123XYZ',
                },
             },
          };
@@ -52,37 +44,22 @@ describe('UserResource', () => {
    describe('getGames()', () => {
       test('should fetch all user games', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     game: [
                         {
-                           guid: 'ABC123XYZ',
+                           game_key: '423',
+                           game_id: '423',
+                           code: 'nhl',
+                           season: '2024',
                         },
                         {
-                           games: {
-                              0: {
-                                 game: [
-                                    {
-                                       game_key: '423',
-                                       game_id: '423',
-                                       code: 'nhl',
-                                       season: '2024',
-                                    },
-                                 ],
-                              },
-                              1: {
-                                 game: [
-                                    {
-                                       game_key: '414',
-                                       game_id: '414',
-                                       code: 'nfl',
-                                       season: '2024',
-                                    },
-                                 ],
-                              },
-                              count: 2,
-                           },
+                           game_key: '414',
+                           game_id: '414',
+                           code: 'nfl',
+                           season: '2024',
                         },
                      ],
                   },
@@ -109,29 +86,16 @@ describe('UserResource', () => {
 
       test('should filter games by game codes', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              0: {
-                                 game: [
-                                    {
-                                       game_key: '423',
-                                       game_id: '423',
-                                       code: 'nhl',
-                                       season: '2024',
-                                    },
-                                 ],
-                              },
-                              count: 1,
-                           },
-                        },
-                     ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     game: {
+                        game_key: '423',
+                        game_id: '423',
+                        code: 'nhl',
+                        season: '2024',
+                     },
                   },
                },
             },
@@ -152,19 +116,11 @@ describe('UserResource', () => {
 
       test('should filter games by seasons', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              count: 0,
-                           },
-                        },
-                     ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     count: 0,
                   },
                },
             },
@@ -185,52 +141,30 @@ describe('UserResource', () => {
 
       test('should include teams when requested', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              0: {
-                                 game: [
-                                    {
-                                       game_key: '423',
-                                       game_id: '423',
-                                       code: 'nhl',
-                                       season: '2024',
-                                    },
-                                    {
-                                       teams: {
-                                          0: {
-                                             team: [
-                                                {
-                                                   team_key:
-                                                      '423.l.12345.t.1',
-                                                   team_id: '1',
-                                                   name: 'My Team',
-                                                   url: 'https://hockey.fantasysports.yahoo.com/team/1',
-                                                   league: {
-                                                      league_key:
-                                                         '423.l.12345',
-                                                      league_id: '12345',
-                                                      name: 'Test League',
-                                                      url: 'https://hockey.fantasysports.yahoo.com/league/12345',
-                                                   },
-                                                },
-                                             ],
-                                          },
-                                          count: 1,
-                                       },
-                                    },
-                                 ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     game: {
+                        game_key: '423',
+                        game_id: '423',
+                        code: 'nhl',
+                        season: '2024',
+                        teams: {
+                           team: {
+                              team_key: '423.l.12345.t.1',
+                              team_id: '1',
+                              name: 'My Team',
+                              url: 'https://hockey.fantasysports.yahoo.com/team/1',
+                              league: {
+                                 league_key: '423.l.12345',
+                                 league_id: '12345',
+                                 name: 'Test League',
+                                 url: 'https://hockey.fantasysports.yahoo.com/league/12345',
                               },
-                              count: 1,
                            },
                         },
-                     ],
+                     },
                   },
                },
             },
@@ -253,15 +187,9 @@ describe('UserResource', () => {
 
       test('should return empty array when no games found', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                     ],
-                  },
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
                },
             },
          };
@@ -281,70 +209,44 @@ describe('UserResource', () => {
    describe('getTeams()', () => {
       test('should fetch all user teams', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              0: {
-                                 game: [
-                                    {
-                                       game_key: '423',
-                                       game_id: '423',
-                                       code: 'nhl',
-                                       season: '2024',
-                                    },
-                                    {
-                                       teams: {
-                                          0: {
-                                             team: [
-                                                {
-                                                   team_key:
-                                                      '423.l.12345.t.1',
-                                                   team_id: '1',
-                                                   name: 'Team Alpha',
-                                                   url: 'https://hockey.fantasysports.yahoo.com/team/1',
-                                                   league: {
-                                                      league_key:
-                                                         '423.l.12345',
-                                                      league_id: '12345',
-                                                      name: 'League One',
-                                                      url: 'https://hockey.fantasysports.yahoo.com/league/12345',
-                                                   },
-                                                },
-                                             ],
-                                          },
-                                          1: {
-                                             team: [
-                                                {
-                                                   team_key:
-                                                      '423.l.67890.t.2',
-                                                   team_id: '2',
-                                                   name: 'Team Beta',
-                                                   url: 'https://hockey.fantasysports.yahoo.com/team/2',
-                                                   league: {
-                                                      league_key:
-                                                         '423.l.67890',
-                                                      league_id: '67890',
-                                                      name: 'League Two',
-                                                      url: 'https://hockey.fantasysports.yahoo.com/league/67890',
-                                                   },
-                                                },
-                                             ],
-                                          },
-                                          count: 2,
-                                       },
-                                    },
-                                 ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     game: {
+                        game_key: '423',
+                        game_id: '423',
+                        code: 'nhl',
+                        season: '2024',
+                        teams: {
+                           team: [
+                              {
+                                 team_key: '423.l.12345.t.1',
+                                 team_id: '1',
+                                 name: 'Team Alpha',
+                                 url: 'https://hockey.fantasysports.yahoo.com/team/1',
+                                 league: {
+                                    league_key: '423.l.12345',
+                                    league_id: '12345',
+                                    name: 'League One',
+                                    url: 'https://hockey.fantasysports.yahoo.com/league/12345',
+                                 },
                               },
-                              count: 1,
-                           },
+                              {
+                                 team_key: '423.l.67890.t.2',
+                                 team_id: '2',
+                                 name: 'Team Beta',
+                                 url: 'https://hockey.fantasysports.yahoo.com/team/2',
+                                 league: {
+                                    league_key: '423.l.67890',
+                                    league_id: '67890',
+                                    name: 'League Two',
+                                    url: 'https://hockey.fantasysports.yahoo.com/league/67890',
+                                 },
+                              },
+                           ],
                         },
-                     ],
+                     },
                   },
                },
             },
@@ -370,19 +272,11 @@ describe('UserResource', () => {
 
       test('should filter teams by game code', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              count: 0,
-                           },
-                        },
-                     ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     count: 0,
                   },
                },
             },
@@ -403,19 +297,11 @@ describe('UserResource', () => {
 
       test('should filter teams by season', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                        {
-                           games: {
-                              count: 0,
-                           },
-                        },
-                     ],
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
+                  games: {
+                     count: 0,
                   },
                },
             },
@@ -436,15 +322,9 @@ describe('UserResource', () => {
 
       test('should return empty array when no teams found', async () => {
          const mockResponse = {
-            fantasy_content: {
-               users: {
-                  0: {
-                     user: [
-                        {
-                           guid: 'ABC123XYZ',
-                        },
-                     ],
-                  },
+            users: {
+               user: {
+                  guid: 'ABC123XYZ',
                },
             },
          };

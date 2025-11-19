@@ -2,9 +2,9 @@
  * Unit tests for PlayerResource
  */
 
-import { describe, test, expect, mock } from 'bun:test';
-import { PlayerResource } from '../../../src/resources/PlayerResource.js';
+import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
+import { PlayerResource } from '../../../src/resources/PlayerResource.js';
 
 describe('PlayerResource', () => {
    const createMockHttpClient = (): HttpClient => {

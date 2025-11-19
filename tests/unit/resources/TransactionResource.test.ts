@@ -2,9 +2,9 @@
  * Unit tests for TransactionResource
  */
 
-import { describe, test, expect, mock } from 'bun:test';
-import { TransactionResource } from '../../../src/resources/TransactionResource.js';
+import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
+import { TransactionResource } from '../../../src/resources/TransactionResource.js';
 
 describe('TransactionResource', () => {
    const createMockHttpClient = (): HttpClient => {

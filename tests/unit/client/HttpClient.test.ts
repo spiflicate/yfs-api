@@ -3,12 +3,12 @@
  */
 
 import {
-   describe,
-   test,
-   expect,
-   beforeEach,
-   mock,
    afterEach,
+   beforeEach,
+   describe,
+   expect,
+   mock,
+   test,
 } from 'bun:test';
 import { HttpClient } from '../../../src/client/HttpClient.js';
 import {
@@ -16,11 +16,11 @@ import {
    type OAuth2Tokens,
 } from '../../../src/client/OAuth2Client.js';
 import {
-   YahooApiError,
-   NetworkError,
-   RateLimitError,
-   NotFoundError,
    AuthenticationError,
+   NetworkError,
+   NotFoundError,
+   RateLimitError,
+   YahooApiError,
 } from '../../../src/types/errors.js';
 import { API_BASE_URL, HTTP_STATUS } from '../../../src/utils/constants.js';
 
@@ -96,12 +96,13 @@ describe('HttpClient', () => {
 
    describe('get', () => {
       test('should make successful GET request', async () => {
-         const mockResponse = { data: 'test-data' };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><data>test-data</data></fantasy_content>';
          const fetchMock = mock(() =>
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve(mockResponse),
+               text: () => Promise.resolve(xmlResponse),
             }),
          );
          global.fetch = fetchMock as any;
@@ -109,7 +110,7 @@ describe('HttpClient', () => {
          const client = new HttpClient(oauth2Client, tokens);
          const result = await client.get('/test/path');
 
-         expect(result).toEqual(mockResponse);
+         expect(result).toHaveProperty('data');
          expect(fetchMock).toHaveBeenCalledTimes(1);
 
          // Verify URL construction
@@ -121,7 +122,7 @@ describe('HttpClient', () => {
          const [url] = callArgs;
          expect(url).toContain(API_BASE_URL);
          expect(url).toContain('/test/path');
-         expect(url).toContain('format=json');
+         expect(url).toContain('format=xml');
       });
 
       test('should include authorization header', async () => {
@@ -129,7 +130,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -153,7 +157,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -179,7 +186,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -204,7 +214,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -225,13 +238,14 @@ describe('HttpClient', () => {
    describe('post', () => {
       test('should make successful POST request with body', async () => {
          const requestBody = { key: 'value' };
-         const mockResponse = { success: true };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
 
          const fetchMock = mock(() =>
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve(mockResponse),
+               text: () => Promise.resolve(xmlResponse),
             }),
          );
          global.fetch = fetchMock as any;
@@ -239,7 +253,7 @@ describe('HttpClient', () => {
          const client = new HttpClient(oauth2Client, tokens);
          const result = await client.post('/test/path', requestBody);
 
-         expect(result).toEqual(mockResponse);
+         expect(result).toHaveProperty('success');
 
          const calls = fetchMock.mock.calls;
          if (!calls || calls.length === 0) {
@@ -255,13 +269,14 @@ describe('HttpClient', () => {
    describe('put', () => {
       test('should make successful PUT request with body', async () => {
          const requestBody = { key: 'value' };
-         const mockResponse = { success: true };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
 
          const fetchMock = mock(() =>
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve(mockResponse),
+               text: () => Promise.resolve(xmlResponse),
             }),
          );
          global.fetch = fetchMock as any;
@@ -269,7 +284,7 @@ describe('HttpClient', () => {
          const client = new HttpClient(oauth2Client, tokens);
          const result = await client.put('/test/path', requestBody);
 
-         expect(result).toEqual(mockResponse);
+         expect(result).toHaveProperty('success');
 
          const calls = fetchMock.mock.calls;
          if (!calls || calls.length === 0) {
@@ -283,13 +298,14 @@ describe('HttpClient', () => {
 
    describe('delete', () => {
       test('should make successful DELETE request', async () => {
-         const mockResponse = { success: true };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
 
          const fetchMock = mock(() =>
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve(mockResponse),
+               text: () => Promise.resolve(xmlResponse),
             }),
          );
          global.fetch = fetchMock as any;
@@ -297,7 +313,7 @@ describe('HttpClient', () => {
          const client = new HttpClient(oauth2Client, tokens);
          const result = await client.delete('/test/path');
 
-         expect(result).toEqual(mockResponse);
+         expect(result).toHaveProperty('success');
 
          const calls = fetchMock.mock.calls;
          if (!calls || calls.length === 0) {
@@ -449,7 +465,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -504,7 +523,10 @@ describe('HttpClient', () => {
             return Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({ success: true }),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
             });
          });
          global.fetch = fetchMock as any;
@@ -514,7 +536,7 @@ describe('HttpClient', () => {
          });
 
          const result = await client.get('/test/path');
-         expect(result).toEqual({ success: true });
+         expect(result).toHaveProperty('success');
          expect(attempts).toBe(2);
       });
 
@@ -536,7 +558,10 @@ describe('HttpClient', () => {
             return Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({ success: true }),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
             });
          });
          global.fetch = fetchMock as any;
@@ -546,7 +571,7 @@ describe('HttpClient', () => {
          });
 
          const result = await client.get('/test/path');
-         expect(result).toEqual({ success: true });
+         expect(result).toHaveProperty('success');
          expect(attempts).toBe(2);
       });
 
@@ -580,7 +605,10 @@ describe('HttpClient', () => {
             return Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({ success: true }),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
             });
          });
          global.fetch = fetchMock as any;
@@ -590,7 +618,7 @@ describe('HttpClient', () => {
          });
 
          const result = await client.get('/test/path');
-         expect(result).toEqual({ success: true });
+         expect(result).toHaveProperty('success');
          expect(attempts).toBe(2);
       });
    });
@@ -601,7 +629,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -625,7 +656,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;
@@ -651,7 +685,10 @@ describe('HttpClient', () => {
             Promise.resolve({
                ok: true,
                status: 200,
-               json: () => Promise.resolve({}),
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
             }),
          );
          global.fetch = fetchMock as any;

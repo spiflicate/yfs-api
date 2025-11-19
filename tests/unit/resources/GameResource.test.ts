@@ -2,9 +2,9 @@
  * Unit tests for GameResource
  */
 
-import { describe, test, expect, mock } from 'bun:test';
-import { GameResource } from '../../../src/resources/GameResource.js';
+import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
+import { GameResource } from '../../../src/resources/GameResource.js';
 
 describe('GameResource', () => {
    const createMockHttpClient = (): HttpClient => {
