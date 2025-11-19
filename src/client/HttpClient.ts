@@ -3,24 +3,25 @@
  * @module
  */
 
-import type { OAuth2Client, OAuth2Tokens } from './OAuth2Client.js';
-import type { OAuth1Client } from './OAuth1Client.js';
 import {
-   YahooApiError,
-   NetworkError,
-   RateLimitError,
-   NotFoundError,
    AuthenticationError,
+   NetworkError,
+   NotFoundError,
+   RateLimitError,
+   YahooApiError,
 } from '../types/errors.js';
 import {
    API_BASE_URL,
-   HTTP_STATUS,
-   RETRYABLE_STATUS_CODES,
-   DEFAULT_TIMEOUT,
    DEFAULT_MAX_RETRIES,
    DEFAULT_RETRY_DELAY,
+   DEFAULT_TIMEOUT,
+   HTTP_STATUS,
    MAX_RETRY_DELAY,
+   RETRYABLE_STATUS_CODES,
 } from '../utils/constants.js';
+import { parseYahooXML } from '../utils/xmlParser.js';
+import type { OAuth1Client } from './OAuth1Client.js';
+import type { OAuth2Client, OAuth2Tokens } from './OAuth2Client.js';
 
 /**
  * HTTP request options
@@ -126,6 +127,7 @@ export class HttpClient {
    private timeout: number;
    private maxRetries: number;
    private debug: boolean;
+   private rawXml: boolean;
 
    /**
     * Creates a new HTTP client
@@ -144,6 +146,7 @@ export class HttpClient {
          maxRetries?: number;
          debug?: boolean;
          oauth1Client?: OAuth1Client;
+         rawXml?: boolean;
       },
    ) {
       this.oauth2Client = oauth2Client;
@@ -154,6 +157,7 @@ export class HttpClient {
       this.timeout = options?.timeout ?? DEFAULT_TIMEOUT;
       this.maxRetries = options?.maxRetries ?? DEFAULT_MAX_RETRIES;
       this.debug = options?.debug ?? false;
+      this.rawXml = options?.rawXml ?? false;
    }
 
    /**
@@ -426,10 +430,24 @@ export class HttpClient {
             }
 
             // Parse response
-            const data = (await response.json()) as T;
+            const rawResponse = await response.text();
+
+            // If rawXml mode, return the XML string directly
+            if (this.rawXml) {
+               if (this.debug) {
+                  console.log(
+                     `[HttpClient] Raw XML Response (first 500 chars):`,
+                     rawResponse.substring(0, 500),
+                  );
+               }
+               return rawResponse as unknown as T;
+            }
+
+            // Parse XML to object
+            const data = parseYahooXML<T>(rawResponse);
 
             if (this.debug) {
-               console.log(`[HttpClient] Response:`, data);
+               console.log(`[HttpClient] Parsed Response:`, data);
             }
 
             return data;
@@ -456,7 +474,6 @@ export class HttpClient {
                   );
                }
                await this.sleep(delay);
-               continue;
             }
          }
       }
@@ -474,19 +491,19 @@ export class HttpClient {
       path: string,
       params?: Record<string, string | number | boolean | undefined>,
    ): string {
-      // Add format=json to all requests
+      // Add format=xml to all requests (cleaner structure than JSON)
       const allParams = {
          ...params,
-         format: 'json',
+         format: 'xml',
       };
 
       // Remove undefined/null values
-      const cleanParams = Object.entries(allParams)
-         .filter(([_, value]) => value !== undefined && value !== null)
-         .reduce(
-            (acc, [key, value]) => ({ ...acc, [key]: String(value) }),
-            {},
-         );
+      const cleanParams: Record<string, string> = {};
+      for (const [key, value] of Object.entries(allParams)) {
+         if (value !== undefined && value !== null) {
+            cleanParams[key] = String(value);
+         }
+      }
 
       const queryString = new URLSearchParams(cleanParams).toString();
       const fullPath = path.startsWith('/') ? path : `/${path}`;
@@ -499,7 +516,7 @@ export class HttpClient {
     * Calculates retry delay with exponential backoff
     */
    private getRetryDelay(attempt: number): number {
-      const delay = DEFAULT_RETRY_DELAY * Math.pow(2, attempt);
+      const delay = DEFAULT_RETRY_DELAY * 2 ** attempt;
       return Math.min(delay, MAX_RETRY_DELAY);
    }
 

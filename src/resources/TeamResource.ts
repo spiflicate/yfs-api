@@ -4,21 +4,22 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { ResourceKey } from '../types/common.js';
 import type {
-   Team,
-   TeamManager,
-   TeamStats,
-   TeamStandings,
-   TeamRoster,
-   RosterPlayer,
+   GetTeamMatchupsParams,
    GetTeamParams,
    GetTeamRosterParams,
    GetTeamStatsParams,
-   GetTeamMatchupsParams,
    RosterChangeRequest,
    RosterChangeResponse,
+   RosterPlayer,
+   Team,
+   TeamManager,
+   TeamRoster,
+   TeamStandings,
+   TeamStats,
 } from '../types/resources/team.js';
-import type { ResourceKey } from '../types/common.js';
+import { ensureArray, getBoolean, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Team resource client
@@ -102,10 +103,10 @@ export class TeamResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { team: Array<unknown> };
+         team: unknown;
       }>(path);
 
-      return this.parseTeam(response.fantasy_content.team);
+      return this.parseTeam(response.team);
    }
 
    /**
@@ -155,21 +156,15 @@ export class TeamResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { team: Array<unknown> };
+         team: { roster?: unknown };
       }>(path);
 
-      const teamData = response.fantasy_content.team;
-      const rosterObj = teamData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null && typeof item === 'object' && 'roster' in item,
-      );
-
-      if (!rosterObj || !('roster' in rosterObj)) {
+      if (!response.team.roster) {
          throw new Error('Roster not found in response');
       }
 
       return this.parseRoster(
-         (rosterObj.roster as Array<unknown>)[0] as Record<string, unknown>,
+         response.team.roster as Record<string, unknown>,
       );
    }
 
@@ -217,23 +212,15 @@ export class TeamResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { team: Array<unknown> };
+         team: { team_stats?: unknown };
       }>(path);
 
-      const teamData = response.fantasy_content.team;
-      const statsObj = teamData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null &&
-            typeof item === 'object' &&
-            'team_stats' in item,
-      );
-
-      if (!statsObj || !('team_stats' in statsObj)) {
+      if (!response.team.team_stats) {
          throw new Error('Stats not found in response');
       }
 
       return this.parseStats(
-         statsObj.team_stats as Record<string, unknown>,
+         response.team.team_stats as Record<string, unknown>,
       );
    }
 
@@ -274,21 +261,15 @@ export class TeamResource {
       }
 
       const response = await this.http.get<{
-         fantasy_content: { team: Array<unknown> };
+         team: { matchups?: unknown };
       }>(path);
 
-      const teamData = response.fantasy_content.team;
-      const matchupsObj = teamData.find(
-         (item): item is Record<string, unknown> =>
-            item !== null && typeof item === 'object' && 'matchups' in item,
-      );
-
-      if (!matchupsObj || !('matchups' in matchupsObj)) {
+      if (!response.team.matchups) {
          return [];
       }
 
       // TODO: Parse matchups properly
-      return matchupsObj.matchups as unknown[];
+      return response.team.matchups as unknown[];
    }
 
    /**
@@ -360,7 +341,7 @@ export class TeamResource {
 
       try {
          const response = await this.http.put<{
-            fantasy_content: { team: Array<unknown> };
+            team: { roster?: unknown };
          }>(path, undefined, {
             body: xml,
             headers: {
@@ -368,20 +349,9 @@ export class TeamResource {
             },
          });
 
-         const teamData = response.fantasy_content.team;
-         const rosterObj = teamData.find(
-            (item): item is Record<string, unknown> =>
-               item !== null &&
-               typeof item === 'object' &&
-               'roster' in item,
-         );
-
-         const roster = rosterObj
+         const roster = response.team.roster
             ? this.parseRoster(
-                 (rosterObj.roster as Array<unknown>)[0] as Record<
-                    string,
-                    unknown
-                 >,
+                 response.team.roster as Record<string, unknown>,
               )
             : undefined;
 
@@ -404,104 +374,71 @@ export class TeamResource {
     *
     * @private
     */
-   private parseTeam(teamData: Array<unknown>): Team {
-      const teamObj: Record<string, unknown> = {};
-
-      for (const item of teamData) {
-         if (Array.isArray(item)) {
-            // Yahoo API sometimes wraps data in nested arrays
-            for (const nestedItem of item) {
-               if (nestedItem !== null && typeof nestedItem === 'object') {
-                  Object.assign(teamObj, nestedItem);
-               }
-            }
-         } else if (item !== null && typeof item === 'object') {
-            Object.assign(teamObj, item);
-         }
-      }
+   private parseTeam(teamData: unknown): Team {
+      // XML structure is direct - no array flattening needed
+      const data = teamData as Record<string, unknown>;
+      const leagueData = (data.league as Record<string, unknown>) || {};
 
       const team: Team = {
-         teamKey: teamObj.team_key as ResourceKey,
-         teamId: teamObj.team_id as string,
-         name: teamObj.name as string,
-         isOwnedByCurrentLogin: teamObj.is_owned_by_current_login
-            ? Boolean(Number(teamObj.is_owned_by_current_login))
+         teamKey: data.team_key as ResourceKey,
+         teamId: data.team_id as string,
+         name: data.name as string,
+         isOwnedByCurrentLogin: data.is_owned_by_current_login
+            ? getBoolean(data.is_owned_by_current_login)
             : undefined,
          league: {
-            leagueKey:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.league_key as string) || '',
-            leagueId:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.league_id as string) || '',
-            name:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.name as string) || '',
-            url:
-               ((teamObj.league as Record<string, unknown>)
-                  ?.url as string) || '',
+            leagueKey: (leagueData.league_key as string) || '',
+            leagueId: (leagueData.league_id as string) || '',
+            name: (leagueData.name as string) || '',
+            url: (leagueData.url as string) || '',
          },
-         waiverPriority: teamObj.waiver_priority
-            ? Number.parseInt(teamObj.waiver_priority as string)
+         waiverPriority: data.waiver_priority
+            ? getInteger(data.waiver_priority)
             : undefined,
-         numberOfMoves: teamObj.number_of_moves
-            ? Number.parseInt(teamObj.number_of_moves as string)
+         numberOfMoves: data.number_of_moves
+            ? getInteger(data.number_of_moves)
             : undefined,
-         numberOfTrades: teamObj.number_of_trades
-            ? Number.parseInt(teamObj.number_of_trades as string)
+         numberOfTrades: data.number_of_trades
+            ? getInteger(data.number_of_trades)
             : undefined,
-         faabBalance: teamObj.faab_balance
-            ? Number.parseInt(teamObj.faab_balance as string)
+         faabBalance: data.faab_balance
+            ? getInteger(data.faab_balance)
             : undefined,
-         clinchedPlayoffs: teamObj.clinched_playoffs
-            ? Boolean(Number(teamObj.clinched_playoffs))
+         clinchedPlayoffs: data.clinched_playoffs
+            ? getBoolean(data.clinched_playoffs)
             : undefined,
-         teamLogoUrl: teamObj.team_logo_url as string | undefined,
-         url: teamObj.url as string,
+         teamLogoUrl: data.team_logo_url as string | undefined,
+         url: data.url as string,
       };
 
       // Parse managers
-      if (teamObj.managers) {
-         team.managers = [];
-         const managersData = teamObj.managers as Record<string, unknown>;
-         for (const key in managersData) {
-            if (key === 'count') continue;
-            const managerEntry = managersData[key];
-            if (
-               managerEntry &&
-               typeof managerEntry === 'object' &&
-               'manager' in managerEntry
-            ) {
-               const managerData = (
-                  managerEntry as { manager: Record<string, unknown> }
-               ).manager;
-               team.managers.push(this.parseManager(managerData));
-            }
-         }
+      if (data.managers) {
+         const managersData = data.managers as { manager: unknown };
+         const managersArray = ensureArray(managersData.manager);
+         team.managers = managersArray.map((mgr) =>
+            this.parseManager(mgr as Record<string, unknown>),
+         );
       }
 
       // Parse stats if included
-      if (teamObj.team_stats) {
+      if (data.team_stats) {
          team.stats = this.parseStats(
-            teamObj.team_stats as Record<string, unknown>,
+            data.team_stats as Record<string, unknown>,
          );
       }
 
       // Parse standings if included
-      if (teamObj.team_standings) {
+      if (data.team_standings) {
          team.standings = this.parseStandings(
-            teamObj.team_standings as Record<string, unknown>,
+            data.team_standings as Record<string, unknown>,
          );
       }
 
       // Parse roster if included
-      if (teamObj.roster) {
-         const rosterData = (teamObj.roster as Array<unknown>)[0];
-         if (rosterData && typeof rosterData === 'object') {
-            team.roster = this.parseRoster(
-               rosterData as Record<string, unknown>,
-            );
-         }
+      if (data.roster) {
+         team.roster = this.parseRoster(
+            data.roster as Record<string, unknown>,
+         );
       }
 
       return team;
@@ -519,10 +456,10 @@ export class TeamResource {
          email: managerData.email as string | undefined,
          imageUrl: managerData.image_url as string | undefined,
          isCommissioner: managerData.is_commissioner
-            ? Boolean(Number(managerData.is_commissioner))
+            ? getBoolean(managerData.is_commissioner)
             : undefined,
          isCurrentLogin: managerData.is_current_login
-            ? Boolean(Number(managerData.is_current_login))
+            ? getBoolean(managerData.is_current_login)
             : undefined,
       };
    }
@@ -545,11 +482,11 @@ export class TeamResource {
       };
 
       if (statsData.season) {
-         stats.season = Number.parseInt(statsData.season as string);
+         stats.season = getInteger(statsData.season);
       }
 
       if (statsData.week) {
-         stats.week = Number.parseInt(statsData.week as string);
+         stats.week = getInteger(statsData.week);
       }
 
       if (statsData.date) {
@@ -558,21 +495,12 @@ export class TeamResource {
 
       // Parse stats array
       if (statsData.stats) {
-         const statsArray = statsData.stats as Record<string, unknown>;
-         for (const key in statsArray) {
-            if (key === 'count') continue;
-            const statEntry = statsArray[key];
-            if (
-               statEntry &&
-               typeof statEntry === 'object' &&
-               'stat' in statEntry
-            ) {
-               const statData = (
-                  statEntry as { stat: Record<string, unknown> }
-               ).stat;
-               const statId = Number.parseInt(statData.stat_id as string);
-               stats.stats[statId] = statData.value as string | number;
-            }
+         const statsObj = statsData.stats as { stat: unknown };
+         const statsArray = ensureArray(statsObj.stat);
+         for (const statEntry of statsArray) {
+            const statData = statEntry as Record<string, unknown>;
+            const statId = getInteger(statData.stat_id);
+            stats.stats[statId] = statData.value as string | number;
          }
       }
 
@@ -588,13 +516,11 @@ export class TeamResource {
       standingsData: Record<string, unknown>,
    ): TeamStandings {
       const standings: TeamStandings = {
-         rank: Number.parseInt(standingsData.rank as string),
+         rank: getInteger(standingsData.rank),
       };
 
       if (standingsData.playoff_seed) {
-         standings.playoffSeed = Number.parseInt(
-            standingsData.playoff_seed as string,
-         );
+         standings.playoffSeed = getInteger(standingsData.playoff_seed);
       }
 
       if (standingsData.outcome_totals) {
@@ -603,9 +529,9 @@ export class TeamResource {
             unknown
          >;
          standings.outcomeTotals = {
-            wins: Number.parseInt(outcomes.wins as string),
-            losses: Number.parseInt(outcomes.losses as string),
-            ties: Number.parseInt(outcomes.ties as string),
+            wins: getInteger(outcomes.wins),
+            losses: getInteger(outcomes.losses),
+            ties: getInteger(outcomes.ties),
             percentage: Number.parseFloat(outcomes.percentage as string),
          };
       }
@@ -636,7 +562,7 @@ export class TeamResource {
          const streak = standingsData.streak as Record<string, unknown>;
          standings.streak = {
             type: streak.type as 'win' | 'loss' | 'tie',
-            value: Number.parseInt(streak.value as string),
+            value: getInteger(streak.value),
          };
       }
 
@@ -665,30 +591,20 @@ export class TeamResource {
       }
 
       if (rosterData.week) {
-         roster.week = Number.parseInt(rosterData.week as string);
+         roster.week = getInteger(rosterData.week);
       }
 
       if (rosterData.is_editable !== undefined) {
-         roster.isEditable = Boolean(Number(rosterData.is_editable));
+         roster.isEditable = getBoolean(rosterData.is_editable);
       }
 
       // Parse players
       if (rosterData.players) {
-         const playersData = rosterData.players as Record<string, unknown>;
-         for (const key in playersData) {
-            if (key === 'count') continue;
-            const playerEntry = playersData[key];
-            if (
-               playerEntry &&
-               typeof playerEntry === 'object' &&
-               'player' in playerEntry
-            ) {
-               const playerData = (
-                  playerEntry as { player: Array<unknown> }
-               ).player;
-               roster.players.push(this.parseRosterPlayer(playerData));
-            }
-         }
+         const playersData = rosterData.players as { player: unknown };
+         const playersArray = ensureArray(playersData.player);
+         roster.players = playersArray.map((player) =>
+            this.parseRosterPlayer(player),
+         );
       }
 
       return roster;
@@ -699,140 +615,95 @@ export class TeamResource {
     *
     * @private
     */
-   private parseRosterPlayer(playerData: Array<unknown>): RosterPlayer {
-      const playerObj: Record<string, unknown> = {};
-
-      for (const item of playerData) {
-         if (Array.isArray(item)) {
-            // Yahoo API sometimes wraps data in nested arrays
-            for (const nestedItem of item) {
-               if (nestedItem !== null && typeof nestedItem === 'object') {
-                  Object.assign(playerObj, nestedItem);
-               }
-            }
-         } else if (item !== null && typeof item === 'object') {
-            Object.assign(playerObj, item);
-         }
-      }
-
-      // Extract name object with safe defaults
-      const nameObj = (playerObj.name as Record<string, unknown>) || {};
+   private parseRosterPlayer(playerData: unknown): RosterPlayer {
+      // XML structure is direct - no array flattening needed
+      const data = playerData as Record<string, unknown>;
+      const nameData = (data.name as Record<string, unknown>) || {};
 
       const player: RosterPlayer = {
-         playerKey: playerObj.player_key as ResourceKey,
-         playerId: playerObj.player_id as string,
+         playerKey: data.player_key as ResourceKey,
+         playerId: data.player_id as string,
          name: {
-            full: (nameObj.full as string) || '',
-            first: (nameObj.first as string) || '',
-            last: (nameObj.last as string) || '',
-            ascii: nameObj.ascii as string | undefined,
+            full: (nameData.full as string) || '',
+            first: (nameData.first as string) || '',
+            last: (nameData.last as string) || '',
+            ascii: nameData.ascii as string | undefined,
          },
-         editorialPlayerKey: playerObj.editorial_player_key as
+         editorialPlayerKey: data.editorial_player_key as
             | string
             | undefined,
-         editorialTeamKey: playerObj.editorial_team_key as
+         editorialTeamKey: data.editorial_team_key as string | undefined,
+         editorialTeamFullName: data.editorial_team_full_name as
             | string
             | undefined,
-         editorialTeamFullName: playerObj.editorial_team_full_name as
-            | string
-            | undefined,
-         editorialTeamAbbr: playerObj.editorial_team_abbr as
-            | string
-            | undefined,
-         uniformNumber: playerObj.uniform_number as string | undefined,
-         displayPosition: playerObj.display_position as string,
-         headshotUrl: playerObj.headshot_url as string | undefined,
-         imageUrl: playerObj.image_url as string | undefined,
-         isUndroppable: playerObj.is_undroppable
-            ? Boolean(Number(playerObj.is_undroppable))
+         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
+         uniformNumber: data.uniform_number as string | undefined,
+         displayPosition: data.display_position as string,
+         headshotUrl: data.headshot_url as string | undefined,
+         imageUrl: data.image_url as string | undefined,
+         isUndroppable: data.is_undroppable
+            ? getBoolean(data.is_undroppable)
             : undefined,
-         positionType: playerObj.position_type as string | undefined,
-         hasPlayerNotes: playerObj.has_player_notes
-            ? Boolean(Number(playerObj.has_player_notes))
+         positionType: data.position_type as string | undefined,
+         hasPlayerNotes: data.has_player_notes
+            ? getBoolean(data.has_player_notes)
             : undefined,
-         hasRecentPlayerNotes: playerObj.has_recent_player_notes
-            ? Boolean(Number(playerObj.has_recent_player_notes))
+         hasRecentPlayerNotes: data.has_recent_player_notes
+            ? getBoolean(data.has_recent_player_notes)
             : undefined,
          selectedPosition: {
             position: '',
          },
-         url: playerObj.url as string,
+         url: data.url as string,
       };
 
       // Parse eligible positions
-      if (playerObj.eligible_positions) {
-         const positions: string[] = [];
-         const positionsData = playerObj.eligible_positions as Record<
-            string,
-            unknown
-         >;
-         for (const key in positionsData) {
-            if (key === 'count') continue;
-            const posEntry = positionsData[key];
-            if (
-               posEntry &&
-               typeof posEntry === 'object' &&
-               'position' in posEntry
-            ) {
-               positions.push((posEntry as { position: string }).position);
-            }
-         }
-         player.eligiblePositions = positions;
+      if (data.eligible_positions) {
+         const positionsData = data.eligible_positions as {
+            position: unknown;
+         };
+         const positionsArray = ensureArray(positionsData.position);
+         player.eligiblePositions = positionsArray.map(
+            (pos) => pos as string,
+         );
       }
 
       // Parse selected position
-      if (playerObj.selected_position) {
-         const selPosData = (
-            playerObj.selected_position as Array<unknown>
-         )[0] as Record<string, unknown>;
+      if (data.selected_position) {
+         const selPosData = data.selected_position as Record<
+            string,
+            unknown
+         >;
          player.selectedPosition = {
             position: selPosData.position as string,
             coverageType: selPosData.coverage_type as string | undefined,
             date: selPosData.date as string | undefined,
-            week: selPosData.week
-               ? Number.parseInt(selPosData.week as string)
-               : undefined,
+            week: selPosData.week ? getInteger(selPosData.week) : undefined,
          };
       }
 
       // Parse player stats if included
-      if (playerObj.player_stats) {
-         const statsData = playerObj.player_stats as Record<
-            string,
-            unknown
-         >;
+      if (data.player_stats) {
+         const statsData = data.player_stats as Record<string, unknown>;
          player.stats = {
             coverageType: statsData.coverage_type as string,
             season: statsData.season
-               ? Number.parseInt(statsData.season as string)
+               ? getInteger(statsData.season)
                : undefined,
-            week: statsData.week
-               ? Number.parseInt(statsData.week as string)
-               : undefined,
+            week: statsData.week ? getInteger(statsData.week) : undefined,
             date: statsData.date as string | undefined,
             stats: {},
          };
 
          if (statsData.stats) {
-            const statsArray = statsData.stats as Record<string, unknown>;
-            for (const key in statsArray) {
-               if (key === 'count') continue;
-               const statEntry = statsArray[key];
-               if (
-                  statEntry &&
-                  typeof statEntry === 'object' &&
-                  'stat' in statEntry
-               ) {
-                  const statData = (
-                     statEntry as { stat: Record<string, unknown> }
-                  ).stat;
-                  const statId = Number.parseInt(
-                     statData.stat_id as string,
-                  );
-                  player.stats.stats[statId] = statData.value as
-                     | string
-                     | number;
-               }
+            const statsObj = statsData.stats as { stat: unknown };
+            const statsArray = ensureArray(statsObj.stat);
+            for (const statEntry of statsArray) {
+               const statData = statEntry as Record<string, unknown>;
+               const statId = getInteger(statData.stat_id);
+               player.stats.stats[statId] = statData.value as
+                  | string
+                  | number;
             }
          }
       }
