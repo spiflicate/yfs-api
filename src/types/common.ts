@@ -244,6 +244,14 @@ export interface Config {
    debug?: boolean;
 
    /**
+    * Optional: Return raw XML responses instead of parsed objects
+    * Useful for debugging, inspecting response structure, or custom parsing
+    * When true, all API methods return raw XML strings instead of typed objects
+    * @default false
+    */
+   rawXml?: boolean;
+
+   /**
     * Optional: Request timeout in milliseconds
     * @default 30000
     */
