@@ -1,178 +1,343 @@
 /**
- * API response wrapper for player data.
- *
- * @interface PlayerResponse
- * @description Wraps the Player object returned from API endpoints.
+ * Player resource types
+ * @module
  */
-export interface PlayerResponse {
-   /** The player data */
-   player: Player;
-}
+
+import type {
+   BaseMetadata,
+   CoverageType,
+   PaginationParams,
+   PlayerStatus,
+   ResourceKey,
+   SortParams,
+} from '../common';
 
 /**
- * Represents a player in the Yahoo Fantasy Sports system.
- *
- * @interface Player
- * @description Contains player information including name, position, team affiliation,
- * keeper status, and headshot image.
+ * Player information
  */
-export interface Player {
-   /** Unique identifier for the player in format "gameId.p.playerId" */
-   playerKey: string;
-   /** Numeric player identifier */
-   playerId: number;
-   /** Player's full name and components */
-   name: Name;
-   /** URL to the player on Yahoo Fantasy Sports */
-   url: string;
-   /** Editorial player key from Yahoo */
-   editorialPlayerKey: string;
-   /** Editorial team key the player belongs to */
-   editorialTeamKey: string;
-   /** Full name of the real-world team */
-   editorialTeamFullName: string;
-   /** Abbreviation of the real-world team */
-   editorialTeamAbbr: string;
-   /** URL to the real-world team */
-   editorialTeamUrl: string;
-   /** Keeper status and information */
-   isKeeper: IsKeeper;
-   /** Uniform number for the player */
-   uniformNumber: number;
-   /** Display position (e.g., "C", "LW", "RW", "D", "G") */
+export interface Player extends BaseMetadata {
+   /**
+    * Player key
+    */
+   playerKey: ResourceKey;
+
+   /**
+    * Player ID
+    */
+   playerId: string;
+
+   /**
+    * Player name
+    */
+   name: {
+      full: string;
+      first: string;
+      last: string;
+      ascii?: string;
+   };
+
+   /**
+    * Editorial player key (for news/content)
+    */
+   editorialPlayerKey?: string;
+
+   /**
+    * Editorial team key
+    */
+   editorialTeamKey?: string;
+
+   /**
+    * Editorial team full name
+    */
+   editorialTeamFullName?: string;
+
+   /**
+    * Editorial team abbreviation
+    */
+   editorialTeamAbbr?: string;
+
+   /**
+    * Bye week (for NFL)
+    */
+   byeWeek?: number;
+
+   /**
+    * Uniform number
+    */
+   uniformNumber?: string;
+
+   /**
+    * Display position
+    */
    displayPosition: string;
-   /** Player headshot image */
-   headshot: Headshot;
-   /** URL to player image */
-   imageUrl: string;
-   /** Whether this player cannot be dropped */
-   isUndroppable: boolean;
-   /** Position type (P for player positions, G for goalie) */
-   positionType: string;
-   /** Positions this player is eligible for */
-   eligiblePositions: EligiblePositions;
-   /** Positions this player can be added to */
-   eligiblePositionsToAdd: string;
-   /** Whether this player has notes */
-   hasPlayerNotes: boolean;
-   /** Whether this player has recent notes (optional) */
-   hasRecentPlayerNotes: boolean;
-   /** Unix timestamp of the last player note */
-   playerNotesLastTimestamp: number;
-   /** Player statistics (if requested) */
-   playerStats?: PlayerStats;
-   /** Player advanced statistics (if requested) */
-   playerAdvancedStats?: PlayerAdvancedStats;
+
+   /**
+    * Headshot URL
+    */
+   headshotUrl?: string;
+
+   /**
+    * Image URL
+    */
+   imageUrl?: string;
+
+   /**
+    * Is undroppable
+    */
+   isUndroppable?: boolean;
+
+   /**
+    * Position type
+    */
+   positionType?: string;
+
+   /**
+    * Primary position
+    */
+   primaryPosition?: string;
+
+   /**
+    * Eligible positions
+    */
+   eligiblePositions?: string[];
+
+   /**
+    * Has player notes
+    */
+   hasPlayerNotes?: boolean;
+
+   /**
+    * Has recent player notes
+    */
+   hasRecentPlayerNotes?: boolean;
+
+   /**
+    * Injury status
+    */
+   injuryNote?: string;
+
+   /**
+    * Player stats (if requested)
+    */
+   stats?: PlayerStats;
+
+   /**
+    * Ownership info (if requested)
+    */
+   ownership?: PlayerOwnership;
+
+   /**
+    * Percent owned (league-specific, if requested)
+    */
+   percentOwned?: PlayerPercentOwned;
+
+   /**
+    * Player status in league context
+    */
+   status?: PlayerStatus;
 }
 
 /**
- * Container for eligible positions.
- *
- * @interface EligiblePositions
- * @description Wraps an array of position codes.
- */
-export interface EligiblePositions {
-   /** Array of position codes */
-   position: string;
-}
-
-/**
- * Represents an image (headshot or logo).
- *
- * @interface Headshot
- * @description Contains URL and size information for an image.
- */
-export interface Headshot {
-   /** URL to the image */
-   url: string;
-   /** Size of the image */
-   size: string;
-}
-
-/**
- * Represents keeper status information for a player.
- *
- * @interface IsKeeper
- * @description Contains keeper eligibility, cost, and historical keeper data.
- */
-export interface IsKeeper {
-   /** Keeper status (e.g., "eligible", "ineligible") */
-   status: string;
-   /** Cost to keep the player */
-   cost: string;
-}
-
-/**
- * Represents a player's name in various formats.
- *
- * @interface Name
- * @description Contains full name and component parts in ASCII and full character formats.
- */
-export interface Name {
-   /** Full name of the player */
-   full: string;
-   /** First name */
-   first: string;
-   /** Last name */
-   last: string;
-   /** ASCII version of first name */
-   asciiFirst: string;
-   /** ASCII version of last name */
-   asciiLast: string;
-}
-
-/**
- * Represents player advanced statistics.
- *
- * @interface PlayerAdvancedStats
- * @description Contains individual advanced stat values for a player in a coverage period.
- */
-export interface PlayerAdvancedStats {
-   /** Coverage period type */
-   coverageType: string;
-   /** Season year */
-   season: number;
-   /** Array of individual advanced stat values */
-   stats: PlayerAdvancedStatsStat[];
-}
-
-/**
- * Represents a single advanced stat value for a player.
- *
- * @interface PlayerAdvancedStatsStat
- * @description A key-value pair for a specific advanced stat category.
- */
-export interface PlayerAdvancedStatsStat {
-   /** Stat category ID */
-   statId: number;
-   /** Value for this stat */
-   value: number;
-}
-
-/**
- * Represents player statistics.
- *
- * @interface PlayerStats
- * @description Contains individual stat values for a player in a coverage period.
+ * Player statistics
  */
 export interface PlayerStats {
-   /** Coverage period type */
-   coverageType: string;
-   /** Season year */
-   season: number;
-   /** Array of individual stat values */
-   stats: PlayerStatsStat[];
+   /**
+    * Coverage type
+    */
+   coverageType: CoverageType;
+
+   /**
+    * Season year
+    */
+   season?: number;
+
+   /**
+    * Week number (for weekly sports)
+    */
+   week?: number;
+
+   /**
+    * Date (YYYY-MM-DD) (for date-based)
+    */
+   date?: string;
+
+   /**
+    * Stats as key-value pairs (stat ID -> value)
+    */
+   stats: Record<number, string | number>;
 }
 
 /**
- * Represents a single stat value for a player.
- *
- * @interface PlayerStatsStat
- * @description A key-value pair for a specific stat category.
+ * Player ownership information
  */
-export interface PlayerStatsStat {
-   /** Stat category ID */
-   statId: number;
-   /** Value for this stat (number or string) */
-   value: number | string;
+export interface PlayerOwnership {
+   /**
+    * Ownership type
+    */
+   ownershipType: 'team' | 'waivers' | 'freeagents';
+
+   /**
+    * Owner team key (if owned)
+    */
+   ownerTeamKey?: ResourceKey;
+
+   /**
+    * Owner team name (if owned)
+    */
+   ownerTeamName?: string;
+
+   /**
+    * Percent owned across all leagues
+    */
+   percentOwned?: number;
+}
+
+/**
+ * Player percent owned in league
+ */
+export interface PlayerPercentOwned {
+   /**
+    * Coverage type
+    */
+   coverageType: 'date';
+
+   /**
+    * Date (YYYY-MM-DD)
+    */
+   date: string;
+
+   /**
+    * Percent owned
+    */
+   percentOwned: number;
+
+   /**
+    * Delta (change from previous)
+    */
+   delta?: number;
+}
+
+/**
+ * Parameters for searching players
+ */
+export interface SearchPlayersParams extends PaginationParams, SortParams {
+   /**
+    * Search query (player name)
+    */
+   search?: string;
+
+   /**
+    * Filter by position
+    */
+   position?: string;
+
+   /**
+    * Filter by player status
+    */
+   status?: PlayerStatus | PlayerStatus[];
+
+   /**
+    * Include player stats
+    */
+   includeStats?: boolean;
+
+   /**
+    * Include ownership info
+    */
+   includeOwnership?: boolean;
+
+   /**
+    * Include percent owned
+    */
+   includePercentOwned?: boolean;
+
+   /**
+    * Stats coverage type (if includeStats is true)
+    */
+   statsCoverageType?: CoverageType;
+
+   /**
+    * Stats week (if statsCoverageType is 'week')
+    */
+   statsWeek?: number;
+
+   /**
+    * Stats date (if statsCoverageType is 'date')
+    */
+   statsDate?: string;
+}
+
+/**
+ * Parameters for getting player details
+ */
+export interface GetPlayerParams {
+   /**
+    * Include player stats
+    */
+   includeStats?: boolean;
+
+   /**
+    * Include ownership info
+    */
+   includeOwnership?: boolean;
+
+   /**
+    * Include percent owned
+    */
+   includePercentOwned?: boolean;
+
+   /**
+    * Stats coverage type
+    */
+   statsCoverageType?: CoverageType;
+
+   /**
+    * Stats week
+    */
+   statsWeek?: number;
+
+   /**
+    * Stats date
+    */
+   statsDate?: string;
+}
+
+/**
+ * Parameters for getting player stats
+ */
+export interface GetPlayerStatsParams {
+   /**
+    * Coverage type
+    */
+   coverageType: CoverageType;
+
+   /**
+    * Week number (for week coverage)
+    */
+   week?: number;
+
+   /**
+    * Date (YYYY-MM-DD) (for date coverage)
+    */
+   date?: string;
+
+   /**
+    * Season year
+    */
+   season?: number;
+}
+
+/**
+ * Player collection response
+ */
+export interface PlayerCollectionResponse {
+   /**
+    * Total count of matching players
+    */
+   count: number;
+
+   /**
+    * Players
+    */
+   players: Player[];
 }
