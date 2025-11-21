@@ -237,6 +237,27 @@ export interface SearchPlayersParams extends PaginationParams, SortParams {
    status?: PlayerStatus | PlayerStatus[];
 
    /**
+    * Sort type dimension (maps to sort_type)
+    * e.g. 'season', 'date', 'week', 'lastweek', 'lastmonth'
+    */
+   sortType?: 'season' | 'date' | 'week' | 'lastweek' | 'lastmonth';
+
+   /**
+    * Sort season year (maps to sort_season)
+    */
+   sortSeason?: number;
+
+   /**
+    * Sort week (maps to sort_week, football only)
+    */
+   sortWeek?: number;
+
+   /**
+    * Sort date (maps to sort_date, YYYY-MM-DD)
+    */
+   sortDate?: string;
+
+   /**
     * Include player stats
     */
    includeStats?: boolean;
