@@ -113,7 +113,7 @@ export function parseYahooXML<T = unknown>(xml: string): T {
          );
       }
 
-      const content = parsed.fantasy_content;
+      const content = parsed.fantasyContent;
 
       // Detect array patterns in the raw XML
       const arrayPatterns = detectArrayPatterns(xml);

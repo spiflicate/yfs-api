@@ -181,12 +181,20 @@ export class PlayerResource {
          queryParams.push(`sort=${params.sort}`);
       }
 
-      if (params?.sortOrder) {
-         queryParams.push(`sort_type=${params.sortOrder}`);
+      if (params?.sortType) {
+         queryParams.push(`sort_type=${params.sortType}`);
       }
 
-      if (params?.sortType) {
-         queryParams.push(`sort_season=${params.sortType}`);
+      if (params?.sortSeason !== undefined) {
+         queryParams.push(`sort_season=${params.sortSeason}`);
+      }
+
+      if (params?.sortWeek !== undefined) {
+         queryParams.push(`sort_week=${params.sortWeek}`);
+      }
+
+      if (params?.sortDate) {
+         queryParams.push(`sort_date=${params.sortDate}`);
       }
 
       if (queryParams.length > 0) {
