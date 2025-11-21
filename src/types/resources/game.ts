@@ -1,271 +1,170 @@
-/**
- * Game resource types
- * @module
- */
-
-import type { GameCode } from '../common.js';
+export interface GameResponse {
+   game: Game;
+}
 
 /**
- * Game metadata
+ * Represents a game (sport) in the Yahoo Fantasy Sports system.
+ *
+ * @interface Game
+ * @description Contains game metadata including name, code, season, and current
+ * state information. A game represents a specific sport like NHL, NFL, etc.
+ *
+ * @example
+ * ```typescript
+ * const game: Game = {
+ *   gameKey: "394",
+ *   gameId: 394,
+ *   name: "NHL",
+ *   code: "nhl",
+ *   season: 2024,
+ *   isGameOver: false,
+ *   isOffseason: false,
+ * };
+ * ```
  */
 export interface Game {
-   /**
-    * Game key (e.g., "423" or "nhl")
-    */
+   /** Unique identifier for the game in format "gameId" */
    gameKey: string;
-
-   /**
-    * Numeric game ID
-    */
-   gameId: string;
-
-   /**
-    * Game name (e.g., "Hockey")
-    */
+   /** Numeric game identifier */
+   gameId: number;
+   /** Display name of the game (e.g., "NHL", "NFL") */
    name: string;
-
-   /**
-    * Game code (e.g., "nhl", "nfl", "mlb", "nba")
-    */
-   code: GameCode;
-
-   /**
-    * Game type
-    */
-   type: 'full' | 'pickem-team' | 'pickem-group' | 'pickem-team-list';
-
-   /**
-    * Season year
-    */
-   season: number;
-
-   /**
-    * Whether the game is available for new leagues
-    */
-   isAvailable?: boolean;
-
-   /**
-    * Game URL
-    */
+   /** Short code identifier for the game (e.g., "nhl", "nfl") */
+   code: string;
+   /** Type of game */
+   type: string;
+   /** URL to access the game on Yahoo Fantasy Sports */
    url: string;
-
-   /**
-    * Whether the game has started
-    */
-   isGameOver?: boolean;
-
-   /**
-    * Registration status
-    */
-   isRegistrationOver?: boolean;
-
-   /**
-    * Whether live draft lobby is active
-    */
+   /** The season/year of the game */
+   season: number;
+   /** Whether new league registration for this game is closed */
+   isRegistrationOver: boolean;
+   /** Whether the game season has finished */
+   isGameOver: boolean;
+   /** Whether the game is currently in its offseason */
+   isOffseason: boolean;
+   /** Whether a live draft lobby is currently active (optional) */
    isLiveDraftLobbyActive?: boolean;
+   /** Alternate start deadline timestamp for registration (optional) */
+   alternateStartDeadline?: string;
 }
 
 /**
- * Parameters for getting a game
+ * Container for position types available in a game.
+ *
+ * @interface GamePositionTypes
+ * @description Wraps a collection of position type definitions for a game.
  */
-export interface GetGameParams {
-   /**
-    * Include leagues sub-resource
-    */
-   includeLeagues?: boolean;
-
-   /**
-    * Include players sub-resource
-    */
-   includePlayers?: boolean;
-
-   /**
-    * Include game weeks sub-resource
-    */
-   includeGameWeeks?: boolean;
-
-   /**
-    * Include stat categories sub-resource
-    */
-   includeStatCategories?: boolean;
-
-   /**
-    * Include position types sub-resource
-    */
-   includePositionTypes?: boolean;
+export interface GamePositionTypes {
+   /** Array of position types available in this game */
+   positionTypes: PositionTypeObject[];
 }
 
 /**
- * Parameters for getting multiple games
+ * Container for stat categories available in a game.
+ *
+ * @interface GameStatCategories
+ * @description Wraps the available stat categories for a game.
  */
-export interface GetGamesParams {
-   /**
-    * Game keys to retrieve
-    */
-   gameKeys?: string[];
-
-   /**
-    * Filter to only available games
-    */
-   isAvailable?: boolean;
-
-   /**
-    * Filter by game types
-    */
-   gameTypes?: (
-      | 'full'
-      | 'pickem-team'
-      | 'pickem-group'
-      | 'pickem-team-list'
-   )[];
-
-   /**
-    * Filter by game codes
-    */
-   gameCodes?: GameCode[];
-
-   /**
-    * Filter by seasons
-    */
-   seasons?: number[];
+export interface GameStatCategories {
+   /** Stat categories for this game (optional) */
+   statCategories?: StatCategories;
 }
 
 /**
- * Parameters for searching players in a game
+ * Container for game weeks/schedule.
+ *
+ * @interface GameGameWeeks
+ * @description Wraps the schedule information with game weeks for a game season.
  */
-export interface SearchGamePlayersParams {
-   /**
-    * Player name search string
-    */
-   search?: string;
-
-   /**
-    * Filter by position
-    */
-   position?: string;
-
-   /**
-    * Sort by stat ID, NAME, OR (overall rank), AR (actual rank), or PTS
-    */
-   sort?: string | number;
-
-   /**
-    * Sort type (season, date, week, etc.)
-    */
-   sortType?: 'season' | 'date' | 'week' | 'lastweek' | 'lastmonth';
-
-   /**
-    * Sort season (year)
-    */
-   sortSeason?: number;
-
-   /**
-    * Sort date (YYYY-MM-DD)
-    */
-   sortDate?: string;
-
-   /**
-    * Sort week (for NFL)
-    */
-   sortWeek?: number;
-
-   /**
-    * Pagination start index
-    */
-   start?: number;
-
-   /**
-    * Number of results to return
-    */
-   count?: number;
-
-   /**
-    * Include player stats
-    */
-   includeStats?: boolean;
-
-   /**
-    * Include player ownership
-    */
-   includeOwnership?: boolean;
-
-   /**
-    * Include percent owned
-    */
-   includePercentOwned?: boolean;
+export interface GameGameWeeks {
+   /** Array of game weeks in the season (optional) */
+   gameWeeks?: GameWeek[];
 }
 
 /**
- * Game week information
+ * Represents a single week/period within a game season.
+ *
+ * @interface GameWeek
+ * @description Contains temporal boundaries and metadata for a week of play.
  */
 export interface GameWeek {
-   /**
-    * Week number
-    */
+   /** Week number in the season */
    week: number;
-
-   /**
-    * Start date
-    */
-   start?: string;
-
-   /**
-    * End date
-    */
-   end?: string;
-
-   /**
-    * Display name
-    */
-   displayName?: string;
+   /** Display name for the week */
+   displayName: number;
+   /** Start date/timestamp of the week */
+   start: string;
+   /** End date/timestamp of the week */
+   end: string;
+   /** Indicator for whether this is the current week */
+   current: string;
 }
 
 /**
- * Stat category in a game
+ * Represents a position type available in a game.
+ *
+ * @interface PositionTypeObject
+ * @description Defines a single position type with its metadata.
  */
-export interface GameStatCategory {
-   /**
-    * Stat ID
-    */
-   statId: number;
-
-   /**
-    * Whether stat is enabled
-    */
-   enabled: boolean;
-
-   /**
-    * Stat name
-    */
-   name: string;
-
-   /**
-    * Display name
-    */
-   displayName?: string;
-
-   /**
-    * Sort order (1 = ascending, 0 = descending)
-    */
-   sortOrder?: number;
-
-   /**
-    * Position type (B = batter, P = pitcher, O = offense, DT = defense/team, etc.)
-    */
-   positionType?: string;
-}
-
-/**
- * Position type in a game
- */
-export interface GamePositionType {
-   /**
-    * Position type code
-    */
-   type: string;
-
-   /**
-    * Display name
-    */
+export interface PositionTypeObject {
+   /** Position type code (P for players, G for goalies) */
+   type: PositionType;
+   /** Human-readable display name for the position type */
    displayName: string;
+}
+
+/**
+ * Position types for sports.
+ * P represents player positions, G represents goalie positions.
+ *
+ * @type {PositionType}
+ * @enum {string}
+ */
+export type PositionType = 'P' | 'G';
+
+/**
+ * Container for stat categories in a game.
+ *
+ * @interface StatCategories
+ * @description Contains a collection of stat category definitions available for a game.
+ */
+export interface StatCategories {
+   /** Array of stat category definitions */
+   stats: Stat[];
+}
+
+/**
+ * Represents a single stat category available in a game.
+ *
+ * @interface Stat
+ * @description Defines a statistical metric that can be tracked for players,
+ * including whether it's composite and its applicable position types.
+ */
+export interface Stat {
+   /** Unique identifier for the stat */
+   statId: number;
+   /** Machine-readable name for the stat */
+   name: string;
+   /** Human-readable display name for the stat */
+   displayName: string;
+   /** Sort order for displaying this stat */
+   sortOrder: boolean;
+   /** Position types for which this stat is applicable */
+   positionTypes: PositionType[];
+   /** Whether this stat is computed from base stats (optional) */
+   isCompositeStat?: boolean;
+   /** Base stats used to compute this stat if it's composite (optional) */
+   baseStats?: BaseStat[];
+}
+
+/**
+ * Reference to a base stat used in composite stat calculations.
+ *
+ * @interface BaseStat
+ * @description Links to a base stat that contributes to a composite stat's value.
+ */
+export interface BaseStat {
+   /** Unique identifier for the base stat */
+   statId: number;
 }

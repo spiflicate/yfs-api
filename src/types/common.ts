@@ -22,6 +22,12 @@ export type GameCode = 'nfl' | 'nhl' | 'mlb' | 'nba';
  */
 export type ResourceKey = string;
 
+export type LeagueKey = `${number}.l.${number}`;
+export type TeamKey = `${number}.l.${number}.t.${number}`;
+export type PlayerKey = `${number}.p.${number}`;
+export type TransactionKey = `${number}.l.${number}.tr.${number}`;
+export type PendingTradeKey = `${number}.l.${number}.pt.${number}`;
+
 /**
  * League scoring types
  */

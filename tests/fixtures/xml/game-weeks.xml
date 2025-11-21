@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nhl/game_weeks" time="21.533012390137ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nhl/game_weeks" time="12.516021728516ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <game>
   <game_key>465</game_key>
   <game_id>465</game_id>
@@ -60,7 +60,7 @@
     <display_name>7</display_name>
     <start>2025-11-17</start>
     <end>2025-11-23</end>
-    <current>2025-11-17</current>
+    <current>2025-11-20</current>
    </game_week>
    <game_week>
     <week>8</week>
@@ -184,4 +184,4 @@
   </game_weeks>
  </game>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-qzfbf Tue Nov 18 04:26:36 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-7ldmg Thu Nov 20 21:35:47 UTC 2025 -->

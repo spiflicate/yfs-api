@@ -12,7 +12,6 @@ import type {
    UserGame,
    UserTeam,
 } from '../types/resources/user.js';
-import { ensureArray, getInteger } from '../utils/xmlParser.js';
 
 /**
  * User resource client
@@ -53,14 +52,13 @@ export class UserResource {
     * console.log(user.guid);
     * ```
     */
-   async getCurrentUser(): Promise<User> {
+   async getCurrentUser(): Promise<unknown> {
       const response = await this.http.get<{
-         users: { user: unknown };
+         users: unknown[];
       }>('/users;use_login=1');
 
       // In XML, user is directly accessible (no numeric keys)
-      const users = ensureArray(response.users.user);
-      return this.parseUser(users[0]);
+      return response;
    }
 
    /**
@@ -81,7 +79,7 @@ export class UserResource {
     * const games2024 = await userClient.getGames({ seasons: [2024] });
     * ```
     */
-   async getGames(params?: GetUserGamesParams): Promise<UserGame[]> {
+   async getGames(params?: GetUserGamesParams): Promise<unknown> {
       let path = '/users;use_login=1/games';
 
       // Add filters
@@ -101,27 +99,20 @@ export class UserResource {
       }
 
       const response = await this.http.get<{
-         users: { user: unknown };
+         users: unknown[];
       }>(path);
 
       // In XML, user is directly accessible
-      const users = ensureArray(response.users.user);
-      const userData = users[0] as Record<string, unknown>;
+      const userData = response.users[0] as Record<string, unknown>;
 
       if (!userData?.games) {
          return [];
       }
 
-      const gamesData = userData.games as Record<string, unknown>;
-      if (!gamesData.game) {
-         return [];
-      }
+      const games = userData.games as unknown[];
 
       // Games are in a simple array structure in XML
-      const gamesArray = ensureArray(gamesData.game);
-      return gamesArray.map((game) =>
-         this.parseGame(game, params?.includeTeams),
-      );
+      return games;
    }
 
    /**
@@ -156,26 +147,20 @@ export class UserResource {
       path += '/teams';
 
       const response = await this.http.get<{
-         users: { user: unknown };
+         users: unknown[];
       }>(path);
 
       // In XML, user is directly accessible
-      const users = ensureArray(response.users.user);
-      const userData = users[0] as Record<string, unknown>;
+      const userData = response.users[0] as Record<string, unknown>;
 
       if (!userData?.games) {
          return [];
       }
 
-      const gamesData = userData.games as Record<string, unknown>;
-      if (!gamesData.game) {
-         return [];
-      }
+      const games = userData.games as unknown[];
 
       const allTeams: UserTeam[] = [];
-      const gamesArray = ensureArray(gamesData.game);
-
-      for (const game of gamesArray) {
+      for (const game of games) {
          const parsedGame = this.parseGame(game, true);
          if (parsedGame.teams) {
             allTeams.push(...parsedGame.teams);
@@ -216,13 +201,9 @@ export class UserResource {
 
       // Parse teams if included
       if (includeTeams && data.teams) {
-         const teamsData = data.teams as Record<string, unknown>;
-         if (teamsData.team) {
-            const teamsArray = ensureArray(teamsData.team);
-            game.teams = teamsArray.map((team) => this.parseTeam(team));
-         }
+         const teams = data.teams as unknown[];
+         game.teams = teams.map((team: unknown) => this.parseTeam(team));
       }
-
       return game;
    }
 
@@ -266,16 +247,13 @@ export class UserResource {
    private extractTeamLogoUrl(
       teamData: Record<string, unknown>,
    ): string | undefined {
-      // In XML, team_logos.team_logo might be single object or array
-      const teamLogos = teamData.team_logos as
-         | Record<string, unknown>
-         | undefined;
-      if (!teamLogos || !teamLogos.team_logo) {
+      // In XML, team_logos might be an array or empty
+      const teamLogos = teamData.team_logos as unknown[] | undefined;
+      if (!teamLogos || teamLogos.length === 0) {
          return undefined;
       }
 
-      const logos = ensureArray(teamLogos.team_logo);
-      const firstLogo = logos[0] as Record<string, unknown> | undefined;
+      const firstLogo = teamLogos[0] as Record<string, unknown> | undefined;
       return firstLogo?.url as string | undefined;
    }
 

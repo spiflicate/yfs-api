@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/teams" time="230.93700408936ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/teams" time="277.3449420929ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <league>
   <league_key>465.l.121384</league_key>
   <league_id>121384</league_id>
@@ -8,17 +8,17 @@
   <logo_url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png</logo_url>
   <draft_status>postdraft</draft_status>
   <num_teams>14</num_teams>
-  <edit_key>2025-11-17</edit_key>
+  <edit_key>2025-11-20</edit_key>
   <weekly_deadline>intraday</weekly_deadline>
   <roster_type>date</roster_type>
-  <league_update_timestamp>1763369872</league_update_timestamp>
+  <league_update_timestamp>1763628685</league_update_timestamp>
   <scoring_type>headpoint</scoring_type>
   <league_type>private</league_type>
   <renew/>
   <renewed/>
   <felo_tier>platinum</felo_tier>
   <is_highscore></is_highscore>
-  <matchup_week>6</matchup_week>
+  <matchup_week>7</matchup_week>
   <iris_group_chat_id/>
   <allow_add_to_dl_extra_pos>0</allow_add_to_dl_extra_pos>
   <is_pro_league>0</is_pro_league>
@@ -28,7 +28,7 @@
   <start_date>2025-10-07</start_date>
   <end_week>23</end_week>
   <end_date>2026-04-05</end_date>
-  <current_date>2025-11-17</current_date>
+  <current_date>2025-11-20</current_date>
   <is_plus_league>0</is_plus_league>
   <game_code>nhl</game_code>
   <season>2025</season>
@@ -46,12 +46,12 @@
     </team_logos>
     <waiver_priority>11</waiver_priority>
     <faab_balance>97</faab_balance>
-    <number_of_moves>26</number_of_moves>
+    <number_of_moves>27</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>2</value>
+     <value>3</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -78,12 +78,12 @@
     </team_logos>
     <waiver_priority>10</waiver_priority>
     <faab_balance>87</faab_balance>
-    <number_of_moves>18</number_of_moves>
+    <number_of_moves>20</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>0</value>
+     <value>2</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -215,12 +215,12 @@
     </team_logos>
     <waiver_priority>6</waiver_priority>
     <faab_balance>67</faab_balance>
-    <number_of_moves>26</number_of_moves>
+    <number_of_moves>28</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>1</value>
+     <value>3</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -246,13 +246,13 @@
      </team_logo>
     </team_logos>
     <waiver_priority>5</waiver_priority>
-    <faab_balance>100</faab_balance>
-    <number_of_moves>7</number_of_moves>
+    <faab_balance>90</faab_balance>
+    <number_of_moves>8</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>0</value>
+     <value>1</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -279,12 +279,12 @@
     </team_logos>
     <waiver_priority>4</waiver_priority>
     <faab_balance>80</faab_balance>
-    <number_of_moves>13</number_of_moves>
+    <number_of_moves>14</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>0</value>
+     <value>1</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -310,13 +310,13 @@
      </team_logo>
     </team_logos>
     <waiver_priority>3</waiver_priority>
-    <faab_balance>97</faab_balance>
-    <number_of_moves>24</number_of_moves>
+    <faab_balance>82</faab_balance>
+    <number_of_moves>25</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>2</value>
+     <value>3</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -407,12 +407,12 @@
     </team_logos>
     <waiver_priority>2</waiver_priority>
     <faab_balance>97</faab_balance>
-    <number_of_moves>31</number_of_moves>
+    <number_of_moves>33</number_of_moves>
     <number_of_trades>0</number_of_trades>
     <roster_adds>
      <coverage_type>week</coverage_type>
      <coverage_value>7</coverage_value>
-     <value>2</value>
+     <value>4</value>
     </roster_adds>
     <league_scoring_type>headpoint</league_scoring_type>
     <has_draft_grade>0</has_draft_grade>
@@ -493,4 +493,4 @@
   </teams>
  </league>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-gjpbx Tue Nov 18 04:26:38 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-w5p5v Thu Nov 20 21:35:48 UTC 2025 -->

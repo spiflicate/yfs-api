@@ -208,6 +208,48 @@ export const POSITIONS = {
 } as const;
 
 /**
+ * NHL skater stat IDs used by Yahoo
+ */
+export const NHLSkaterStatEnum = {
+   GamesPlayed: 0,
+   Goals: 1,
+   Assists: 2,
+   Points: 3,
+   PlusMinus: 4,
+   PenaltyMinutes: 5,
+   PowerPlayGoals: 6,
+   PowerPlayAssists: 7,
+   PowerPlayPoints: 8,
+   ShorthandedGoals: 9,
+   ShorthandedAssists: 10,
+   ShorthandedPoints: 11,
+   GameWinningGoals: 12,
+   Shots: 13,
+   ShootingPercentage: 14,
+   FaceoffsWon: 15,
+   FaceoffsLost: 16,
+   Hits: 17,
+   Blocks: 18,
+} as const;
+
+/**
+ * NHL goalie stat IDs used by Yahoo
+ */
+export const NHLGoalieStatEnum = {
+   GamesPlayed: 0,
+   GamesStarted: 19,
+   Wins: 20,
+   Losses: 21,
+   OvertimeLosses: 22,
+   Shutouts: 23,
+   GoalsAgainst: 24,
+   GoalsAgainstAverage: 25,
+   Saves: 26,
+   SavePercentage: 27,
+   ShotsAgainst: 28,
+} as const;
+
+/**
  * HTTP status codes we handle specifically
  */
 export const HTTP_STATUS = {

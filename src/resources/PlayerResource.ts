@@ -15,7 +15,6 @@ import type {
    PlayerStats,
    SearchPlayersParams,
 } from '../types/resources/player.js';
-import { ensureArray, getBoolean, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Player resource client
@@ -83,7 +82,7 @@ export class PlayerResource {
    async get(
       playerKey: ResourceKey,
       params?: GetPlayerParams,
-   ): Promise<Player> {
+   ): Promise<unknown> {
       let path = `/player/${playerKey}`;
 
       // Build sub-resources to include
@@ -106,7 +105,7 @@ export class PlayerResource {
          player: unknown;
       }>(path);
 
-      return this.parsePlayer(response.player);
+      return response;
    }
 
    /**
@@ -149,7 +148,7 @@ export class PlayerResource {
    async search(
       leagueKey: ResourceKey,
       params?: SearchPlayersParams,
-   ): Promise<PlayerCollectionResponse> {
+   ): Promise<unknown> {
       let path = `/league/${leagueKey}/players`;
 
       // Build query parameters
@@ -211,23 +210,16 @@ export class PlayerResource {
       }
 
       const response = await this.http.get<{
-         league: { players?: { count?: string; player: unknown } };
+         league: { players?: unknown[] };
       }>(path);
 
-      if (!response.league.players?.player) {
+      if (!response.league.players) {
          return { count: 0, players: [] };
       }
 
-      const count = response.league.players.count
-         ? getInteger(response.league.players.count)
-         : 0;
+      const players = response.league.players;
 
-      const playersArray = ensureArray(response.league.players.player);
-      const players = playersArray.map((player) =>
-         this.parsePlayer(player),
-      );
-
-      return { count, players };
+      return response; //{ count: players.length, players };
    }
 
    /**
@@ -260,7 +252,7 @@ export class PlayerResource {
    async getStats(
       playerKey: ResourceKey,
       params: GetPlayerStatsParams,
-   ): Promise<PlayerStats> {
+   ): Promise<unknown> {
       let path = `/player/${playerKey}/stats`;
 
       if (params.coverageType) {
@@ -287,9 +279,7 @@ export class PlayerResource {
          throw new Error('Stats not found in response');
       }
 
-      return this.parseStats(
-         response.player.player_stats as Record<string, unknown>,
-      );
+      return response;
    }
 
    /**
@@ -305,7 +295,7 @@ export class PlayerResource {
     * console.log(ownership.percentOwned);   // 87.5
     * ```
     */
-   async getOwnership(playerKey: ResourceKey): Promise<PlayerOwnership> {
+   async getOwnership(playerKey: ResourceKey): Promise<unknown> {
       const response = await this.http.get<{
          player: { ownership?: unknown };
       }>(`/player/${playerKey}/ownership`);
@@ -314,192 +304,6 @@ export class PlayerResource {
          throw new Error('Ownership not found in response');
       }
 
-      return this.parseOwnership(
-         response.player.ownership as Record<string, unknown>,
-      );
-   }
-
-   /**
-    * Parse player data from API response
-    *
-    * @private
-    */
-   private parsePlayer(playerData: unknown): Player {
-      // XML structure is direct - no array flattening needed
-      const data = playerData as Record<string, unknown>;
-      const nameData = (data.name as Record<string, unknown>) || {};
-
-      const player: Player = {
-         playerKey: data.player_key as ResourceKey,
-         playerId: data.player_id as string,
-         name: {
-            full: (nameData.full as string) || '',
-            first: (nameData.first as string) || '',
-            last: (nameData.last as string) || '',
-            ascii: nameData.ascii as string | undefined,
-         },
-         editorialPlayerKey: data.editorial_player_key as
-            | string
-            | undefined,
-         editorialTeamKey: data.editorial_team_key as string | undefined,
-         editorialTeamFullName: data.editorial_team_full_name as
-            | string
-            | undefined,
-         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
-         byeWeek: data.bye_week ? getInteger(data.bye_week) : undefined,
-         uniformNumber: data.uniform_number as string | undefined,
-         displayPosition: data.display_position as string,
-         headshotUrl: data.headshot_url as string | undefined,
-         imageUrl: data.image_url as string | undefined,
-         isUndroppable: data.is_undroppable
-            ? getBoolean(data.is_undroppable)
-            : undefined,
-         positionType: data.position_type as string | undefined,
-         primaryPosition: data.primary_position as string | undefined,
-         hasPlayerNotes: data.has_player_notes
-            ? getBoolean(data.has_player_notes)
-            : undefined,
-         hasRecentPlayerNotes: data.has_recent_player_notes
-            ? getBoolean(data.has_recent_player_notes)
-            : undefined,
-         injuryNote: data.injury_note as string | undefined,
-         url: data.url as string,
-      };
-
-      // Parse eligible positions
-      if (data.eligible_positions) {
-         const positionsData = data.eligible_positions as {
-            position: unknown;
-         };
-         const positionsArray = ensureArray(positionsData.position);
-         player.eligiblePositions = positionsArray.map(
-            (pos) => pos as string,
-         );
-      }
-
-      // Parse player status (in league context)
-      if (data.status) {
-         player.status = data.status as PlayerStatus;
-      }
-
-      // Parse stats if included
-      if (data.player_stats) {
-         player.stats = this.parseStats(
-            data.player_stats as Record<string, unknown>,
-         );
-      }
-
-      // Parse ownership if included
-      if (data.ownership) {
-         player.ownership = this.parseOwnership(
-            data.ownership as Record<string, unknown>,
-         );
-      }
-
-      // Parse percent owned if included
-      if (data.percent_owned) {
-         player.percentOwned = this.parsePercentOwned(
-            data.percent_owned as Record<string, unknown>,
-         );
-      }
-
-      return player;
-   }
-
-   /**
-    * Parse player stats from API response
-    *
-    * @private
-    */
-   private parseStats(statsData: Record<string, unknown>): PlayerStats {
-      const stats: PlayerStats = {
-         coverageType: statsData.coverage_type as
-            | 'season'
-            | 'week'
-            | 'date'
-            | 'lastweek'
-            | 'lastmonth',
-         stats: {},
-      };
-
-      if (statsData.season) {
-         stats.season = getInteger(statsData.season);
-      }
-
-      if (statsData.week) {
-         stats.week = getInteger(statsData.week);
-      }
-
-      if (statsData.date) {
-         stats.date = statsData.date as string;
-      }
-
-      // Parse stats array
-      if (statsData.stats) {
-         const statsObj = statsData.stats as { stat: unknown };
-         const statsArray = ensureArray(statsObj.stat);
-         for (const statEntry of statsArray) {
-            const statData = statEntry as Record<string, unknown>;
-            const statId = getInteger(statData.stat_id);
-            stats.stats[statId] = statData.value as string | number;
-         }
-      }
-
-      return stats;
-   }
-
-   /**
-    * Parse player ownership from API response
-    *
-    * @private
-    */
-   private parseOwnership(
-      ownershipData: Record<string, unknown>,
-   ): PlayerOwnership {
-      const ownership: PlayerOwnership = {
-         ownershipType: ownershipData.ownership_type as
-            | 'team'
-            | 'waivers'
-            | 'freeagents',
-      };
-
-      if (ownershipData.owner_team_key) {
-         ownership.ownerTeamKey =
-            ownershipData.owner_team_key as ResourceKey;
-      }
-
-      if (ownershipData.owner_team_name) {
-         ownership.ownerTeamName = ownershipData.owner_team_name as string;
-      }
-
-      if (ownershipData.percent_owned) {
-         const percentOwnedData = ownershipData.percent_owned as Record<
-            string,
-            unknown
-         >;
-         ownership.percentOwned = Number.parseFloat(
-            percentOwnedData.value as string,
-         );
-      }
-
-      return ownership;
-   }
-
-   /**
-    * Parse player percent owned from API response
-    *
-    * @private
-    */
-   private parsePercentOwned(
-      percentOwnedData: Record<string, unknown>,
-   ): PlayerPercentOwned {
-      return {
-         coverageType: 'date',
-         date: percentOwnedData.date as string,
-         percentOwned: Number.parseFloat(percentOwnedData.value as string),
-         delta: percentOwnedData.delta
-            ? Number.parseFloat(percentOwnedData.delta as string)
-            : undefined,
-      };
+      return response;
    }
 }

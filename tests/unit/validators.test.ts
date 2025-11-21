@@ -2,20 +2,20 @@
  * Unit tests for validator utilities
  */
 
-import { describe, test, expect } from 'bun:test';
-import {
-   validateResourceKey,
-   validateLeagueKey,
-   validateTeamKey,
-   validatePlayerKey,
-   validateGameCode,
-   validateDate,
-   validateWeek,
-   validatePagination,
-   validateRequired,
-   validateEnum,
-} from '../../src/utils/validators.js';
+import { describe, expect, test } from 'bun:test';
 import { ValidationError } from '../../src/types/errors.js';
+import {
+   validateDate,
+   validateEnum,
+   validateGameCode,
+   validateLeagueKey,
+   validatePagination,
+   validatePlayerKey,
+   validateRequired,
+   validateResourceKey,
+   validateTeamKey,
+   validateWeek,
+} from '../../src/utils/validators.js';
 
 describe('validators', () => {
    describe('validateResourceKey', () => {

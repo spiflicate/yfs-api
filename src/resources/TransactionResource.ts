@@ -30,7 +30,6 @@ import type {
    VoteAgainstTradeParams,
    WaiverClaimParams,
 } from '../types/resources/transaction.js';
-import { ensureArray, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Transaction resource client
@@ -137,19 +136,14 @@ export class TransactionResource {
       }
 
       const response = await this.http.get<{
-         league: { transactions?: { transaction: unknown } };
+         league: { transactions?: unknown[] };
       }>(path);
 
-      if (!response.league.transactions?.transaction) {
+      if (!response.league.transactions) {
          return [];
       }
 
-      const transactionsArray = ensureArray(
-         response.league.transactions.transaction,
-      );
-      return transactionsArray.map((trans) =>
-         this.parseTransaction(trans as Record<string, unknown>),
-      );
+      return response.league.transactions as Transaction[];
    }
 
    /**
@@ -168,9 +162,7 @@ export class TransactionResource {
          transaction: unknown;
       }>(`/transaction/${transactionKey}`);
 
-      return this.parseTransaction(
-         response.transaction as Record<string, unknown>,
-      );
+      return response.transaction as Transaction;
    }
 
    /**
@@ -846,138 +838,6 @@ export class TransactionResource {
          };
       }
    }
-
-   /**
-    * Parse transaction data from API response
-    *
-    * @private
-    */
-   private parseTransaction(
-      transactionData: Record<string, unknown>,
-   ): Transaction {
-      const transaction: Transaction = {
-         transactionKey: transactionData.transaction_key as ResourceKey,
-         transactionId: transactionData.transaction_id as string,
-         type: transactionData.type as TransactionType,
-         status: transactionData.status as TransactionStatus,
-         timestamp: getInteger(transactionData.timestamp),
-         url: transactionData.url as string,
-      };
-
-      // Parse FAAB bid
-      if (transactionData.faab_bid) {
-         transaction.faabBid = getInteger(transactionData.faab_bid);
-      }
-
-      // Parse players
-      if (transactionData.players) {
-         const playersData = transactionData.players as { player: unknown };
-         const playersArray = ensureArray(playersData.player);
-         transaction.players = playersArray.map((player) =>
-            this.parseTransactionPlayer(player),
-         );
-      }
-
-      // Parse waiver details
-      if (transactionData.type === 'waiver') {
-         transaction.waiver = {
-            waiverPriority: transactionData.waiver_priority
-               ? getInteger(transactionData.waiver_priority)
-               : undefined,
-            waiverDate: transactionData.waiver_date
-               ? getInteger(transactionData.waiver_date)
-               : undefined,
-         };
-      }
-
-      // Parse trade details
-      if (
-         transactionData.type === 'trade' ||
-         transactionData.type === 'pending_trade'
-      ) {
-         transaction.trade = {
-            teams: [],
-            tradeNote: transactionData.trade_note as string | undefined,
-            tradeProposedTime: transactionData.trade_proposed_time
-               ? getInteger(transactionData.trade_proposed_time)
-               : undefined,
-            tradeAcceptedTime: transactionData.trade_accepted_time
-               ? getInteger(transactionData.trade_accepted_time)
-               : undefined,
-         };
-
-         // Parse trader/tradee teams
-         if (
-            transactionData.trader_team_key &&
-            transactionData.tradee_team_key
-         ) {
-            transaction.trade.teams.push({
-               teamKey: transactionData.trader_team_key as ResourceKey,
-               teamName: transactionData.trader_team_name as string,
-            });
-            transaction.trade.teams.push({
-               teamKey: transactionData.tradee_team_key as ResourceKey,
-               teamName: transactionData.tradee_team_name as string,
-            });
-         }
-      }
-
-      return transaction;
-   }
-
-   /**
-    * Parse transaction player from API response
-    *
-    * @private
-    */
-   private parseTransactionPlayer(playerData: unknown): TransactionPlayer {
-      // XML structure is direct - no array flattening needed
-      const data = playerData as Record<string, unknown>;
-      const nameData = (data.name as Record<string, unknown>) || {};
-
-      const player: TransactionPlayer = {
-         playerKey: data.player_key as ResourceKey,
-         playerId: data.player_id as string,
-         name: {
-            full: (nameData.full as string) || '',
-            first: (nameData.first as string) || '',
-            last: (nameData.last as string) || '',
-         },
-         transactionData: {
-            type: 'add',
-         },
-         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
-         displayPosition: data.display_position as string | undefined,
-         headshotUrl: data.headshot_url as string | undefined,
-      };
-
-      // Parse transaction data
-      if (data.transaction_data) {
-         const transData = data.transaction_data as Record<string, unknown>;
-         player.transactionData = {
-            type: transData.type as 'add' | 'drop' | 'trade',
-            sourceType: transData.source_type as
-               | 'freeagents'
-               | 'waivers'
-               | 'team'
-               | undefined,
-            sourceTeamKey: transData.source_team_key as
-               | ResourceKey
-               | undefined,
-            destinationType: transData.destination_type as
-               | 'team'
-               | 'waivers'
-               | 'freeagents'
-               | undefined,
-            destinationTeamKey: transData.destination_team_key as
-               | ResourceKey
-               | undefined,
-         };
-      }
-
-      return player;
-   }
-
    /**
     * Extract league key from team key
     *

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/roster" time="47.585010528564ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/roster" time="49.066066741943ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <team>
   <team_key>465.l.121384.t.1</team_key>
   <team_id>1</team_id>
@@ -13,12 +13,12 @@
   </team_logos>
   <waiver_priority>11</waiver_priority>
   <faab_balance>97</faab_balance>
-  <number_of_moves>26</number_of_moves>
+  <number_of_moves>27</number_of_moves>
   <number_of_trades>0</number_of_trades>
   <roster_adds>
    <coverage_type>week</coverage_type>
    <coverage_value>7</coverage_value>
-   <value>2</value>
+   <value>3</value>
   </roster_adds>
   <league_scoring_type>headpoint</league_scoring_type>
   <has_draft_grade>0</has_draft_grade>
@@ -33,35 +33,35 @@
   </managers>
   <roster>
    <coverage_type>date</coverage_type>
-   <date>2025-11-17</date>
+   <date>2025-11-20</date>
    <is_prescoring>0</is_prescoring>
    <is_editable>0</is_editable>
    <players count="21">
     <player>
-     <player_key>465.p.7535</player_key>
-     <player_id>7535</player_id>
+     <player_key>465.p.6743</player_key>
+     <player_id>6743</player_id>
      <name>
-      <full>Robert Thomas</full>
-      <first>Robert</first>
-      <last>Thomas</last>
-      <ascii_first>Robert</ascii_first>
-      <ascii_last>Thomas</ascii_last>
+      <full>Connor McDavid</full>
+      <first>Connor</first>
+      <last>McDavid</last>
+      <ascii_first>Connor</ascii_first>
+      <ascii_last>McDavid</ascii_last>
      </name>
-     <url>https://sports.yahoo.com/nhl/players/7535</url>
-     <editorial_player_key>nhl.p.7535</editorial_player_key>
-     <editorial_team_key>nhl.t.19</editorial_team_key>
-     <editorial_team_full_name>St. Louis Blues</editorial_team_full_name>
-     <editorial_team_abbr>STL</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/st-louis/</editorial_team_url>
+     <url>https://sports.yahoo.com/nhl/players/6743</url>
+     <editorial_player_key>nhl.p.6743</editorial_player_key>
+     <editorial_team_key>nhl.t.6</editorial_team_key>
+     <editorial_team_full_name>Edmonton Oilers</editorial_team_full_name>
+     <editorial_team_abbr>EDM</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/edmonton/</editorial_team_url>
      <is_keeper>
       <status></status>
       <cost></cost>
       <kept></kept>
      </is_keeper>
-     <uniform_number>18</uniform_number>
+     <uniform_number>97</uniform_number>
      <display_position>C</display_position>
      <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/NPYiHdQfYSzhdU5NpO0DAA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/7535.png</url>
+      <url>https://s.yimg.com/iu/api/res/1.2/TuR8sbSR.TLCfmHrSe.ukA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6743.png</url>
       <size>small</size>
      </headshot>
      <image_url>https://example.invalid/profile/001.png</image_url>
@@ -78,10 +78,11 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763182684</player_notes_last_timestamp>
+     <has_recent_player_notes>1</has_recent_player_notes>
+     <player_notes_last_timestamp>1763648521</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>C</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -110,7 +111,7 @@
      <uniform_number>40</uniform_number>
      <display_position>C,LW</display_position>
      <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/y7hPzy2S1Fc5Tf9hr6bD0A--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132023/7520.png</url>
+      <url>https://s.yimg.com/iu/api/res/1.2/KZ0aCBWdKey1yoxKzUgjew--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11192025/7520.png</url>
       <size>small</size>
      </headshot>
      <image_url>https://example.invalid/profile/001.png</image_url>
@@ -127,12 +128,11 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <has_recent_player_notes>1</has_recent_player_notes>
-     <player_notes_last_timestamp>1763382626</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763478022</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>LW</position>
+      <date>2025-11-20</date>
+      <position>C</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
@@ -177,10 +177,59 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763305626</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763488842</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
+      <position>LW</position>
+      <is_flex>0</is_flex>
+     </selected_position>
+    </player>
+    <player>
+     <player_key>465.p.6057</player_key>
+     <player_id>6057</player_id>
+     <name>
+      <full>Jake Guentzel</full>
+      <first>Jake</first>
+      <last>Guentzel</last>
+      <ascii_first>Jake</ascii_first>
+      <ascii_last>Guentzel</ascii_last>
+     </name>
+     <url>https://sports.yahoo.com/nhl/players/6057</url>
+     <editorial_player_key>nhl.p.6057</editorial_player_key>
+     <editorial_team_key>nhl.t.20</editorial_team_key>
+     <editorial_team_full_name>Tampa Bay Lightning</editorial_team_full_name>
+     <editorial_team_abbr>TB</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/tampa-bay/</editorial_team_url>
+     <is_keeper>
+      <status></status>
+      <cost></cost>
+      <kept></kept>
+     </is_keeper>
+     <uniform_number>59</uniform_number>
+     <display_position>LW</display_position>
+     <headshot>
+      <url>https://s.yimg.com/iu/api/res/1.2/NPy71MrX8UC_3EpaqbeMRw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6057.png</url>
+      <size>small</size>
+     </headshot>
+     <image_url>https://example.invalid/profile/001.png</image_url>
+     <is_undroppable>0</is_undroppable>
+     <position_type>P</position_type>
+     <primary_position>LW</primary_position>
+     <eligible_positions>
+      <position>LW</position>
+      <position>Util</position>
+     </eligible_positions>
+     <eligible_positions_to_add>
+      <position>C</position>
+      <position>RW</position>
+      <position>D</position>
+     </eligible_positions_to_add>
+     <has_player_notes>1</has_player_notes>
+     <player_notes_last_timestamp>1763574262</player_notes_last_timestamp>
+     <selected_position>
+      <coverage_type>date</coverage_type>
+      <date>2025-11-20</date>
       <position>LW</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -226,10 +275,10 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763275378</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763533674</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>RW</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -275,60 +324,11 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1762873806</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763562279</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>RW</position>
-      <is_flex>0</is_flex>
-     </selected_position>
-    </player>
-    <player>
-     <player_key>465.p.5992</player_key>
-     <player_id>5992</player_id>
-     <name>
-      <full>Josh Morrissey</full>
-      <first>Josh</first>
-      <last>Morrissey</last>
-      <ascii_first>Josh</ascii_first>
-      <ascii_last>Morrissey</ascii_last>
-     </name>
-     <url>https://sports.yahoo.com/nhl/players/5992</url>
-     <editorial_player_key>nhl.p.5992</editorial_player_key>
-     <editorial_team_key>nhl.t.28</editorial_team_key>
-     <editorial_team_full_name>Winnipeg Jets</editorial_team_full_name>
-     <editorial_team_abbr>WPG</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/winnipeg/</editorial_team_url>
-     <is_keeper>
-      <status></status>
-      <cost></cost>
-      <kept></kept>
-     </is_keeper>
-     <uniform_number>44</uniform_number>
-     <display_position>D</display_position>
-     <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/4fTMMqWUjKVk1WK8Pw1bnQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10312025/5992.png</url>
-      <size>small</size>
-     </headshot>
-     <image_url>https://example.invalid/profile/001.png</image_url>
-     <is_undroppable>0</is_undroppable>
-     <position_type>P</position_type>
-     <primary_position>D</primary_position>
-     <eligible_positions>
-      <position>D</position>
-      <position>Util</position>
-     </eligible_positions>
-     <eligible_positions_to_add>
-      <position>C</position>
-      <position>LW</position>
-      <position>RW</position>
-     </eligible_positions_to_add>
-     <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763279408</player_notes_last_timestamp>
-     <selected_position>
-      <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>D</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
@@ -374,57 +374,7 @@
      </eligible_positions_to_add>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>D</position>
-      <is_flex>0</is_flex>
-     </selected_position>
-    </player>
-    <player>
-     <player_key>465.p.7161</player_key>
-     <player_id>7161</player_id>
-     <name>
-      <full>Filip Hronek</full>
-      <first>Filip</first>
-      <last>Hronek</last>
-      <ascii_first>Filip</ascii_first>
-      <ascii_last>Hronek</ascii_last>
-     </name>
-     <url>https://sports.yahoo.com/nhl/players/7161</url>
-     <editorial_player_key>nhl.p.7161</editorial_player_key>
-     <editorial_team_key>nhl.t.22</editorial_team_key>
-     <editorial_team_full_name>Vancouver Canucks</editorial_team_full_name>
-     <editorial_team_abbr>VAN</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/vancouver/</editorial_team_url>
-     <is_keeper>
-      <status></status>
-      <cost></cost>
-      <kept></kept>
-     </is_keeper>
-     <uniform_number>17</uniform_number>
-     <display_position>D</display_position>
-     <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/q6zoYmIk0f9cbs2V0oYPzg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10182024/7161.png</url>
-      <size>small</size>
-     </headshot>
-     <image_url>https://example.invalid/profile/001.png</image_url>
-     <is_undroppable>0</is_undroppable>
-     <position_type>P</position_type>
-     <primary_position>D</primary_position>
-     <eligible_positions>
-      <position>D</position>
-      <position>Util</position>
-     </eligible_positions>
-     <eligible_positions_to_add>
-      <position>C</position>
-      <position>LW</position>
-      <position>RW</position>
-     </eligible_positions_to_add>
-     <has_player_notes>1</has_player_notes>
-     <has_recent_player_notes>1</has_recent_player_notes>
-     <player_notes_last_timestamp>1763408101</player_notes_last_timestamp>
-     <selected_position>
-      <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>D</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -470,59 +420,207 @@
       <position>RW</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763248082</player_notes_last_timestamp>
+     <has_recent_player_notes>1</has_recent_player_notes>
+     <player_notes_last_timestamp>1763622635</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>D</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
     <player>
-     <player_key>465.p.6743</player_key>
-     <player_id>6743</player_id>
+     <player_key>465.p.30561</player_key>
+     <player_id>30561</player_id>
      <name>
-      <full>Connor McDavid</full>
-      <first>Connor</first>
-      <last>McDavid</last>
-      <ascii_first>Connor</ascii_first>
-      <ascii_last>McDavid</ascii_last>
+      <full>Axel Sandin-Pellikka</full>
+      <first>Axel</first>
+      <last>Sandin-Pellikka</last>
+      <ascii_first>Axel</ascii_first>
+      <ascii_last>Sandin-Pellikka</ascii_last>
      </name>
-     <url>https://sports.yahoo.com/nhl/players/6743</url>
-     <editorial_player_key>nhl.p.6743</editorial_player_key>
-     <editorial_team_key>nhl.t.6</editorial_team_key>
-     <editorial_team_full_name>Edmonton Oilers</editorial_team_full_name>
-     <editorial_team_abbr>EDM</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/edmonton/</editorial_team_url>
+     <url>https://sports.yahoo.com/nhl/players/30561</url>
+     <editorial_player_key>nhl.p.30561</editorial_player_key>
+     <editorial_team_key>nhl.t.5</editorial_team_key>
+     <editorial_team_full_name>Detroit Red Wings</editorial_team_full_name>
+     <editorial_team_abbr>DET</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/detroit/</editorial_team_url>
      <is_keeper>
       <status></status>
       <cost></cost>
       <kept></kept>
      </is_keeper>
-     <uniform_number>97</uniform_number>
-     <display_position>C</display_position>
+     <uniform_number>44</uniform_number>
+     <display_position>D</display_position>
      <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/TuR8sbSR.TLCfmHrSe.ukA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6743.png</url>
+      <url>https://s.yimg.com/iu/api/res/1.2/uPXEqmWVwqudBARHxvmHAA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/30561.png</url>
       <size>small</size>
      </headshot>
      <image_url>https://example.invalid/profile/001.png</image_url>
      <is_undroppable>0</is_undroppable>
      <position_type>P</position_type>
-     <primary_position>C</primary_position>
+     <primary_position>D</primary_position>
      <eligible_positions>
-      <position>C</position>
+      <position>D</position>
       <position>Util</position>
      </eligible_positions>
      <eligible_positions_to_add>
+      <position>C</position>
       <position>LW</position>
       <position>RW</position>
+     </eligible_positions_to_add>
+     <has_player_notes>1</has_player_notes>
+     <player_notes_last_timestamp>1763145131</player_notes_last_timestamp>
+     <selected_position>
+      <coverage_type>date</coverage_type>
+      <date>2025-11-20</date>
+      <position>D</position>
+      <is_flex>0</is_flex>
+     </selected_position>
+    </player>
+    <player>
+     <player_key>465.p.7161</player_key>
+     <player_id>7161</player_id>
+     <name>
+      <full>Filip Hronek</full>
+      <first>Filip</first>
+      <last>Hronek</last>
+      <ascii_first>Filip</ascii_first>
+      <ascii_last>Hronek</ascii_last>
+     </name>
+     <url>https://sports.yahoo.com/nhl/players/7161</url>
+     <editorial_player_key>nhl.p.7161</editorial_player_key>
+     <editorial_team_key>nhl.t.22</editorial_team_key>
+     <editorial_team_full_name>Vancouver Canucks</editorial_team_full_name>
+     <editorial_team_abbr>VAN</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/vancouver/</editorial_team_url>
+     <is_keeper>
+      <status></status>
+      <cost></cost>
+      <kept></kept>
+     </is_keeper>
+     <uniform_number>17</uniform_number>
+     <display_position>D</display_position>
+     <headshot>
+      <url>https://s.yimg.com/iu/api/res/1.2/ReSqHcASrLQGn_YCkqK9XQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11192025/7161.png</url>
+      <size>small</size>
+     </headshot>
+     <image_url>https://example.invalid/profile/001.png</image_url>
+     <is_undroppable>0</is_undroppable>
+     <position_type>P</position_type>
+     <primary_position>D</primary_position>
+     <eligible_positions>
+      <position>D</position>
+      <position>Util</position>
+     </eligible_positions>
+     <eligible_positions_to_add>
+      <position>C</position>
+      <position>LW</position>
+      <position>RW</position>
+     </eligible_positions_to_add>
+     <has_player_notes>1</has_player_notes>
+     <player_notes_last_timestamp>1763489775</player_notes_last_timestamp>
+     <selected_position>
+      <coverage_type>date</coverage_type>
+      <date>2025-11-20</date>
+      <position>D</position>
+      <is_flex>0</is_flex>
+     </selected_position>
+    </player>
+    <player>
+     <player_key>465.p.6002</player_key>
+     <player_id>6002</player_id>
+     <name>
+      <full>Andre Burakovsky</full>
+      <first>Andre</first>
+      <last>Burakovsky</last>
+      <ascii_first>Andre</ascii_first>
+      <ascii_last>Burakovsky</ascii_last>
+     </name>
+     <url>https://sports.yahoo.com/nhl/players/6002</url>
+     <editorial_player_key>nhl.p.6002</editorial_player_key>
+     <editorial_team_key>nhl.t.4</editorial_team_key>
+     <editorial_team_full_name>Chicago Blackhawks</editorial_team_full_name>
+     <editorial_team_abbr>CHI</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/chicago/</editorial_team_url>
+     <is_keeper>
+      <status></status>
+      <cost></cost>
+      <kept></kept>
+     </is_keeper>
+     <uniform_number>28</uniform_number>
+     <display_position>LW,RW</display_position>
+     <headshot>
+      <url>https://s.yimg.com/iu/api/res/1.2/YGt4o00fq3jW1J_3rWV9LA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10082025/6002.png</url>
+      <size>small</size>
+     </headshot>
+     <image_url>https://example.invalid/profile/001.png</image_url>
+     <is_undroppable>0</is_undroppable>
+     <position_type>P</position_type>
+     <primary_position>LW</primary_position>
+     <eligible_positions>
+      <position>LW</position>
+      <position>RW</position>
+      <position>Util</position>
+     </eligible_positions>
+     <eligible_positions_to_add>
+      <position>C</position>
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763300683</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763139457</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
+      <position>Util</position>
+      <is_flex>0</is_flex>
+     </selected_position>
+    </player>
+    <player>
+     <player_key>465.p.8331</player_key>
+     <player_id>8331</player_id>
+     <name>
+      <full>Nicholas Robertson</full>
+      <first>Nicholas</first>
+      <last>Robertson</last>
+      <ascii_first>Nicholas</ascii_first>
+      <ascii_last>Robertson</ascii_last>
+     </name>
+     <url>https://sports.yahoo.com/nhl/players/8331</url>
+     <editorial_player_key>nhl.p.8331</editorial_player_key>
+     <editorial_team_key>nhl.t.21</editorial_team_key>
+     <editorial_team_full_name>Toronto Maple Leafs</editorial_team_full_name>
+     <editorial_team_abbr>TOR</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/toronto/</editorial_team_url>
+     <is_keeper>
+      <status></status>
+      <cost></cost>
+      <kept></kept>
+     </is_keeper>
+     <uniform_number>89</uniform_number>
+     <display_position>RW</display_position>
+     <headshot>
+      <url>https://s.yimg.com/iu/api/res/1.2/vLPyNq9rghE.oaUw4b3f5A--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/8331.png</url>
+      <size>small</size>
+     </headshot>
+     <image_url>https://example.invalid/profile/001.png</image_url>
+     <is_undroppable>0</is_undroppable>
+     <position_type>P</position_type>
+     <primary_position>RW</primary_position>
+     <eligible_positions>
+      <position>RW</position>
+      <position>Util</position>
+     </eligible_positions>
+     <eligible_positions_to_add>
+      <position>C</position>
+      <position>LW</position>
+      <position>D</position>
+     </eligible_positions_to_add>
+     <has_player_notes>1</has_player_notes>
+     <player_notes_last_timestamp>1763309152</player_notes_last_timestamp>
+     <selected_position>
+      <coverage_type>date</coverage_type>
+      <date>2025-11-20</date>
       <position>Util</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -568,60 +666,10 @@
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1762801327</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763479666</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>Util</position>
-      <is_flex>0</is_flex>
-     </selected_position>
-    </player>
-    <player>
-     <player_key>465.p.6057</player_key>
-     <player_id>6057</player_id>
-     <name>
-      <full>Jake Guentzel</full>
-      <first>Jake</first>
-      <last>Guentzel</last>
-      <ascii_first>Jake</ascii_first>
-      <ascii_last>Guentzel</ascii_last>
-     </name>
-     <url>https://sports.yahoo.com/nhl/players/6057</url>
-     <editorial_player_key>nhl.p.6057</editorial_player_key>
-     <editorial_team_key>nhl.t.20</editorial_team_key>
-     <editorial_team_full_name>Tampa Bay Lightning</editorial_team_full_name>
-     <editorial_team_abbr>TB</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/tampa-bay/</editorial_team_url>
-     <is_keeper>
-      <status></status>
-      <cost></cost>
-      <kept></kept>
-     </is_keeper>
-     <uniform_number>59</uniform_number>
-     <display_position>LW</display_position>
-     <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/NPy71MrX8UC_3EpaqbeMRw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6057.png</url>
-      <size>small</size>
-     </headshot>
-     <image_url>https://example.invalid/profile/001.png</image_url>
-     <is_undroppable>0</is_undroppable>
-     <position_type>P</position_type>
-     <primary_position>LW</primary_position>
-     <eligible_positions>
-      <position>LW</position>
-      <position>Util</position>
-     </eligible_positions>
-     <eligible_positions_to_add>
-      <position>C</position>
-      <position>RW</position>
-      <position>D</position>
-     </eligible_positions_to_add>
-     <has_player_notes>1</has_player_notes>
-     <has_recent_player_notes>1</has_recent_player_notes>
-     <player_notes_last_timestamp>1763383494</player_notes_last_timestamp>
-     <selected_position>
-      <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>BN</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -670,150 +718,106 @@
      <player_notes_last_timestamp>1762931605</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>BN</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
     <player>
-     <player_key>465.p.6002</player_key>
-     <player_id>6002</player_id>
+     <player_key>465.p.5992</player_key>
+     <player_id>5992</player_id>
      <name>
-      <full>Andre Burakovsky</full>
-      <first>Andre</first>
-      <last>Burakovsky</last>
-      <ascii_first>Andre</ascii_first>
-      <ascii_last>Burakovsky</ascii_last>
+      <full>Josh Morrissey</full>
+      <first>Josh</first>
+      <last>Morrissey</last>
+      <ascii_first>Josh</ascii_first>
+      <ascii_last>Morrissey</ascii_last>
      </name>
-     <url>https://sports.yahoo.com/nhl/players/6002</url>
-     <editorial_player_key>nhl.p.6002</editorial_player_key>
-     <editorial_team_key>nhl.t.4</editorial_team_key>
-     <editorial_team_full_name>Chicago Blackhawks</editorial_team_full_name>
-     <editorial_team_abbr>CHI</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/chicago/</editorial_team_url>
+     <url>https://sports.yahoo.com/nhl/players/5992</url>
+     <editorial_player_key>nhl.p.5992</editorial_player_key>
+     <editorial_team_key>nhl.t.28</editorial_team_key>
+     <editorial_team_full_name>Winnipeg Jets</editorial_team_full_name>
+     <editorial_team_abbr>WPG</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/winnipeg/</editorial_team_url>
      <is_keeper>
       <status></status>
       <cost></cost>
       <kept></kept>
      </is_keeper>
-     <uniform_number>28</uniform_number>
-     <display_position>LW,RW</display_position>
+     <uniform_number>44</uniform_number>
+     <display_position>D</display_position>
      <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/YGt4o00fq3jW1J_3rWV9LA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10082025/6002.png</url>
+      <url>https://s.yimg.com/iu/api/res/1.2/4fTMMqWUjKVk1WK8Pw1bnQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10312025/5992.png</url>
       <size>small</size>
      </headshot>
      <image_url>https://example.invalid/profile/001.png</image_url>
      <is_undroppable>0</is_undroppable>
      <position_type>P</position_type>
-     <primary_position>LW</primary_position>
+     <primary_position>D</primary_position>
      <eligible_positions>
-      <position>LW</position>
-      <position>RW</position>
+      <position>D</position>
       <position>Util</position>
      </eligible_positions>
      <eligible_positions_to_add>
       <position>C</position>
-      <position>D</position>
+      <position>LW</position>
+      <position>RW</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763139457</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763561548</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>BN</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
     <player>
-     <player_key>465.p.8331</player_key>
-     <player_id>8331</player_id>
+     <player_key>465.p.7535</player_key>
+     <player_id>7535</player_id>
      <name>
-      <full>Nicholas Robertson</full>
-      <first>Nicholas</first>
-      <last>Robertson</last>
-      <ascii_first>Nicholas</ascii_first>
-      <ascii_last>Robertson</ascii_last>
+      <full>Robert Thomas</full>
+      <first>Robert</first>
+      <last>Thomas</last>
+      <ascii_first>Robert</ascii_first>
+      <ascii_last>Thomas</ascii_last>
      </name>
-     <url>https://sports.yahoo.com/nhl/players/8331</url>
-     <editorial_player_key>nhl.p.8331</editorial_player_key>
-     <editorial_team_key>nhl.t.21</editorial_team_key>
-     <editorial_team_full_name>Toronto Maple Leafs</editorial_team_full_name>
-     <editorial_team_abbr>TOR</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/toronto/</editorial_team_url>
+     <url>https://sports.yahoo.com/nhl/players/7535</url>
+     <editorial_player_key>nhl.p.7535</editorial_player_key>
+     <editorial_team_key>nhl.t.19</editorial_team_key>
+     <editorial_team_full_name>St. Louis Blues</editorial_team_full_name>
+     <editorial_team_abbr>STL</editorial_team_abbr>
+     <editorial_team_url>https://sports.yahoo.com/nhl/teams/st-louis/</editorial_team_url>
      <is_keeper>
       <status></status>
       <cost></cost>
       <kept></kept>
      </is_keeper>
-     <uniform_number>89</uniform_number>
-     <display_position>RW</display_position>
+     <uniform_number>18</uniform_number>
+     <display_position>C</display_position>
      <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/vLPyNq9rghE.oaUw4b3f5A--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/8331.png</url>
+      <url>https://s.yimg.com/iu/api/res/1.2/NPYiHdQfYSzhdU5NpO0DAA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/7535.png</url>
       <size>small</size>
      </headshot>
      <image_url>https://example.invalid/profile/001.png</image_url>
      <is_undroppable>0</is_undroppable>
      <position_type>P</position_type>
-     <primary_position>RW</primary_position>
+     <primary_position>C</primary_position>
      <eligible_positions>
-      <position>RW</position>
+      <position>C</position>
       <position>Util</position>
      </eligible_positions>
      <eligible_positions_to_add>
-      <position>C</position>
       <position>LW</position>
+      <position>RW</position>
       <position>D</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763309152</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763182684</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>BN</position>
-      <is_flex>0</is_flex>
-     </selected_position>
-    </player>
-    <player>
-     <player_key>465.p.5853</player_key>
-     <player_id>5853</player_id>
-     <name>
-      <full>Linus Ullmark</full>
-      <first>Linus</first>
-      <last>Ullmark</last>
-      <ascii_first>Linus</ascii_first>
-      <ascii_last>Ullmark</ascii_last>
-     </name>
-     <url>https://sports.yahoo.com/nhl/players/5853</url>
-     <editorial_player_key>nhl.p.5853</editorial_player_key>
-     <editorial_team_key>nhl.t.14</editorial_team_key>
-     <editorial_team_full_name>Ottawa Senators</editorial_team_full_name>
-     <editorial_team_abbr>OTT</editorial_team_abbr>
-     <editorial_team_url>https://sports.yahoo.com/nhl/teams/ottawa/</editorial_team_url>
-     <is_keeper>
-      <status></status>
-      <cost></cost>
-      <kept></kept>
-     </is_keeper>
-     <uniform_number>35</uniform_number>
-     <display_position>G</display_position>
-     <headshot>
-      <url>https://s.yimg.com/iu/api/res/1.2/3K75CvOQVxnAZr_uViRdtA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/5853.png</url>
-      <size>small</size>
-     </headshot>
-     <image_url>https://example.invalid/profile/001.png</image_url>
-     <is_undroppable>0</is_undroppable>
-     <position_type>G</position_type>
-     <primary_position>G</primary_position>
-     <eligible_positions>
-      <position>G</position>
-     </eligible_positions>
-     <eligible_positions_to_add/>
-     <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763311871</player_notes_last_timestamp>
-     <selected_position>
-      <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>G</position>
       <is_flex>0</is_flex>
      </selected_position>
     </player>
@@ -853,18 +857,17 @@
      </eligible_positions>
      <eligible_positions_to_add/>
      <has_player_notes>1</has_player_notes>
-     <has_recent_player_notes>1</has_recent_player_notes>
-     <player_notes_last_timestamp>1763416302</player_notes_last_timestamp>
+     <player_notes_last_timestamp>1763582662</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>G</position>
       <is_flex>0</is_flex>
      </selected_position>
      <starting_status>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <is_starting>1</is_starting>
+      <date>2025-11-20</date>
+      <is_starting>0</is_starting>
      </starting_status>
     </player>
     <player>
@@ -903,13 +906,19 @@
      </eligible_positions>
      <eligible_positions_to_add/>
      <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1763097572</player_notes_last_timestamp>
+     <has_recent_player_notes>1</has_recent_player_notes>
+     <player_notes_last_timestamp>1763665159</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
-      <position>BN</position>
+      <date>2025-11-20</date>
+      <position>G</position>
       <is_flex>0</is_flex>
      </selected_position>
+     <starting_status>
+      <coverage_type>date</coverage_type>
+      <date>2025-11-20</date>
+      <is_starting>1</is_starting>
+     </starting_status>
     </player>
     <player>
      <player_key>465.p.6760</player_key>
@@ -957,11 +966,10 @@
       <position>RW</position>
      </eligible_positions_to_add>
      <has_player_notes>1</has_player_notes>
-     <has_recent_player_notes>1</has_recent_player_notes>
      <player_notes_last_timestamp>1763417877</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>IR+</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -1014,7 +1022,7 @@
      <player_notes_last_timestamp>1763058467</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>IR+</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -1064,11 +1072,9 @@
       <position>RW</position>
       <position>D</position>
      </eligible_positions_to_add>
-     <has_player_notes>1</has_player_notes>
-     <player_notes_last_timestamp>1762795468</player_notes_last_timestamp>
      <selected_position>
       <coverage_type>date</coverage_type>
-      <date>2025-11-17</date>
+      <date>2025-11-20</date>
       <position>IR+</position>
       <is_flex>0</is_flex>
      </selected_position>
@@ -1077,9 +1083,9 @@
    <minimum_games>
     <coverage_type>week</coverage_type>
     <coverage_value>7</coverage_value>
-    <value>0</value>
+    <value>2</value>
    </minimum_games>
   </roster>
  </team>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-5mq9h Tue Nov 18 04:26:39 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-h6mbk Thu Nov 20 21:35:49 UTC 2025 -->

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/transactions" time="116.83988571167ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/transactions" time="84.451913833618ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <league>
   <league_key>465.l.121384</league_key>
   <league_id>121384</league_id>
@@ -8,17 +8,17 @@
   <logo_url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png</logo_url>
   <draft_status>postdraft</draft_status>
   <num_teams>14</num_teams>
-  <edit_key>2025-11-17</edit_key>
+  <edit_key>2025-11-20</edit_key>
   <weekly_deadline>intraday</weekly_deadline>
   <roster_type>date</roster_type>
-  <league_update_timestamp>1763369872</league_update_timestamp>
+  <league_update_timestamp>1763628685</league_update_timestamp>
   <scoring_type>headpoint</scoring_type>
   <league_type>private</league_type>
   <renew/>
   <renewed/>
   <felo_tier>platinum</felo_tier>
   <is_highscore></is_highscore>
-  <matchup_week>6</matchup_week>
+  <matchup_week>7</matchup_week>
   <iris_group_chat_id/>
   <allow_add_to_dl_extra_pos>0</allow_add_to_dl_extra_pos>
   <is_pro_league>0</is_pro_league>
@@ -28,11 +28,520 @@
   <start_date>2025-10-07</start_date>
   <end_week>23</end_week>
   <end_date>2026-04-05</end_date>
-  <current_date>2025-11-17</current_date>
+  <current_date>2025-11-20</current_date>
   <is_plus_league>0</is_plus_league>
   <game_code>nhl</game_code>
   <season>2025</season>
-  <transactions count="391">
+  <transactions count="403">
+   <transaction>
+    <transaction_key>465.l.121384.tr.415</transaction_key>
+    <transaction_id>415</transaction_id>
+    <type>drop</type>
+    <status>successful</status>
+    <timestamp>1763673357</timestamp>
+    <players count="1">
+     <player>
+      <player_key>465.p.5982</player_key>
+      <player_id>5982</player_id>
+      <name>
+       <full>Jonathan Drouin</full>
+       <first>Jonathan</first>
+       <last>Drouin</last>
+       <ascii_first>Jonathan</ascii_first>
+       <ascii_last>Drouin</ascii_last>
+      </name>
+      <editorial_team_abbr>NYI</editorial_team_abbr>
+      <display_position>LW,RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.11</source_team_key>
+       <source_team_name>Piggy Puckers</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.414</transaction_key>
+    <transaction_id>414</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763669538</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.4589</player_key>
+      <player_id>4589</player_id>
+      <name>
+       <full>Jake Allen</full>
+       <first>Jake</first>
+       <last>Allen</last>
+       <ascii_first>Jake</ascii_first>
+       <ascii_last>Allen</ascii_last>
+      </name>
+      <editorial_team_abbr>NJ</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.6</destination_team_key>
+       <destination_team_name>Giant Boy Detective</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.6055</player_key>
+      <player_id>6055</player_id>
+      <name>
+       <full>Pavel Buchnevich</full>
+       <first>Pavel</first>
+       <last>Buchnevich</last>
+       <ascii_first>Pavel</ascii_first>
+       <ascii_last>Buchnevich</ascii_last>
+      </name>
+      <editorial_team_abbr>STL</editorial_team_abbr>
+      <display_position>C,LW,RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.6</source_team_key>
+       <source_team_name>Giant Boy Detective</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.413</transaction_key>
+    <transaction_id>413</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763667164</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.5407</player_key>
+      <player_id>5407</player_id>
+      <name>
+       <full>John Gibson</full>
+       <first>John</first>
+       <last>Gibson</last>
+       <ascii_first>John</ascii_first>
+       <ascii_last>Gibson</ascii_last>
+      </name>
+      <editorial_team_abbr>DET</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.2</destination_team_key>
+       <destination_team_name>DEZZZ</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.4854</player_key>
+      <player_id>4854</player_id>
+      <name>
+       <full>Cam Talbot</full>
+       <first>Cam</first>
+       <last>Talbot</last>
+       <ascii_first>Cam</ascii_first>
+       <ascii_last>Talbot</ascii_last>
+      </name>
+      <editorial_team_abbr>DET</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.2</source_team_key>
+       <source_team_name>DEZZZ</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.412</transaction_key>
+    <transaction_id>412</transaction_id>
+    <type>add</type>
+    <status>successful</status>
+    <timestamp>1763629254</timestamp>
+    <faab_bid>10</faab_bid>
+    <players count="1">
+     <player>
+      <player_key>465.p.5853</player_key>
+      <player_id>5853</player_id>
+      <name>
+       <full>Linus Ullmark</full>
+       <first>Linus</first>
+       <last>Ullmark</last>
+       <ascii_first>Linus</ascii_first>
+       <ascii_last>Ullmark</ascii_last>
+      </name>
+      <editorial_team_abbr>OTT</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>waivers</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.7</destination_team_key>
+       <destination_team_name>Doc (Aires Tavares)</destination_team_name>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.411</transaction_key>
+    <transaction_id>411</transaction_id>
+    <type>add</type>
+    <status>successful</status>
+    <timestamp>1763595196</timestamp>
+    <players count="1">
+     <player>
+      <player_key>465.p.8371</player_key>
+      <player_id>8371</player_id>
+      <name>
+       <full>Colten Ellis</full>
+       <first>Colten</first>
+       <last>Ellis</last>
+       <ascii_first>Colten</ascii_first>
+       <ascii_last>Ellis</ascii_last>
+      </name>
+      <editorial_team_abbr>BUF</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.8</destination_team_key>
+       <destination_team_name>ALZ</destination_team_name>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.410</transaction_key>
+    <transaction_id>410</transaction_id>
+    <type>add</type>
+    <status>successful</status>
+    <timestamp>1763548583</timestamp>
+    <players count="1">
+     <player>
+      <player_key>465.p.30742</player_key>
+      <player_id>30742</player_id>
+      <name>
+       <full>Danila Yurov</full>
+       <first>Danila</first>
+       <last>Yurov</last>
+       <ascii_first>Danila</ascii_first>
+       <ascii_last>Yurov</ascii_last>
+      </name>
+      <editorial_team_abbr>MIN</editorial_team_abbr>
+      <display_position>RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.12</destination_team_key>
+       <destination_team_name>Wookies</destination_team_name>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.409</transaction_key>
+    <transaction_id>409</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763542736</timestamp>
+    <faab_bid>15</faab_bid>
+    <players count="2">
+     <player>
+      <player_key>465.p.4471</player_key>
+      <player_id>4471</player_id>
+      <name>
+       <full>Steven Stamkos</full>
+       <first>Steven</first>
+       <last>Stamkos</last>
+       <ascii_first>Steven</ascii_first>
+       <ascii_last>Stamkos</ascii_last>
+      </name>
+      <editorial_team_abbr>NSH</editorial_team_abbr>
+      <display_position>C,LW,RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>waivers</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.9</destination_team_key>
+       <destination_team_name>Club de Sausage</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.6476</player_key>
+      <player_id>6476</player_id>
+      <name>
+       <full>Devon Toews</full>
+       <first>Devon</first>
+       <last>Toews</last>
+       <ascii_first>Devon</ascii_first>
+       <ascii_last>Toews</ascii_last>
+      </name>
+      <editorial_team_abbr>COL</editorial_team_abbr>
+      <display_position>D</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.9</source_team_key>
+       <source_team_name>Club de Sausage</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.408</transaction_key>
+    <transaction_id>408</transaction_id>
+    <type>drop</type>
+    <status>successful</status>
+    <timestamp>1763509532</timestamp>
+    <players count="1">
+     <player>
+      <player_key>465.p.8378</player_key>
+      <player_id>8378</player_id>
+      <name>
+       <full>Matej Blumel</full>
+       <first>Matej</first>
+       <last>Blumel</last>
+       <ascii_first>Matej</ascii_first>
+       <ascii_last>Blumel</ascii_last>
+      </name>
+      <editorial_team_abbr>BOS</editorial_team_abbr>
+      <display_position>RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.4</source_team_key>
+       <source_team_name>Bear Force One</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.407</transaction_key>
+    <transaction_id>407</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763497242</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.30561</player_key>
+      <player_id>30561</player_id>
+      <name>
+       <full>Axel Sandin-Pellikka</full>
+       <first>Axel</first>
+       <last>Sandin-Pellikka</last>
+       <ascii_first>Axel</ascii_first>
+       <ascii_last>Sandin-Pellikka</ascii_last>
+      </name>
+      <editorial_team_abbr>DET</editorial_team_abbr>
+      <display_position>D</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.1</destination_team_key>
+       <destination_team_name>There's a Kraken My Ass</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.5853</player_key>
+      <player_id>5853</player_id>
+      <name>
+       <full>Linus Ullmark</full>
+       <first>Linus</first>
+       <last>Ullmark</last>
+       <ascii_first>Linus</ascii_first>
+       <ascii_last>Ullmark</ascii_last>
+      </name>
+      <editorial_team_abbr>OTT</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.1</source_team_key>
+       <source_team_name>There's a Kraken My Ass</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.406</transaction_key>
+    <transaction_id>406</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763493626</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.4854</player_key>
+      <player_id>4854</player_id>
+      <name>
+       <full>Cam Talbot</full>
+       <first>Cam</first>
+       <last>Talbot</last>
+       <ascii_first>Cam</ascii_first>
+       <ascii_last>Talbot</ascii_last>
+      </name>
+      <editorial_team_abbr>DET</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.2</destination_team_key>
+       <destination_team_name>DEZZZ</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.30862</player_key>
+      <player_id>30862</player_id>
+      <name>
+       <full>Jakub Dobes</full>
+       <first>Jakub</first>
+       <last>Dobes</last>
+       <ascii_first>Jakub</ascii_first>
+       <ascii_last>Dobes</ascii_last>
+      </name>
+      <editorial_team_abbr>MTL</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.2</source_team_key>
+       <source_team_name>DEZZZ</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.405</transaction_key>
+    <transaction_id>405</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763492242</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.7542</player_key>
+      <player_id>7542</player_id>
+      <name>
+       <full>Morgan Frost</full>
+       <first>Morgan</first>
+       <last>Frost</last>
+       <ascii_first>Morgan</ascii_first>
+       <ascii_last>Frost</ascii_last>
+      </name>
+      <editorial_team_abbr>CGY</editorial_team_abbr>
+      <display_position>C</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.12</destination_team_key>
+       <destination_team_name>Wookies</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.6819</player_key>
+      <player_id>6819</player_id>
+      <name>
+       <full>Samuel Montembeault</full>
+       <first>Samuel</first>
+       <last>Montembeault</last>
+       <ascii_first>Samuel</ascii_first>
+       <ascii_last>Montembeault</ascii_last>
+      </name>
+      <editorial_team_abbr>MTL</editorial_team_abbr>
+      <display_position>G</display_position>
+      <position_type>G</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.12</source_team_key>
+       <source_team_name>Wookies</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
+   <transaction>
+    <transaction_key>465.l.121384.tr.404</transaction_key>
+    <transaction_id>404</transaction_id>
+    <type>add/drop</type>
+    <status>successful</status>
+    <timestamp>1763487238</timestamp>
+    <players count="2">
+     <player>
+      <player_key>465.p.4962</player_key>
+      <player_id>4962</player_id>
+      <name>
+       <full>Tyler Seguin</full>
+       <first>Tyler</first>
+       <last>Seguin</last>
+       <ascii_first>Tyler</ascii_first>
+       <ascii_last>Seguin</ascii_last>
+      </name>
+      <editorial_team_abbr>DAL</editorial_team_abbr>
+      <display_position>C,RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>add</type>
+       <source_type>freeagents</source_type>
+       <destination_type>team</destination_type>
+       <destination_team_key>465.l.121384.t.6</destination_team_key>
+       <destination_team_name>Giant Boy Detective</destination_team_name>
+      </transaction_data>
+     </player>
+     <player>
+      <player_key>465.p.3365</player_key>
+      <player_id>3365</player_id>
+      <name>
+       <full>Corey Perry</full>
+       <first>Corey</first>
+       <last>Perry</last>
+       <ascii_first>Corey</ascii_first>
+       <ascii_last>Perry</ascii_last>
+      </name>
+      <editorial_team_abbr>LA</editorial_team_abbr>
+      <display_position>RW</display_position>
+      <position_type>P</position_type>
+      <transaction_data>
+       <type>drop</type>
+       <source_type>team</source_type>
+       <source_team_key>465.l.121384.t.6</source_team_key>
+       <source_team_name>Giant Boy Detective</source_team_name>
+       <destination_type>waivers</destination_type>
+      </transaction_data>
+     </player>
+    </players>
+   </transaction>
    <transaction>
     <transaction_key>465.l.121384.tr.403</transaction_key>
     <transaction_id>403</transaction_id>
@@ -16068,4 +16577,4 @@
   </transactions>
  </league>
 </fantasy_content>
-<!-- fantasy-sports-api- -pub-base-production-bf1-748ff4648c-2hgrc Tue Nov 18 04:26:42 UTC 2025 -->
+<!-- fantasy-sports-api- -pub-base-production-bf1-76d9cdd544-nsscx Thu Nov 20 21:35:52 UTC 2025 -->

@@ -18,49 +18,45 @@
  * - TEST_LEAGUE_KEY (e.g., "423.l.12345")
  */
 
-import { describe, test, expect, beforeAll } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import { beforeAll, describe, expect, test } from 'bun:test';
+import type { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import {
-   getOAuth2Config,
-   shouldSkipIntegrationTests,
-   hasStoredTokens,
-   getStoredTokens,
+   canAuthenticate,
+   getAuthenticatedClient,
+} from '../helpers/authFlow.js';
+import {
    getTestLeagueKey,
+   shouldSkipIntegrationTests,
 } from '../helpers/testConfig.js';
 
-describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
+// Load test keys at module level so skipIf can evaluate them
+let TEST_LEAGUE_KEY: string | null = null;
+try {
+   TEST_LEAGUE_KEY = getTestLeagueKey();
+} catch {
+   // TEST_LEAGUE_KEY not configured
+}
+
+describe.skipIf(shouldSkipIntegrationTests() || !canAuthenticate())(
    'League Resource Integration Tests',
    () => {
       let client: YahooFantasyClient;
       let leagueKey: string;
 
-      beforeAll(() => {
-         const config = getOAuth2Config();
-         const tokens = getStoredTokens();
-
-         if (!tokens) {
-            throw new Error('No stored tokens available for testing');
-         }
-
-         client = new YahooFantasyClient({
-            ...config,
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-            expiresAt: tokens.expiresAt,
-         });
-
-         try {
-            leagueKey = getTestLeagueKey();
-         } catch (error) {
+      beforeAll(async () => {
+         client = await getAuthenticatedClient();
+         leagueKey = TEST_LEAGUE_KEY || '';
+         if (leagueKey) {
+            console.log('✓ Using test league key:', leagueKey);
+         } else {
             console.warn(
-               'TEST_LEAGUE_KEY not set, some tests may be skipped',
+               '✗ TEST_LEAGUE_KEY not set, tests will be skipped',
             );
-            leagueKey = '';
          }
       });
 
       describe('League Metadata', () => {
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch basic league information',
             async () => {
                const league = await client.league.get(leagueKey);
@@ -74,7 +70,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league with settings',
             async () => {
                const league = await client.league.get(leagueKey, {
@@ -86,7 +82,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league with standings',
             async () => {
                const league = await client.league.get(leagueKey, {
@@ -98,7 +94,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league with scoreboard',
             async () => {
                const league = await client.league.get(leagueKey, {
@@ -112,7 +108,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('League Settings', () => {
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league settings',
             async () => {
                const settings = await client.league.getSettings(leagueKey);
@@ -125,7 +121,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('League Standings', () => {
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league standings',
             async () => {
                const standings =
@@ -140,11 +136,12 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                const firstTeam = standings.teams[0];
                expect(firstTeam?.teamKey).toBeTruthy();
                expect(firstTeam?.name).toBeTruthy();
-               expect((firstTeam as any).standings).toBeDefined();
+               // @ts-expect-error - standings property may exist but isn't typed
+               expect(firstTeam.standings).toBeDefined();
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch standings for specific week',
             async () => {
                const standings = await client.league.getStandings(
@@ -161,7 +158,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('League Scoreboard', () => {
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch league scoreboard',
             async () => {
                const scoreboard =
@@ -173,7 +170,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch scoreboard for specific week',
             async () => {
                const scoreboard = await client.league.getScoreboard(
@@ -190,7 +187,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('League Teams', () => {
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should fetch teams in league',
             async () => {
                const teams = await client.league.getTeams(leagueKey);
@@ -207,7 +204,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!leagueKey)(
+         test.skipIf(!TEST_LEAGUE_KEY)(
             'should handle team pagination',
             async () => {
                const firstPage = await client.league.getTeams(leagueKey, {

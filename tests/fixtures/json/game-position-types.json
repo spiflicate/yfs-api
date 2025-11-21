@@ -1,0 +1,25 @@
+{
+  "game": {
+    "gameKey": "465",
+    "gameId": 465,
+    "name": "Hockey",
+    "code": "nhl",
+    "type": "full",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey",
+    "season": 2025,
+    "isRegistrationOver": false,
+    "isGameOver": false,
+    "isOffseason": false,
+    "isLiveDraftLobbyActive": true,
+    "positionTypes": [
+      {
+        "type": "P",
+        "displayName": "Forwards/Defensemen"
+      },
+      {
+        "type": "G",
+        "displayName": "Goaltenders"
+      }
+    ]
+  }
+}

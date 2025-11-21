@@ -1,0 +1,371 @@
+{
+  "game": {
+    "gameKey": "465",
+    "gameId": 465,
+    "name": "Hockey",
+    "code": "nhl",
+    "type": "full",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey",
+    "season": 2025,
+    "isRegistrationOver": false,
+    "isGameOver": false,
+    "isOffseason": false,
+    "isLiveDraftLobbyActive": true,
+    "statCategories": {
+      "stats": [
+        {
+          "statId": 0,
+          "name": "Games Played",
+          "displayName": "GP",
+          "sortOrder": true,
+          "positionTypes": [
+            "P",
+            "G"
+          ]
+        },
+        {
+          "statId": 1,
+          "name": "Goals",
+          "displayName": "G",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 2,
+          "name": "Assists",
+          "displayName": "A",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 3,
+          "name": "Points",
+          "displayName": "P",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 4,
+          "name": "Plus/Minus",
+          "displayName": "+/-",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 5,
+          "name": "Penalty Minutes",
+          "displayName": "PIM",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 6,
+          "name": "Powerplay Goals",
+          "displayName": "PPG",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 7,
+          "name": "Powerplay Assists",
+          "displayName": "PPA",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 8,
+          "name": "Powerplay Points",
+          "displayName": "PPP",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 9,
+          "name": "Shorthanded Goals",
+          "displayName": "SHG",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 10,
+          "name": "Shorthanded Assists",
+          "displayName": "SHA",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 11,
+          "name": "Shorthanded Points",
+          "displayName": "SHP",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 12,
+          "name": "Game-Winning Goals",
+          "displayName": "GWG",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 13,
+          "name": "Game-Tying Goals",
+          "displayName": "GTG",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 14,
+          "name": "Shots on Goal",
+          "displayName": "SOG",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 15,
+          "name": "Shooting Percentage",
+          "displayName": "SH%",
+          "sortOrder": true,
+          "isCompositeStat": true,
+          "baseStats": [
+            {
+              "statId": 1
+            },
+            {
+              "statId": 14
+            }
+          ],
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 16,
+          "name": "Faceoffs Won",
+          "displayName": "FW",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 17,
+          "name": "Faceoffs Lost",
+          "displayName": "FL",
+          "sortOrder": false,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 18,
+          "name": "Games Started",
+          "displayName": "GS",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 19,
+          "name": "Wins",
+          "displayName": "W",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 20,
+          "name": "Losses",
+          "displayName": "L",
+          "sortOrder": false,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 21,
+          "name": "Ties",
+          "displayName": "T",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 22,
+          "name": "Goals Against",
+          "displayName": "GA",
+          "sortOrder": false,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 23,
+          "name": "Goals Against Average",
+          "displayName": "GAA",
+          "sortOrder": false,
+          "isCompositeStat": true,
+          "baseStats": [
+            {
+              "statId": 22
+            },
+            {
+              "statId": 28
+            }
+          ],
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 24,
+          "name": "Shots Against",
+          "displayName": "SA",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 25,
+          "name": "Saves",
+          "displayName": "SV",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 26,
+          "name": "Save Percentage",
+          "displayName": "SV%",
+          "sortOrder": true,
+          "isCompositeStat": true,
+          "baseStats": [
+            {
+              "statId": 25
+            },
+            {
+              "statId": 24
+            }
+          ],
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 27,
+          "name": "Shutouts",
+          "displayName": "SHO",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 28,
+          "name": "Time on Ice",
+          "displayName": "TOI",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 29,
+          "name": "F/D Games",
+          "displayName": "GP",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 30,
+          "name": "Goalie Games",
+          "displayName": "GP",
+          "sortOrder": true,
+          "positionTypes": [
+            "G"
+          ]
+        },
+        {
+          "statId": 31,
+          "name": "Hits",
+          "displayName": "HIT",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 32,
+          "name": "Blocks",
+          "displayName": "BLK",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 33,
+          "name": "Time on Ice",
+          "displayName": "TOI",
+          "sortOrder": true,
+          "positionTypes": [
+            "P"
+          ]
+        },
+        {
+          "statId": 34,
+          "name": "Average Time on Ice",
+          "displayName": "TOI/G",
+          "sortOrder": true,
+          "isCompositeStat": true,
+          "baseStats": [
+            {
+              "statId": 33
+            },
+            {
+              "statId": 29
+            }
+          ],
+          "positionTypes": [
+            "P"
+          ]
+        }
+      ]
+    }
+  }
+}

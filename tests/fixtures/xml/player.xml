@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.6743" time="13.017892837524ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.6743" time="11.560916900635ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <player>
   <player_key>465.p.6743</player_key>
   <player_id>6743</player_id>
@@ -34,7 +34,8 @@
   </eligible_positions>
   <eligible_positions_to_add/>
   <has_player_notes>1</has_player_notes>
-  <player_notes_last_timestamp>1763300683</player_notes_last_timestamp>
+  <has_recent_player_notes>1</has_recent_player_notes>
+  <player_notes_last_timestamp>1763648521</player_notes_last_timestamp>
  </player>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-tp4kb Tue Nov 18 04:26:42 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-v6qpm Thu Nov 20 21:35:51 UTC 2025 -->

@@ -37,8 +37,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env
 .env.test
 .oauth2-tokens.json
+.test-tokens.json
 
 # Debug and API response files
-api_test_response.json
-api-response-samples.json
-debug-teams-response.json
+scripts/data

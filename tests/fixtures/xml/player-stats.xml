@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.6743/stats" time="12.371063232422ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.6743/stats" time="14.504909515381ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <player>
   <player_key>465.p.6743</player_key>
   <player_id>6743</player_id>
@@ -34,18 +34,19 @@
   </eligible_positions>
   <eligible_positions_to_add/>
   <has_player_notes>1</has_player_notes>
-  <player_notes_last_timestamp>1763300683</player_notes_last_timestamp>
+  <has_recent_player_notes>1</has_recent_player_notes>
+  <player_notes_last_timestamp>1763648521</player_notes_last_timestamp>
   <player_stats>
    <coverage_type>season</coverage_type>
    <season>2025</season>
    <stats>
     <stat>
      <stat_id>0</stat_id>
-     <value>20</value>
+     <value>22</value>
     </stat>
     <stat>
      <stat_id>29</stat_id>
-     <value>20</value>
+     <value>22</value>
     </stat>
     <stat>
      <stat_id>1</stat_id>
@@ -53,19 +54,19 @@
     </stat>
     <stat>
      <stat_id>2</stat_id>
-     <value>21</value>
+     <value>23</value>
     </stat>
     <stat>
      <stat_id>3</stat_id>
-     <value>30</value>
+     <value>32</value>
     </stat>
     <stat>
      <stat_id>4</stat_id>
-     <value>-1</value>
+     <value>-5</value>
     </stat>
     <stat>
      <stat_id>5</stat_id>
-     <value>8</value>
+     <value>10</value>
     </stat>
     <stat>
      <stat_id>6</stat_id>
@@ -73,11 +74,11 @@
     </stat>
     <stat>
      <stat_id>7</stat_id>
-     <value>9</value>
+     <value>10</value>
     </stat>
     <stat>
      <stat_id>8</stat_id>
-     <value>12</value>
+     <value>13</value>
     </stat>
     <stat>
      <stat_id>9</stat_id>
@@ -101,23 +102,23 @@
     </stat>
     <stat>
      <stat_id>14</stat_id>
-     <value>63</value>
+     <value>66</value>
     </stat>
     <stat>
      <stat_id>15</stat_id>
-     <value>.143</value>
+     <value>.136</value>
     </stat>
     <stat>
      <stat_id>16</stat_id>
-     <value>102</value>
+     <value>112</value>
     </stat>
     <stat>
      <stat_id>17</stat_id>
-     <value>114</value>
+     <value>121</value>
     </stat>
     <stat>
      <stat_id>31</stat_id>
-     <value>6</value>
+     <value>7</value>
     </stat>
     <stat>
      <stat_id>32</stat_id>
@@ -125,11 +126,11 @@
     </stat>
     <stat>
      <stat_id>33</stat_id>
-     <value>28067</value>
+     <value>30924</value>
     </stat>
     <stat>
      <stat_id>34</stat_id>
-     <value>23:23</value>
+     <value>23:25</value>
     </stat>
    </stats>
   </player_stats>
@@ -185,4 +186,4 @@
   </player_advanced_stats>
  </player>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-6spr9 Tue Nov 18 04:26:42 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-nrfcj Thu Nov 20 21:35:51 UTC 2025 -->

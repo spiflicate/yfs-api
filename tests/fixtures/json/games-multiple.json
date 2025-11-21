@@ -1,0 +1,43 @@
+{
+  "games": [
+    {
+      "gameKey": "465",
+      "gameId": 465,
+      "name": "Hockey",
+      "code": "nhl",
+      "type": "full",
+      "url": "https://hockey.fantasysports.yahoo.com/hockey",
+      "season": 2025,
+      "isRegistrationOver": false,
+      "isGameOver": false,
+      "isOffseason": false,
+      "isLiveDraftLobbyActive": true
+    },
+    {
+      "gameKey": "466",
+      "gameId": 466,
+      "name": "Basketball",
+      "code": "nba",
+      "type": "full",
+      "url": "https://basketball.fantasysports.yahoo.com/nba",
+      "season": 2025,
+      "isRegistrationOver": false,
+      "isGameOver": false,
+      "isOffseason": false,
+      "isLiveDraftLobbyActive": true
+    },
+    {
+      "gameKey": "458",
+      "gameId": 458,
+      "name": "Baseball",
+      "code": "mlb",
+      "type": "full",
+      "url": "https://baseball.fantasysports.yahoo.com/b1",
+      "season": 2025,
+      "isRegistrationOver": true,
+      "isGameOver": true,
+      "isOffseason": true,
+      "alternateStartDeadline": "2025-03-26"
+    }
+  ]
+}

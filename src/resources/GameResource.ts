@@ -14,12 +14,11 @@ import type {
    GetGamesParams,
    SearchGamePlayersParams,
 } from '../types/resources/game.js';
-import type { League } from '../types/resources/league.js';
+import type { League } from '../types/resources/league-old.js';
 import type {
    Player,
    PlayerCollectionResponse,
 } from '../types/resources/player.js';
-import { ensureArray, getBoolean, getInteger } from '../utils/xmlParser.js';
 
 /**
  * Game resource client
@@ -74,7 +73,7 @@ export class GameResource {
     * });
     * ```
     */
-   async get(gameKey: string, params?: GetGameParams): Promise<Game> {
+   async get(gameKey: string, params?: GetGameParams): Promise<unknown> {
       let path = `/game/${gameKey}`;
 
       // Build sub-resources to include
@@ -103,7 +102,7 @@ export class GameResource {
          game: unknown;
       }>(path);
 
-      return this.parseGame(response.game);
+      return response;
    }
 
    /**
@@ -129,7 +128,7 @@ export class GameResource {
     * });
     * ```
     */
-   async getGames(params?: GetGamesParams): Promise<Game[]> {
+   async getGames(params?: GetGamesParams): Promise<unknown> {
       let path = '/games';
 
       const queryParams: string[] = [];
@@ -159,11 +158,10 @@ export class GameResource {
       }
 
       const response = await this.http.get<{
-         games: { game: unknown };
+         games: unknown[];
       }>(path);
 
-      const gamesArray = ensureArray(response.games.game);
-      return gamesArray.map((game) => this.parseGame(game));
+      return response;
    }
 
    /**
@@ -177,17 +175,16 @@ export class GameResource {
     * const leagues = await gameClient.getLeagues('423');
     * ```
     */
-   async getLeagues(gameKey: string): Promise<League[]> {
+   async getLeagues(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { leagues?: { league: unknown } };
+         game: { leagues?: unknown[] };
       }>(`/game/${gameKey}/leagues`);
 
-      if (!response.game.leagues?.league) {
+      if (!response.game.leagues) {
          return [];
       }
 
-      const leaguesArray = ensureArray(response.game.leagues.league);
-      return leaguesArray.map((league) => this.parseLeague(league));
+      return response;
    }
 
    /**
@@ -216,7 +213,7 @@ export class GameResource {
    async searchPlayers(
       gameKey: string,
       params?: SearchGamePlayersParams,
-   ): Promise<PlayerCollectionResponse> {
+   ): Promise<unknown> {
       let path = `/game/${gameKey}/players`;
 
       const queryParams: string[] = [];
@@ -277,23 +274,16 @@ export class GameResource {
       }
 
       const response = await this.http.get<{
-         game: { players?: { count?: string; player: unknown } };
+         game: { players?: unknown[] };
       }>(path);
 
-      if (!response.game.players?.player) {
+      if (!response.game.players) {
          return { count: 0, players: [] };
       }
 
-      const count = response.game.players.count
-         ? getInteger(response.game.players.count)
-         : 0;
+      const players = response.game.players;
 
-      const playersArray = ensureArray(response.game.players.player);
-      const players = playersArray.map((player) =>
-         this.parsePlayer(player),
-      );
-
-      return { count, players };
+      return response; //{ count: players.length, players };
    }
 
    /**
@@ -307,25 +297,16 @@ export class GameResource {
     * const weeks = await gameClient.getGameWeeks('nfl');
     * ```
     */
-   async getGameWeeks(gameKey: string): Promise<GameWeek[]> {
+   async getGameWeeks(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { game_weeks?: { game_week: unknown } };
+         game: { game_weeks?: unknown[] };
       }>(`/game/${gameKey}/game_weeks`);
 
-      if (!response.game.game_weeks?.game_week) {
+      if (!response.game.game_weeks) {
          return [];
       }
 
-      const weeksArray = ensureArray(response.game.game_weeks.game_week);
-      return weeksArray.map((weekData: unknown) => {
-         const data = weekData as Record<string, unknown>;
-         return {
-            week: getInteger(data.week),
-            start: data.start as string | undefined,
-            end: data.end as string | undefined,
-            displayName: data.display_name as string | undefined,
-         };
-      });
+      return response;
    }
 
    /**
@@ -339,31 +320,16 @@ export class GameResource {
     * const stats = await gameClient.getStatCategories('nhl');
     * ```
     */
-   async getStatCategories(gameKey: string): Promise<GameStatCategory[]> {
+   async getStatCategories(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { stat_categories?: { stats?: { stat: unknown } } };
+         game: { stat_categories?: { stats?: unknown[] } };
       }>(`/game/${gameKey}/stat_categories`);
 
-      if (!response.game.stat_categories?.stats?.stat) {
+      if (!response.game.stat_categories?.stats) {
          return [];
       }
 
-      const statsArray = ensureArray(
-         response.game.stat_categories.stats.stat,
-      );
-      return statsArray.map((statData: unknown) => {
-         const data = statData as Record<string, unknown>;
-         return {
-            statId: getInteger(data.stat_id),
-            enabled: getBoolean(data.enabled),
-            name: data.name as string,
-            displayName: data.display_name as string | undefined,
-            sortOrder: data.sort_order
-               ? getInteger(data.sort_order)
-               : undefined,
-            positionType: data.position_type as string | undefined,
-         };
-      });
+      return response;
    }
 
    /**
@@ -377,163 +343,15 @@ export class GameResource {
     * const positions = await gameClient.getPositionTypes('nhl');
     * ```
     */
-   async getPositionTypes(gameKey: string): Promise<GamePositionType[]> {
+   async getPositionTypes(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { position_types?: { position_type: unknown } };
+         game: { position_types?: unknown[] };
       }>(`/game/${gameKey}/position_types`);
 
-      if (!response.game.position_types?.position_type) {
+      if (!response.game.position_types) {
          return [];
       }
 
-      const posTypesArray = ensureArray(
-         response.game.position_types.position_type,
-      );
-      return posTypesArray.map((posData: unknown) => {
-         const data = posData as Record<string, unknown>;
-         return {
-            type: data.type as string,
-            displayName: data.display_name as string,
-         };
-      });
-   }
-
-   /**
-    * Parse game data from API response
-    *
-    * @private
-    */
-   private parseGame(gameData: unknown): Game {
-      // XML structure is direct - no array flattening needed
-      const data = gameData as Record<string, unknown>;
-
-      const game: Game = {
-         gameKey: data.game_key as string,
-         gameId: data.game_id as string,
-         name: data.name as string,
-         code: data.code as GameCode,
-         type: data.type as
-            | 'full'
-            | 'pickem-team'
-            | 'pickem-group'
-            | 'pickem-team-list',
-         season: getInteger(data.season),
-         url: data.url as string,
-      };
-
-      if (data.is_available !== undefined) {
-         game.isAvailable = getBoolean(data.is_available);
-      }
-
-      if (data.is_game_over !== undefined) {
-         game.isGameOver = getBoolean(data.is_game_over);
-      }
-
-      if (data.is_registration_over !== undefined) {
-         game.isRegistrationOver = getBoolean(data.is_registration_over);
-      }
-
-      if (data.is_live_draft_lobby_active !== undefined) {
-         game.isLiveDraftLobbyActive = getBoolean(
-            data.is_live_draft_lobby_active,
-         );
-      }
-
-      return game;
-   }
-
-   /**
-    * Parse league data from API response
-    *
-    * @private
-    */
-   private parseLeague(leagueData: unknown): League {
-      // XML structure is direct - no array flattening needed
-      const data = leagueData as Record<string, unknown>;
-
-      return {
-         leagueKey: data.league_key as string,
-         leagueId: data.league_id as string,
-         name: data.name as string,
-         gameKey: data.game_key as string,
-         gameCode: data.game_code as GameCode,
-         season: getInteger(data.season),
-         scoringType: data.scoring_type as 'head' | 'roto' | 'point',
-         leagueType: data.league_type as 'private' | 'public',
-         numberOfTeams: getInteger(data.num_teams),
-         currentWeek: getInteger(data.current_week),
-         draftStatus: data.draft_status as
-            | 'predraft'
-            | 'drafting'
-            | 'postdraft',
-         isFinished: getBoolean(data.is_finished),
-         url: data.url as string,
-         startWeek: data.start_week
-            ? getInteger(data.start_week)
-            : undefined,
-         endWeek: data.end_week ? getInteger(data.end_week) : undefined,
-         startDate: data.start_date as string | undefined,
-         endDate: data.end_date as string | undefined,
-         logoUrl: data.logo_url as string | undefined,
-         password: data.password as string | undefined,
-         renewUrl: data.renew as string | undefined,
-         shortInvitationUrl: data.short_invitation_url as
-            | string
-            | undefined,
-         isProLeague: data.is_pro_league
-            ? getBoolean(data.is_pro_league)
-            : undefined,
-         isCashLeague: data.is_cash_league
-            ? getBoolean(data.is_cash_league)
-            : undefined,
-      };
-   }
-
-   /**
-    * Parse player data from API response
-    *
-    * @private
-    */
-   private parsePlayer(playerData: unknown): Player {
-      // XML structure is direct - no array flattening needed
-      const data = playerData as Record<string, unknown>;
-      const nameData = (data.name as Record<string, unknown>) || {};
-
-      return {
-         playerKey: data.player_key as string,
-         playerId: data.player_id as string,
-         name: {
-            full: (nameData.full as string) || '',
-            first: (nameData.first as string) || '',
-            last: (nameData.last as string) || '',
-            ascii: nameData.ascii as string | undefined,
-         },
-         editorialPlayerKey: data.editorial_player_key as
-            | string
-            | undefined,
-         editorialTeamKey: data.editorial_team_key as string | undefined,
-         editorialTeamFullName: data.editorial_team_full_name as
-            | string
-            | undefined,
-         editorialTeamAbbr: data.editorial_team_abbr as string | undefined,
-         byeWeek: data.bye_week ? getInteger(data.bye_week) : undefined,
-         uniformNumber: data.uniform_number as string | undefined,
-         displayPosition: data.display_position as string,
-         headshotUrl: data.headshot_url as string | undefined,
-         imageUrl: data.image_url as string | undefined,
-         isUndroppable: data.is_undroppable
-            ? getBoolean(data.is_undroppable)
-            : undefined,
-         positionType: data.position_type as string | undefined,
-         primaryPosition: data.primary_position as string | undefined,
-         hasPlayerNotes: data.has_player_notes
-            ? getBoolean(data.has_player_notes)
-            : undefined,
-         hasRecentPlayerNotes: data.has_recent_player_notes
-            ? getBoolean(data.has_recent_player_notes)
-            : undefined,
-         injuryNote: data.injury_note as string | undefined,
-         url: data.url as string,
-      };
+      return response;
    }
 }

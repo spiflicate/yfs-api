@@ -17,49 +17,43 @@
  * - TEST_TEAM_KEY (e.g., "423.l.12345.t.1")
  */
 
-import { describe, test, expect, beforeAll } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import { beforeAll, describe, expect, test } from 'bun:test';
+import type { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import {
-   getOAuth2Config,
-   shouldSkipIntegrationTests,
-   hasStoredTokens,
-   getStoredTokens,
+   canAuthenticate,
+   getAuthenticatedClient,
+} from '../helpers/authFlow.js';
+import {
    getTestTeamKey,
+   shouldSkipIntegrationTests,
 } from '../helpers/testConfig.js';
 
-describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
+// Load test keys at module level so skipIf can evaluate them
+let TEST_TEAM_KEY: string | null = null;
+try {
+   TEST_TEAM_KEY = getTestTeamKey();
+} catch {
+   // TEST_TEAM_KEY not configured
+}
+
+describe.skipIf(shouldSkipIntegrationTests() || !canAuthenticate())(
    'Team Resource Integration Tests',
    () => {
       let client: YahooFantasyClient;
       let teamKey: string;
 
-      beforeAll(() => {
-         const config = getOAuth2Config();
-         const tokens = getStoredTokens();
-
-         if (!tokens) {
-            throw new Error('No stored tokens available for testing');
-         }
-
-         client = new YahooFantasyClient({
-            ...config,
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken,
-            expiresAt: tokens.expiresAt,
-         });
-
-         try {
-            teamKey = getTestTeamKey();
-         } catch (error) {
-            console.warn(
-               'TEST_TEAM_KEY not set, some tests may be skipped',
-            );
-            teamKey = '';
+      beforeAll(async () => {
+         client = await getAuthenticatedClient();
+         teamKey = TEST_TEAM_KEY || '';
+         if (teamKey) {
+            console.log('✓ Using test team key:', teamKey);
+         } else {
+            console.warn('✗ TEST_TEAM_KEY not set, tests will be skipped');
          }
       });
 
       describe('Team Metadata', () => {
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch basic team information',
             async () => {
                const team = await client.team.get(teamKey);
@@ -71,7 +65,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch team with roster',
             async () => {
                const team = await client.team.get(teamKey, {
@@ -83,33 +77,39 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!teamKey)('should fetch team with stats', async () => {
-            const team = await client.team.get(teamKey, {
-               includeStats: true,
-            });
+         test.skipIf(!TEST_TEAM_KEY)(
+            'should fetch team with stats',
+            async () => {
+               const team = await client.team.get(teamKey, {
+                  includeStats: true,
+               });
 
-            expect(team).toBeDefined();
-            expect(team.teamKey).toBe(teamKey);
-         });
+               expect(team).toBeDefined();
+               expect(team.teamKey).toBe(teamKey);
+            },
+         );
       });
 
       describe('Team Roster', () => {
-         test.skipIf(!teamKey)('should fetch team roster', async () => {
-            const roster = await client.team.getRoster(teamKey);
+         test.skipIf(!TEST_TEAM_KEY)(
+            'should fetch team roster',
+            async () => {
+               const roster = await client.team.getRoster(teamKey);
 
-            expect(roster).toBeDefined();
-            expect(roster.players).toBeDefined();
-            expect(Array.isArray(roster.players)).toBe(true);
-            expect(roster.players.length).toBeGreaterThan(0);
+               expect(roster).toBeDefined();
+               expect(roster.players).toBeDefined();
+               expect(Array.isArray(roster.players)).toBe(true);
+               expect(roster.players.length).toBeGreaterThan(0);
 
-            // Verify player structure
-            const firstPlayer = roster.players[0];
-            expect(firstPlayer?.playerKey).toBeTruthy();
-            expect(firstPlayer?.name).toBeTruthy();
-            expect(firstPlayer?.selectedPosition).toBeDefined();
-         });
+               // Verify player structure
+               const firstPlayer = roster.players[0];
+               expect(firstPlayer?.playerKey).toBeTruthy();
+               expect(firstPlayer?.name).toBeTruthy();
+               expect(firstPlayer?.selectedPosition).toBeDefined();
+            },
+         );
 
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch roster for specific week',
             async () => {
                const roster = await client.team.getRoster(teamKey, {
@@ -121,7 +121,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             },
          );
 
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch roster for specific date',
             async () => {
                const today = new Date().toISOString().split('T')[0];
@@ -136,13 +136,16 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('Team Stats', () => {
-         test.skipIf(!teamKey)('should fetch team stats', async () => {
-            const stats = await client.team.getStats(teamKey);
+         test.skipIf(!TEST_TEAM_KEY)(
+            'should fetch team stats',
+            async () => {
+               const stats = await client.team.getStats(teamKey);
 
-            expect(stats).toBeDefined();
-         });
+               expect(stats).toBeDefined();
+            },
+         );
 
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch stats for specific week',
             async () => {
                const stats = await client.team.getStats(teamKey, {
@@ -155,14 +158,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       });
 
       describe('Team Matchups', () => {
-         test.skipIf(!teamKey)('should fetch team matchups', async () => {
-            const matchups = await client.team.getMatchups(teamKey);
+         test.skipIf(!TEST_TEAM_KEY)(
+            'should fetch team matchups',
+            async () => {
+               const matchups = await client.team.getMatchups(teamKey);
 
-            expect(matchups).toBeDefined();
-            expect(Array.isArray(matchups)).toBe(true);
-         });
+               expect(matchups).toBeDefined();
+               expect(Array.isArray(matchups)).toBe(true);
+            },
+         );
 
-         test.skipIf(!teamKey)(
+         test.skipIf(!TEST_TEAM_KEY)(
             'should fetch matchups for specific weeks',
             async () => {
                const matchups = await client.team.getMatchups(teamKey, {

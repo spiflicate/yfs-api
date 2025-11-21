@@ -1,9 +1,12 @@
 /**
  * Test configuration helper for integration tests
+ *
+ * For automatic OAuth authentication handling, see authFlow.ts
+ * which provides getAuthenticatedClient() for seamless token management.
  */
 
-import type { Config } from '../../../src/types/index.js';
 import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
+import type { Config } from '../../../src/types/index.js';
 
 /**
  * Get OAuth 2.0 configuration from environment
@@ -50,6 +53,19 @@ export function getOAuth1Config(): Config {
 
 /**
  * Get stored tokens from environment (for CI/testing)
+ *
+ * Loads OAuth 2.0 tokens from environment variables.
+ * Bun automatically loads .env files from the project root in this priority:
+ * 1. .env.local (highest priority)
+ * 2. .env.development, .env.test, .env.production (based on NODE_ENV)
+ * 3. .env (lowest priority)
+ *
+ * For integration tests, tokens can be set in:
+ * - .env.test (recommended for local testing)
+ * - .env (general use)
+ * - System environment variables (CI/CD)
+ *
+ * @returns OAuth2Tokens if all required env vars are set, null otherwise
  */
 export function getStoredTokens(): OAuth2Tokens | null {
    const accessToken = process.env.YAHOO_ACCESS_TOKEN;

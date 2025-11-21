@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/standings" time="37.832975387573ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/standings" time="53.611040115356ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <team>
   <team_key>465.l.121384.t.1</team_key>
   <team_id>1</team_id>
@@ -13,12 +13,12 @@
   </team_logos>
   <waiver_priority>11</waiver_priority>
   <faab_balance>97</faab_balance>
-  <number_of_moves>26</number_of_moves>
+  <number_of_moves>27</number_of_moves>
   <number_of_trades>0</number_of_trades>
   <roster_adds>
    <coverage_type>week</coverage_type>
    <coverage_value>7</coverage_value>
-   <value>2</value>
+   <value>3</value>
   </roster_adds>
   <league_scoring_type>headpoint</league_scoring_type>
   <has_draft_grade>0</has_draft_grade>
@@ -45,4 +45,4 @@
   </team_standings>
  </team>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-hj9dg Tue Nov 18 04:26:39 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-cm9c2 Thu Nov 20 21:35:49 UTC 2025 -->

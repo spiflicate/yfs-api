@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/standings" time="424.84998703003ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.121384/standings" time="360.98098754883ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <league>
   <league_key>465.l.121384</league_key>
   <league_id>121384</league_id>
@@ -8,17 +8,17 @@
   <logo_url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png</logo_url>
   <draft_status>postdraft</draft_status>
   <num_teams>14</num_teams>
-  <edit_key>2025-11-17</edit_key>
+  <edit_key>2025-11-20</edit_key>
   <weekly_deadline>intraday</weekly_deadline>
   <roster_type>date</roster_type>
-  <league_update_timestamp>1763369872</league_update_timestamp>
+  <league_update_timestamp>1763628685</league_update_timestamp>
   <scoring_type>headpoint</scoring_type>
   <league_type>private</league_type>
   <renew/>
   <renewed/>
   <felo_tier>platinum</felo_tier>
   <is_highscore></is_highscore>
-  <matchup_week>6</matchup_week>
+  <matchup_week>7</matchup_week>
   <iris_group_chat_id/>
   <allow_add_to_dl_extra_pos>0</allow_add_to_dl_extra_pos>
   <is_pro_league>0</is_pro_league>
@@ -28,7 +28,7 @@
   <start_date>2025-10-07</start_date>
   <end_week>23</end_week>
   <end_date>2026-04-05</end_date>
-  <current_date>2025-11-17</current_date>
+  <current_date>2025-11-20</current_date>
   <is_plus_league>0</is_plus_league>
   <game_code>nhl</game_code>
   <season>2025</season>
@@ -47,12 +47,12 @@
      </team_logos>
      <waiver_priority>4</waiver_priority>
      <faab_balance>80</faab_balance>
-     <number_of_moves>13</number_of_moves>
+     <number_of_moves>14</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>0</value>
+      <value>1</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -71,11 +71,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>91</value>
+        <value>93</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>121</value>
+        <value>127</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -83,27 +83,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>678</value>
+        <value>709</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>335</value>
+        <value>344</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>246</value>
+        <value>251</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>16</value>
+        <value>18</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>84</value>
+        <value>100</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>716</value>
+        <value>821</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -183,13 +183,13 @@
       </team_logo>
      </team_logos>
      <waiver_priority>3</waiver_priority>
-     <faab_balance>97</faab_balance>
-     <number_of_moves>24</number_of_moves>
+     <faab_balance>82</faab_balance>
+     <number_of_moves>25</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>2</value>
+      <value>3</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -208,11 +208,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>84</value>
+        <value>89</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>122</value>
+        <value>133</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -220,15 +220,15 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>710</value>
+        <value>763</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>245</value>
+        <value>253</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>242</value>
+        <value>257</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
@@ -236,11 +236,11 @@
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>80</value>
+        <value>83</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>635</value>
+        <value>658</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -321,12 +321,12 @@
      </team_logos>
      <waiver_priority>2</waiver_priority>
      <faab_balance>97</faab_balance>
-     <number_of_moves>31</number_of_moves>
+     <number_of_moves>33</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>2</value>
+      <value>4</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -345,39 +345,39 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>80</value>
+        <value>87</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>135</value>
+        <value>148</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
-        <value>2</value>
+        <value>3</value>
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>674</value>
+        <value>716</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>294</value>
+        <value>304</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>231</value>
+        <value>245</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>12</value>
+        <value>13</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>82</value>
+        <value>93</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>623</value>
+        <value>687</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -458,12 +458,12 @@
      </team_logos>
      <waiver_priority>6</waiver_priority>
      <faab_balance>67</faab_balance>
-     <number_of_moves>26</number_of_moves>
+     <number_of_moves>28</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>1</value>
+      <value>3</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -482,11 +482,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>66</value>
+        <value>70</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>107</value>
+        <value>117</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -494,15 +494,15 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>640</value>
+        <value>674</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>335</value>
+        <value>351</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>267</value>
+        <value>277</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
@@ -619,11 +619,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>89</value>
+        <value>96</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>138</value>
+        <value>148</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -631,15 +631,15 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>669</value>
+        <value>707</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>258</value>
+        <value>281</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>227</value>
+        <value>252</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
@@ -756,11 +756,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>85</value>
+        <value>90</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>118</value>
+        <value>129</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -768,27 +768,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>647</value>
+        <value>690</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>317</value>
+        <value>333</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>249</value>
+        <value>265</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>17</value>
+        <value>18</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>72</value>
+        <value>73</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>661</value>
+        <value>690</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -893,39 +893,39 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>75</value>
+        <value>77</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>122</value>
+        <value>131</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
-        <value>4</value>
+        <value>5</value>
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>631</value>
+        <value>677</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>300</value>
+        <value>323</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>286</value>
+        <value>306</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>12</value>
+        <value>13</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>66</value>
+        <value>70</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>660</value>
+        <value>686</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1030,11 +1030,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>80</value>
+        <value>87</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>110</value>
+        <value>121</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1042,27 +1042,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>627</value>
+        <value>668</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>276</value>
+        <value>297</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>198</value>
+        <value>214</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>14</value>
+        <value>15</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>70</value>
+        <value>71</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>671</value>
+        <value>702</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1143,12 +1143,12 @@
      </team_logos>
      <waiver_priority>10</waiver_priority>
      <faab_balance>87</faab_balance>
-     <number_of_moves>18</number_of_moves>
+     <number_of_moves>20</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>0</value>
+      <value>2</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -1176,11 +1176,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>67</value>
+        <value>71</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>117</value>
+        <value>126</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1188,27 +1188,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>578</value>
+        <value>614</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>230</value>
+        <value>245</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>234</value>
+        <value>253</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>9</value>
+        <value>11</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>77</value>
+        <value>87</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>509</value>
+        <value>581</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1313,11 +1313,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>75</value>
+        <value>78</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>142</value>
+        <value>148</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1325,15 +1325,15 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>615</value>
+        <value>642</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>186</value>
+        <value>189</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>208</value>
+        <value>217</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
@@ -1341,11 +1341,11 @@
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>136</value>
+        <value>143</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>1200</value>
+        <value>1247</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1450,11 +1450,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>86</value>
+        <value>93</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>154</value>
+        <value>164</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1462,27 +1462,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>654</value>
+        <value>694</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>251</value>
+        <value>264</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>194</value>
+        <value>215</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>7</value>
+        <value>9</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>60</value>
+        <value>66</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>479</value>
+        <value>550</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1563,12 +1563,12 @@
      </team_logos>
      <waiver_priority>11</waiver_priority>
      <faab_balance>97</faab_balance>
-     <number_of_moves>26</number_of_moves>
+     <number_of_moves>27</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>2</value>
+      <value>3</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -1587,39 +1587,39 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>63</value>
+        <value>75</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>147</value>
+        <value>155</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
-        <value>5</value>
+        <value>6</value>
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>560</value>
+        <value>596</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>219</value>
+        <value>239</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>267</value>
+        <value>285</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>16</value>
+        <value>17</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>101</value>
+        <value>105</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>853</value>
+        <value>900</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1699,13 +1699,13 @@
       </team_logo>
      </team_logos>
      <waiver_priority>5</waiver_priority>
-     <faab_balance>100</faab_balance>
-     <number_of_moves>7</number_of_moves>
+     <faab_balance>90</faab_balance>
+     <number_of_moves>8</number_of_moves>
      <number_of_trades>0</number_of_trades>
      <roster_adds>
       <coverage_type>week</coverage_type>
       <coverage_value>7</coverage_value>
-      <value>0</value>
+      <value>1</value>
      </roster_adds>
      <league_scoring_type>headpoint</league_scoring_type>
      <has_draft_grade>0</has_draft_grade>
@@ -1724,11 +1724,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>66</value>
+        <value>70</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>108</value>
+        <value>113</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1736,15 +1736,15 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>570</value>
+        <value>603</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>308</value>
+        <value>325</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>260</value>
+        <value>276</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
@@ -1752,11 +1752,11 @@
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>112</value>
+        <value>115</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>971</value>
+        <value>994</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1860,11 +1860,11 @@
       <stats>
        <stat>
         <stat_id>1</stat_id>
-        <value>70</value>
+        <value>74</value>
        </stat>
        <stat>
         <stat_id>2</stat_id>
-        <value>119</value>
+        <value>127</value>
        </stat>
        <stat>
         <stat_id>11</stat_id>
@@ -1872,27 +1872,27 @@
        </stat>
        <stat>
         <stat_id>14</stat_id>
-        <value>641</value>
+        <value>688</value>
        </stat>
        <stat>
         <stat_id>31</stat_id>
-        <value>264</value>
+        <value>285</value>
        </stat>
        <stat>
         <stat_id>32</stat_id>
-        <value>259</value>
+        <value>277</value>
        </stat>
        <stat>
         <stat_id>19</stat_id>
-        <value>16</value>
+        <value>17</value>
        </stat>
        <stat>
         <stat_id>22</stat_id>
-        <value>70</value>
+        <value>78</value>
        </stat>
        <stat>
         <stat_id>25</stat_id>
-        <value>604</value>
+        <value>633</value>
        </stat>
        <stat>
         <stat_id>27</stat_id>
@@ -1963,4 +1963,4 @@
   </standings>
  </league>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-ljsmz Tue Nov 18 04:26:37 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-ggm75 Thu Nov 20 21:35:47 UTC 2025 -->

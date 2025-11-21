@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/stats" time="68.768978118896ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.1/stats" time="29.031038284302ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
  <team>
   <team_key>465.l.121384.t.1</team_key>
   <team_id>1</team_id>
@@ -13,12 +13,12 @@
   </team_logos>
   <waiver_priority>11</waiver_priority>
   <faab_balance>97</faab_balance>
-  <number_of_moves>26</number_of_moves>
+  <number_of_moves>27</number_of_moves>
   <number_of_trades>0</number_of_trades>
   <roster_adds>
    <coverage_type>week</coverage_type>
    <coverage_value>7</coverage_value>
-   <value>2</value>
+   <value>3</value>
   </roster_adds>
   <league_scoring_type>headpoint</league_scoring_type>
   <has_draft_grade>0</has_draft_grade>
@@ -37,39 +37,39 @@
    <stats>
     <stat>
      <stat_id>1</stat_id>
-     <value>63</value>
+     <value>75</value>
     </stat>
     <stat>
      <stat_id>2</stat_id>
-     <value>147</value>
+     <value>155</value>
     </stat>
     <stat>
      <stat_id>11</stat_id>
-     <value>5</value>
+     <value>6</value>
     </stat>
     <stat>
      <stat_id>14</stat_id>
-     <value>560</value>
+     <value>596</value>
     </stat>
     <stat>
      <stat_id>31</stat_id>
-     <value>219</value>
+     <value>239</value>
     </stat>
     <stat>
      <stat_id>32</stat_id>
-     <value>267</value>
+     <value>285</value>
     </stat>
     <stat>
      <stat_id>19</stat_id>
-     <value>16</value>
+     <value>17</value>
     </stat>
     <stat>
      <stat_id>22</stat_id>
-     <value>101</value>
+     <value>105</value>
     </stat>
     <stat>
      <stat_id>25</stat_id>
-     <value>853</value>
+     <value>900</value>
     </stat>
     <stat>
      <stat_id>27</stat_id>
@@ -126,4 +126,4 @@
   </team_points>
  </team>
 </fantasy_content>
-<!-- fantasy-sports-api- -public-production-bf1-676499c948-4fc8h Tue Nov 18 04:26:39 UTC 2025 -->
+<!-- fantasy-sports-api- -public-production-bf1-55cd854975-vj5jn Thu Nov 20 21:35:49 UTC 2025 -->

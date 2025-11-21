@@ -1,0 +1,185 @@
+{
+  "game": {
+    "gameKey": "465",
+    "gameId": 465,
+    "name": "Hockey",
+    "code": "nhl",
+    "type": "full",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey",
+    "season": 2025,
+    "isRegistrationOver": false,
+    "isGameOver": false,
+    "isOffseason": false,
+    "isLiveDraftLobbyActive": true,
+    "gameWeeks": [
+      {
+        "week": 1,
+        "displayName": 1,
+        "start": "2025-10-07",
+        "end": "2025-10-12",
+        "current": "2025-10-12"
+      },
+      {
+        "week": 2,
+        "displayName": 2,
+        "start": "2025-10-13",
+        "end": "2025-10-19",
+        "current": "2025-10-19"
+      },
+      {
+        "week": 3,
+        "displayName": 3,
+        "start": "2025-10-20",
+        "end": "2025-10-26",
+        "current": "2025-10-26"
+      },
+      {
+        "week": 4,
+        "displayName": 4,
+        "start": "2025-10-27",
+        "end": "2025-11-02",
+        "current": "2025-11-02"
+      },
+      {
+        "week": 5,
+        "displayName": 5,
+        "start": "2025-11-03",
+        "end": "2025-11-09",
+        "current": "2025-11-09"
+      },
+      {
+        "week": 6,
+        "displayName": 6,
+        "start": "2025-11-10",
+        "end": "2025-11-16",
+        "current": "2025-11-16"
+      },
+      {
+        "week": 7,
+        "displayName": 7,
+        "start": "2025-11-17",
+        "end": "2025-11-23",
+        "current": "2025-11-20"
+      },
+      {
+        "week": 8,
+        "displayName": 8,
+        "start": "2025-11-24",
+        "end": "2025-11-30",
+        "current": "2025-11-24"
+      },
+      {
+        "week": 9,
+        "displayName": 9,
+        "start": "2025-12-01",
+        "end": "2025-12-07",
+        "current": "2025-12-01"
+      },
+      {
+        "week": 10,
+        "displayName": 10,
+        "start": "2025-12-08",
+        "end": "2025-12-14",
+        "current": "2025-12-08"
+      },
+      {
+        "week": 11,
+        "displayName": 11,
+        "start": "2025-12-15",
+        "end": "2025-12-21",
+        "current": "2025-12-15"
+      },
+      {
+        "week": 12,
+        "displayName": 12,
+        "start": "2025-12-22",
+        "end": "2025-12-28",
+        "current": "2025-12-22"
+      },
+      {
+        "week": 13,
+        "displayName": 13,
+        "start": "2025-12-29",
+        "end": "2026-01-04",
+        "current": "2025-12-29"
+      },
+      {
+        "week": 14,
+        "displayName": 14,
+        "start": "2026-01-05",
+        "end": "2026-01-11",
+        "current": "2026-01-05"
+      },
+      {
+        "week": 15,
+        "displayName": 15,
+        "start": "2026-01-12",
+        "end": "2026-01-18",
+        "current": "2026-01-12"
+      },
+      {
+        "week": 16,
+        "displayName": 16,
+        "start": "2026-01-19",
+        "end": "2026-01-25",
+        "current": "2026-01-19"
+      },
+      {
+        "week": 17,
+        "displayName": 17,
+        "start": "2026-01-26",
+        "end": "2026-02-01",
+        "current": "2026-01-26"
+      },
+      {
+        "week": 18,
+        "displayName": 18,
+        "start": "2026-02-02",
+        "end": "2026-03-01",
+        "current": "2026-02-02"
+      },
+      {
+        "week": 19,
+        "displayName": 19,
+        "start": "2026-03-02",
+        "end": "2026-03-08",
+        "current": "2026-03-02"
+      },
+      {
+        "week": 20,
+        "displayName": 20,
+        "start": "2026-03-09",
+        "end": "2026-03-15",
+        "current": "2026-03-09"
+      },
+      {
+        "week": 21,
+        "displayName": 21,
+        "start": "2026-03-16",
+        "end": "2026-03-22",
+        "current": "2026-03-16"
+      },
+      {
+        "week": 22,
+        "displayName": 22,
+        "start": "2026-03-23",
+        "end": "2026-03-29",
+        "current": "2026-03-23"
+      },
+      {
+        "week": 23,
+        "displayName": 23,
+        "start": "2026-03-30",
+        "end": "2026-04-05",
+        "current": "2026-03-30"
+      },
+      {
+        "week": 24,
+        "displayName": 24,
+        "start": "2026-04-06",
+        "end": "2026-04-16",
+        "current": "2026-04-06"
+      }
+    ]
+  }
+}
