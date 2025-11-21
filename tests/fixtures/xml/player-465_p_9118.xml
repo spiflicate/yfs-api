@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.9118" time="25.300025939941ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <player>
+  <player_key>465.p.9118</player_key>
+  <player_id>9118</player_id>
+  <name>
+   <full>Jet Greaves</full>
+   <first>Jet</first>
+   <last>Greaves</last>
+   <ascii_first>Jet</ascii_first>
+   <ascii_last>Greaves</ascii_last>
+  </name>
+  <url>https://sports.yahoo.com/nhl/players/9118</url>
+  <editorial_player_key>nhl.p.9118</editorial_player_key>
+  <editorial_team_key>nhl.t.29</editorial_team_key>
+  <editorial_team_full_name>Columbus Blue Jackets</editorial_team_full_name>
+  <editorial_team_abbr>CBJ</editorial_team_abbr>
+  <editorial_team_url>https://sports.yahoo.com/nhl/teams/columbus/</editorial_team_url>
+  <is_keeper>
+   <status></status>
+   <cost></cost>
+  </is_keeper>
+  <uniform_number>73</uniform_number>
+  <display_position>G</display_position>
+  <headshot>
+   <url>https://s.yimg.com/iu/api/res/1.2/miNkhrVVbI8qs3GSf4l7ew--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10022024/9118.png</url>
+   <size>small</size>
+  </headshot>
+  <image_url>https://s.yimg.com/iu/api/res/1.2/miNkhrVVbI8qs3GSf4l7ew--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10022024/9118.png</image_url>
+  <is_undroppable>0</is_undroppable>
+  <position_type>G</position_type>
+  <eligible_positions>
+   <position>G</position>
+  </eligible_positions>
+  <eligible_positions_to_add/>
+  <has_player_notes>1</has_player_notes>
+  <has_recent_player_notes>1</has_recent_player_notes>
+  <player_notes_last_timestamp>1763737196</player_notes_last_timestamp>
+ </player>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-kllxz Fri Nov 21 18:39:58 UTC 2025 -->

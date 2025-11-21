@@ -8,13 +8,13 @@ import type { GameCode } from '../types/common.js';
 import type {
    Game,
    GamePositionType,
+   GameResponse,
    GameStatCategory,
    GameWeek,
    GetGameParams,
    GetGamesParams,
    SearchGamePlayersParams,
 } from '../types/resources/game.js';
-import type { League } from '../types/resources/league-old.js';
 import type {
    Player,
    PlayerCollectionResponse,
@@ -175,16 +175,8 @@ export class GameResource {
     * const leagues = await gameClient.getLeagues('423');
     * ```
     */
-   async getLeagues(gameKey: string): Promise<unknown> {
-      const response = await this.http.get<{
-         game: { leagues?: unknown[] };
-      }>(`/game/${gameKey}/leagues`);
-
-      if (!response.game.leagues) {
-         return [];
-      }
-
-      return response;
+   async getLeagues(gameKey: string): Promise<GameResponse> {
+      return this.http.get(`/game/${gameKey}/leagues`);
    }
 
    /**
@@ -281,9 +273,7 @@ export class GameResource {
          return { count: 0, players: [] };
       }
 
-      const players = response.game.players;
-
-      return response; //{ count: players.length, players };
+      return response;
    }
 
    /**

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.121384.t.2/standings" time="74.980020523071ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <team>
+  <team_key>465.l.121384.t.2</team_key>
+  <team_id>2</team_id>
+  <name>DEZZZ</name>
+  <url>https://hockey.fantasysports.yahoo.com/hockey/121384/2</url>
+  <team_logos>
+   <team_logo>
+    <size>large</size>
+    <url>https://s.yimg.com/ep/cx/blendr/v2/image-slap-shot-png_1721256412735.png</url>
+   </team_logo>
+  </team_logos>
+  <waiver_priority>10</waiver_priority>
+  <faab_balance>87</faab_balance>
+  <number_of_moves>20</number_of_moves>
+  <number_of_trades>0</number_of_trades>
+  <roster_adds>
+   <coverage_type>week</coverage_type>
+   <coverage_value>7</coverage_value>
+   <value>2</value>
+  </roster_adds>
+  <league_scoring_type>headpoint</league_scoring_type>
+  <has_draft_grade>0</has_draft_grade>
+  <managers>
+   <manager>
+    <manager_id>2</manager_id>
+    <nickname>Mr. Denis</nickname>
+    <guid>VQIXY4YXCE4SNMG4JXIJPUKRJA</guid>
+    <email>denisdezzzdesrosiers@gmail.com</email>
+    <image_url>https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg</image_url>
+    <felo_score>763</felo_score>
+    <felo_tier>gold</felo_tier>
+   </manager>
+   <manager>
+    <manager_id>8</manager_id>
+    <nickname>KKUPFL.Commish</nickname>
+    <guid>JCN7LHD3EPTHVGY2FNEQKSV54Y</guid>
+    <is_commissioner>1</is_commissioner>
+    <is_comanager>1</is_comanager>
+    <email>commish@kkupfl.com</email>
+    <image_url>https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg</image_url>
+    <felo_score>594</felo_score>
+    <felo_tier>bronze</felo_tier>
+   </manager>
+  </managers>
+  <team_standings>
+   <rank>9</rank>
+   <playoff_seed>9</playoff_seed>
+   <outcome_totals>
+    <wins>3</wins>
+    <losses>3</losses>
+    <ties>0</ties>
+    <percentage>.500</percentage>
+   </outcome_totals>
+   <points_for>1186.70</points_for>
+   <points_against>1273.8</points_against>
+  </team_standings>
+ </team>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-j4t2s Fri Nov 21 18:39:32 UTC 2025 -->

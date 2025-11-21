@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/player/465.p.6381;out=ownership" time="22.459030151367ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <player>
+  <player_key>465.p.6381</player_key>
+  <player_id>6381</player_id>
+  <name>
+   <full>Dylan Larkin</full>
+   <first>Dylan</first>
+   <last>Larkin</last>
+   <ascii_first>Dylan</ascii_first>
+   <ascii_last>Larkin</ascii_last>
+  </name>
+  <url>https://sports.yahoo.com/nhl/players/6381</url>
+  <editorial_player_key>nhl.p.6381</editorial_player_key>
+  <editorial_team_key>nhl.t.5</editorial_team_key>
+  <editorial_team_full_name>Detroit Red Wings</editorial_team_full_name>
+  <editorial_team_abbr>DET</editorial_team_abbr>
+  <editorial_team_url>https://sports.yahoo.com/nhl/teams/detroit/</editorial_team_url>
+  <is_keeper>
+   <status></status>
+   <cost></cost>
+  </is_keeper>
+  <uniform_number>71</uniform_number>
+  <display_position>C</display_position>
+  <headshot>
+   <url>https://s.yimg.com/iu/api/res/1.2/5c420jADlfWMDSFD81DYpQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/6381.png</url>
+   <size>small</size>
+  </headshot>
+  <image_url>https://s.yimg.com/iu/api/res/1.2/5c420jADlfWMDSFD81DYpQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/6381.png</image_url>
+  <is_undroppable>0</is_undroppable>
+  <position_type>P</position_type>
+  <eligible_positions>
+   <position>C</position>
+  </eligible_positions>
+  <eligible_positions_to_add/>
+  <has_player_notes>1</has_player_notes>
+  <player_notes_last_timestamp>1763574025</player_notes_last_timestamp>
+  <ownership/>
+ </player>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-p8vwn Fri Nov 21 18:39:58 UTC 2025 -->

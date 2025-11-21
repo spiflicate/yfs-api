@@ -1,0 +1,75 @@
+{
+  "league": {
+    "leagueKey": "465.l.121384",
+    "leagueId": 121384,
+    "name": "KKUPFL - T4 Jinesjö",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/121384",
+    "logoUrl": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png",
+    "draftStatus": "postdraft",
+    "numTeams": 14,
+    "editKey": "2025-11-21",
+    "weeklyDeadline": "intraday",
+    "rosterType": "date",
+    "leagueUpdateTimestamp": 1763715168,
+    "scoringType": "headpoint",
+    "leagueType": "private",
+    "renew": "",
+    "renewed": "",
+    "feloTier": "platinum",
+    "isHighscore": "",
+    "matchupWeek": 7,
+    "irisGroupChatId": "",
+    "allowAddToDlExtraPos": false,
+    "isProLeague": false,
+    "isCashLeague": false,
+    "currentWeek": 7,
+    "startWeek": 1,
+    "startDate": "2025-10-07",
+    "endWeek": 23,
+    "endDate": "2026-04-05",
+    "currentDate": "2025-11-21",
+    "isPlusLeague": false,
+    "gameCode": "nhl",
+    "season": 2025,
+    "players": [
+      {
+        "playerKey": "465.p.8895",
+        "playerId": 8895,
+        "name": {
+          "full": "Jesper Wallstedt",
+          "first": "Jesper",
+          "last": "Wallstedt",
+          "asciiFirst": "Jesper",
+          "asciiLast": "Wallstedt"
+        },
+        "url": "https://sports.yahoo.com/nhl/players/8895",
+        "editorialPlayerKey": "nhl.p.8895",
+        "editorialTeamKey": "nhl.t.30",
+        "editorialTeamFullName": "Minnesota Wild",
+        "editorialTeamAbbr": "MIN",
+        "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/minnesota/",
+        "isKeeper": {
+          "status": "",
+          "cost": "",
+          "kept": ""
+        },
+        "uniformNumber": 30,
+        "displayPosition": "G",
+        "headshot": {
+          "url": "https://s.yimg.com/iu/api/res/1.2/JcgjE6bMVzSATfgGTmlYhQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/8895.png",
+          "size": "small"
+        },
+        "imageUrl": "https://s.yimg.com/iu/api/res/1.2/JcgjE6bMVzSATfgGTmlYhQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/8895.png",
+        "isUndroppable": false,
+        "positionType": "G",
+        "primaryPosition": "G",
+        "eligiblePositions": {
+          "position": "G"
+        },
+        "eligiblePositionsToAdd": "",
+        "hasPlayerNotes": true,
+        "playerNotesLastTimestamp": 1763619484
+      }
+    ]
+  }
+}

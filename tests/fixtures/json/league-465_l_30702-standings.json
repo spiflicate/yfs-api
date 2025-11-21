@@ -1,0 +1,1513 @@
+{
+  "league": {
+    "leagueKey": "465.l.30702",
+    "leagueId": 30702,
+    "name": "SPCFHL",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/30702",
+    "logoUrl": "https://s.yimg.com/ep/cx/blendr/v2/image-hockey-sticks-png_1721900244286.png",
+    "draftStatus": "postdraft",
+    "numTeams": 12,
+    "editKey": "2025-11-21",
+    "weeklyDeadline": "intraday",
+    "rosterType": "date",
+    "leagueUpdateTimestamp": 1763715065,
+    "scoringType": "head",
+    "leagueType": "private",
+    "renew": "453_13803",
+    "renewed": "",
+    "feloTier": "gold",
+    "isHighscore": "",
+    "matchupWeek": 7,
+    "irisGroupChatId": "",
+    "allowAddToDlExtraPos": true,
+    "isProLeague": false,
+    "isCashLeague": false,
+    "currentWeek": 7,
+    "startWeek": 1,
+    "startDate": "2025-10-07",
+    "endWeek": 23,
+    "endDate": "2026-04-05",
+    "currentDate": "2025-11-21",
+    "isPlusLeague": false,
+    "gameCode": "nhl",
+    "season": 2025,
+    "standings": {
+      "teams": [
+        {
+          "teamKey": "465.l.30702.t.7",
+          "teamId": 7,
+          "name": "Columbus CottonMouths",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/7",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/6c42caa7654f94e2e7f9b0a855cfaa819e51e0844c437cc00a08515dd721aab9.png"
+            }
+          ],
+          "previousSeasonTeamRank": 4,
+          "waiverPriority": 3,
+          "numberOfMoves": 12,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 2
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 7,
+              "nickname": "Daniel",
+              "guid": "R4TRBEMAT66WJS6Y5E6EKYZYVY",
+              "email": "djukanovic2007@hotmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 841,
+              "feloTier": "platinum"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 82
+              },
+              {
+                "statId": 2,
+                "value": 137
+              },
+              {
+                "statId": 5,
+                "value": 173
+              },
+              {
+                "statId": 8,
+                "value": 64
+              },
+              {
+                "statId": 11,
+                "value": 2
+              },
+              {
+                "statId": 12,
+                "value": 14
+              },
+              {
+                "statId": 14,
+                "value": 603
+              },
+              {
+                "statId": 16,
+                "value": 623
+              },
+              {
+                "statId": 31,
+                "value": 385
+              },
+              {
+                "statId": 32,
+                "value": 208
+              },
+              {
+                "statId": 19,
+                "value": 20
+              },
+              {
+                "statId": 22,
+                "value": 94
+              },
+              {
+                "statId": 23,
+                "value": 2.55
+              },
+              {
+                "statId": 25,
+                "value": 887
+              },
+              {
+                "statId": 24,
+                "value": 981
+              },
+              {
+                "statId": 26,
+                "value": 0.904
+              },
+              {
+                "statId": 27,
+                "value": 0
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 108
+          },
+          "teamStandings": {
+            "rank": 1,
+            "playoffSeed": 1,
+            "outcomeTotals": {
+              "wins": 47,
+              "losses": 29,
+              "ties": 14,
+              "percentage": 0.6
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.10",
+          "teamId": 10,
+          "name": "The Crosby Show",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/10",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/25957df111ab320b85342c44c5d6485b8ed70c8bf00d9e0edda888164ebb52b2.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 5,
+          "waiverPriority": 4,
+          "numberOfMoves": 26,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 2
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 10,
+              "nickname": "Andrew",
+              "guid": "RR4HVPKOCKAPHBW7KWGFWBC454",
+              "email": "andrew.massie.18@gmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 851,
+              "feloTier": "platinum"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 71
+              },
+              {
+                "statId": 2,
+                "value": 122
+              },
+              {
+                "statId": 5,
+                "value": 180
+              },
+              {
+                "statId": 8,
+                "value": 57
+              },
+              {
+                "statId": 11,
+                "value": 1
+              },
+              {
+                "statId": 12,
+                "value": 7
+              },
+              {
+                "statId": 14,
+                "value": 599
+              },
+              {
+                "statId": 16,
+                "value": 937
+              },
+              {
+                "statId": 31,
+                "value": 336
+              },
+              {
+                "statId": 32,
+                "value": 308
+              },
+              {
+                "statId": 19,
+                "value": 28
+              },
+              {
+                "statId": 22,
+                "value": 128
+              },
+              {
+                "statId": 23,
+                "value": 2.74
+              },
+              {
+                "statId": 25,
+                "value": 1113
+              },
+              {
+                "statId": 24,
+                "value": 1241
+              },
+              {
+                "statId": 26,
+                "value": 0.897
+              },
+              {
+                "statId": 27,
+                "value": 3
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 105
+          },
+          "teamStandings": {
+            "rank": 2,
+            "playoffSeed": 2,
+            "outcomeTotals": {
+              "wins": 47,
+              "losses": 32,
+              "ties": 11,
+              "percentage": 0.583
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.1",
+          "teamId": 1,
+          "name": "Cutter Wrists",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/1",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a41d500b894de15b716ac56cd54f2d14106a2ea885e10e6e3ad52e9db410bfbf.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 6,
+          "waiverPriority": 9,
+          "numberOfMoves": 18,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 1
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 1,
+              "nickname": "Butters",
+              "guid": "ZA4IDJ7VZFOYZSMB4Z2B3MI7TI",
+              "isCommissioner": true,
+              "email": "hhh928@hotmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/4593/39035196566_44325b_64sq.jpg",
+              "feloScore": 977,
+              "feloTier": "diamond"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 81
+              },
+              {
+                "statId": 2,
+                "value": 159
+              },
+              {
+                "statId": 5,
+                "value": 169
+              },
+              {
+                "statId": 8,
+                "value": 88
+              },
+              {
+                "statId": 11,
+                "value": 2
+              },
+              {
+                "statId": 12,
+                "value": 10
+              },
+              {
+                "statId": 14,
+                "value": 742
+              },
+              {
+                "statId": 16,
+                "value": 907
+              },
+              {
+                "statId": 31,
+                "value": 242
+              },
+              {
+                "statId": 32,
+                "value": 296
+              },
+              {
+                "statId": 19,
+                "value": 20
+              },
+              {
+                "statId": 22,
+                "value": 127
+              },
+              {
+                "statId": 23,
+                "value": 3
+              },
+              {
+                "statId": 25,
+                "value": 936
+              },
+              {
+                "statId": 24,
+                "value": 1063
+              },
+              {
+                "statId": 26,
+                "value": 0.881
+              },
+              {
+                "statId": 27,
+                "value": 1
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 102
+          },
+          "teamStandings": {
+            "rank": 3,
+            "playoffSeed": 3,
+            "outcomeTotals": {
+              "wins": 46,
+              "losses": 34,
+              "ties": 10,
+              "percentage": 0.567
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.11",
+          "teamId": 11,
+          "name": "The Stripeless Zebra",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/11",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/f7cfe5a074aecb630baa24b8cc94d2fc77d912b7d4405a5799f40ad6ab71ce52.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 3,
+          "waiverPriority": 2,
+          "numberOfMoves": 31,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 3
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 11,
+              "nickname": "Dave",
+              "guid": "I573DLTBYV3LFFFF27743WMX6U",
+              "email": "d.a.isaak@gmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 951,
+              "feloTier": "diamond"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 76
+              },
+              {
+                "statId": 2,
+                "value": 119
+              },
+              {
+                "statId": 5,
+                "value": 182
+              },
+              {
+                "statId": 8,
+                "value": 55
+              },
+              {
+                "statId": 11,
+                "value": 10
+              },
+              {
+                "statId": 12,
+                "value": 8
+              },
+              {
+                "statId": 14,
+                "value": 753
+              },
+              {
+                "statId": 16,
+                "value": 865
+              },
+              {
+                "statId": 31,
+                "value": 394
+              },
+              {
+                "statId": 32,
+                "value": 343
+              },
+              {
+                "statId": 19,
+                "value": 17
+              },
+              {
+                "statId": 22,
+                "value": 111
+              },
+              {
+                "statId": 23,
+                "value": 3.1
+              },
+              {
+                "statId": 25,
+                "value": 872
+              },
+              {
+                "statId": 24,
+                "value": 983
+              },
+              {
+                "statId": 26,
+                "value": 0.887
+              },
+              {
+                "statId": 27,
+                "value": 1
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 101
+          },
+          "teamStandings": {
+            "rank": 4,
+            "playoffSeed": 4,
+            "outcomeTotals": {
+              "wins": 45,
+              "losses": 34,
+              "ties": 11,
+              "percentage": 0.561
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.9",
+          "teamId": 9,
+          "name": "Scoreface",
+          "isOwnedByCurrentLogin": 1,
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/9",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+            }
+          ],
+          "previousSeasonTeamRank": 2,
+          "waiverPriority": 10,
+          "numberOfMoves": 24,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 1
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 9,
+              "nickname": "jbru",
+              "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+              "isCurrentLogin": 1,
+              "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+              "feloScore": 905,
+              "feloTier": "diamond"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 74
+              },
+              {
+                "statId": 2,
+                "value": 134
+              },
+              {
+                "statId": 5,
+                "value": 145
+              },
+              {
+                "statId": 8,
+                "value": 68
+              },
+              {
+                "statId": 11,
+                "value": 5
+              },
+              {
+                "statId": 12,
+                "value": 13
+              },
+              {
+                "statId": 14,
+                "value": 761
+              },
+              {
+                "statId": 16,
+                "value": 1055
+              },
+              {
+                "statId": 31,
+                "value": 313
+              },
+              {
+                "statId": 32,
+                "value": 315
+              },
+              {
+                "statId": 19,
+                "value": 18
+              },
+              {
+                "statId": 22,
+                "value": 110
+              },
+              {
+                "statId": 23,
+                "value": 2.79
+              },
+              {
+                "statId": 25,
+                "value": 1137
+              },
+              {
+                "statId": 24,
+                "value": 1247
+              },
+              {
+                "statId": 26,
+                "value": 0.912
+              },
+              {
+                "statId": 27,
+                "value": 4
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 98
+          },
+          "teamStandings": {
+            "rank": 5,
+            "playoffSeed": 5,
+            "outcomeTotals": {
+              "wins": 44,
+              "losses": 36,
+              "ties": 10,
+              "percentage": 0.544
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.3",
+          "teamId": 3,
+          "name": "Admiral Nagumo",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/3",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/029bc3937ce31def9bfa75452f97b88059807517799409ddd56e82047aa1330d.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 10,
+          "waiverPriority": 6,
+          "numberOfMoves": 13,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 1
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 3,
+              "nickname": "Kevin",
+              "guid": "FYKIDVRX6OAF7VYRQPWZ3BS6LA",
+              "email": "kevin.osztermayer@gmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 811,
+              "feloTier": "platinum"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 90
+              },
+              {
+                "statId": 2,
+                "value": 140
+              },
+              {
+                "statId": 5,
+                "value": 104
+              },
+              {
+                "statId": 8,
+                "value": 68
+              },
+              {
+                "statId": 11,
+                "value": 5
+              },
+              {
+                "statId": 12,
+                "value": 10
+              },
+              {
+                "statId": 14,
+                "value": 701
+              },
+              {
+                "statId": 16,
+                "value": 743
+              },
+              {
+                "statId": 31,
+                "value": 266
+              },
+              {
+                "statId": 32,
+                "value": 287
+              },
+              {
+                "statId": 19,
+                "value": 21
+              },
+              {
+                "statId": 22,
+                "value": 79
+              },
+              {
+                "statId": 23,
+                "value": 2.68
+              },
+              {
+                "statId": 25,
+                "value": 700
+              },
+              {
+                "statId": 24,
+                "value": 779
+              },
+              {
+                "statId": 26,
+                "value": 0.899
+              },
+              {
+                "statId": 27,
+                "value": 0
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 98
+          },
+          "teamStandings": {
+            "rank": 6,
+            "playoffSeed": 6,
+            "outcomeTotals": {
+              "wins": 43,
+              "losses": 35,
+              "ties": 12,
+              "percentage": 0.544
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.12",
+          "teamId": 12,
+          "name": "Uncles With Benefits",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/12",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/8bd26d5c4482909f2483fb020057aaae2f334f079652771436729b41a0147109.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 8,
+          "waiverPriority": 11,
+          "numberOfMoves": 6,
+          "numberOfTrades": 2,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 1
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 12,
+              "nickname": "David",
+              "guid": "35CDPLKZFDKD42H2XT2J6D6SFU",
+              "email": "davidjc71@hotmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/0a6e04ac-d4fc-42d8-957e-239a5a49fa33_64sq.jpg",
+              "feloScore": 853,
+              "feloTier": "platinum"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 103
+              },
+              {
+                "statId": 2,
+                "value": 143
+              },
+              {
+                "statId": 5,
+                "value": 188
+              },
+              {
+                "statId": 8,
+                "value": 80
+              },
+              {
+                "statId": 11,
+                "value": 3
+              },
+              {
+                "statId": 12,
+                "value": 11
+              },
+              {
+                "statId": 14,
+                "value": 707
+              },
+              {
+                "statId": 16,
+                "value": 598
+              },
+              {
+                "statId": 31,
+                "value": 420
+              },
+              {
+                "statId": 32,
+                "value": 288
+              },
+              {
+                "statId": 19,
+                "value": 15
+              },
+              {
+                "statId": 22,
+                "value": 80
+              },
+              {
+                "statId": 23,
+                "value": 2.73
+              },
+              {
+                "statId": 25,
+                "value": 752
+              },
+              {
+                "statId": 24,
+                "value": 832
+              },
+              {
+                "statId": 26,
+                "value": 0.904
+              },
+              {
+                "statId": 27,
+                "value": 2
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 93
+          },
+          "teamStandings": {
+            "rank": 7,
+            "playoffSeed": 7,
+            "outcomeTotals": {
+              "wins": 41,
+              "losses": 38,
+              "ties": 11,
+              "percentage": 0.517
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.5",
+          "teamId": 5,
+          "name": "It’s joever",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/5",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/15bcdc1215290c4ad1dbbf41623f6dca14123d95d3b8183ad89f63989107c955.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 11,
+          "waiverPriority": 7,
+          "numberOfMoves": 2,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 0
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 5,
+              "nickname": "san",
+              "guid": "QFQVHR625CKIQQTCSLZODEUERU",
+              "email": "tdat824@hotmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 534,
+              "feloTier": "bronze"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 77
+              },
+              {
+                "statId": 2,
+                "value": 116
+              },
+              {
+                "statId": 5,
+                "value": 112
+              },
+              {
+                "statId": 8,
+                "value": 60
+              },
+              {
+                "statId": 11,
+                "value": 2
+              },
+              {
+                "statId": 12,
+                "value": 15
+              },
+              {
+                "statId": 14,
+                "value": 607
+              },
+              {
+                "statId": 16,
+                "value": 622
+              },
+              {
+                "statId": 31,
+                "value": 165
+              },
+              {
+                "statId": 32,
+                "value": 197
+              },
+              {
+                "statId": 19,
+                "value": 20
+              },
+              {
+                "statId": 22,
+                "value": 98
+              },
+              {
+                "statId": 23,
+                "value": 2.45
+              },
+              {
+                "statId": 25,
+                "value": 1012
+              },
+              {
+                "statId": 24,
+                "value": 1110
+              },
+              {
+                "statId": 26,
+                "value": 0.912
+              },
+              {
+                "statId": 27,
+                "value": 1
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 80
+          },
+          "teamStandings": {
+            "rank": 8,
+            "playoffSeed": 8,
+            "outcomeTotals": {
+              "wins": 35,
+              "losses": 45,
+              "ties": 10,
+              "percentage": 0.444
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.8",
+          "teamId": 8,
+          "name": "Resting Mitch Face",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/8",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/91d9aa0cc63f2f484c5b0618f1ac9dd208d8fd62499c69be85a530125d1100f5.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 9,
+          "waiverPriority": 5,
+          "numberOfMoves": 16,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 2
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 8,
+              "nickname": "Justin",
+              "guid": "66IT5IWJJJBUQ4IHZK5D46BZNQ",
+              "email": "justinjosephhoage@gmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/f88e0959-718a-4fbc-bce8-6e01826616e7_64sq.jpg",
+              "feloScore": 646,
+              "feloTier": "silver"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 61
+              },
+              {
+                "statId": 2,
+                "value": 134
+              },
+              {
+                "statId": 5,
+                "value": 140
+              },
+              {
+                "statId": 8,
+                "value": 48
+              },
+              {
+                "statId": 11,
+                "value": 4
+              },
+              {
+                "statId": 12,
+                "value": 11
+              },
+              {
+                "statId": 14,
+                "value": 562
+              },
+              {
+                "statId": 16,
+                "value": 472
+              },
+              {
+                "statId": 31,
+                "value": 333
+              },
+              {
+                "statId": 32,
+                "value": 231
+              },
+              {
+                "statId": 19,
+                "value": 19
+              },
+              {
+                "statId": 22,
+                "value": 102
+              },
+              {
+                "statId": 23,
+                "value": 2.74
+              },
+              {
+                "statId": 25,
+                "value": 973
+              },
+              {
+                "statId": 24,
+                "value": 1075
+              },
+              {
+                "statId": 26,
+                "value": 0.905
+              },
+              {
+                "statId": 27,
+                "value": 3
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 78
+          },
+          "teamStandings": {
+            "rank": 9,
+            "outcomeTotals": {
+              "wins": 34,
+              "losses": 46,
+              "ties": 10,
+              "percentage": 0.433
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.4",
+          "teamId": 4,
+          "name": "Philadelphia Brière Force",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/4",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/24706104483_e1787327fc.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 12,
+          "waiverPriority": 8,
+          "numberOfMoves": 5,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 0
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 4,
+              "nickname": "Alex Ratelle",
+              "guid": "KTBMF3ONAMTYIQXMKG4ADQWE44",
+              "email": "alex.ratelle@live.ca",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 531,
+              "feloTier": "bronze"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 81
+              },
+              {
+                "statId": 2,
+                "value": 150
+              },
+              {
+                "statId": 5,
+                "value": 128
+              },
+              {
+                "statId": 8,
+                "value": 63
+              },
+              {
+                "statId": 11,
+                "value": 1
+              },
+              {
+                "statId": 12,
+                "value": 16
+              },
+              {
+                "statId": 14,
+                "value": 714
+              },
+              {
+                "statId": 16,
+                "value": 601
+              },
+              {
+                "statId": 31,
+                "value": 220
+              },
+              {
+                "statId": 32,
+                "value": 237
+              },
+              {
+                "statId": 19,
+                "value": 8
+              },
+              {
+                "statId": 22,
+                "value": 58
+              },
+              {
+                "statId": 23,
+                "value": 2.76
+              },
+              {
+                "statId": 25,
+                "value": 520
+              },
+              {
+                "statId": 24,
+                "value": 578
+              },
+              {
+                "statId": 26,
+                "value": 0.9
+              },
+              {
+                "statId": 27,
+                "value": 0
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 74
+          },
+          "teamStandings": {
+            "rank": 10,
+            "outcomeTotals": {
+              "wins": 30,
+              "losses": 46,
+              "ties": 14,
+              "percentage": 0.411
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.2",
+          "teamId": 2,
+          "name": "Dude Where’s Makar?",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/2",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/26058d13c1f5dcac48a626fa4bb1428cdb665b859ed46cb9f168ee536d7fc185.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 7,
+          "waiverPriority": 12,
+          "numberOfMoves": 3,
+          "numberOfTrades": 0,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 1
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 2,
+              "nickname": "Matt",
+              "guid": "MKRYVZCHSERQT7FA6SJELXHS54",
+              "email": "Matt.morehouse29@gmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+              "feloScore": 616,
+              "feloTier": "silver"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 99
+              },
+              {
+                "statId": 2,
+                "value": 139
+              },
+              {
+                "statId": 5,
+                "value": 121
+              },
+              {
+                "statId": 8,
+                "value": 76
+              },
+              {
+                "statId": 11,
+                "value": 5
+              },
+              {
+                "statId": 12,
+                "value": 13
+              },
+              {
+                "statId": 14,
+                "value": 673
+              },
+              {
+                "statId": 16,
+                "value": 332
+              },
+              {
+                "statId": 31,
+                "value": 262
+              },
+              {
+                "statId": 32,
+                "value": 245
+              },
+              {
+                "statId": 19,
+                "value": 10
+              },
+              {
+                "statId": 22,
+                "value": 98
+              },
+              {
+                "statId": 23,
+                "value": 3.29
+              },
+              {
+                "statId": 25,
+                "value": 703
+              },
+              {
+                "statId": 24,
+                "value": 801
+              },
+              {
+                "statId": 26,
+                "value": 0.878
+              },
+              {
+                "statId": 27,
+                "value": 0
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 72
+          },
+          "teamStandings": {
+            "rank": 11,
+            "outcomeTotals": {
+              "wins": 29,
+              "losses": 47,
+              "ties": 14,
+              "percentage": 0.4
+            }
+          }
+        },
+        {
+          "teamKey": "465.l.30702.t.6",
+          "teamId": 6,
+          "name": "MarchandNoseBest",
+          "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/6",
+          "teamLogos": [
+            {
+              "size": "large",
+              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/62ba931d62663a176439877224960645744f642a50bedab1a7f7f2a6eb8e58c1.jpg"
+            }
+          ],
+          "previousSeasonTeamRank": 1,
+          "waiverPriority": 1,
+          "numberOfMoves": 17,
+          "numberOfTrades": 2,
+          "rosterAdds": {
+            "coverageType": "week",
+            "coverageValue": 7,
+            "value": 0
+          },
+          "leagueScoringType": "head",
+          "hasDraftGrade": false,
+          "managers": [
+            {
+              "managerId": 6,
+              "nickname": "Anthony",
+              "guid": "R5ZT3KUJGO3D7T6XNFGVCQTQXU",
+              "email": "acastonguay_19@hotmail.com",
+              "imageUrl": "https://s.yimg.com/ag/images/d9dd354a-fa7c-4b68-b445-7b7385b764baBC_64sq.jpg",
+              "feloScore": 914,
+              "feloTier": "diamond"
+            }
+          ],
+          "teamStats": {
+            "coverageType": "season",
+            "season": 2025,
+            "stats": [
+              {
+                "statId": 1,
+                "value": 77
+              },
+              {
+                "statId": 2,
+                "value": 145
+              },
+              {
+                "statId": 5,
+                "value": 147
+              },
+              {
+                "statId": 8,
+                "value": 60
+              },
+              {
+                "statId": 11,
+                "value": 4
+              },
+              {
+                "statId": 12,
+                "value": 16
+              },
+              {
+                "statId": 14,
+                "value": 665
+              },
+              {
+                "statId": 16,
+                "value": 435
+              },
+              {
+                "statId": 31,
+                "value": 276
+              },
+              {
+                "statId": 32,
+                "value": 208
+              },
+              {
+                "statId": 19,
+                "value": 23
+              },
+              {
+                "statId": 22,
+                "value": 103
+              },
+              {
+                "statId": 23,
+                "value": 2.86
+              },
+              {
+                "statId": 25,
+                "value": 865
+              },
+              {
+                "statId": 24,
+                "value": 968
+              },
+              {
+                "statId": 26,
+                "value": 0.894
+              },
+              {
+                "statId": 27,
+                "value": 1
+              }
+            ]
+          },
+          "teamPoints": {
+            "coverageType": "season",
+            "season": 2025,
+            "total": 71
+          },
+          "teamStandings": {
+            "rank": 12,
+            "outcomeTotals": {
+              "wins": 29,
+              "losses": 48,
+              "ties": 13,
+              "percentage": 0.394
+            }
+          }
+        }
+      ]
+    }
+  }
+}

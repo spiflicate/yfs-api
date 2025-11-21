@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1" time="13.79919052124ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <users count="1">
+  <user>
+   <guid>ZJE6QAFOUXVLFTLA5F2HL5MWUH</guid>
+  </user>
+ </users>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-8rmtk Fri Nov 21 18:39:49 UTC 2025 -->

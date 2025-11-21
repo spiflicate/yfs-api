@@ -1,0 +1,45 @@
+{
+  "team": {
+    "teamKey": "465.l.30702.t.2",
+    "teamId": 2,
+    "name": "Dude Where’s Makar?",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/2",
+    "teamLogos": [
+      {
+        "size": "large",
+        "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/26058d13c1f5dcac48a626fa4bb1428cdb665b859ed46cb9f168ee536d7fc185.jpg"
+      }
+    ],
+    "previousSeasonTeamRank": 7,
+    "waiverPriority": 12,
+    "numberOfMoves": 3,
+    "numberOfTrades": 0,
+    "rosterAdds": {
+      "coverageType": "week",
+      "coverageValue": 7,
+      "value": 1
+    },
+    "leagueScoringType": "head",
+    "hasDraftGrade": false,
+    "managers": [
+      {
+        "managerId": 2,
+        "nickname": "Matt",
+        "guid": "MKRYVZCHSERQT7FA6SJELXHS54",
+        "email": "Matt.morehouse29@gmail.com",
+        "imageUrl": "https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg",
+        "feloScore": 616,
+        "feloTier": "silver"
+      }
+    ],
+    "teamStandings": {
+      "rank": 11,
+      "outcomeTotals": {
+        "wins": 29,
+        "losses": 47,
+        "ties": 14,
+        "percentage": 0.4
+      }
+    }
+  }
+}

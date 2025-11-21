@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/team/465.l.30702.t.4;out=standings" time="46.459913253784ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <team>
+  <team_key>465.l.30702.t.4</team_key>
+  <team_id>4</team_id>
+  <name>Philadelphia Brière Force</name>
+  <url>https://hockey.fantasysports.yahoo.com/hockey/30702/4</url>
+  <team_logos>
+   <team_logo>
+    <size>large</size>
+    <url>https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/24706104483_e1787327fc.jpg</url>
+   </team_logo>
+  </team_logos>
+  <previous_season_team_rank>12</previous_season_team_rank>
+  <waiver_priority>8</waiver_priority>
+  <number_of_moves>5</number_of_moves>
+  <number_of_trades>0</number_of_trades>
+  <roster_adds>
+   <coverage_type>week</coverage_type>
+   <coverage_value>7</coverage_value>
+   <value>0</value>
+  </roster_adds>
+  <league_scoring_type>head</league_scoring_type>
+  <has_draft_grade>0</has_draft_grade>
+  <managers>
+   <manager>
+    <manager_id>4</manager_id>
+    <nickname>Alex Ratelle</nickname>
+    <guid>KTBMF3ONAMTYIQXMKG4ADQWE44</guid>
+    <email>alex.ratelle@live.ca</email>
+    <image_url>https://s.yimg.com/ag/images/default_user_profile_pic_64sq.jpg</image_url>
+    <felo_score>531</felo_score>
+    <felo_tier>bronze</felo_tier>
+   </manager>
+  </managers>
+  <team_standings>
+   <rank>10</rank>
+   <outcome_totals>
+    <wins>30</wins>
+    <losses>46</losses>
+    <ties>14</ties>
+    <percentage>.411</percentage>
+   </outcome_totals>
+  </team_standings>
+ </team>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-fn9hm Fri Nov 21 18:27:24 UTC 2025 -->
