@@ -11,13 +11,13 @@ import type {
    GetTeamRosterParams,
    GetTeamStatsParams,
    RosterChangeRequest,
-   RosterChangeResponse,
-   RosterPlayer,
-   Team,
-   TeamManager,
-   TeamRoster,
-   TeamStandings,
-   TeamStats,
+   // RosterChangeResponse,
+   // RosterPlayer,
+   // Team,
+   // TeamManager,
+   // TeamRoster,
+   // TeamStandings,
+   // TeamStats,
 } from '../types/resources/team.js';
 
 /**
@@ -303,7 +303,7 @@ export class TeamResource {
    async updateRoster(
       teamKey: ResourceKey,
       request: RosterChangeRequest,
-   ): Promise<RosterChangeResponse> {
+   ): Promise<unknown> {
       let path = `/team/${teamKey}/roster`;
 
       // Add coverage type

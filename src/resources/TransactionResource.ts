@@ -11,8 +11,8 @@
 import type { HttpClient } from '../client/HttpClient.js';
 import type {
    ResourceKey,
-   TransactionStatus,
-   TransactionType,
+   // TransactionStatus,
+   // TransactionType,
 } from '../types/common.js';
 import type {
    AcceptTradeParams,
@@ -25,7 +25,7 @@ import type {
    ProposeTradeParams,
    RejectTradeParams,
    Transaction,
-   TransactionPlayer,
+   // TransactionPlayer,
    TransactionResponse,
    VoteAgainstTradeParams,
    WaiverClaimParams,
@@ -265,14 +265,12 @@ export class TransactionResource {
             },
          });
 
-         const transaction = this.parseTransaction(
-            response.fantasy_content.transaction,
-         );
+         const transaction = response.fantasy_content.transaction;
 
          return {
             success: true,
-            transactionKey: transaction.transactionKey,
-            transaction,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
          };
       } catch (error) {
          return {
@@ -360,14 +358,12 @@ export class TransactionResource {
             },
          });
 
-         const transaction = this.parseTransaction(
-            response.fantasy_content.transaction,
-         );
+         const transaction = response.fantasy_content.transaction;
 
          return {
             success: true,
-            transactionKey: transaction.transactionKey,
-            transaction,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
          };
       } catch (error) {
          return {
@@ -457,14 +453,15 @@ export class TransactionResource {
             },
          });
 
-         const transaction = this.parseTransaction(
-            response.transaction as Record<string, unknown>,
-         );
+         const transaction = response.transaction as Record<
+            string,
+            unknown
+         >;
 
          return {
             success: true,
-            transactionKey: transaction.transactionKey,
-            transaction,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
          };
       } catch (error) {
          return {
@@ -512,14 +509,15 @@ export class TransactionResource {
             },
          });
 
-         const transaction = this.parseTransaction(
-            response.transaction as Record<string, unknown>,
-         );
+         const transaction = response.transaction as Record<
+            string,
+            unknown
+         >;
 
          return {
             success: true,
-            transactionKey: transaction.transactionKey,
-            transaction,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
          };
       } catch (error) {
          return {
@@ -569,14 +567,15 @@ export class TransactionResource {
             },
          });
 
-         const transaction = this.parseTransaction(
-            response.transaction as Record<string, unknown>,
-         );
+         const transaction = response.transaction as Record<
+            string,
+            unknown
+         >;
 
          return {
             success: true,
-            transactionKey: transaction.transactionKey,
-            transaction,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
          };
       } catch (error) {
          return {

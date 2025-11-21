@@ -4,15 +4,15 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
-import type { PlayerStatus, ResourceKey } from '../types/common.js';
+import type { ResourceKey } from '../types/common.js';
 import type {
    GetPlayerParams,
    GetPlayerStatsParams,
-   Player,
-   PlayerCollectionResponse,
-   PlayerOwnership,
-   PlayerPercentOwned,
-   PlayerStats,
+   // Player,
+   // PlayerCollectionResponse,
+   // PlayerOwnership,
+   // PlayerPercentOwned,
+   // PlayerStats,
    SearchPlayersParams,
 } from '../types/resources/player.js';
 
@@ -216,8 +216,6 @@ export class PlayerResource {
       if (!response.league.players) {
          return { count: 0, players: [] };
       }
-
-      const players = response.league.players;
 
       return response; //{ count: players.length, players };
    }
