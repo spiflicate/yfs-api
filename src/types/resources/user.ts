@@ -11,107 +11,156 @@ import type { BaseMetadata, GameCode, ResourceKey } from '../common';
 export type UserGUID = string;
 
 /**
- * Represents a Yahoo user in the Fantasy Sports system.
- *
- * @interface User
- * @description Contains user profile information and their games and teams.
+ * User information
  */
 export interface User extends BaseMetadata {
-   /** User's unique global identifier (GUID) */
+   /**
+    * User's unique GUID
+    */
    guid: UserGUID;
-   /** Games the user has participated in (optional) */
+
+   /**
+    * Games the user has participated in
+    */
    games?: UserGame[];
 }
 
 /**
- * Represents a user's participation in a specific game.
- *
- * @interface UserGame
- * @description Contains game information and teams for that game.
+ * User's game information
  */
 export interface UserGame {
-   /** Unique identifier for the game in format "gameId" */
+   /**
+    * Game key
+    */
    gameKey: string;
-   /** Numeric game identifier */
+
+   /**
+    * Game ID
+    */
    gameId: string;
-   /** Game code identifier (e.g., "nhl" for hockey) */
+
+   /**
+    * Game code (sport)
+    */
    gameCode: GameCode;
-   /** The season/year of the game */
+
+   /**
+    * Season year
+    */
    season: number;
-   /** User's teams in this game (optional) */
+
+   /**
+    * User's teams in this game
+    */
    teams?: UserTeam[];
 }
 
 /**
- * Represents a user's team summary.
- *
- * @interface UserTeam
- * @description Contains basic team information and league affiliation.
+ * User's team summary
  */
 export interface UserTeam {
-   /** Unique identifier for the team */
+   /**
+    * Team key
+    */
    teamKey: ResourceKey;
-   /** Numeric team identifier */
+
+   /**
+    * Team ID
+    */
    teamId: string;
-   /** Team name */
+
+   /**
+    * Team name
+    */
    name: string;
-   /** URL to the team logo image (optional) */
+
+   /**
+    * Team logo URL
+    */
    teamLogoUrl?: string;
-   /** Waiver priority number for this team (optional) */
+
+   /**
+    * Waiver priority
+    */
    waiverPriority?: number;
-   /** Remaining FAAB balance (optional) */
+
+   /**
+    * FAAB balance
+    */
    faabBalance?: number;
-   /** Number of roster moves made (optional) */
+
+   /**
+    * Number of moves made
+    */
    numberOfMoves?: number;
-   /** Number of trades completed (optional) */
+
+   /**
+    * Number of trades made
+    */
    numberOfTrades?: number;
-   /** League the team belongs to */
-   league: LeagueReference;
-   /** URL to the team on Yahoo Fantasy Sports */
+
+   /**
+    * League the team belongs to
+    */
+   league: {
+      /**
+       * League key
+       */
+      leagueKey: ResourceKey;
+
+      /**
+       * League ID
+       */
+      leagueId: string;
+
+      /**
+       * League name
+       */
+      name: string;
+
+      /**
+       * URL to league page
+       */
+      url: string;
+   };
+
+   /**
+    * URL to team page
+    */
    url: string;
 }
 
 /**
- * Represents a reference to a league.
- *
- * @interface LeagueReference
- * @description Contains basic league information for context.
- */
-export interface LeagueReference {
-   /** Unique identifier for the league in format "gameId.l.leagueId" */
-   leagueKey: ResourceKey;
-   /** Numeric league identifier */
-   leagueId: string;
-   /** Display name of the league */
-   name: string;
-   /** URL to access the league on Yahoo Fantasy Sports */
-   url: string;
-}
-
-/**
- * Parameters for retrieving user's games.
- *
- * @interface GetUserGamesParams
- * @description Optional filters for game retrieval.
+ * Parameters for getting user's games
  */
 export interface GetUserGamesParams {
-   /** Filter by one or more game codes (optional) */
+   /**
+    * Filter by game codes
+    */
    gameCodes?: GameCode[];
-   /** Filter by one or more seasons (optional) */
+
+   /**
+    * Filter by seasons
+    */
    seasons?: number[];
-   /** Include user's teams in response (optional) */
+
+   /**
+    * Include user's teams
+    */
    includeTeams?: boolean;
 }
 
 /**
- * Parameters for retrieving user's teams.
- *
- * @interface GetUserTeamsParams
- * @description Optional filters for team retrieval.
+ * Parameters for getting user's teams
  */
 export interface GetUserTeamsParams {
-   /** Filter by specific game code (optional) */
+   /**
+    * Filter by game code
+    */
    gameCode?: GameCode;
-   /** Filter by specific season (optional) */
+
+   /**
+    * Filter by season
+    */
    season?: number;
 }
