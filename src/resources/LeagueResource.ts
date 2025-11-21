@@ -5,25 +5,25 @@
 
 import type { HttpClient } from '../client/HttpClient.js';
 import type {
-   DraftStatus,
-   GameCode,
+   // DraftStatus,
+   // GameCode,
    ResourceKey,
-   ScoringType,
+   // ScoringType,
 } from '../types/common.js';
 import type {
    GetLeagueParams,
    GetLeagueScoreboardParams,
    GetLeagueStandingsParams,
    GetLeagueTeamsParams,
-   League,
-   LeagueScoreboard,
-   LeagueSettings,
-   LeagueStandings,
-   Matchup,
-   MatchupTeam,
-   StandingsTeam,
-} from '../types/resources/league-old.js';
-import type { Team } from '../types/resources/team.js';
+   // League,
+   // LeagueScoreboard,
+   // LeagueSettings,
+   // LeagueStandings,
+   // Matchup,
+   // MatchupTeam,
+   // StandingsTeam,
+} from '../types/resources/league.js';
+// import type { Team } from '../types/resources/team.js';
 
 /**
  * League resource client

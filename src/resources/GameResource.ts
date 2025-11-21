@@ -4,20 +4,20 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
-import type { GameCode } from '../types/common.js';
+// import type { GameCode } from '../types/common.js';
 import type {
-   Game,
-   GamePositionType,
-   GameStatCategory,
-   GameWeek,
+   // Game,
+   // GamePositionType,
+   // GameStatCategory,
+   // GameWeek,
    GetGameParams,
    GetGamesParams,
    SearchGamePlayersParams,
 } from '../types/resources/game.js';
-import type {
-   Player,
-   PlayerCollectionResponse,
-} from '../types/resources/player.js';
+// import type {
+//    Player,
+//    PlayerCollectionResponse,
+// } from '../types/resources/player.js';
 
 /**
  * Game resource client
@@ -174,7 +174,7 @@ export class GameResource {
     * const leagues = await gameClient.getLeagues('423');
     * ```
     */
-   async getLeagues(gameKey: string): Promise<GameResponse> {
+   async getLeagues(gameKey: string): Promise<unknown> {
       return this.http.get(`/game/${gameKey}/leagues`);
    }
 

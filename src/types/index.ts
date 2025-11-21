@@ -67,7 +67,7 @@ export type {
    StandingsTeam,
    StatCategory,
    StatModifier,
-} from './resources/league-old.js';
+} from './resources/league.js';
 export type {
    GetPlayerParams,
    GetPlayerStatsParams,
