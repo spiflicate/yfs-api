@@ -21,7 +21,8 @@
  * console.log('Visit this URL and authorize:', authUrl);
  *
  * // Step 2: User authorizes and gets redirected with code
- * const code = '...'; // Extract from redirect URL
+ * // (Alternatively, ask the user to input the code manually)
+ * const code = '...'; // User authorization code from yahoo
  *
  * // Step 3: Exchange code for tokens
  * await client.authenticate(code);
