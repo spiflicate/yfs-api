@@ -8,7 +8,6 @@ import type { GameCode } from '../types/common.js';
 import type {
    Game,
    GamePositionType,
-   GameResponse,
    GameStatCategory,
    GameWeek,
    GetGameParams,

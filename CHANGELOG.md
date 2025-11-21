@@ -115,15 +115,28 @@ Breaking changes will be clearly documented in major version releases.
 
 > This version is in preparation and may change before release.
 
-### Planned Changes
+### Added
 
-The following items are planned or in progress for v1.1.0. The final release notes may differ based on what actually ships:
+- Option to return raw XML responses from the Yahoo API for debugging and advanced use cases
+- XML parsing utilities and fixtures to convert Yahoo Fantasy Sports XML responses to JSON
+- New integration tests covering authentication and core league/team flows
+- Additional fixture data and helper scripts to support development and testing
 
-- Documentation refinements to keep wording clear and measured
-- Clarifications around test coverage and supported sports
-- Minor internal improvements and maintenance
+### Changed
 
-Additional fixes, features, or documentation updates will be added here as they are finalized.
+- Refactored the main client implementation and resource clients to work directly with XML responses
+- Updated internal test structure and fixtures to align with XML-based parsing
+- Restored and reorganized TypeScript response types into a dedicated folder
+
+### Fixed
+
+- Resolved TypeScript warnings and diagnostic errors in tests and supporting code
+
+### Documentation
+
+- Updated README and CHANGELOG wording to better reflect current capabilities and to avoid overpromising
+
+Additional fixes, features, or documentation updates may be added here before the final 1.1.0 release.
 
 ---
 
