@@ -1,23 +1,21 @@
 # yfs-api
 
-A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2.0 support.
+A TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2.0 support.
 
 [![npm version](https://img.shields.io/npm/v/yfs-api.svg)](https://www.npmjs.com/package/yfs-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Status:** 🚀 v1.0.0
-> **Tested Sports:** NHL (primary), NBA (basic)  
-> **Integration Tests:** 45 passing
+> **Status:** v1.0.0
+> **Test Coverage:** See TEST_SUMMARY.md for details
 
 ## Features
 
-- ✅ **Fully Typed** - Complete TypeScript types with excellent IDE support
-- ✅ **Self-Documenting** - Comprehensive JSDoc on every type and method
-- ✅ **OAuth 1.0 & 2.0** - Public API access and user authentication
-- ✅ **Auto Token Refresh** - Automatic OAuth 2.0 token refresh
-- ✅ **Resource Clients** - User, League, Team, Player, Transaction, Game
-- 🏒 **NHL Tested** - Thoroughly tested with NHL fantasy leagues
-- ⚠️ **Transaction APIs** - Experimental (add/drop/trade operations)
+- TypeScript client for Yahoo Fantasy Sports
+- OAuth 1.0 (public API) and OAuth 2.0 (user auth)
+- Token refresh support for OAuth 2.0
+- Resource clients: user, league, team, player, transaction, game
+- Integration-tested against real Yahoo Fantasy leagues (primarily NHL)
+- Transaction APIs are implemented but still experimental
 
 ## Installation
 
@@ -35,7 +33,7 @@ bun add yfs-api
 
 ### Public API Access (OAuth 1.0 - No User Auth Required)
 
-Perfect for public data like game info, player search, and league metadata:
+Useful for public data like game info, player search, and league metadata:
 
 ```typescript
 import { YahooFantasyClient } from "yfs-api";
@@ -156,34 +154,34 @@ const teams = await client.user.getTeams({ gameCode: "nhl" });
 
 ## API Coverage
 
-### ✅ Fully Implemented
+### Implemented and Tested
 
 | Resource   | Methods                                                           | Status    |
 | ---------- | ----------------------------------------------------------------- | --------- |
-| **User**   | getCurrentUser, getGames, getTeams                                | ✅ Tested |
-| **League** | get, getSettings, getStandings, getScoreboard, getTeams           | ✅ Tested |
-| **Team**   | get, getRoster, getMatchups, getStats                             | ✅ Tested |
-| **Player** | get, search, getStats, getOwnership                               | ✅ Tested |
-| **Game**   | get, getGames, searchPlayers, getPositionTypes, getStatCategories | ✅ Tested |
+| **User**   | getCurrentUser, getGames, getTeams                                | Tested   |
+| **League** | get, getSettings, getStandings, getScoreboard, getTeams           | Tested   |
+| **Team**   | get, getRoster, getMatchups, getStats                             | Tested   |
+| **Player** | get, search, getStats, getOwnership                               | Tested   |
+| **Game**   | get, getGames, searchPlayers, getPositionTypes, getStatCategories | Tested   |
 
-### ⚠️ Experimental (Untested)
+### Experimental (Not Fully Tested)
 
 | Resource        | Methods                                                    | Status          |
 | --------------- | ---------------------------------------------------------- | --------------- |
 | **Transaction** | addPlayer, dropPlayer, addDropPlayer, proposeTradeWithVote | ⚠️ Experimental |
 
-Transaction operations are implemented but haven't been tested in integration tests. Use with caution and please report any issues.
+Transaction operations are implemented but have limited real-world testing so far. Use with caution and please report any issues.
 
 ## Supported Sports
 
-| Sport      | Status           | Notes                                       |
-| ---------- | ---------------- | ------------------------------------------- |
-| 🏒 **NHL** | ✅ Fully Tested  | All features tested with real leagues       |
-| 🏀 **NBA** | ✅ Basic Support | Core endpoints work, not extensively tested |
-| 🏈 **NFL** | 🟡 Untested      | Should work, types may need refinement      |
-| ⚾ **MLB** | 🟡 Untested      | Should work, types may need refinement      |
+| Sport      | Status        | Notes                                             |
+| ---------- | ------------- | ------------------------------------------------- |
+| 🏒 **NHL** | Primary focus | Actively tested with real leagues                 |
+| 🏀 **NBA** | Basic support | Core endpoints have some coverage, not exhaustive |
+| 🏈 **NFL** | Experimental  | Likely to work; types may need refinement         |
+| ⚾ **MLB** | Experimental  | Likely to work; types may need refinement         |
 
-We welcome contributions to improve support for NFL, MLB, and other sports!
+Feedback and contributions to improve support for any sport are welcome.
 
 ## Getting Yahoo API Credentials
 
@@ -279,17 +277,7 @@ yfs-api/
 
 ## Philosophy
 
-This library is built with one core principle:
-
-> **The library should be fully self-documenting with excellent developer experience**
-
-This means:
-
-- Every type has comprehensive JSDoc with examples
-- IDE autocomplete guides you through the API
-- Type inference catches errors at compile time
-- Clear, descriptive naming throughout
-- You rarely need to check Yahoo's docs
+This library aims to be easy to understand and use while staying close to Yahoo's API. Over time the goal is to improve type safety, documentation, and examples as real-world usage surfaces gaps.
 
 ## Contributing
 
@@ -302,6 +290,8 @@ Contributions welcome! Please:
 5. Include tests for new functionality
 6. Update documentation
 
+If you have real-world usage that surfaces missing or incomplete types, contributions to improve type information are very welcome—please open an issue or pull request.
+
 ## Known Limitations
 
 1. **Transaction APIs** are experimental and untested
@@ -309,7 +299,7 @@ Contributions welcome! Please:
 3. **Stat Categories** are sport-specific and may vary
 4. **League Settings** support most options but some edge cases may exist
 
-Please report issues or contribute improvements!
+Please report issues or contribute improvements where you see gaps or rough edges.
 
 ## License
 
@@ -327,6 +317,4 @@ See [CHANGELOG.md](design/CHANGELOG.md) for release history.
 
 ---
 
-**Star this repo** if you find it helpful! ⭐
-
-_Last Updated: 2025-11-16_
+_Last Updated: 2025-11-21_

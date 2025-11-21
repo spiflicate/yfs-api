@@ -7,19 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2025-11-16
 
-### 🎉 Initial Release
+### Initial Release
 
-First production-ready release of yfs-api - a fully typed TypeScript wrapper for the Yahoo Fantasy Sports API.
+First stable release of yfs-api, a TypeScript wrapper for the Yahoo Fantasy Sports API.
 
 ### Added
 
 #### Core Features
 - **OAuth 1.0 Support** - Public API access without user authentication
-- **OAuth 2.0 Support** - User authentication with automatic token refresh
+- **OAuth 2.0 Support** - User authentication with token refresh support
 - **Token Storage Interface** - Save and restore authentication tokens between sessions
-- **Resource-Based API** - Intuitive client organization (user, league, team, player, game, transaction)
-- **Full TypeScript Support** - Complete type definitions with excellent IDE autocomplete
-- **Comprehensive JSDoc** - Self-documenting API with inline examples
+- **Resource-Based API** - Client organization for user, league, team, player, game, and transaction
+- **TypeScript Support** - Type definitions with IDE autocomplete
+- **JSDoc** - Inline documentation on public APIs
 
 #### Resources
 - **UserResource** - Get current user, games, leagues, and teams
@@ -30,10 +30,7 @@ First production-ready release of yfs-api - a fully typed TypeScript wrapper for
 - **TransactionResource** - Add/drop players, propose trades (⚠️ experimental, not integration tested)
 
 #### Sports Support
-- **NHL** - Fully tested with real fantasy hockey leagues (primary focus)
-- **NBA** - Basic support, core endpoints working
-- **NFL** - Types implemented, not extensively tested
-- **MLB** - Types implemented, not extensively tested
+All major Yahoo Fantasy sports (NHL, NBA, NFL, MLB) are intended to work with this release, but initial testing has focused on NHL leagues.
 
 #### Testing
 - **301 Unit Tests** - 96.83% line coverage, 98.19% function coverage
@@ -51,12 +48,12 @@ First production-ready release of yfs-api - a fully typed TypeScript wrapper for
 - MIT License
 
 #### Developer Experience
-- **Type Safety** - Catch errors at compile time
-- **Auto Token Refresh** - Seamless OAuth 2.0 token renewal
-- **Error Handling** - Specific error types with helpful messages
-- **Rate Limiting** - Built-in request throttling
-- **Retry Logic** - Automatic retry for failed requests
-- **Local OAuth Server** - Simplify OAuth 2.0 flow during development
+- **Type Safety** - Compile-time checking via TypeScript
+- **Token Refresh** - OAuth 2.0 token refresh support
+- **Error Handling** - Specific error types with descriptive messages
+- **Rate Limiting** - Request throttling to help respect API limits
+- **Retry Logic** - Automatic retry for selected failures
+- **Local OAuth Server** - Helper for OAuth 2.0 flow during development
 
 ### Fixed
 
@@ -111,6 +108,22 @@ Future updates may include:
 - Additional Yahoo Fantasy features
 
 Breaking changes will be clearly documented in major version releases.
+
+---
+
+## [1.1.0] - Unreleased
+
+> This version is in preparation and may change before release.
+
+### Planned Changes
+
+The following items are planned or in progress for v1.1.0. The final release notes may differ based on what actually ships:
+
+- Documentation refinements to keep wording clear and measured
+- Clarifications around test coverage and supported sports
+- Minor internal improvements and maintenance
+
+Additional fixes, features, or documentation updates will be added here as they are finalized.
 
 ---
 
