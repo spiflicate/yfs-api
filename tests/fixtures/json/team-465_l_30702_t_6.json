@@ -1,0 +1,36 @@
+{
+  "team": {
+    "teamKey": "465.l.30702.t.6",
+    "teamId": 6,
+    "name": "MarchandNoseBest",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/6",
+    "teamLogos": [
+      {
+        "size": "large",
+        "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/62ba931d62663a176439877224960645744f642a50bedab1a7f7f2a6eb8e58c1.jpg"
+      }
+    ],
+    "previousSeasonTeamRank": 1,
+    "waiverPriority": 1,
+    "numberOfMoves": 17,
+    "numberOfTrades": 2,
+    "rosterAdds": {
+      "coverageType": "week",
+      "coverageValue": 7,
+      "value": 0
+    },
+    "leagueScoringType": "head",
+    "hasDraftGrade": false,
+    "managers": [
+      {
+        "managerId": 9001,
+        "nickname": "Manager 001",
+        "guid": "SYNTHETICGUID000000000001",
+        "email": "manager@example.invalid",
+        "imageUrl": "https://example.invalid/profile/001.png",
+        "feloScore": 500,
+        "feloTier": "bronze"
+      }
+    ]
+  }
+}

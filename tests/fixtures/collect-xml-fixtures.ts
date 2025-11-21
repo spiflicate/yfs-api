@@ -39,6 +39,9 @@ async function main() {
       rawXml: true,
    });
 
+   for (const path of data.user()) {
+      await collectXML(yahooClient, path);
+   }
    for (const path of data.game()) {
       await collectXML(yahooClient, path);
    }
@@ -72,9 +75,10 @@ async function collectXML(client: YahooFantasyClient, path: string) {
       await Bun.write(`${dir}/${filename}`, xmlData as string);
       console.log(`✓ Saved: ${filename}`);
    } catch (error) {
+      const errorMessage =
+         error instanceof Error ? error.toString() : String(error);
       console.error(
-         `\n❌ Error collecting fixtures for ${filename}: `,
-         error,
+         `\n❌ Error collecting fixtures for ${filename}: ${errorMessage}`,
       );
    }
 }
@@ -82,7 +86,7 @@ async function collectXML(client: YahooFantasyClient, path: string) {
 const data = {
    leagueIds: [121384, 30702],
    teamIds: Array.from({ length: 8 }, (_, i) => i + 1),
-   playerIds: [6743, 6381, 33423],
+   playerIds: [6743, 6381, 33423, 8895, 9118],
    playerNames: ['matthews', 'judge', 'mahomes', 'doncic'],
    gameIds: [465],
    gameCodes: ['nhl', 'nba', 'mlb', 'nfl'],
@@ -128,20 +132,32 @@ const data = {
    gameKey: function (gameId?: number) {
       return `${gameId ?? this.gameId()}`;
    },
+   // User endpoints
+   user: () => [
+      `/users;use_login=1`,
+      `/users;use_login=1/games`,
+      `/users;use_login=1/teams`,
+   ],
    // Game endpoints
    game: function () {
       return [
          `/game/${this.gameCode()}`,
          `/games;game_keys=${this.gameCodes.join(',')}`,
-         `/game/${this.gameCode()}/game_weeks`,
-         `/game/${this.gameCode()}/stat_categories`,
-         `/game/${this.gameCode()}/position_types`,
+         `/game/${this.gameCode()};out=leagues;league_key=${this.leagueKey()}`,
+         `/game/${this.gameCode()};out=players`,
+         `/game/${this.gameCode()};out=game_weeks`,
+         `/game/${this.gameCode()};out=stat_categories`,
+         `/game/${this.gameCode()};out=position_types`,
       ];
    },
    // League endpoints
    league: function () {
       return [
          `/league/${this.leagueKey()}`,
+         `/league/${this.leagueKey()};out=settings`,
+         `/league/${this.leagueKey()};out=standings`,
+         `/league/${this.leagueKey()};out=scoreboard`,
+         `/league/${this.leagueKey()};out=teams`,
          `/league/${this.leagueKey()}/settings`,
          `/league/${this.leagueKey()}/standings`,
          `/league/${this.leagueKey()}/scoreboard`,
@@ -154,6 +170,10 @@ const data = {
    team: function () {
       return [
          `/team/${this.teamKey()}`,
+         `/team/${this.teamKey()};out=stats`,
+         `/team/${this.teamKey()};out=standings`,
+         `/team/${this.teamKey()};out=roster`,
+         `/team/${this.teamKey()};out=matchups`,
          `/team/${this.teamKey()}/roster`,
          `/team/${this.teamKey()}/stats`,
          `/team/${this.teamKey()}/standings`,
@@ -164,6 +184,9 @@ const data = {
    player: function () {
       return [
          `/player/${this.playerKey()}`,
+         `/player/${this.playerKey()};out=stats`,
+         `/player/${this.playerKey()};out=ownership`,
+         `/player/${this.playerKey()};out=percent_owned`,
          `/player/${this.playerKey()}/stats`,
       ];
    },

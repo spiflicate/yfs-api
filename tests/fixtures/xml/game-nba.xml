@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/game/nba" time="19.216060638428ms" copyright="Certain Data by Sportradar, Stats Perform and Rotowire" refresh_rate="60" xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng">
+ <game>
+  <game_key>466</game_key>
+  <game_id>466</game_id>
+  <name>Basketball</name>
+  <code>nba</code>
+  <type>full</type>
+  <url>https://basketball.fantasysports.yahoo.com/nba</url>
+  <season>2025</season>
+  <is_registration_over>0</is_registration_over>
+  <is_game_over>0</is_game_over>
+  <is_offseason>0</is_offseason>
+  <is_live_draft_lobby_active>1</is_live_draft_lobby_active>
+ </game>
+</fantasy_content>
+<!-- fantasy-sports-api- -public-production-bf1-6c9fb95c69-dcj8z Fri Nov 21 18:38:55 UTC 2025 -->

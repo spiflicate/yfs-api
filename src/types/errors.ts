@@ -3,6 +3,42 @@
  * @module
  */
 
+import { XMLParser } from 'fast-xml-parser';
+
+/**
+ * Parse XML error response from Yahoo API
+ * @param responseText - Raw XML response body
+ * @returns Parsed error description or undefined
+ * @internal
+ */
+function parseXMLError(responseText: string | unknown): string | undefined {
+   if (typeof responseText !== 'string') {
+      return undefined;
+   }
+
+   try {
+      const parser = new XMLParser({
+         ignoreAttributes: false,
+         textNodeName: '#text',
+         parseTagValue: true,
+         trimValues: true,
+         removeNSPrefix: true,
+      });
+
+      const parsed = parser.parse(responseText);
+
+      // Yahoo API error format: { error: { description: string, detail: ... } }
+      if (parsed.error?.description) {
+         return parsed.error.description;
+      }
+
+      return undefined;
+   } catch {
+      // If XML parsing fails, return undefined
+      return undefined;
+   }
+}
+
 /**
  * Base error class for all Yahoo Fantasy Sports API errors
  */
@@ -33,16 +69,50 @@ export class YahooApiError extends YahooFantasyError {
     */
    public readonly errorCode?: string;
 
+   /**
+    * Parsed error description from XML response if available
+    */
+   public readonly errorDescription?: string;
+
    constructor(
       message: string,
       statusCode: number,
       response?: unknown,
       errorCode?: string,
    ) {
-      super(message);
+      let finalMessage = message;
+      let errorDescription: string | undefined;
+
+      // Try to parse XML error response
+      if (typeof response === 'string' && response.includes('<?xml')) {
+         errorDescription = parseXMLError(response);
+         if (errorDescription) {
+            finalMessage = `${message}: ${errorDescription}`;
+         }
+      }
+
+      super(finalMessage);
       this.statusCode = statusCode;
       this.response = response;
       this.errorCode = errorCode;
+      this.errorDescription = errorDescription;
+   }
+
+   /**
+    * Custom string representation for cleaner error logging
+    */
+   override toString(): string {
+      let result = `${this.name}: ${this.message}`;
+
+      if (this.statusCode) {
+         result += ` (${this.statusCode})`;
+      }
+
+      if (this.errorCode) {
+         result += ` [${this.errorCode}]`;
+      }
+
+      return result;
    }
 }
 
