@@ -212,10 +212,12 @@ export class TeamResource {
       }
 
       const response = await this.http.get<{
-         team: { team_stats?: unknown };
+         team: { teamStats?: unknown };
       }>(path);
 
-      if (!response.team.team_stats) {
+      const stats = response.team.teamStats;
+
+      if (!stats) {
          throw new Error('Stats not found in response');
       }
 

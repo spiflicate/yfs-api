@@ -288,10 +288,10 @@ export class GameResource {
     */
    async getGameWeeks(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { game_weeks?: unknown[] };
+         game: { gameWeeks?: unknown[] };
       }>(`/game/${gameKey}/game_weeks`);
 
-      if (!response.game.game_weeks) {
+      if (!response.game.gameWeeks) {
          return [];
       }
 
@@ -311,10 +311,10 @@ export class GameResource {
     */
    async getStatCategories(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { stat_categories?: { stats?: unknown[] } };
+         game: { statCategories?: { stats?: unknown[] } };
       }>(`/game/${gameKey}/stat_categories`);
 
-      if (!response.game.stat_categories?.stats) {
+      if (!response.game.statCategories?.stats) {
          return [];
       }
 
@@ -334,10 +334,10 @@ export class GameResource {
     */
    async getPositionTypes(gameKey: string): Promise<unknown> {
       const response = await this.http.get<{
-         game: { position_types?: unknown[] };
+         game: { positionTypes?: unknown[] };
       }>(`/game/${gameKey}/position_types`);
 
-      if (!response.game.position_types) {
+      if (!response.game.positionTypes) {
          return [];
       }
 
