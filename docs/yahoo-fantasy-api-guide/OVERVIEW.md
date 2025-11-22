@@ -17,12 +17,12 @@ This document summarizes the official Yahoo Fantasy Sports API guide at https://
 - [Users](#users)
 
 For detailed per‑resource docs, see:
-- `YAHOO_FANTASY_API_GAMES.md`
-- `YAHOO_FANTASY_API_LEAGUES.md`
-- `YAHOO_FANTASY_API_TEAMS_ROSTERS.md`
-- `YAHOO_FANTASY_API_PLAYERS.md`
-- `YAHOO_FANTASY_API_TRANSACTIONS.md`
-- `YAHOO_FANTASY_API_USERS.md`
+- `resources/GAMES.md`
+- `resources/LEAGUES.md`
+- `resources/TEAMS_ROSTERS.md`
+- `resources/PLAYERS.md`
+- `resources/TRANSACTIONS.md`
+- `resources/USERS.md`
 
 ---
 
@@ -184,7 +184,7 @@ Parameters are always semicolon‑delimited immediately after resource or collec
 
 ## Games
 
-See `YAHOO_FANTASY_API_GAMES.md` for full details.
+See `resources/GAMES.md` for full details.
 
 Highlights:
 - Resources: `game`, collection: `games`.
@@ -198,7 +198,7 @@ Highlights:
 
 ## Leagues
 
-See `YAHOO_FANTASY_API_LEAGUES.md` for full details.
+See `resources/LEAGUES.md` for full details.
 
 Highlights:
 - Resource: `league`, collection: `leagues`.
@@ -211,7 +211,7 @@ Highlights:
 
 ## Teams
 
-See `YAHOO_FANTASY_API_TEAMS_ROSTERS.md` for full details.
+See `resources/TEAMS_ROSTERS.md` for full details.
 
 Highlights:
 - Resource: `team`, collection: `teams`.
@@ -224,7 +224,7 @@ Highlights:
 
 ## Rosters
 
-See `YAHOO_FANTASY_API_TEAMS_ROSTERS.md` for full details.
+See `resources/TEAMS_ROSTERS.md` for full details.
 
 Highlights:
 - Roster is a sub‑resource under `team`: `/team/{team_key}/roster`.
@@ -241,7 +241,7 @@ Examples:
 
 ## Players
 
-See `YAHOO_FANTASY_API_PLAYERS.md` for full details.
+See `resources/PLAYERS.md` for full details.
 
 Highlights:
 - Resource: `player`, collection: `players`.
@@ -257,7 +257,7 @@ Example:
 
 ## Transactions
 
-See `YAHOO_FANTASY_API_TRANSACTIONS.md` for full details.
+See `resources/TRANSACTIONS.md` for full details.
 
 Highlights:
 - Transaction resource types: completed adds/drops, commissioner changes, waiver claims, pending trades.
@@ -276,7 +276,7 @@ Key formats:
 
 ## Users
 
-See `YAHOO_FANTASY_API_USERS.md` for full details.
+See `resources/USERS.md` for full details.
 
 Highlights:
 - Resource: `user`, collection: `users`.
