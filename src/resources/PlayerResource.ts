@@ -278,10 +278,10 @@ export class PlayerResource {
       }
 
       const response = await this.http.get<{
-         player: { player_stats?: unknown };
+         player: { playerStats?: unknown };
       }>(path);
 
-      if (!response.player.player_stats) {
+      if (!response.player.playerStats) {
          throw new Error('Stats not found in response');
       }
 
@@ -306,7 +306,10 @@ export class PlayerResource {
          player: { ownership?: unknown };
       }>(`/player/${playerKey}/ownership`);
 
-      if (!response.player.ownership) {
+      // Yahoo may return an empty <ownership/> element, which still
+      // indicates that ownership data is present (just empty), so we
+      // only treat it as missing if the property itself is absent.
+      if (!('ownership' in response.player)) {
          throw new Error('Ownership not found in response');
       }
 
