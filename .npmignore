@@ -35,4 +35,3 @@ bun.lockb
 
 # Debug files
 debug-*.json
-api-response-samples.json

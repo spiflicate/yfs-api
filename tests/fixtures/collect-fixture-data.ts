@@ -17,10 +17,10 @@ import { YahooFantasyClient } from '../../src/index.js';
 const FIXTURE_DIR = 'tests/fixtures/data';
 
 const config = {
-   users: false,
-   games: false,
-   leagues: false,
-   teams: false,
+   users: true,
+   games: true,
+   leagues: true,
+   teams: true,
    players: true,
 };
 
