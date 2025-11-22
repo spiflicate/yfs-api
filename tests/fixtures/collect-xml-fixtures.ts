@@ -163,7 +163,7 @@ const data = {
          `/league/${this.leagueKey()}/scoreboard`,
          `/league/${this.leagueKey()}/teams`,
          `/league/${this.leagueKey()}/players;search=${this.playerName()}`,
-         `/league/${this.leagueKey()}/players;player_keys=${this.playerKey()}`,
+         `/league/${this.leagueKey()}/players;player_keys=${this.playerKey()}/ownership`,
       ];
    },
    // Team endpoints
@@ -188,6 +188,7 @@ const data = {
          `/player/${this.playerKey()};out=ownership`,
          `/player/${this.playerKey()};out=percent_owned`,
          `/player/${this.playerKey()}/stats`,
+         `/player/${this.playerKey()}/ownership`,
       ];
    },
    // Transaction endpoints
