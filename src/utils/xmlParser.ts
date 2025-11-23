@@ -115,11 +115,8 @@ export function parseYahooXML<T = unknown>(xml: string): T {
 
       const content = parsed.fantasyContent;
 
-      // Detect array patterns in the raw XML
-      const arrayPatterns = detectArrayPatterns(xml);
-
       // Normalize arrays throughout the data structure
-      const normalized = normalizeArrays(content, arrayPatterns);
+      const normalized = normalizeArrays(content);
 
       return normalized as T;
    } catch (error) {
@@ -143,58 +140,6 @@ export function ensureArray<T>(
 ): T[] {
    if (!value || value === '') return [];
    return Array.isArray(value) ? value : [value];
-}
-
-/**
- * Recursively normalizes arrays throughout a data structure based on detected patterns
- *
- * Traverses the parsed XML object and converts plural containers with singular child elements
- * into direct arrays. For example:
- * - { teams: { team: [...] } } becomes { teams: [...] }
- * - { teams: { team: {...} } } becomes { teams: [{...}] }
- */
-export function normalizeArrays(
-   data: unknown,
-   patterns: Map<string, string>,
-): unknown {
-   // Handle primitives and null
-   if (data === null || typeof data !== 'object') {
-      return data;
-   }
-
-   // Handle arrays - recursively normalize each element
-   if (Array.isArray(data)) {
-      return data.map((item) => normalizeArrays(item, patterns));
-   }
-
-   // Handle objects
-   const obj = data as Record<string, unknown>;
-   const result: Record<string, unknown> = {};
-
-   for (const [key, value] of Object.entries(obj)) {
-      // Check if this key matches a detected array pattern
-      const singularTag = patterns.get(key);
-
-      if (singularTag && value && typeof value === 'object') {
-         // This is a container like { teams: { team: [...] } }
-         const container = value as Record<string, unknown>;
-
-         if (singularTag in container) {
-            // Extract and ensure array from the singular child
-            const arrayValue = ensureArray(container[singularTag]);
-            // Recursively normalize each element in the array
-            result[key] = arrayValue.map((item) =>
-               normalizeArrays(item, patterns),
-            );
-            continue;
-         }
-      }
-
-      // Not an array pattern, recursively normalize the value
-      result[key] = normalizeArrays(value, patterns);
-   }
-
-   return result;
 }
 
 /**
@@ -352,7 +297,7 @@ const arrayMapping = new Map<string, string>([
    ['transactions', 'transaction'],
 ]);
 
-export function normalizeArrayObjects(data: Record<string, unknown>) {
+export function normalizeArrays(data: Record<string, unknown>) {
    // look for known plural keys
    // when found, make sure the object contains a single property matching the singular form
    // check if the singular form is an array, and parse to an array, and then replace the plural property with that array
@@ -395,9 +340,7 @@ export function normalizeArrayObjects(data: Record<string, unknown>) {
 
       // Recursively normalize nested objects
       for (const key of Object.keys(data)) {
-         data[key] = normalizeArrayObjects(
-            data[key] as Record<string, unknown>,
-         );
+         data[key] = normalizeArrays(data[key] as Record<string, unknown>);
       }
    }
    return data;
