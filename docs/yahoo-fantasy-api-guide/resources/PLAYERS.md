@@ -88,8 +88,6 @@ Common player sub‑resources include:
 
 (Exact sub‑resource set can vary by sport and environment; the official docs show `stats` explicitly.)
 
-Note: Live player responses can include additional fields (for example, sport-specific flags or experimental attributes) that are not described in the official Yahoo Fantasy Sports API guide. This library intentionally omits those from its documented surface until they have been explored and validated using real API responses.
-
 ### Sample Responses
 
 #### Player in league context

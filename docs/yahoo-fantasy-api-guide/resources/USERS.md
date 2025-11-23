@@ -55,8 +55,6 @@ The guide lists no default sub‑resource (`N/A`), but valid sub‑resources at 
 - `leagues`
 - `teams`
 
-Note: Actual user and users-collection responses may include additional user-level fields that are not described in the official Yahoo Fantasy Sports API guide. This library does not document or depend on such fields until they have been explored and validated using real responses.
-
 ---
 
 ## Users Collection

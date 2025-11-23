@@ -92,8 +92,6 @@ The guide lists `metadata` as the **default sub‑resource**. Additional game‑
 - `players` – players in this game
 - `game_weeks` – schedule of weeks
 
-Note: Live API responses may include additional game-level elements or sub-resources beyond those listed here. These do not appear in the official Yahoo Fantasy Sports API guide and are therefore not yet modeled as first-class concepts in this library. Any such fields should be explored and validated via real responses before being relied on or added to the SDK.
-
 Supported sub‑resources can vary by sport and game type, but any sub‑resource valid at `game` level is also valid beneath the `games` collection.
 
 ### Sample Response

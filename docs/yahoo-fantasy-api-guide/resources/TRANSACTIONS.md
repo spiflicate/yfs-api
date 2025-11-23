@@ -104,8 +104,6 @@ The documentation lists default sub‑resources:
 
 Players involved in the transaction are returned under `<players>`.
 
-Note: Transaction responses from the live API may contain additional elements (for example, league-specific flags or internal status fields) beyond those documented here and in the official Yahoo Fantasy Sports API guide. Those are not currently modeled by this library and should be investigated and validated before being relied upon or promoted to first-class SDK features.
-
 ### Sample Responses
 
 #### Completed add/drop transaction

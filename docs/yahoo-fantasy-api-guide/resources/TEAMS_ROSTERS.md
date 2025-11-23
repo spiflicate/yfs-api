@@ -98,8 +98,6 @@ The documentation lists **`metadata`** as the default sub‑resource. Common sub
 - `matchups` – team matchups and weekly scoring.
 - `stats` – team stats for a season or date.
 
-Note: Live team responses may contain additional elements or sub-resources beyond those summarized here. These extras do not appear in the official Yahoo Fantasy Sports API guide and are therefore not treated as first-class concepts in this library until they have been explored and validated.
-
 ### Sample Responses
 
 #### Team metadata
@@ -203,8 +201,6 @@ Coverage parameters:
 
 - Default sub‑resource: `players`.
 - The primary nested structure is a `<players>` collection with individual `<player>` elements.
-
-Note: The roster examples in the official Yahoo documentation focus on commonly used fields. Actual API responses may expose additional roster-level flags or fields that are not covered there; this library does not yet model those until their behavior is better understood.
 
 ### Sample Responses
 

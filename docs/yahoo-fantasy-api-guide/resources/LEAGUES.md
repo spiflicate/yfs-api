@@ -108,8 +108,6 @@ The official guide lists **`metadata`** as the default sub‑resource. Key leagu
 - `players` – league‑context players collection (with league filters and sorting).
 - `transactions` – league‑scoped transactions collection.
 
-Note: Live API responses may surface additional league-level elements or sub-resources that are not described in the official Yahoo Fantasy Sports API guide. Those fields are intentionally not documented or wrapped by this library until their behavior is explored and validated using real responses.
-
 ### Sample Responses
 
 #### League metadata
