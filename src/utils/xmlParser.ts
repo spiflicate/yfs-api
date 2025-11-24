@@ -295,6 +295,8 @@ const arrayMapping = new Map<string, string>([
    ['teamLogos', 'teamLogo'],
    ['teams', 'team'],
    ['transactions', 'transaction'],
+   ['users', 'user'],
+   ['leagues', 'league'],
 ]);
 
 export function normalizeArrays(data: Record<string, unknown>) {
