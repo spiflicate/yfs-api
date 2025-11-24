@@ -54,6 +54,13 @@ async function main() {
 
    const context = await buildContext(client);
 
+   const http = client.getHttpClient();
+   await collect('test-data.json', () =>
+      http.get(
+         '/league/465.l.121384;out=settings/teams;team_keys=465.l.121384.t.10,465.l.121384.t.14',
+      ),
+   );
+
    // User-level data
    if (config.users) {
       await collect('user-current.json', () =>
@@ -76,6 +83,13 @@ async function main() {
          );
          await collect(`game-${gameCode}-stat-categories.json`, () =>
             client.game.getStatCategories(gameCode),
+         );
+         await collect(`game-${gameCode}-multiple.json`, () =>
+            client.game.get(gameCode, {
+               includePlayers: true,
+               includePositionTypes: true,
+               includeStatCategories: true,
+            }),
          );
       }
    }
@@ -190,10 +204,11 @@ function sanitizeKey(key: string) {
 
 async function buildContext(client: YahooFantasyClient) {
    // Start from the logged-in user's teams response to discover
-   // realistic keys for games, leagues, and teams. The current
-   // `user.getTeams` shape is an array of games, each with a
-   // `teams` array (see tests/fixtures/data/user-teams.json).
-   const gamesWithTeams = (await client.user.getTeams({})) as any[];
+   // realistic keys for games, leagues, and teams. The response shape is:
+   // { users: [{ guid: string, games: [...] }] }
+   // Each game has a `teams` array (see tests/fixtures/data/user-teams.json).
+   const response = (await client.user.getTeams({})) as any;
+   const gamesWithTeams = response?.users?.[0]?.games;
 
    const gameCodes = new Set<string>();
    const leagueKeys = new Set<string>();
@@ -245,8 +260,8 @@ async function buildContext(client: YahooFantasyClient) {
 
    return {
       gameCodes: Array.from(gameCodes),
-      leagueKeys: Array.from(leagueKeys),
-      teamKeys: Array.from(teamKeys),
+      leagueKeys: Array.from(leagueKeys).slice(0, 2),
+      teamKeys: Array.from(teamKeys).slice(0, 2),
       playerKeys: Array.from(playerKeys).slice(0, 25),
    };
 }

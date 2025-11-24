@@ -14,7 +14,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 import { snakeToCamel } from '../../dist/utils/formatters.js';
-import { normalizeArrayObjects } from '../../src/utils/xmlParser.js';
+import { normalizeArrays } from '../../src/utils/xmlParser.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -78,7 +78,7 @@ async function processXmlFixture(xmlFilename: string): Promise<void> {
 
       // Parse XML to JSON using parseYahooXML
       const jsonData = yahooXMLParser.parse(xmlContent);
-      normalizeArrayObjects(jsonData);
+      normalizeArrays(jsonData);
       // Write JSON file with pretty formatting
       const dataProp = Object.keys(jsonData.fantasyContent)[0];
 
