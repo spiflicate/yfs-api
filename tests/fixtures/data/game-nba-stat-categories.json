@@ -1,0 +1,311 @@
+{
+  "gameKey": "466",
+  "gameId": 466,
+  "name": "Basketball",
+  "code": "nba",
+  "type": "full",
+  "url": "https://basketball.fantasysports.yahoo.com/nba",
+  "season": 2025,
+  "isRegistrationOver": false,
+  "isGameOver": false,
+  "isOffseason": false,
+  "isLiveDraftLobbyActive": true,
+  "statCategories": {
+    "stats": [
+      {
+        "statId": 0,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 1,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 2,
+        "name": "Minutes Played",
+        "displayName": "MIN",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 3,
+        "name": "Field Goals Attempted",
+        "displayName": "FGA",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 4,
+        "name": "Field Goals Made",
+        "displayName": "FGM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 5,
+        "name": "Field Goal Percentage",
+        "displayName": "FG%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 3
+          },
+          {
+            "statId": 4
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 6,
+        "name": "Free Throws Attempted",
+        "displayName": "FTA",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 7,
+        "name": "Free Throws Made",
+        "displayName": "FTM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 8,
+        "name": "Free Throw Percentage",
+        "displayName": "FT%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 7
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 9,
+        "name": "3-point Shots Attempted",
+        "displayName": "3PTA",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 10,
+        "name": "3-point Shots Made",
+        "displayName": "3PTM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 11,
+        "name": "3-point Percentage",
+        "displayName": "3PT%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 9
+          },
+          {
+            "statId": 10
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 12,
+        "name": "Points Scored",
+        "displayName": "PTS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 13,
+        "name": "Offensive Rebounds",
+        "displayName": "OREB",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 14,
+        "name": "Defensive Rebounds",
+        "displayName": "DREB",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 15,
+        "name": "Total Rebounds",
+        "displayName": "REB",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 16,
+        "name": "Assists",
+        "displayName": "AST",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 17,
+        "name": "Steals",
+        "displayName": "ST",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 18,
+        "name": "Blocked Shots",
+        "displayName": "BLK",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 19,
+        "name": "Turnovers",
+        "displayName": "TO",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 20,
+        "name": "Assist/Turnover Ratio",
+        "displayName": "A/T",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 16
+          },
+          {
+            "statId": 19
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 21,
+        "name": "Personal Fouls",
+        "displayName": "PF",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 22,
+        "name": "Times Fouled Out",
+        "displayName": "DISQ",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 23,
+        "name": "Technical Fouls",
+        "displayName": "TECH",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 24,
+        "name": "Ejections",
+        "displayName": "EJCT",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 25,
+        "name": "Flagrant Fouls",
+        "displayName": "FF",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 26,
+        "name": "Minutes Per Game",
+        "displayName": "MPG",
+        "sortOrder": true
+      },
+      {
+        "statId": 27,
+        "name": "Double-Doubles",
+        "displayName": "DD",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 28,
+        "name": "Triple-Doubles",
+        "displayName": "TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      }
+    ]
+  }
+}

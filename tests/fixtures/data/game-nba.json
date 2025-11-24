@@ -1,0 +1,13 @@
+{
+  "gameKey": "466",
+  "gameId": 466,
+  "name": "Basketball",
+  "code": "nba",
+  "type": "full",
+  "url": "https://basketball.fantasysports.yahoo.com/nba",
+  "season": 2025,
+  "isRegistrationOver": false,
+  "isGameOver": false,
+  "isOffseason": false,
+  "isLiveDraftLobbyActive": true
+}
