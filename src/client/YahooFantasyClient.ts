@@ -41,6 +41,7 @@ import { TransactionResource } from '../resources/TransactionResource.js';
 import { UserResource } from '../resources/UserResource.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
+import { AdvancedQuery } from './AdvancedQuery.js';
 import { HttpClient } from './HttpClient.js';
 import { OAuth1Client } from './OAuth1Client.js';
 import { OAuth2Client, type OAuth2Tokens } from './OAuth2Client.js';
@@ -398,6 +399,77 @@ export class YahooFantasyClient {
       this.player = new PlayerResource(this.httpClient);
       this.transaction = new TransactionResource(this.httpClient);
       this.game = new GameResource(this.httpClient);
+   }
+
+   /**
+    * Create an advanced query builder for complex API requests
+    *
+    * Provides a flexible interface for constructing and executing advanced queries
+    * that may not be covered by the standard resource methods.
+    *
+    * @template T - Expected response type
+    * @returns A new AdvancedQuery instance
+    *
+    * @example Simple query
+    * ```typescript
+    * const league = await client.advanced()
+    *   .resource('league', '423.l.12345')
+    *   .execute();
+    * ```
+    *
+    * @example Complex query with parameters
+    * ```typescript
+    * const result = await client.advanced()
+    *   .resource('users')
+    *   .param('use_login', '1')
+    *   .collection('games')
+    *   .param('game_keys', 'nfl')
+    *   .collection('leagues')
+    *   .out(['settings', 'standings'])
+    *   .execute();
+    * ```
+    *
+    * @example Deep resource chain
+    * ```typescript
+    * const roster = await client.advanced()
+    *   .resource('team', '423.l.12345.t.1')
+    *   .collection('roster')
+    *   .param('week', '10')
+    *   .collection('players')
+    *   .execute();
+    * ```
+    *
+    * @example With typed response
+    * ```typescript
+    * interface LeagueWithSettings {
+    *   league: {
+    *     league_key: string;
+    *     settings: unknown;
+    *   };
+    * }
+    *
+    * const result = await client.advanced<LeagueWithSettings>()
+    *   .resource('league', '423.l.12345')
+    *   .out('settings')
+    *   .execute();
+    * ```
+    *
+    * @example Available players with filters
+    * ```typescript
+    * const qbs = await client.advanced()
+    *   .resource('league', '423.l.12345')
+    *   .collection('players')
+    *   .params({
+    *     position: 'QB',
+    *     status: 'A',
+    *     sort: 'AR',
+    *     count: '25'
+    *   })
+    *   .execute();
+    * ```
+    */
+   advanced<T = unknown>(): AdvancedQuery<T> {
+      return new AdvancedQuery<T>(this.httpClient);
    }
 
    /**
