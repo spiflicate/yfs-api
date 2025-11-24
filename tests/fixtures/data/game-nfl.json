@@ -1,0 +1,13 @@
+{
+  "gameKey": "461",
+  "gameId": 461,
+  "name": "Football",
+  "code": "nfl",
+  "type": "full",
+  "url": "https://football.fantasysports.yahoo.com/f1",
+  "season": 2025,
+  "isRegistrationOver": false,
+  "isGameOver": false,
+  "isOffseason": false,
+  "isLiveDraftLobbyActive": true
+}

@@ -1,0 +1,39 @@
+{
+  "playerKey": "465.p.8287",
+  "playerId": 8287,
+  "name": {
+    "full": "Trevor Zegras",
+    "first": "Trevor",
+    "last": "Zegras",
+    "asciiFirst": "Trevor",
+    "asciiLast": "Zegras"
+  },
+  "url": "https://sports.yahoo.com/nhl/players/8287",
+  "editorialPlayerKey": "nhl.p.8287",
+  "editorialTeamKey": "nhl.t.15",
+  "editorialTeamFullName": "Philadelphia Flyers",
+  "editorialTeamAbbr": "PHI",
+  "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/philadelphia/",
+  "isKeeper": {
+    "status": "",
+    "cost": ""
+  },
+  "uniformNumber": 46,
+  "displayPosition": "C,LW",
+  "headshot": {
+    "url": "https://s.yimg.com/iu/api/res/1.2/Fr.MexcydylvcPYd3.ITpA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/8287.png",
+    "size": "small"
+  },
+  "imageUrl": "https://s.yimg.com/iu/api/res/1.2/Fr.MexcydylvcPYd3.ITpA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/8287.png",
+  "isUndroppable": false,
+  "positionType": "P",
+  "eligiblePositions": {
+    "position": [
+      "C",
+      "LW"
+    ]
+  },
+  "eligiblePositionsToAdd": "",
+  "hasPlayerNotes": true,
+  "playerNotesLastTimestamp": 1763919104
+}

@@ -1,0 +1,39 @@
+{
+  "playerKey": "465.p.6055",
+  "playerId": 6055,
+  "name": {
+    "full": "Pavel Buchnevich",
+    "first": "Pavel",
+    "last": "Buchnevich",
+    "asciiFirst": "Pavel",
+    "asciiLast": "Buchnevich"
+  },
+  "url": "https://sports.yahoo.com/nhl/players/6055",
+  "editorialPlayerKey": "nhl.p.6055",
+  "editorialTeamKey": "nhl.t.19",
+  "editorialTeamFullName": "St. Louis Blues",
+  "editorialTeamAbbr": "STL",
+  "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/st-louis/",
+  "isKeeper": {
+    "status": "",
+    "cost": ""
+  },
+  "uniformNumber": 89,
+  "displayPosition": "C,LW,RW",
+  "headshot": {
+    "url": "https://s.yimg.com/iu/api/res/1.2/bqsai3l8tN.v3Uyw3K.GJw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6055.png",
+    "size": "small"
+  },
+  "imageUrl": "https://s.yimg.com/iu/api/res/1.2/bqsai3l8tN.v3Uyw3K.GJw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6055.png",
+  "isUndroppable": false,
+  "positionType": "P",
+  "eligiblePositions": {
+    "position": [
+      "C",
+      "LW",
+      "RW"
+    ]
+  },
+  "eligiblePositionsToAdd": "",
+  "ownership": ""
+}

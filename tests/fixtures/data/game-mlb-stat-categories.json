@@ -1,0 +1,1133 @@
+{
+  "gameKey": "458",
+  "gameId": 458,
+  "name": "Baseball",
+  "code": "mlb",
+  "type": "full",
+  "url": "https://baseball.fantasysports.yahoo.com/b1",
+  "season": 2025,
+  "isRegistrationOver": true,
+  "isGameOver": true,
+  "isOffseason": true,
+  "alternateStartDeadline": "2025-03-26",
+  "statCategories": {
+    "stats": [
+      {
+        "statId": 0,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 1,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 2,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 3,
+        "name": "Batting Average",
+        "displayName": "AVG",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 4,
+        "name": "On-base Percentage",
+        "displayName": "OBP",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 5,
+        "name": "Slugging Percentage",
+        "displayName": "SLG",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 23
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 6,
+        "name": "At Bats",
+        "displayName": "AB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 7,
+        "name": "Runs",
+        "displayName": "R",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 8,
+        "name": "Hits",
+        "displayName": "H",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 9,
+        "name": "Singles",
+        "displayName": "1B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 10,
+        "name": "Doubles",
+        "displayName": "2B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 11,
+        "name": "Triples",
+        "displayName": "3B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 12,
+        "name": "Home Runs",
+        "displayName": "HR",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 13,
+        "name": "Runs Batted In",
+        "displayName": "RBI",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 14,
+        "name": "Sacrifice Hits",
+        "displayName": "SH",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 15,
+        "name": "Sacrifice Flys",
+        "displayName": "SF",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 16,
+        "name": "Stolen Bases",
+        "displayName": "SB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 17,
+        "name": "Caught Stealing",
+        "displayName": "CS",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 18,
+        "name": "Walks",
+        "displayName": "BB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 19,
+        "name": "Intentional Walks",
+        "displayName": "IBB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 20,
+        "name": "Hit By Pitch",
+        "displayName": "HBP",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 21,
+        "name": "Strikeouts",
+        "displayName": "K",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 22,
+        "name": "Ground Into Double Play",
+        "displayName": "GIDP",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 23,
+        "name": "Total Bases",
+        "displayName": "TB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 24,
+        "name": "Pitching Appearances",
+        "displayName": "APP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 25,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 26,
+        "name": "Earned Run Average",
+        "displayName": "ERA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          },
+          {
+            "statId": 37
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 27,
+        "name": "(Walks + Hits)/ Innings Pitched",
+        "displayName": "WHIP",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          },
+          {
+            "statId": 34
+          },
+          {
+            "statId": 39
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 28,
+        "name": "Wins",
+        "displayName": "W",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 29,
+        "name": "Losses",
+        "displayName": "L",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 30,
+        "name": "Complete Games",
+        "displayName": "CG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 31,
+        "name": "Shutouts",
+        "displayName": "SHO",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 32,
+        "name": "Saves",
+        "displayName": "SV",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 33,
+        "name": "Outs",
+        "displayName": "OUT",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 34,
+        "name": "Hits",
+        "displayName": "H",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 35,
+        "name": "Total Batters Faced",
+        "displayName": "TBF",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 36,
+        "name": "Runs",
+        "displayName": "R",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 37,
+        "name": "Earned Runs",
+        "displayName": "ER",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 38,
+        "name": "Home Runs",
+        "displayName": "HR",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 39,
+        "name": "Walks",
+        "displayName": "BB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 40,
+        "name": "Intentional Walks",
+        "displayName": "IBB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 41,
+        "name": "Hit Batters",
+        "displayName": "HBP",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 42,
+        "name": "Strikeouts",
+        "displayName": "K",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 43,
+        "name": "Wild Pitches",
+        "displayName": "WP",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 44,
+        "name": "Balks",
+        "displayName": "BLK",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 45,
+        "name": "Stolen Bases Allowed",
+        "displayName": "SB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 46,
+        "name": "Batters Grounded Into Double Plays",
+        "displayName": "GIDP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 47,
+        "name": "Save Chances",
+        "displayName": "SVOP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 48,
+        "name": "Holds",
+        "displayName": "HLD",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 49,
+        "name": "Total Bases Allowed",
+        "displayName": "TB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 50,
+        "name": "Innings Pitched",
+        "displayName": "IP",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 51,
+        "name": "Putouts",
+        "displayName": "PO",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 52,
+        "name": "Assists",
+        "displayName": "A",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 53,
+        "name": "Errors",
+        "displayName": "E",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 54,
+        "name": "Fielding Percentage",
+        "displayName": "FPCT",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 51
+          },
+          {
+            "statId": 52
+          },
+          {
+            "statId": 53
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 55,
+        "name": "On-base + Slugging Percentage",
+        "displayName": "OPS",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          },
+          {
+            "statId": 23
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 56,
+        "name": "Strikeouts per Walk Ratio",
+        "displayName": "K/BB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 42
+          },
+          {
+            "statId": 39
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 57,
+        "name": "Strikeouts per Nine Innings",
+        "displayName": "K/9",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 42
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 58,
+        "name": "Team",
+        "displayName": "TEAM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 59,
+        "name": "League",
+        "displayName": "LEAGUE",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 60,
+        "name": "Hits / At Bats",
+        "displayName": "H/AB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          }
+        ]
+      },
+      {
+        "statId": 61,
+        "name": "Extra Base Hits",
+        "displayName": "XBH",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 10
+          },
+          {
+            "statId": 11
+          },
+          {
+            "statId": 12
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 62,
+        "name": "Net Stolen Bases",
+        "displayName": "NSB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 16
+          },
+          {
+            "statId": 17
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 63,
+        "name": "Stolen Base Percentage",
+        "displayName": "SB%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 16
+          },
+          {
+            "statId": 17
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 64,
+        "name": "Hitting for the Cycle",
+        "displayName": "CYC",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 65,
+        "name": "Plate Appearances",
+        "displayName": "PA",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          },
+          {
+            "statId": 14
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 88
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 66,
+        "name": "Grand Slam Home Runs",
+        "displayName": "SLAM",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 67,
+        "name": "Pitch Count",
+        "displayName": "PC",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 68,
+        "name": "Doubles Allowed",
+        "displayName": "2BA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 69,
+        "name": "Triples Allowed",
+        "displayName": "3BA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 70,
+        "name": "Relief Wins",
+        "displayName": "RW",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 71,
+        "name": "Relief Losses",
+        "displayName": "RL",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 72,
+        "name": "Pickoffs",
+        "displayName": "PICK",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 73,
+        "name": "Relief Appearances",
+        "displayName": "RAPP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 74,
+        "name": "On-base Percentage Against",
+        "displayName": "OBPA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 39
+          },
+          {
+            "statId": 41
+          },
+          {
+            "statId": 35
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 75,
+        "name": "Winning Percentage",
+        "displayName": "WIN%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 28
+          },
+          {
+            "statId": 29
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 76,
+        "name": "Singles Allowed",
+        "displayName": "1BA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 68
+          },
+          {
+            "statId": 69
+          },
+          {
+            "statId": 38
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 77,
+        "name": "Hits Per Nine Innings",
+        "displayName": "H/9",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 78,
+        "name": "Walks Per Nine Innings",
+        "displayName": "BB/9",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 39
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 79,
+        "name": "No Hitters",
+        "displayName": "NH",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 80,
+        "name": "Perfect Games",
+        "displayName": "PG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 81,
+        "name": "Save Percentage",
+        "displayName": "SV%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 82,
+        "name": "Inherited Runners Scored",
+        "displayName": "IRA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 83,
+        "name": "Quality Starts",
+        "displayName": "QS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 84,
+        "name": "Blown Saves",
+        "displayName": "BSV",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 47
+          },
+          {
+            "statId": 32
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 85,
+        "name": "Net Saves",
+        "displayName": "NSV",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 86,
+        "name": "Outfield Assists",
+        "displayName": "OFA",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 87,
+        "name": "Double Plays Turned",
+        "displayName": "DPT",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 88,
+        "name": "Catcher Interference",
+        "displayName": "CI",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 89,
+        "name": "Saves + Holds",
+        "displayName": "SV+H",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 48
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 90,
+        "name": "Net Saves and Holds",
+        "displayName": "NSVH",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 48
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 91,
+        "name": "Net Wins",
+        "displayName": "NW",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 28
+          },
+          {
+            "statId": 29
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      }
+    ]
+  }
+}

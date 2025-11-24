@@ -1,0 +1,114 @@
+{
+  "teamKey": "465.l.30702.t.9",
+  "teamId": 9,
+  "name": "Scoreface",
+  "isOwnedByCurrentLogin": 1,
+  "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/9",
+  "teamLogos": [
+    {
+      "size": "large",
+      "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+    }
+  ],
+  "previousSeasonTeamRank": 2,
+  "waiverPriority": 10,
+  "numberOfMoves": 27,
+  "numberOfTrades": 0,
+  "rosterAdds": {
+    "coverageType": "week",
+    "coverageValue": 8,
+    "value": 1
+  },
+  "leagueScoringType": "head",
+  "hasDraftGrade": false,
+  "managers": [
+    {
+      "managerId": 9,
+      "nickname": "jbru",
+      "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+      "isCurrentLogin": 1,
+      "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+      "feloScore": 916,
+      "feloTier": "diamond"
+    }
+  ],
+  "teamStats": {
+    "coverageType": "season",
+    "season": 2025,
+    "stats": [
+      {
+        "statId": 1,
+        "value": 79
+      },
+      {
+        "statId": 2,
+        "value": 141
+      },
+      {
+        "statId": 5,
+        "value": 157
+      },
+      {
+        "statId": 8,
+        "value": 70
+      },
+      {
+        "statId": 11,
+        "value": 7
+      },
+      {
+        "statId": 12,
+        "value": 15
+      },
+      {
+        "statId": 14,
+        "value": 803
+      },
+      {
+        "statId": 16,
+        "value": 1112
+      },
+      {
+        "statId": 31,
+        "value": 336
+      },
+      {
+        "statId": 32,
+        "value": 335
+      },
+      {
+        "statId": 19,
+        "value": 20
+      },
+      {
+        "statId": 22,
+        "value": 113
+      },
+      {
+        "statId": 23,
+        "value": 2.73
+      },
+      {
+        "statId": 25,
+        "value": 1188
+      },
+      {
+        "statId": 24,
+        "value": 1301
+      },
+      {
+        "statId": 26,
+        "value": 0.913
+      },
+      {
+        "statId": 27,
+        "value": 5
+      }
+    ]
+  },
+  "teamPoints": {
+    "coverageType": "season",
+    "season": 2025,
+    "total": 114
+  }
+}

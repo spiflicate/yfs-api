@@ -1,0 +1,2102 @@
+{
+  "gameKey": "458",
+  "gameId": 458,
+  "name": "Baseball",
+  "code": "mlb",
+  "type": "full",
+  "url": "https://baseball.fantasysports.yahoo.com/b1",
+  "season": 2025,
+  "isRegistrationOver": true,
+  "isGameOver": true,
+  "isOffseason": true,
+  "alternateStartDeadline": "2025-03-26",
+  "players": [
+    {
+      "playerKey": "458.p.9877",
+      "playerId": 9877,
+      "name": {
+        "full": "Aaron Judge",
+        "first": "Aaron",
+        "last": "Judge",
+        "asciiFirst": "Aaron",
+        "asciiLast": "Judge"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9877",
+      "editorialPlayerKey": "mlb.p.9877",
+      "editorialTeamKey": "mlb.t.10",
+      "editorialTeamFullName": "New York Yankees",
+      "editorialTeamAbbr": "NYY",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/ny-yankees/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 99,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/e9N9NOYZ6tnzXWKhouccxQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04042025/9877.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/e9N9NOYZ6tnzXWKhouccxQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04042025/9877.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "CF",
+          "LF",
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.1000001",
+      "playerId": 1000001,
+      "name": {
+        "full": "Shohei Ohtani (Batter)",
+        "first": "Shohei",
+        "last": "Ohtani (Batter)",
+        "asciiFirst": "Shohei",
+        "asciiLast": "Ohtani (Batter)"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10835",
+      "editorialPlayerKey": "mlb.p.10835",
+      "editorialTeamKey": "mlb.t.19",
+      "editorialTeamFullName": "Los Angeles Dodgers",
+      "editorialTeamAbbr": "LAD",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/la-dodgers/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 17,
+      "displayPosition": "Util",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/RRLhnpZwgEVi6WRZV8gLJw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/10835.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/RRLhnpZwgEVi6WRZV8gLJw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/10835.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": "DH"
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.11771",
+      "playerId": 11771,
+      "name": {
+        "full": "Bobby Witt Jr.",
+        "first": "Bobby",
+        "last": "Witt Jr.",
+        "asciiFirst": "Bobby",
+        "asciiLast": "Witt Jr."
+      },
+      "url": "https://sports.yahoo.com/mlb/players/11771",
+      "editorialPlayerKey": "mlb.p.11771",
+      "editorialTeamKey": "mlb.t.7",
+      "editorialTeamFullName": "Kansas City Royals",
+      "editorialTeamAbbr": "KC",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/kansas-city/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 7,
+      "displayPosition": "SS",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/fEScwidb5YeX3ieOuVGVHw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03242025/11771.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/fEScwidb5YeX3ieOuVGVHw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03242025/11771.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "IF",
+          "MI",
+          "SS"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.12393",
+      "playerId": 12393,
+      "name": {
+        "full": "Elly De La Cruz",
+        "first": "Elly",
+        "last": "De La Cruz",
+        "asciiFirst": "Elly",
+        "asciiLast": "De La Cruz"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/12393",
+      "editorialPlayerKey": "mlb.p.12393",
+      "editorialTeamKey": "mlb.t.17",
+      "editorialTeamFullName": "Cincinnati Reds",
+      "editorialTeamAbbr": "CIN",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/cincinnati/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 44,
+      "displayPosition": "SS",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/jQV_Q0.pZbW7NaL_fDne2Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/05122025/12393.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/jQV_Q0.pZbW7NaL_fDne2Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/05122025/12393.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "IF",
+          "MI",
+          "SS"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763664823
+    },
+    {
+      "playerKey": "458.p.10646",
+      "playerId": 10646,
+      "name": {
+        "full": "Ronald Acuña Jr.",
+        "first": "Ronald",
+        "last": "Acuña Jr.",
+        "asciiFirst": "Ronald",
+        "asciiLast": "Acuña Jr."
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10646",
+      "editorialPlayerKey": "mlb.p.10646",
+      "editorialTeamKey": "mlb.t.15",
+      "editorialTeamFullName": "Atlanta Braves",
+      "editorialTeamAbbr": "ATL",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/atlanta/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 13,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/NR7Yc.oevDOJ325H0gnBQg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/10646.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/NR7Yc.oevDOJ325H0gnBQg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/10646.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10480",
+      "playerId": 10480,
+      "name": {
+        "full": "Kyle Tucker",
+        "first": "Kyle",
+        "last": "Tucker",
+        "asciiFirst": "Kyle",
+        "asciiLast": "Tucker"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10480",
+      "status": "NA",
+      "statusFull": "Not Active",
+      "editorialPlayerKey": "mlb.p.10480",
+      "editorialTeamKey": "mlb.t.16",
+      "editorialTeamFullName": "Chicago Cubs",
+      "editorialTeamAbbr": "CHC",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/chi-cubs/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 30,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/1O5aFhom5bBW4pB_MTtBZg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03032025/10480.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/1O5aFhom5bBW4pB_MTtBZg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03032025/10480.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763500586
+    },
+    {
+      "playerKey": "458.p.11763",
+      "playerId": 11763,
+      "name": {
+        "full": "Tarik Skubal",
+        "first": "Tarik",
+        "last": "Skubal",
+        "asciiFirst": "Tarik",
+        "asciiLast": "Skubal"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/11763",
+      "editorialPlayerKey": "mlb.p.11763",
+      "editorialTeamKey": "mlb.t.6",
+      "editorialTeamFullName": "Detroit Tigers",
+      "editorialTeamAbbr": "DET",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/detroit/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "SP",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/R2mfaQKsgHdWIKTlxG2VrQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04152024/11763.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/R2mfaQKsgHdWIKTlxG2VrQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04152024/11763.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "P",
+          "SP"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9507",
+      "playerId": 9507,
+      "name": {
+        "full": "José Ramírez",
+        "first": "José",
+        "last": "Ramírez",
+        "asciiFirst": "José",
+        "asciiLast": "Ramírez"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9507",
+      "editorialPlayerKey": "mlb.p.9507",
+      "editorialTeamKey": "mlb.t.5",
+      "editorialTeamFullName": "Cleveland Guardians",
+      "editorialTeamAbbr": "CLE",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/cleveland/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 11,
+      "displayPosition": "3B",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/lcIVKJHMdbHkxl0IPjssvw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03192025/9507.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/lcIVKJHMdbHkxl0IPjssvw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03192025/9507.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "3B",
+          "CI",
+          "IF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9116",
+      "playerId": 9116,
+      "name": {
+        "full": "Francisco Lindor",
+        "first": "Francisco",
+        "last": "Lindor",
+        "asciiFirst": "Francisco",
+        "asciiLast": "Lindor"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9116",
+      "status": "DTD",
+      "statusFull": "Day-to-Day",
+      "injuryNote": "Elbow",
+      "editorialPlayerKey": "mlb.p.9116",
+      "editorialTeamKey": "mlb.t.21",
+      "editorialTeamFullName": "New York Mets",
+      "editorialTeamAbbr": "NYM",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/ny-mets/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 12,
+      "displayPosition": "SS",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/sdBIoPP1uZplfMhRApI9FA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03262025/9116.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/sdBIoPP1uZplfMhRApI9FA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03262025/9116.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "IF",
+          "MI",
+          "SS"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10639",
+      "playerId": 10639,
+      "name": {
+        "full": "Fernando Tatis Jr.",
+        "first": "Fernando",
+        "last": "Tatis Jr.",
+        "asciiFirst": "Fernando",
+        "asciiLast": "Tatis Jr."
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10639",
+      "editorialPlayerKey": "mlb.p.10639",
+      "editorialTeamKey": "mlb.t.25",
+      "editorialTeamFullName": "San Diego Padres",
+      "editorialTeamAbbr": "SD",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/san-diego/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 23,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/C6u783VWjJQVHhZMgev5GA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03272025/10639.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/C6u783VWjJQVHhZMgev5GA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03272025/10639.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10626",
+      "playerId": 10626,
+      "name": {
+        "full": "Juan Soto",
+        "first": "Juan",
+        "last": "Soto",
+        "asciiFirst": "Juan",
+        "asciiLast": "Soto"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10626",
+      "editorialPlayerKey": "mlb.p.10626",
+      "editorialTeamKey": "mlb.t.21",
+      "editorialTeamFullName": "New York Mets",
+      "editorialTeamAbbr": "NYM",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/ny-mets/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 22,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/WC58dp.2Z38CfkRWV9iNXg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03042025/10626.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/WC58dp.2Z38CfkRWV9iNXg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03042025/10626.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "LF",
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.12157",
+      "playerId": 12157,
+      "name": {
+        "full": "Pete Crow-Armstrong",
+        "first": "Pete",
+        "last": "Crow-Armstrong",
+        "asciiFirst": "Pete",
+        "asciiLast": "Crow-Armstrong"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/12157",
+      "editorialPlayerKey": "mlb.p.12157",
+      "editorialTeamKey": "mlb.t.16",
+      "editorialTeamFullName": "Chicago Cubs",
+      "editorialTeamAbbr": "CHC",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/chi-cubs/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 4,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/p3_loCSbpmQMoCXEig_wkw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03242023/12157.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/p3_loCSbpmQMoCXEig_wkw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03242023/12157.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "CF",
+          "OF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9552",
+      "playerId": 9552,
+      "name": {
+        "full": "Mookie Betts",
+        "first": "Mookie",
+        "last": "Betts",
+        "asciiFirst": "Mookie",
+        "asciiLast": "Betts"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9552",
+      "editorialPlayerKey": "mlb.p.9552",
+      "editorialTeamKey": "mlb.t.19",
+      "editorialTeamFullName": "Los Angeles Dodgers",
+      "editorialTeamAbbr": "LAD",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/la-dodgers/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 50,
+      "displayPosition": "2B,SS,OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/A.MeiXcRucROsIrp.YMInA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/9552.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/A.MeiXcRucROsIrp.YMInA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/9552.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "2B",
+          "IF",
+          "MI",
+          "OF",
+          "RF",
+          "SS"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.62972",
+      "playerId": 62972,
+      "name": {
+        "full": "Paul Skenes",
+        "first": "Paul",
+        "last": "Skenes",
+        "asciiFirst": "Paul",
+        "asciiLast": "Skenes"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/62972",
+      "editorialPlayerKey": "mlb.p.62972",
+      "editorialTeamKey": "mlb.t.23",
+      "editorialTeamFullName": "Pittsburgh Pirates",
+      "editorialTeamAbbr": "PIT",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/pittsburgh/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 30,
+      "displayPosition": "SP",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/ejMRinK1W3wv59Z8iUJpmQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/05062024/62972.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/ejMRinK1W3wv59Z8iUJpmQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/05062024/62972.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "P",
+          "SP"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.12480",
+      "playerId": 12480,
+      "name": {
+        "full": "Jackson Chourio",
+        "first": "Jackson",
+        "last": "Chourio",
+        "asciiFirst": "Jackson",
+        "asciiLast": "Chourio"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/12480",
+      "editorialPlayerKey": "mlb.p.12480",
+      "editorialTeamKey": "mlb.t.8",
+      "editorialTeamFullName": "Milwaukee Brewers",
+      "editorialTeamAbbr": "MIL",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/milwaukee/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 11,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/g7.GBIh2.SkGhc5mgWDsFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03182025/12480.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/g7.GBIh2.SkGhc5mgWDsFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03182025/12480.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "CF",
+          "LF",
+          "OF",
+          "RF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10056",
+      "playerId": 10056,
+      "name": {
+        "full": "Trea Turner",
+        "first": "Trea",
+        "last": "Turner",
+        "asciiFirst": "Trea",
+        "asciiLast": "Turner"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10056",
+      "editorialPlayerKey": "mlb.p.10056",
+      "editorialTeamKey": "mlb.t.22",
+      "editorialTeamFullName": "Philadelphia Phillies",
+      "editorialTeamAbbr": "PHI",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/philadelphia/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 7,
+      "displayPosition": "SS",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/W_g.0yeakRVXymFaYd9RiA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/10056.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/W_g.0yeakRVXymFaYd9RiA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/10056.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "IF",
+          "MI",
+          "SS"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9124",
+      "playerId": 9124,
+      "name": {
+        "full": "Zack Wheeler",
+        "first": "Zack",
+        "last": "Wheeler",
+        "asciiFirst": "Zack",
+        "asciiLast": "Wheeler"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9124",
+      "status": "IL60",
+      "statusFull": "60-Day Injured List",
+      "injuryNote": "Shoulder",
+      "onDisabledList": true,
+      "editorialPlayerKey": "mlb.p.9124",
+      "editorialTeamKey": "mlb.t.22",
+      "editorialTeamFullName": "Philadelphia Phillies",
+      "editorialTeamAbbr": "PHI",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/philadelphia/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 45,
+      "displayPosition": "SP",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/HM.Np63L17bq_u2UQE1Smw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/9124.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/HM.Np63L17bq_u2UQE1Smw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/9124.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "P",
+          "SP"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.11531",
+      "playerId": 11531,
+      "name": {
+        "full": "Cal Raleigh",
+        "first": "Cal",
+        "last": "Raleigh",
+        "asciiFirst": "Cal",
+        "asciiLast": "Raleigh"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/11531",
+      "editorialPlayerKey": "mlb.p.11531",
+      "editorialTeamKey": "mlb.t.12",
+      "editorialTeamFullName": "Seattle Mariners",
+      "editorialTeamAbbr": "SEA",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/seattle/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/3B3UE3byxTEcSQxn02iOYg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03182025/11531.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/3B3UE3byxTEcSQxn02iOYg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03182025/11531.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.12046",
+      "playerId": 12046,
+      "name": {
+        "full": "Garrett Crochet",
+        "first": "Garrett",
+        "last": "Crochet",
+        "asciiFirst": "Garrett",
+        "asciiLast": "Crochet"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/12046",
+      "editorialPlayerKey": "mlb.p.12046",
+      "editorialTeamKey": "mlb.t.2",
+      "editorialTeamFullName": "Boston Red Sox",
+      "editorialTeamAbbr": "BOS",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/boston/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 35,
+      "displayPosition": "SP",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/MDcp.xNHdoFdIW1fI5DT2Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/12132024/12046.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/MDcp.xNHdoFdIW1fI5DT2Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/12132024/12046.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "P",
+          "SP"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9861",
+      "playerId": 9861,
+      "name": {
+        "full": "Kyle Schwarber",
+        "first": "Kyle",
+        "last": "Schwarber",
+        "asciiFirst": "Kyle",
+        "asciiLast": "Schwarber"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9861",
+      "status": "NA",
+      "statusFull": "Not Active",
+      "editorialPlayerKey": "mlb.p.9861",
+      "editorialTeamKey": "mlb.t.22",
+      "editorialTeamFullName": "Philadelphia Phillies",
+      "editorialTeamAbbr": "PHI",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/philadelphia/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 12,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/qc5metCcXOwRef519746Tg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/9861.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/qc5metCcXOwRef519746Tg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03142025/9861.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "LF",
+          "OF"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763500775
+    },
+    {
+      "playerKey": "458.p.12521",
+      "playerId": 12521,
+      "name": {
+        "full": "James Wood",
+        "first": "James",
+        "last": "Wood",
+        "asciiFirst": "James",
+        "asciiLast": "Wood"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/12521",
+      "editorialPlayerKey": "mlb.p.12521",
+      "editorialTeamKey": "mlb.t.20",
+      "editorialTeamFullName": "Washington Nationals",
+      "editorialTeamAbbr": "WSH",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/washington/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "OF",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/WrqbpT79C5pbTT_D.Utqew--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03282025/12521.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/WrqbpT79C5pbTT_D.Utqew--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03282025/12521.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "LF",
+          "OF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10621",
+      "playerId": 10621,
+      "name": {
+        "full": "Vladimir Guerrero Jr.",
+        "first": "Vladimir",
+        "last": "Guerrero Jr.",
+        "asciiFirst": "Vladimir",
+        "asciiLast": "Guerrero Jr."
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10621",
+      "editorialPlayerKey": "mlb.p.10621",
+      "editorialTeamKey": "mlb.t.14",
+      "editorialTeamFullName": "Toronto Blue Jays",
+      "editorialTeamAbbr": "TOR",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/toronto/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 27,
+      "displayPosition": "1B,3B",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/6ezov2NXrvBA70u39PdbqA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03312025/10621.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/6ezov2NXrvBA70u39PdbqA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03312025/10621.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "1B",
+          "3B",
+          "CI",
+          "IF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.8658",
+      "playerId": 8658,
+      "name": {
+        "full": "Freddie Freeman",
+        "first": "Freddie",
+        "last": "Freeman",
+        "asciiFirst": "Freddie",
+        "asciiLast": "Freeman"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/8658",
+      "editorialPlayerKey": "mlb.p.8658",
+      "editorialTeamKey": "mlb.t.19",
+      "editorialTeamFullName": "Los Angeles Dodgers",
+      "editorialTeamAbbr": "LAD",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/la-dodgers/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 5,
+      "displayPosition": "1B",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/ucgKYSf4Wat9w_RWqj7P8g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/8658.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/ucgKYSf4Wat9w_RWqj7P8g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03102025/8658.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "1B",
+          "CI",
+          "IF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.9111",
+      "playerId": 9111,
+      "name": {
+        "full": "Manny Machado",
+        "first": "Manny",
+        "last": "Machado",
+        "asciiFirst": "Manny",
+        "asciiLast": "Machado"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/9111",
+      "editorialPlayerKey": "mlb.p.9111",
+      "editorialTeamKey": "mlb.t.25",
+      "editorialTeamFullName": "San Diego Padres",
+      "editorialTeamAbbr": "SD",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/san-diego/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 13,
+      "displayPosition": "3B",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/LNJ1CT504ZqWY_5JjQuRpw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04252025/9111.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/LNJ1CT504ZqWY_5JjQuRpw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/04252025/9111.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "3B",
+          "CI",
+          "IF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "458.p.10918",
+      "playerId": 10918,
+      "name": {
+        "full": "Pete Alonso",
+        "first": "Pete",
+        "last": "Alonso",
+        "asciiFirst": "Pete",
+        "asciiLast": "Alonso"
+      },
+      "url": "https://sports.yahoo.com/mlb/players/10918",
+      "status": "NA",
+      "statusFull": "Not Active",
+      "editorialPlayerKey": "mlb.p.10918",
+      "editorialTeamKey": "mlb.t.21",
+      "editorialTeamFullName": "New York Mets",
+      "editorialTeamAbbr": "NYM",
+      "editorialTeamUrl": "https://sports.yahoo.com/mlb/teams/ny-mets/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 20,
+      "displayPosition": "1B",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/zb5uPfj9epOi_GhLsg_7sg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03262025/10918.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/zb5uPfj9epOi_GhLsg_7sg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/mlb_cutout/players_l/03262025/10918.png",
+      "isUndroppable": false,
+      "positionType": "B",
+      "eligiblePositions": {
+        "position": [
+          "1B",
+          "CI",
+          "IF"
+        ]
+      },
+      "eligiblePositionsToAdd": ""
+    }
+  ],
+  "statCategories": {
+    "stats": [
+      {
+        "statId": 0,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 1,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 2,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 3,
+        "name": "Batting Average",
+        "displayName": "AVG",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 4,
+        "name": "On-base Percentage",
+        "displayName": "OBP",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 5,
+        "name": "Slugging Percentage",
+        "displayName": "SLG",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 23
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 6,
+        "name": "At Bats",
+        "displayName": "AB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 7,
+        "name": "Runs",
+        "displayName": "R",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 8,
+        "name": "Hits",
+        "displayName": "H",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 9,
+        "name": "Singles",
+        "displayName": "1B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 10,
+        "name": "Doubles",
+        "displayName": "2B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 11,
+        "name": "Triples",
+        "displayName": "3B",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 12,
+        "name": "Home Runs",
+        "displayName": "HR",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 13,
+        "name": "Runs Batted In",
+        "displayName": "RBI",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 14,
+        "name": "Sacrifice Hits",
+        "displayName": "SH",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 15,
+        "name": "Sacrifice Flys",
+        "displayName": "SF",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 16,
+        "name": "Stolen Bases",
+        "displayName": "SB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 17,
+        "name": "Caught Stealing",
+        "displayName": "CS",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 18,
+        "name": "Walks",
+        "displayName": "BB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 19,
+        "name": "Intentional Walks",
+        "displayName": "IBB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 20,
+        "name": "Hit By Pitch",
+        "displayName": "HBP",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 21,
+        "name": "Strikeouts",
+        "displayName": "K",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 22,
+        "name": "Ground Into Double Play",
+        "displayName": "GIDP",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 23,
+        "name": "Total Bases",
+        "displayName": "TB",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 24,
+        "name": "Pitching Appearances",
+        "displayName": "APP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 25,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 26,
+        "name": "Earned Run Average",
+        "displayName": "ERA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          },
+          {
+            "statId": 37
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 27,
+        "name": "(Walks + Hits)/ Innings Pitched",
+        "displayName": "WHIP",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          },
+          {
+            "statId": 34
+          },
+          {
+            "statId": 39
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 28,
+        "name": "Wins",
+        "displayName": "W",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 29,
+        "name": "Losses",
+        "displayName": "L",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 30,
+        "name": "Complete Games",
+        "displayName": "CG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 31,
+        "name": "Shutouts",
+        "displayName": "SHO",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 32,
+        "name": "Saves",
+        "displayName": "SV",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 33,
+        "name": "Outs",
+        "displayName": "OUT",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 34,
+        "name": "Hits",
+        "displayName": "H",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 35,
+        "name": "Total Batters Faced",
+        "displayName": "TBF",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 36,
+        "name": "Runs",
+        "displayName": "R",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 37,
+        "name": "Earned Runs",
+        "displayName": "ER",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 38,
+        "name": "Home Runs",
+        "displayName": "HR",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 39,
+        "name": "Walks",
+        "displayName": "BB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 40,
+        "name": "Intentional Walks",
+        "displayName": "IBB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 41,
+        "name": "Hit Batters",
+        "displayName": "HBP",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 42,
+        "name": "Strikeouts",
+        "displayName": "K",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 43,
+        "name": "Wild Pitches",
+        "displayName": "WP",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 44,
+        "name": "Balks",
+        "displayName": "BLK",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 45,
+        "name": "Stolen Bases Allowed",
+        "displayName": "SB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 46,
+        "name": "Batters Grounded Into Double Plays",
+        "displayName": "GIDP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 47,
+        "name": "Save Chances",
+        "displayName": "SVOP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 48,
+        "name": "Holds",
+        "displayName": "HLD",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 49,
+        "name": "Total Bases Allowed",
+        "displayName": "TB",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 50,
+        "name": "Innings Pitched",
+        "displayName": "IP",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 51,
+        "name": "Putouts",
+        "displayName": "PO",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 52,
+        "name": "Assists",
+        "displayName": "A",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 53,
+        "name": "Errors",
+        "displayName": "E",
+        "sortOrder": false,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 54,
+        "name": "Fielding Percentage",
+        "displayName": "FPCT",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 51
+          },
+          {
+            "statId": 52
+          },
+          {
+            "statId": 53
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 55,
+        "name": "On-base + Slugging Percentage",
+        "displayName": "OPS",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          },
+          {
+            "statId": 23
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 56,
+        "name": "Strikeouts per Walk Ratio",
+        "displayName": "K/BB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 42
+          },
+          {
+            "statId": 39
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 57,
+        "name": "Strikeouts per Nine Innings",
+        "displayName": "K/9",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 42
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 58,
+        "name": "Team",
+        "displayName": "TEAM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 59,
+        "name": "League",
+        "displayName": "LEAGUE",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "B"
+        ]
+      },
+      {
+        "statId": 60,
+        "name": "Hits / At Bats",
+        "displayName": "H/AB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 8
+          }
+        ]
+      },
+      {
+        "statId": 61,
+        "name": "Extra Base Hits",
+        "displayName": "XBH",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 10
+          },
+          {
+            "statId": 11
+          },
+          {
+            "statId": 12
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 62,
+        "name": "Net Stolen Bases",
+        "displayName": "NSB",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 16
+          },
+          {
+            "statId": 17
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 63,
+        "name": "Stolen Base Percentage",
+        "displayName": "SB%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 16
+          },
+          {
+            "statId": 17
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 64,
+        "name": "Hitting for the Cycle",
+        "displayName": "CYC",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 65,
+        "name": "Plate Appearances",
+        "displayName": "PA",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 6
+          },
+          {
+            "statId": 18
+          },
+          {
+            "statId": 20
+          },
+          {
+            "statId": 14
+          },
+          {
+            "statId": 15
+          },
+          {
+            "statId": 88
+          }
+        ],
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 66,
+        "name": "Grand Slam Home Runs",
+        "displayName": "SLAM",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 67,
+        "name": "Pitch Count",
+        "displayName": "PC",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 68,
+        "name": "Doubles Allowed",
+        "displayName": "2BA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 69,
+        "name": "Triples Allowed",
+        "displayName": "3BA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 70,
+        "name": "Relief Wins",
+        "displayName": "RW",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 71,
+        "name": "Relief Losses",
+        "displayName": "RL",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 72,
+        "name": "Pickoffs",
+        "displayName": "PICK",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 73,
+        "name": "Relief Appearances",
+        "displayName": "RAPP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 74,
+        "name": "On-base Percentage Against",
+        "displayName": "OBPA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 39
+          },
+          {
+            "statId": 41
+          },
+          {
+            "statId": 35
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 75,
+        "name": "Winning Percentage",
+        "displayName": "WIN%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 28
+          },
+          {
+            "statId": 29
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 76,
+        "name": "Singles Allowed",
+        "displayName": "1BA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 68
+          },
+          {
+            "statId": 69
+          },
+          {
+            "statId": 38
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 77,
+        "name": "Hits Per Nine Innings",
+        "displayName": "H/9",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 34
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 78,
+        "name": "Walks Per Nine Innings",
+        "displayName": "BB/9",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 39
+          },
+          {
+            "statId": 33
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 79,
+        "name": "No Hitters",
+        "displayName": "NH",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 80,
+        "name": "Perfect Games",
+        "displayName": "PG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 81,
+        "name": "Save Percentage",
+        "displayName": "SV%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 82,
+        "name": "Inherited Runners Scored",
+        "displayName": "IRA",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 83,
+        "name": "Quality Starts",
+        "displayName": "QS",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 84,
+        "name": "Blown Saves",
+        "displayName": "BSV",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 47
+          },
+          {
+            "statId": 32
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 85,
+        "name": "Net Saves",
+        "displayName": "NSV",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 86,
+        "name": "Outfield Assists",
+        "displayName": "OFA",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 87,
+        "name": "Double Plays Turned",
+        "displayName": "DPT",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 88,
+        "name": "Catcher Interference",
+        "displayName": "CI",
+        "sortOrder": true,
+        "positionTypes": [
+          "B"
+        ]
+      },
+      {
+        "statId": 89,
+        "name": "Saves + Holds",
+        "displayName": "SV+H",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 48
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 90,
+        "name": "Net Saves and Holds",
+        "displayName": "NSVH",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 32
+          },
+          {
+            "statId": 48
+          },
+          {
+            "statId": 47
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 91,
+        "name": "Net Wins",
+        "displayName": "NW",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 28
+          },
+          {
+            "statId": 29
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      }
+    ]
+  },
+  "positionTypes": [
+    {
+      "type": "B",
+      "displayName": "Batters"
+    },
+    {
+      "type": "P",
+      "displayName": "Pitchers"
+    }
+  ]
+}

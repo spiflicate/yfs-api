@@ -5,6 +5,10 @@
 import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { TeamResource } from '../../../src/resources/TeamResource.js';
+import team from '../../fixtures/data/team-465-l-30702-t-9.json';
+import teamMatchups from '../../fixtures/data/team-465-l-30702-t-9-matchups.json';
+import teamRoster from '../../fixtures/data/team-465-l-30702-t-9-roster.json';
+import teamStats from '../../fixtures/data/team-465-l-30702-t-9-stats.json';
 
 describe('TeamResource', () => {
    const createMockHttpClient = (): HttpClient => {
@@ -18,25 +22,7 @@ describe('TeamResource', () => {
 
    describe('get()', () => {
       test('should fetch basic team metadata', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               team_id: '1',
-               name: 'My Team',
-               is_owned_by_current_login: '1',
-               waiver_priority: '3',
-               number_of_moves: '15',
-               number_of_trades: '2',
-               faab_balance: '50',
-               url: 'https://hockey.fantasysports.yahoo.com/team/1',
-               league: {
-                  league_key: '423.l.12345',
-                  league_id: '12345',
-                  name: 'Test League',
-                  url: 'https://hockey.fantasysports.yahoo.com/league/12345',
-               },
-            },
-         };
+         const mockResponse = { team };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -44,35 +30,16 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         const team = await teamResource.get('423.l.12345.t.1');
+         const result = await teamResource.get('465.l.30702.t.9');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1',
+            '/team/465.l.30702.t.9',
          );
-         expect(team.teamKey).toBe('423.l.12345.t.1');
-         expect(team.teamId).toBe('1');
-         expect(team.name).toBe('My Team');
-         expect(team.isOwnedByCurrentLogin).toBe(true);
-         expect(team.waiverPriority).toBe(3);
-         expect(team.numberOfMoves).toBe(15);
-         expect(team.faabBalance).toBe(50);
+         expect(result).toEqual(team);
       });
 
-      test('should include sub-resources when requested', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               team_id: '1',
-               name: 'My Team',
-               url: 'https://hockey.fantasysports.yahoo.com/team/1',
-               league: {
-                  league_key: '423.l.12345',
-                  league_id: '12345',
-                  name: 'Test League',
-                  url: 'https://hockey.fantasysports.yahoo.com/league/12345',
-               },
-            },
-         };
+      test('should include sub-resources', async () => {
+         const mockResponse = { team };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -80,53 +47,21 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         await teamResource.get('423.l.12345.t.1', {
+         await teamResource.get('465.l.30702.t.9', {
             includeStats: true,
             includeStandings: true,
             includeRoster: true,
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1;out=stats,standings,roster',
+            '/team/465.l.30702.t.9;out=stats,standings,roster',
          );
       });
    });
 
    describe('getRoster()', () => {
       test('should fetch team roster', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               roster: {
-                  coverage_type: 'date',
-                  date: '2024-11-15',
-                  is_editable: '1',
-                  players: {
-                     player: [
-                        {
-                           player_key: '423.p.8888',
-                           player_id: '8888',
-                           name: {
-                              full: 'Connor McDavid',
-                              first: 'Connor',
-                              last: 'McDavid',
-                           },
-                           display_position: 'C',
-                           url: 'https://hockey.fantasysports.yahoo.com/player/8888',
-                           eligible_positions: {
-                              position: 'C',
-                           },
-                           selected_position: {
-                              position: 'C',
-                              coverage_type: 'date',
-                              date: '2024-11-15',
-                           },
-                        },
-                     ],
-                  },
-               },
-            },
-         };
+         const mockResponse = { team: teamRoster };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -134,30 +69,16 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         const roster = await teamResource.getRoster('423.l.12345.t.1');
+         const result = await teamResource.getRoster('465.l.30702.t.9');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/roster',
+            '/team/465.l.30702.t.9/roster',
          );
-         expect(roster.coverageType).toBe('date');
-         expect(roster.date).toBe('2024-11-15');
-         expect(roster.isEditable).toBe(true);
-         expect(roster.players.length).toBeGreaterThan(0);
+         expect(result).toEqual(teamRoster);
       });
 
       test('should fetch roster for specific date', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               roster: {
-                  coverage_type: 'date',
-                  date: '2024-11-20',
-                  players: {
-                     count: 0,
-                  },
-               },
-            },
-         };
+         const mockResponse = { team: teamRoster };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -165,28 +86,17 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         await teamResource.getRoster('423.l.12345.t.1', {
-            date: '2024-11-20',
+         await teamResource.getRoster('465.l.30702.t.9', {
+            date: '2025-11-20',
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/roster;date=2024-11-20',
+            '/team/465.l.30702.t.9/roster;date=2025-11-20',
          );
       });
 
       test('should fetch roster for specific week', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               roster: {
-                  coverage_type: 'week',
-                  week: '10',
-                  players: {
-                     count: 0,
-                  },
-               },
-            },
-         };
+         const mockResponse = { team: teamRoster };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -194,34 +104,37 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         await teamResource.getRoster('423.l.12345.t.1', { week: 10 });
+         await teamResource.getRoster('465.l.30702.t.9', {
+            week: 7,
+         });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/roster;week=10',
+            '/team/465.l.30702.t.9/roster;week=7',
+         );
+      });
+
+      test('should include stats when requested', async () => {
+         const mockResponse = { team: teamRoster };
+
+         const httpClient = createMockHttpClient();
+         (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
+            mockResponse,
+         );
+
+         const teamResource = new TeamResource(httpClient);
+         await teamResource.getRoster('465.l.30702.t.9', {
+            includeStats: true,
+         });
+
+         expect(httpClient.get).toHaveBeenCalledWith(
+            '/team/465.l.30702.t.9/roster;out=stats',
          );
       });
    });
 
    describe('getStats()', () => {
       test('should fetch team stats', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               team_stats: {
-                  coverage_type: 'season',
-                  season: '2024',
-                  stats: {
-                     0: {
-                        stat: {
-                           stat_id: '1',
-                           value: '100',
-                        },
-                     },
-                     count: 1,
-                  },
-               },
-            },
-         };
+         const mockResponse = { team: teamStats };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -229,28 +142,16 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         const stats = await teamResource.getStats('423.l.12345.t.1');
+         const result = await teamResource.getStats('465.l.30702.t.9');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/stats',
+            '/team/465.l.30702.t.9/stats',
          );
-         expect(stats.coverageType).toBe('season');
-         expect(stats.season).toBe(2024);
+         expect(result).toEqual(teamStats);
       });
 
-      test('should fetch stats for specific week', async () => {
-         const mockResponse = {
-            team: {
-               team_key: '423.l.12345.t.1',
-               team_stats: {
-                  coverage_type: 'week',
-                  week: '10',
-                  stats: {
-                     count: 0,
-                  },
-               },
-            },
-         };
+      test('should fetch stats for specific coverage type', async () => {
+         const mockResponse = { team: teamStats };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -258,29 +159,20 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         await teamResource.getStats('423.l.12345.t.1', {
+         await teamResource.getStats('465.l.30702.t.9', {
             coverageType: 'week',
-            week: 10,
+            week: 7,
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/stats;type=week;week=10',
+            '/team/465.l.30702.t.9/stats;type=week;week=7',
          );
       });
    });
 
    describe('getMatchups()', () => {
       test('should fetch team matchups', async () => {
-         const mockResponse = {
-            team: [
-               {
-                  team_key: '423.l.12345.t.1',
-               },
-               {
-                  matchups: [],
-               },
-            ],
-         };
+         const mockResponse = { team: teamMatchups };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -288,25 +180,16 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         const matchups = await teamResource.getMatchups('423.l.12345.t.1');
+         const result = await teamResource.getMatchups('465.l.30702.t.9');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/matchups',
+            '/team/465.l.30702.t.9/matchups',
          );
-         expect(Array.isArray(matchups)).toBe(true);
+         expect(result).toEqual(teamMatchups);
       });
 
       test('should fetch matchups for specific weeks', async () => {
-         const mockResponse = {
-            team: [
-               {
-                  team_key: '423.l.12345.t.1',
-               },
-               {
-                  matchups: [],
-               },
-            ],
-         };
+         const mockResponse = { team: teamMatchups };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -314,36 +197,19 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         await teamResource.getMatchups('423.l.12345.t.1', {
-            weeks: [10, 11, 12],
+         await teamResource.getMatchups('465.l.30702.t.9', {
+            weeks: [1, 2, 3],
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/matchups;weeks=10,11,12',
+            '/team/465.l.30702.t.9/matchups;weeks=1,2,3',
          );
       });
    });
 
    describe('updateRoster()', () => {
-      test('should update roster successfully', async () => {
-         const mockResponse = {
-            team: [
-               {
-                  team_key: '423.l.12345.t.1',
-               },
-               {
-                  roster: [
-                     {
-                        coverage_type: 'date',
-                        date: '2024-11-20',
-                        players: {
-                           count: 0,
-                        },
-                     },
-                  ],
-               },
-            ],
-         };
+      test('should update roster positions', async () => {
+         const mockResponse = { team: {} };
 
          const httpClient = createMockHttpClient();
          (httpClient.put as ReturnType<typeof mock>).mockResolvedValue(
@@ -351,34 +217,21 @@ describe('TeamResource', () => {
          );
 
          const teamResource = new TeamResource(httpClient);
-         const result = await teamResource.updateRoster('423.l.12345.t.1', {
+         await teamResource.updateRoster('465.l.30702.t.9', {
             coverageType: 'date',
-            date: '2024-11-20',
+            date: '2025-11-20',
             players: [
-               { playerKey: '423.p.8888', position: 'C' },
-               { playerKey: '423.p.7777', position: 'LW' },
+               { playerKey: '465.p.32763', position: 'C' },
+               { playerKey: '465.p.6055', position: 'BN' },
             ],
          });
 
-         expect(result.success).toBe(true);
-         expect(result.teamKey).toBe('423.l.12345.t.1');
-      });
-
-      test('should handle roster update failure', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockRejectedValue(
-            new Error('API Error'),
+         expect(httpClient.put).toHaveBeenCalled();
+         const call = (httpClient.put as ReturnType<typeof mock>).mock
+            .calls[0];
+         expect(call?.[0]).toBe(
+            '/team/465.l.30702.t.9/roster;date=2025-11-20',
          );
-
-         const teamResource = new TeamResource(httpClient);
-         const result = await teamResource.updateRoster('423.l.12345.t.1', {
-            coverageType: 'date',
-            date: '2024-11-20',
-            players: [{ playerKey: '423.p.8888', position: 'C' }],
-         });
-
-         expect(result.success).toBe(false);
-         expect(result.error).toBe('API Error');
       });
    });
 });

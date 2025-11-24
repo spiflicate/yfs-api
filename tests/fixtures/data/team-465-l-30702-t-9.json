@@ -1,0 +1,35 @@
+{
+  "teamKey": "465.l.30702.t.9",
+  "teamId": 9,
+  "name": "Scoreface",
+  "isOwnedByCurrentLogin": 1,
+  "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/9",
+  "teamLogos": [
+    {
+      "size": "large",
+      "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+    }
+  ],
+  "previousSeasonTeamRank": 2,
+  "waiverPriority": 10,
+  "numberOfMoves": 27,
+  "numberOfTrades": 0,
+  "rosterAdds": {
+    "coverageType": "week",
+    "coverageValue": 8,
+    "value": 1
+  },
+  "leagueScoringType": "head",
+  "hasDraftGrade": false,
+  "managers": [
+    {
+      "managerId": 9,
+      "nickname": "jbru",
+      "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+      "isCurrentLogin": 1,
+      "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+      "feloScore": 916,
+      "feloTier": "diamond"
+    }
+  ]
+}

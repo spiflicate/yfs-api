@@ -1,0 +1,1819 @@
+{
+  "gameKey": "461",
+  "gameId": 461,
+  "name": "Football",
+  "code": "nfl",
+  "type": "full",
+  "url": "https://football.fantasysports.yahoo.com/f1",
+  "season": 2025,
+  "isRegistrationOver": false,
+  "isGameOver": false,
+  "isOffseason": false,
+  "isLiveDraftLobbyActive": true,
+  "players": [
+    {
+      "playerKey": "461.p.32711",
+      "playerId": 32711,
+      "name": {
+        "full": "Jonathan Taylor",
+        "first": "Jonathan",
+        "last": "Taylor",
+        "asciiFirst": "Jonathan",
+        "asciiLast": "Taylor"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/32711",
+      "editorialPlayerKey": "nfl.p.32711",
+      "editorialTeamKey": "nfl.t.11",
+      "editorialTeamFullName": "Indianapolis Colts",
+      "editorialTeamAbbr": "Ind",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/indianapolis/",
+      "byeWeeks": {
+        "week": 11
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 28,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/8eNYEWCS9awvVo_gEdfUqw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08042025/32711.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/8eNYEWCS9awvVo_gEdfUqw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08042025/32711.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763937957
+    },
+    {
+      "playerKey": "461.p.30121",
+      "playerId": 30121,
+      "name": {
+        "full": "Christian McCaffrey",
+        "first": "Christian",
+        "last": "McCaffrey",
+        "asciiFirst": "Christian",
+        "asciiLast": "McCaffrey"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/30121",
+      "editorialPlayerKey": "nfl.p.30121",
+      "editorialTeamKey": "nfl.t.25",
+      "editorialTeamFullName": "San Francisco 49ers",
+      "editorialTeamAbbr": "SF",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/san-francisco/",
+      "byeWeeks": {
+        "week": 14
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 23,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/NUKES.XtDlZ9FmhqEOqBXQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08272025/30121.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/NUKES.XtDlZ9FmhqEOqBXQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08272025/30121.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763346325
+    },
+    {
+      "playerKey": "461.p.40059",
+      "playerId": 40059,
+      "name": {
+        "full": "Jahmyr Gibbs",
+        "first": "Jahmyr",
+        "last": "Gibbs",
+        "asciiFirst": "Jahmyr",
+        "asciiLast": "Gibbs"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40059",
+      "editorialPlayerKey": "nfl.p.40059",
+      "editorialTeamKey": "nfl.t.8",
+      "editorialTeamFullName": "Detroit Lions",
+      "editorialTeamAbbr": "Det",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/detroit/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 0,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/q_xspFi6ilnHRI2tC5Dttw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07312025/40059.1.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/q_xspFi6ilnHRI2tC5Dttw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07312025/40059.1.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763938431
+    },
+    {
+      "playerKey": "461.p.40055",
+      "playerId": 40055,
+      "name": {
+        "full": "Bijan Robinson",
+        "first": "Bijan",
+        "last": "Robinson",
+        "asciiFirst": "Bijan",
+        "asciiLast": "Robinson"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40055",
+      "editorialPlayerKey": "nfl.p.40055",
+      "editorialTeamKey": "nfl.t.1",
+      "editorialTeamFullName": "Atlanta Falcons",
+      "editorialTeamAbbr": "Atl",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/atlanta/",
+      "byeWeeks": {
+        "week": 5
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 7,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/fRK4ZAl9sau01IF3sLGICg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07292025/40055.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/fRK4ZAl9sau01IF3sLGICg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07292025/40055.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763949574
+    },
+    {
+      "playerKey": "461.p.40041",
+      "playerId": 40041,
+      "name": {
+        "full": "Jaxon Smith-Njigba",
+        "first": "Jaxon",
+        "last": "Smith-Njigba",
+        "asciiFirst": "Jaxon",
+        "asciiLast": "Smith-Njigba"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40041",
+      "editorialPlayerKey": "nfl.p.40041",
+      "editorialTeamKey": "nfl.t.26",
+      "editorialTeamFullName": "Seattle Seahawks",
+      "editorialTeamAbbr": "Sea",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/seattle/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 11,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/pjAcTWxGkVVesoSoIoyIPw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08112025/40041.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/pjAcTWxGkVVesoSoIoyIPw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08112025/40041.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763938408
+    },
+    {
+      "playerKey": "461.p.40168",
+      "playerId": 40168,
+      "name": {
+        "full": "Puka Nacua",
+        "first": "Puka",
+        "last": "Nacua",
+        "asciiFirst": "Puka",
+        "asciiLast": "Nacua"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40168",
+      "editorialPlayerKey": "nfl.p.40168",
+      "editorialTeamKey": "nfl.t.14",
+      "editorialTeamFullName": "Los Angeles Rams",
+      "editorialTeamAbbr": "LAR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/la-rams/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 12,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/NK5NKnYxkZbAn8toUvEs_g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/40168.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/NK5NKnYxkZbAn8toUvEs_g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/40168.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763962693
+    },
+    {
+      "playerKey": "461.p.33393",
+      "playerId": 33393,
+      "name": {
+        "full": "Ja'Marr Chase",
+        "first": "Ja'Marr",
+        "last": "Chase",
+        "asciiFirst": "Ja'Marr",
+        "asciiLast": "Chase"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/33393",
+      "status": "SUSP",
+      "statusFull": "Suspended",
+      "injuryNote": "Suspension",
+      "editorialPlayerKey": "nfl.p.33393",
+      "editorialTeamKey": "nfl.t.4",
+      "editorialTeamFullName": "Cincinnati Bengals",
+      "editorialTeamAbbr": "Cin",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/cincinnati/",
+      "byeWeeks": {
+        "week": 10
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 1,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/QhSGwB6WBoQZvvduJKD7TQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07232024/33393.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/QhSGwB6WBoQZvvduJKD7TQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07232024/33393.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763534187
+    },
+    {
+      "playerKey": "461.p.34019",
+      "playerId": 34019,
+      "name": {
+        "full": "James Cook III",
+        "first": "James",
+        "last": "Cook III",
+        "asciiFirst": "James",
+        "asciiLast": "Cook III"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/34019",
+      "editorialPlayerKey": "nfl.p.34019",
+      "editorialTeamKey": "nfl.t.2",
+      "editorialTeamFullName": "Buffalo Bills",
+      "editorialTeamAbbr": "Buf",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/buffalo/",
+      "byeWeeks": {
+        "week": 7
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 4,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/phPvtlUh.MceOTZItKh_AA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08282024/34019.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/phPvtlUh.MceOTZItKh_AA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08282024/34019.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763700766
+    },
+    {
+      "playerKey": "461.p.33500",
+      "playerId": 33500,
+      "name": {
+        "full": "Amon-Ra St. Brown",
+        "first": "Amon-Ra",
+        "last": "St. Brown",
+        "asciiFirst": "Amon-Ra",
+        "asciiLast": "St. Brown"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/33500",
+      "editorialPlayerKey": "nfl.p.33500",
+      "editorialTeamKey": "nfl.t.8",
+      "editorialTeamFullName": "Detroit Lions",
+      "editorialTeamAbbr": "Det",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/detroit/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 14,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/LQZl1Mo7u0KUzLXU9RSw2g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07312025/33500.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/LQZl1Mo7u0KUzLXU9RSw2g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07312025/33500.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763938677
+    },
+    {
+      "playerKey": "461.p.32687",
+      "playerId": 32687,
+      "name": {
+        "full": "CeeDee Lamb",
+        "first": "CeeDee",
+        "last": "Lamb",
+        "asciiFirst": "CeeDee",
+        "asciiLast": "Lamb"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/32687",
+      "editorialPlayerKey": "nfl.p.32687",
+      "editorialTeamKey": "nfl.t.6",
+      "editorialTeamFullName": "Dallas Cowboys",
+      "editorialTeamAbbr": "Dal",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/dallas/",
+      "byeWeeks": {
+        "week": 10
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 88,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/97z.n2rR5JU2bkWcYfVJAg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/32687.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/97z.n2rR5JU2bkWcYfVJAg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/32687.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763956545
+    },
+    {
+      "playerKey": "461.p.40118",
+      "playerId": 40118,
+      "name": {
+        "full": "De'Von Achane",
+        "first": "De'Von",
+        "last": "Achane",
+        "asciiFirst": "De'Von",
+        "asciiLast": "Achane"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40118",
+      "editorialPlayerKey": "nfl.p.40118",
+      "editorialTeamKey": "nfl.t.15",
+      "editorialTeamFullName": "Miami Dolphins",
+      "editorialTeamAbbr": "Mia",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/miami/",
+      "byeWeeks": {
+        "week": 12
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 28,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/obsCencHX.qHUD9wlJ2lFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08272025/40118.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/obsCencHX.qHUD9wlJ2lFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08272025/40118.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763316865
+    },
+    {
+      "playerKey": "461.p.30972",
+      "playerId": 30972,
+      "name": {
+        "full": "Saquon Barkley",
+        "first": "Saquon",
+        "last": "Barkley",
+        "asciiFirst": "Saquon",
+        "asciiLast": "Barkley"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/30972",
+      "editorialPlayerKey": "nfl.p.30972",
+      "editorialTeamKey": "nfl.t.21",
+      "editorialTeamFullName": "Philadelphia Eagles",
+      "editorialTeamAbbr": "Phi",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/philadelphia/",
+      "byeWeeks": {
+        "week": 9
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 26,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/gJ8KBLiyKMA4G7nQ4BDZnw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08062025/30972.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/gJ8KBLiyKMA4G7nQ4BDZnw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08062025/30972.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763956148
+    },
+    {
+      "playerKey": "461.p.27581",
+      "playerId": 27581,
+      "name": {
+        "full": "Davante Adams",
+        "first": "Davante",
+        "last": "Adams",
+        "asciiFirst": "Davante",
+        "asciiLast": "Adams"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/27581",
+      "editorialPlayerKey": "nfl.p.27581",
+      "editorialTeamKey": "nfl.t.14",
+      "editorialTeamFullName": "Los Angeles Rams",
+      "editorialTeamAbbr": "LAR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/la-rams/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 17,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/Lq0buOz6WeFBtJha4zFsjQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/27581.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/Lq0buOz6WeFBtJha4zFsjQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/27581.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763962972
+    },
+    {
+      "playerKey": "461.p.30977",
+      "playerId": 30977,
+      "name": {
+        "full": "Josh Allen",
+        "first": "Josh",
+        "last": "Allen",
+        "asciiFirst": "Josh",
+        "asciiLast": "Allen"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/30977",
+      "editorialPlayerKey": "nfl.p.30977",
+      "editorialTeamKey": "nfl.t.2",
+      "editorialTeamFullName": "Buffalo Bills",
+      "editorialTeamAbbr": "Buf",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/buffalo/",
+      "byeWeeks": {
+        "week": 7
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 17,
+      "displayPosition": "QB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/0ZvRLHeilzeAD.w4rHrhHQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07302025/30977.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/0ZvRLHeilzeAD.w4rHrhHQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07302025/30977.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "QB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763757393
+    },
+    {
+      "playerKey": "461.p.29279",
+      "playerId": 29279,
+      "name": {
+        "full": "Derrick Henry",
+        "first": "Derrick",
+        "last": "Henry",
+        "asciiFirst": "Derrick",
+        "asciiLast": "Henry"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/29279",
+      "editorialPlayerKey": "nfl.p.29279",
+      "editorialTeamKey": "nfl.t.33",
+      "editorialTeamFullName": "Baltimore Ravens",
+      "editorialTeamAbbr": "Bal",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/baltimore/",
+      "byeWeeks": {
+        "week": 7
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 22,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/E0ngmoi1QGLduY.pIBiAEg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09032025/29279.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/E0ngmoi1QGLduY.pIBiAEg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09032025/29279.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763933358
+    },
+    {
+      "playerKey": "461.p.34120",
+      "playerId": 34120,
+      "name": {
+        "full": "Kyren Williams",
+        "first": "Kyren",
+        "last": "Williams",
+        "asciiFirst": "Kyren",
+        "asciiLast": "Williams"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/34120",
+      "editorialPlayerKey": "nfl.p.34120",
+      "editorialTeamKey": "nfl.t.14",
+      "editorialTeamFullName": "Los Angeles Rams",
+      "editorialTeamAbbr": "LAR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/la-rams/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 23,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/4Zm8cAtYPpfXJusJwXTSQg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/34120.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/4Zm8cAtYPpfXJusJwXTSQg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08252025/34120.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763961003
+    },
+    {
+      "playerKey": "461.p.31002",
+      "playerId": 31002,
+      "name": {
+        "full": "Lamar Jackson",
+        "first": "Lamar",
+        "last": "Jackson",
+        "asciiFirst": "Lamar",
+        "asciiLast": "Jackson"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/31002",
+      "editorialPlayerKey": "nfl.p.31002",
+      "editorialTeamKey": "nfl.t.33",
+      "editorialTeamFullName": "Baltimore Ravens",
+      "editorialTeamAbbr": "Bal",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/baltimore/",
+      "byeWeeks": {
+        "week": 7
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 8,
+      "displayPosition": "QB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/cBbyp3XGWSb7ODSLpiINIQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09052025/31002.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/cBbyp3XGWSb7ODSLpiINIQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09052025/31002.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "QB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763936926
+    },
+    {
+      "playerKey": "461.p.40878",
+      "playerId": 40878,
+      "name": {
+        "full": "Brock Bowers",
+        "first": "Brock",
+        "last": "Bowers",
+        "asciiFirst": "Brock",
+        "asciiLast": "Bowers"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/40878",
+      "editorialPlayerKey": "nfl.p.40878",
+      "editorialTeamKey": "nfl.t.13",
+      "editorialTeamFullName": "Las Vegas Raiders",
+      "editorialTeamAbbr": "LV",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/las-vegas/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 89,
+      "displayPosition": "TE",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/5wVhLYIcCZJlywOkUH1Q7g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/40878.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/5wVhLYIcCZJlywOkUH1Q7g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/40878.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "TE"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763956291
+    },
+    {
+      "playerKey": "461.p.32692",
+      "playerId": 32692,
+      "name": {
+        "full": "Justin Jefferson",
+        "first": "Justin",
+        "last": "Jefferson",
+        "asciiFirst": "Justin",
+        "asciiLast": "Jefferson"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/32692",
+      "editorialPlayerKey": "nfl.p.32692",
+      "editorialTeamKey": "nfl.t.16",
+      "editorialTeamFullName": "Minnesota Vikings",
+      "editorialTeamAbbr": "Min",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/minnesota/",
+      "byeWeeks": {
+        "week": 6
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 18,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/TGVrwP6dQEajbWwbS1B8Zg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08152025/32692.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/TGVrwP6dQEajbWwbS1B8Zg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08152025/32692.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763933213
+    },
+    {
+      "playerKey": "461.p.34007",
+      "playerId": 34007,
+      "name": {
+        "full": "George Pickens",
+        "first": "George",
+        "last": "Pickens",
+        "asciiFirst": "George",
+        "asciiLast": "Pickens"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/34007",
+      "editorialPlayerKey": "nfl.p.34007",
+      "editorialTeamKey": "nfl.t.6",
+      "editorialTeamFullName": "Dallas Cowboys",
+      "editorialTeamAbbr": "Dal",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/dallas/",
+      "byeWeeks": {
+        "week": 10
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 3,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/tL4TO41aAirHrtd5rFiVBg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/34007.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/tL4TO41aAirHrtd5rFiVBg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08072025/34007.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763955051
+    },
+    {
+      "playerKey": "461.p.34010",
+      "playerId": 34010,
+      "name": {
+        "full": "Trey McBride",
+        "first": "Trey",
+        "last": "McBride",
+        "asciiFirst": "Trey",
+        "asciiLast": "McBride"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/34010",
+      "editorialPlayerKey": "nfl.p.34010",
+      "editorialTeamKey": "nfl.t.22",
+      "editorialTeamFullName": "Arizona Cardinals",
+      "editorialTeamAbbr": "Ari",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/arizona/",
+      "byeWeeks": {
+        "week": 8
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 85,
+      "displayPosition": "TE",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/KsfN9YEltClsF.OKACBQAQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08012025/34010.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/KsfN9YEltClsF.OKACBQAQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08012025/34010.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "TE"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763952018
+    },
+    {
+      "playerKey": "461.p.41804",
+      "playerId": 41804,
+      "name": {
+        "full": "Emeka Egbuka",
+        "first": "Emeka",
+        "last": "Egbuka",
+        "asciiFirst": "Emeka",
+        "asciiLast": "Egbuka"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/41804",
+      "editorialPlayerKey": "nfl.p.41804",
+      "editorialTeamKey": "nfl.t.27",
+      "editorialTeamFullName": "Tampa Bay Buccaneers",
+      "editorialTeamAbbr": "TB",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/tampa-bay/",
+      "byeWeeks": {
+        "week": 9
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 2,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/4zlKzRjiLf8g8.j4JJxvqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09022025/41804.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/4zlKzRjiLf8g8.j4JJxvqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/09022025/41804.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763961373
+    },
+    {
+      "playerKey": "461.p.33477",
+      "playerId": 33477,
+      "name": {
+        "full": "Nico Collins",
+        "first": "Nico",
+        "last": "Collins",
+        "asciiFirst": "Nico",
+        "asciiLast": "Collins"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/33477",
+      "editorialPlayerKey": "nfl.p.33477",
+      "editorialTeamKey": "nfl.t.34",
+      "editorialTeamFullName": "Houston Texans",
+      "editorialTeamAbbr": "Hou",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/houston/",
+      "byeWeeks": {
+        "week": 6
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 12,
+      "displayPosition": "WR",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/wGEEKD1bv1VZdmpZ4RvhqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08192025/33477.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/wGEEKD1bv1VZdmpZ4RvhqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08192025/33477.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "WR"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763702494
+    },
+    {
+      "playerKey": "461.p.33100",
+      "playerId": 33100,
+      "name": {
+        "full": "Rico Dowdle",
+        "first": "Rico",
+        "last": "Dowdle",
+        "asciiFirst": "Rico",
+        "asciiLast": "Dowdle"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/33100",
+      "editorialPlayerKey": "nfl.p.33100",
+      "editorialTeamKey": "nfl.t.29",
+      "editorialTeamFullName": "Carolina Panthers",
+      "editorialTeamAbbr": "Car",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/carolina/",
+      "byeWeeks": {
+        "week": 14
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 5,
+      "displayPosition": "RB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/RIqb5WGIYqbJtVY52AliyA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07302025/33100.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/RIqb5WGIYqbJtVY52AliyA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/07302025/33100.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "RB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763331642
+    },
+    {
+      "playerKey": "461.p.32723",
+      "playerId": 32723,
+      "name": {
+        "full": "Jalen Hurts",
+        "first": "Jalen",
+        "last": "Hurts",
+        "asciiFirst": "Jalen",
+        "asciiLast": "Hurts"
+      },
+      "url": "https://sports.yahoo.com/nfl/players/32723",
+      "editorialPlayerKey": "nfl.p.32723",
+      "editorialTeamKey": "nfl.t.21",
+      "editorialTeamFullName": "Philadelphia Eagles",
+      "editorialTeamAbbr": "Phi",
+      "editorialTeamUrl": "https://sports.yahoo.com/nfl/teams/philadelphia/",
+      "byeWeeks": {
+        "week": 9
+      },
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 1,
+      "displayPosition": "QB",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/DYk4PbeJnvksY9yGq6sSvg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08062025/32723.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/DYk4PbeJnvksY9yGq6sSvg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nfl_cutout/players_l/08062025/32723.png",
+      "isUndroppable": false,
+      "positionType": "O",
+      "eligiblePositions": {
+        "position": "QB"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763955531
+    }
+  ],
+  "statCategories": {
+    "stats": [
+      {
+        "statId": 0,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "O",
+          "DP",
+          "K",
+          "DT"
+        ]
+      },
+      {
+        "statId": 1,
+        "name": "Passing Attempts",
+        "displayName": "Pass Att",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 2,
+        "name": "Completions",
+        "displayName": "Comp",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 3,
+        "name": "Incomplete Passes",
+        "displayName": "Inc",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 4,
+        "name": "Passing Yards",
+        "displayName": "Pass Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 5,
+        "name": "Passing Touchdowns",
+        "displayName": "Pass TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 6,
+        "name": "Interceptions",
+        "displayName": "Int",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 7,
+        "name": "Sacks",
+        "displayName": "Sack",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 8,
+        "name": "Rushing Attempts",
+        "displayName": "Rush Att",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 9,
+        "name": "Rushing Yards",
+        "displayName": "Rush Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 10,
+        "name": "Rushing Touchdowns",
+        "displayName": "Rush TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 11,
+        "name": "Receptions",
+        "displayName": "Rec",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 12,
+        "name": "Receiving Yards",
+        "displayName": "Rec Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 13,
+        "name": "Receiving Touchdowns",
+        "displayName": "Rec TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 14,
+        "name": "Return Yards",
+        "displayName": "Ret Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 15,
+        "name": "Return Touchdowns",
+        "displayName": "Ret TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 16,
+        "name": "2-Point Conversions",
+        "displayName": "2-PT",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 17,
+        "name": "Fumbles",
+        "displayName": "Fum",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 18,
+        "name": "Fumbles Lost",
+        "displayName": "Fum Lost",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 19,
+        "name": "Field Goals 0-19 Yards",
+        "displayName": "FG 0-19",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 20,
+        "name": "Field Goals 20-29 Yards",
+        "displayName": "FG 20-29",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 21,
+        "name": "Field Goals 30-39 Yards",
+        "displayName": "FG 30-39",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 22,
+        "name": "Field Goals 40-49 Yards",
+        "displayName": "FG 40-49",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 23,
+        "name": "Field Goals 50+ Yards",
+        "displayName": "FG 50+",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 24,
+        "name": "Field Goals Missed 0-19 Yards",
+        "displayName": "FGM 0-19",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 25,
+        "name": "Field Goals Missed 20-29 Yards",
+        "displayName": "FGM 20-29",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 26,
+        "name": "Field Goals Missed 30-39 Yards",
+        "displayName": "FGM 30-39",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 27,
+        "name": "Field Goals Missed 40-49 Yards",
+        "displayName": "FGM 40-49",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 28,
+        "name": "Field Goals Missed 50+ Yards",
+        "displayName": "FGM 50+",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 29,
+        "name": "Point After Attempt Made",
+        "displayName": "PAT Made",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 30,
+        "name": "Point After Attempt Missed",
+        "displayName": "PAT Miss",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 31,
+        "name": "Points Allowed",
+        "displayName": "Pts Allow",
+        "sortOrder": false,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 32,
+        "name": "Sack",
+        "displayName": "Sack",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 33,
+        "name": "Interception",
+        "displayName": "Int",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 34,
+        "name": "Fumble Recovery",
+        "displayName": "Fum Rec",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 35,
+        "name": "Touchdown",
+        "displayName": "TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 36,
+        "name": "Safety",
+        "displayName": "Safe",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 37,
+        "name": "Block Kick",
+        "displayName": "Blk Kick",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 38,
+        "name": "Tackle Solo",
+        "displayName": "Tack Solo",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 39,
+        "name": "Tackle Assist",
+        "displayName": "Tack Ast",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 40,
+        "name": "Sack",
+        "displayName": "Sack",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 41,
+        "name": "Interception",
+        "displayName": "Int",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 42,
+        "name": "Fumble Force",
+        "displayName": "Fum Force",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 43,
+        "name": "Fumble Recovery",
+        "displayName": "Fum Rec",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 44,
+        "name": "Defensive Touchdown",
+        "displayName": "TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 45,
+        "name": "Safety",
+        "displayName": "Safe",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 46,
+        "name": "Pass Defended",
+        "displayName": "Pass Def",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 47,
+        "name": "Block Kick",
+        "displayName": "Blk Kick",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 48,
+        "name": "Return Yards",
+        "displayName": "Ret Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 49,
+        "name": "Kickoff and Punt Return Touchdowns",
+        "displayName": "Ret TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 50,
+        "name": "Points Allowed 0 points",
+        "displayName": "Pts Allow 0",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 51,
+        "name": "Points Allowed 1-6 points",
+        "displayName": "Pts Allow 1-6",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 52,
+        "name": "Points Allowed 7-13 points",
+        "displayName": "Pts Allow 7-13",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 53,
+        "name": "Points Allowed 14-20 points",
+        "displayName": "Pts Allow 14-20",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 54,
+        "name": "Points Allowed 21-27 points",
+        "displayName": "Pts Allow 21-27",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 55,
+        "name": "Points Allowed 28-34 points",
+        "displayName": "Pts Allow 28-34",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 56,
+        "name": "Points Allowed 35+ points",
+        "displayName": "Pts Allow 35+",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 57,
+        "name": "Offensive Fumble Return TD",
+        "displayName": "Fum Ret TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 58,
+        "name": "Pick Sixes Thrown",
+        "displayName": "Pick Six",
+        "sortOrder": false,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 59,
+        "name": "40+ Yard Completions",
+        "displayName": "40 Yd Comp",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 60,
+        "name": "40+ Yard Passing Touchdowns",
+        "displayName": "40 Yd Pass TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 61,
+        "name": "40+ Yard Run",
+        "displayName": "40 Yd Rush",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 62,
+        "name": "40+ Yard Rushing Touchdowns",
+        "displayName": "40 Yd Rush TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 63,
+        "name": "40+ Yard Receptions",
+        "displayName": "40 Yd Rec",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 64,
+        "name": "40+ Yard Receiving Touchdowns",
+        "displayName": "40 Yd Rec TD",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 65,
+        "name": "Tackles for Loss",
+        "displayName": "TFL",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 66,
+        "name": "Turnover Return Yards",
+        "displayName": "TO Ret Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 67,
+        "name": "4th Down Stops",
+        "displayName": "4 Dwn Stops",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 68,
+        "name": "Tackles for Loss",
+        "displayName": "TFL",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 69,
+        "name": "Defensive Yards Allowed",
+        "displayName": "Def Yds Allow",
+        "sortOrder": false,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 70,
+        "name": "Defensive Yards Allowed - Negative",
+        "displayName": "Yds Allow Neg",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 71,
+        "name": "Defensive Yards Allowed 0-99",
+        "displayName": "Yds Allow 0-99",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 72,
+        "name": "Defensive Yards Allowed 100-199",
+        "displayName": "Yds Allow 100-199",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 73,
+        "name": "Defensive Yards Allowed 200-299",
+        "displayName": "Yds Allow 200-299",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 74,
+        "name": "Defensive Yards Allowed 300-399",
+        "displayName": "Yds Allow 300-399",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 75,
+        "name": "Defensive Yards Allowed 400-499",
+        "displayName": "Yds Allow 400-499",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 76,
+        "name": "Defensive Yards Allowed 500+",
+        "displayName": "Yds Allow 500+",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 77,
+        "name": "Three and Outs Forced",
+        "displayName": "3 and Outs",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 78,
+        "name": "Targets",
+        "displayName": "Targets",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 79,
+        "name": "Passing 1st Downs",
+        "displayName": "Pass 1st Downs",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 80,
+        "name": "Receiving 1st Downs",
+        "displayName": "Rec 1st Downs",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 81,
+        "name": "Rushing 1st Downs",
+        "displayName": "Rush 1st Downs",
+        "sortOrder": true,
+        "positionTypes": [
+          "O"
+        ]
+      },
+      {
+        "statId": 82,
+        "name": "Extra Point Returned",
+        "displayName": "XPR",
+        "sortOrder": true,
+        "positionTypes": [
+          "DT"
+        ]
+      },
+      {
+        "statId": 83,
+        "name": "Extra Point Returned",
+        "displayName": "XPR",
+        "sortOrder": true,
+        "positionTypes": [
+          "DP"
+        ]
+      },
+      {
+        "statId": 84,
+        "name": "Field Goals Total Yards",
+        "displayName": "FG Yds",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 85,
+        "name": "Field Goals Made",
+        "displayName": "FG Made",
+        "sortOrder": true,
+        "positionTypes": [
+          "K"
+        ]
+      },
+      {
+        "statId": 86,
+        "name": "Field Goals Missed",
+        "displayName": "FG Miss",
+        "sortOrder": false,
+        "positionTypes": [
+          "K"
+        ]
+      }
+    ]
+  },
+  "positionTypes": [
+    {
+      "type": "O",
+      "displayName": "Offense"
+    },
+    {
+      "type": "K",
+      "displayName": "Kickers"
+    },
+    {
+      "type": "DT",
+      "displayName": "Defense/Special Teams"
+    },
+    {
+      "type": "DP",
+      "displayName": "Defensive Players"
+    }
+  ]
+}

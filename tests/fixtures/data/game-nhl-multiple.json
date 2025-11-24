@@ -1,0 +1,1318 @@
+{
+  "gameKey": "465",
+  "gameId": 465,
+  "name": "Hockey",
+  "code": "nhl",
+  "type": "full",
+  "url": "https://hockey.fantasysports.yahoo.com/hockey",
+  "season": 2025,
+  "isRegistrationOver": false,
+  "isGameOver": false,
+  "isOffseason": false,
+  "isLiveDraftLobbyActive": true,
+  "players": [
+    {
+      "playerKey": "465.p.6743",
+      "playerId": 6743,
+      "name": {
+        "full": "Connor McDavid",
+        "first": "Connor",
+        "last": "McDavid",
+        "asciiFirst": "Connor",
+        "asciiLast": "McDavid"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6743",
+      "editorialPlayerKey": "nhl.p.6743",
+      "editorialTeamKey": "nhl.t.6",
+      "editorialTeamFullName": "Edmonton Oilers",
+      "editorialTeamAbbr": "EDM",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/edmonton/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 97,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/TuR8sbSR.TLCfmHrSe.ukA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6743.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/TuR8sbSR.TLCfmHrSe.ukA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6743.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763921588
+    },
+    {
+      "playerKey": "465.p.6369",
+      "playerId": 6369,
+      "name": {
+        "full": "Leon Draisaitl",
+        "first": "Leon",
+        "last": "Draisaitl",
+        "asciiFirst": "Leon",
+        "asciiLast": "Draisaitl"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6369",
+      "editorialPlayerKey": "nhl.p.6369",
+      "editorialTeamKey": "nhl.t.6",
+      "editorialTeamFullName": "Edmonton Oilers",
+      "editorialTeamAbbr": "EDM",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/edmonton/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "C,LW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/reGlRmuOawA3gmpHU3KD4g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6369.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/reGlRmuOawA3gmpHU3KD4g--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10132025/6369.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "C",
+          "LW"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763648351
+    },
+    {
+      "playerKey": "465.p.5980",
+      "playerId": 5980,
+      "name": {
+        "full": "Nathan MacKinnon",
+        "first": "Nathan",
+        "last": "MacKinnon",
+        "asciiFirst": "Nathan",
+        "asciiLast": "MacKinnon"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/5980",
+      "editorialPlayerKey": "nhl.p.5980",
+      "editorialTeamKey": "nhl.t.17",
+      "editorialTeamFullName": "Colorado Avalanche",
+      "editorialTeamAbbr": "COL",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/colorado/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/OPpXx0IgV7iUZkfplmxirQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11072023/5980.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/OPpXx0IgV7iUZkfplmxirQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11072023/5980.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763871346
+    },
+    {
+      "playerKey": "465.p.7519",
+      "playerId": 7519,
+      "name": {
+        "full": "Cale Makar",
+        "first": "Cale",
+        "last": "Makar",
+        "asciiFirst": "Cale",
+        "asciiLast": "Makar"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/7519",
+      "editorialPlayerKey": "nhl.p.7519",
+      "editorialTeamKey": "nhl.t.17",
+      "editorialTeamFullName": "Colorado Avalanche",
+      "editorialTeamAbbr": "COL",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/colorado/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 8,
+      "displayPosition": "D",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/HojauYFZ0EVvlSUVKzEdOA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11072023/7519.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/HojauYFZ0EVvlSUVKzEdOA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11072023/7519.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "D"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763958222
+    },
+    {
+      "playerKey": "465.p.5425",
+      "playerId": 5425,
+      "name": {
+        "full": "Nikita Kucherov",
+        "first": "Nikita",
+        "last": "Kucherov",
+        "asciiFirst": "Nikita",
+        "asciiLast": "Kucherov"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/5425",
+      "status": "DTD",
+      "statusFull": "Day-to-Day",
+      "injuryNote": "Undisclosed",
+      "editorialPlayerKey": "nhl.p.5425",
+      "editorialTeamKey": "nhl.t.20",
+      "editorialTeamFullName": "Tampa Bay Lightning",
+      "editorialTeamAbbr": "TB",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/tampa-bay/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 86,
+      "displayPosition": "RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/kbAlwZFfy9xw9Lbxab3hQw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/5425.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/kbAlwZFfy9xw9Lbxab3hQw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/5425.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "RW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763864733
+    },
+    {
+      "playerKey": "465.p.6877",
+      "playerId": 6877,
+      "name": {
+        "full": "Kirill Kaprizov",
+        "first": "Kirill",
+        "last": "Kaprizov",
+        "asciiFirst": "Kirill",
+        "asciiLast": "Kaprizov"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6877",
+      "editorialPlayerKey": "nhl.p.6877",
+      "editorialTeamKey": "nhl.t.30",
+      "editorialTeamFullName": "Minnesota Wild",
+      "editorialTeamAbbr": "MIN",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/minnesota/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 97,
+      "displayPosition": "LW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/6Cp1MZeL43SObHJIIj1qRQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/6877.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/6Cp1MZeL43SObHJIIj1qRQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/6877.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "LW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763996476
+    },
+    {
+      "playerKey": "465.p.5699",
+      "playerId": 5699,
+      "name": {
+        "full": "Andrei Vasilevskiy",
+        "first": "Andrei",
+        "last": "Vasilevskiy",
+        "asciiFirst": "Andrei",
+        "asciiLast": "Vasilevskiy"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/5699",
+      "editorialPlayerKey": "nhl.p.5699",
+      "editorialTeamKey": "nhl.t.20",
+      "editorialTeamFullName": "Tampa Bay Lightning",
+      "editorialTeamAbbr": "TB",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/tampa-bay/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 88,
+      "displayPosition": "G",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/oYZBbZMVOLUmdJ8_AE4KTw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/5699.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/oYZBbZMVOLUmdJ8_AE4KTw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/5699.png",
+      "isUndroppable": false,
+      "positionType": "G",
+      "eligiblePositions": {
+        "position": "G"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763999670
+    },
+    {
+      "playerKey": "465.p.6752",
+      "playerId": 6752,
+      "name": {
+        "full": "Mikko Rantanen",
+        "first": "Mikko",
+        "last": "Rantanen",
+        "asciiFirst": "Mikko",
+        "asciiLast": "Rantanen"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6752",
+      "status": "NA",
+      "statusFull": "Not Active",
+      "injuryNote": "Suspension",
+      "editorialPlayerKey": "nhl.p.6752",
+      "editorialTeamKey": "nhl.t.9",
+      "editorialTeamFullName": "Dallas Stars",
+      "editorialTeamAbbr": "DAL",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/dallas/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 96,
+      "displayPosition": "LW,RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/GBY7riSXxPWkxk3eyJSkhw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/6752.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/GBY7riSXxPWkxk3eyJSkhw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/6752.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "LW",
+          "RW"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763926610
+    },
+    {
+      "playerKey": "465.p.6744",
+      "playerId": 6744,
+      "name": {
+        "full": "Jack Eichel",
+        "first": "Jack",
+        "last": "Eichel",
+        "asciiFirst": "Jack",
+        "asciiLast": "Eichel"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6744",
+      "editorialPlayerKey": "nhl.p.6744",
+      "editorialTeamKey": "nhl.t.58",
+      "editorialTeamFullName": "Vegas Golden Knights",
+      "editorialTeamAbbr": "VGK",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/vegas/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 9,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/m910M5bZsZ0Ng7HqX1Jmeg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/6744.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/m910M5bZsZ0Ng7HqX1Jmeg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/6744.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763882254
+    },
+    {
+      "playerKey": "465.p.6391",
+      "playerId": 6391,
+      "name": {
+        "full": "David Pastrnak",
+        "first": "David",
+        "last": "Pastrnak",
+        "asciiFirst": "David",
+        "asciiLast": "Pastrnak"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6391",
+      "editorialPlayerKey": "nhl.p.6391",
+      "editorialTeamKey": "nhl.t.1",
+      "editorialTeamFullName": "Boston Bruins",
+      "editorialTeamAbbr": "BOS",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/boston/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 88,
+      "displayPosition": "RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/xvZiIonidvWMHjxUM_4jtA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10062025/6391.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/xvZiIonidvWMHjxUM_4jtA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10062025/6391.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "RW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763301671
+    },
+    {
+      "playerKey": "465.p.7905",
+      "playerId": 7905,
+      "name": {
+        "full": "Quinn Hughes",
+        "first": "Quinn",
+        "last": "Hughes",
+        "asciiFirst": "Quinn",
+        "asciiLast": "Hughes"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/7905",
+      "editorialPlayerKey": "nhl.p.7905",
+      "editorialTeamKey": "nhl.t.22",
+      "editorialTeamFullName": "Vancouver Canucks",
+      "editorialTeamAbbr": "VAN",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/vancouver/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 43,
+      "displayPosition": "D",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/WWISScHij4Vwqj3gNrdQyA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11192025/7905.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/WWISScHij4Vwqj3gNrdQyA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/11192025/7905.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "D"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763963731
+    },
+    {
+      "playerKey": "465.p.7109",
+      "playerId": 7109,
+      "name": {
+        "full": "Auston Matthews",
+        "first": "Auston",
+        "last": "Matthews",
+        "asciiFirst": "Auston",
+        "asciiLast": "Matthews"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/7109",
+      "status": "IR",
+      "statusFull": "Injured Reserve",
+      "injuryNote": "Lower Body",
+      "onDisabledList": true,
+      "editorialPlayerKey": "nhl.p.7109",
+      "editorialTeamKey": "nhl.t.21",
+      "editorialTeamFullName": "Toronto Maple Leafs",
+      "editorialTeamAbbr": "TOR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/toronto/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 34,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/hkap_i_x1obhTUVHJlV.HA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/7109.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/hkap_i_x1obhTUVHJlV.HA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/7109.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1764004385
+    },
+    {
+      "playerKey": "465.p.6759",
+      "playerId": 6759,
+      "name": {
+        "full": "Kyle Connor",
+        "first": "Kyle",
+        "last": "Connor",
+        "asciiFirst": "Kyle",
+        "asciiLast": "Connor"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6759",
+      "editorialPlayerKey": "nhl.p.6759",
+      "editorialTeamKey": "nhl.t.28",
+      "editorialTeamFullName": "Winnipeg Jets",
+      "editorialTeamAbbr": "WPG",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/winnipeg/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 81,
+      "displayPosition": "LW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/InXs7lsAQJn3N.L.ENxafA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10312025/6759.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/InXs7lsAQJn3N.L.ENxafA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10312025/6759.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "LW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763561653
+    },
+    {
+      "playerKey": "465.p.6374",
+      "playerId": 6374,
+      "name": {
+        "full": "William Nylander",
+        "first": "William",
+        "last": "Nylander",
+        "asciiFirst": "William",
+        "asciiLast": "Nylander"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6374",
+      "editorialPlayerKey": "nhl.p.6374",
+      "editorialTeamKey": "nhl.t.21",
+      "editorialTeamFullName": "Toronto Maple Leafs",
+      "editorialTeamAbbr": "TOR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/toronto/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 88,
+      "displayPosition": "C,RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/.XjsSLSnTmHzMLA9YyN_oQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/6374.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/.XjsSLSnTmHzMLA9YyN_oQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10272025/6374.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "C",
+          "RW"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763876740
+    },
+    {
+      "playerKey": "465.p.7541",
+      "playerId": 7541,
+      "name": {
+        "full": "Jake Oettinger",
+        "first": "Jake",
+        "last": "Oettinger",
+        "asciiFirst": "Jake",
+        "asciiLast": "Oettinger"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/7541",
+      "editorialPlayerKey": "nhl.p.7541",
+      "editorialTeamKey": "nhl.t.9",
+      "editorialTeamFullName": "Dallas Stars",
+      "editorialTeamAbbr": "DAL",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/dallas/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 29,
+      "displayPosition": "G",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/Am4H8LpkzWuSi3Gq9RvShw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/7541.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/Am4H8LpkzWuSi3Gq9RvShw--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/7541.png",
+      "isUndroppable": false,
+      "positionType": "G",
+      "eligiblePositions": {
+        "position": "G"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763739971
+    },
+    {
+      "playerKey": "465.p.6486",
+      "playerId": 6486,
+      "name": {
+        "full": "Igor Shesterkin",
+        "first": "Igor",
+        "last": "Shesterkin",
+        "asciiFirst": "Igor",
+        "asciiLast": "Shesterkin"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6486",
+      "editorialPlayerKey": "nhl.p.6486",
+      "editorialTeamKey": "nhl.t.13",
+      "editorialTeamFullName": "New York Rangers",
+      "editorialTeamAbbr": "NYR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/ny-rangers/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 31,
+      "displayPosition": "G",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/jnQ4WqYGMV0oOq3LVLw_CA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10172025/6486.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/jnQ4WqYGMV0oOq3LVLw_CA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10172025/6486.png",
+      "isUndroppable": false,
+      "positionType": "G",
+      "eligiblePositions": {
+        "position": "G"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1764000052
+    },
+    {
+      "playerKey": "465.p.6448",
+      "playerId": 6448,
+      "name": {
+        "full": "Brayden Point",
+        "first": "Brayden",
+        "last": "Point",
+        "asciiFirst": "Brayden",
+        "asciiLast": "Point"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6448",
+      "status": "O",
+      "statusFull": "Out",
+      "injuryNote": "Undisclosed",
+      "editorialPlayerKey": "nhl.p.6448",
+      "editorialTeamKey": "nhl.t.20",
+      "editorialTeamFullName": "Tampa Bay Lightning",
+      "editorialTeamAbbr": "TB",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/tampa-bay/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 21,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/26Zn6Wh8QhhSxMEAhaBdqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6448.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/26Zn6Wh8QhhSxMEAhaBdqQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10242025/6448.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1764002525
+    },
+    {
+      "playerKey": "465.p.6746",
+      "playerId": 6746,
+      "name": {
+        "full": "Mitch Marner",
+        "first": "Mitch",
+        "last": "Marner",
+        "asciiFirst": "Mitch",
+        "asciiLast": "Marner"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6746",
+      "editorialPlayerKey": "nhl.p.6746",
+      "editorialTeamKey": "nhl.t.58",
+      "editorialTeamFullName": "Vegas Golden Knights",
+      "editorialTeamAbbr": "VGK",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/vegas/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 93,
+      "displayPosition": "RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/9xaJ4GlYrbJ5HSCqVWkXXQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/07072025/6746.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/9xaJ4GlYrbJ5HSCqVWkXXQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/07072025/6746.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "RW"
+      },
+      "eligiblePositionsToAdd": ""
+    },
+    {
+      "playerKey": "465.p.6750",
+      "playerId": 6750,
+      "name": {
+        "full": "Zach Werenski",
+        "first": "Zach",
+        "last": "Werenski",
+        "asciiFirst": "Zach",
+        "asciiLast": "Werenski"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6750",
+      "editorialPlayerKey": "nhl.p.6750",
+      "editorialTeamKey": "nhl.t.29",
+      "editorialTeamFullName": "Columbus Blue Jackets",
+      "editorialTeamAbbr": "CBJ",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/columbus/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 8,
+      "displayPosition": "D",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/XfiCXt5nxKBbIpwEZpxAFg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10092025/6750.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/XfiCXt5nxKBbIpwEZpxAFg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10092025/6750.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "D"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763846795
+    },
+    {
+      "playerKey": "465.p.3737",
+      "playerId": 3737,
+      "name": {
+        "full": "Sidney Crosby",
+        "first": "Sidney",
+        "last": "Crosby",
+        "asciiFirst": "Sidney",
+        "asciiLast": "Crosby"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/3737",
+      "editorialPlayerKey": "nhl.p.3737",
+      "editorialTeamKey": "nhl.t.16",
+      "editorialTeamFullName": "Pittsburgh Penguins",
+      "editorialTeamAbbr": "PIT",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/pittsburgh/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 87,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/MgTZLnrQGP9Qe.IPO14Fig--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10212025/3737.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/MgTZLnrQGP9Qe.IPO14Fig--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10212025/3737.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763877803
+    },
+    {
+      "playerKey": "465.p.32763",
+      "playerId": 32763,
+      "name": {
+        "full": "Macklin Celebrini",
+        "first": "Macklin",
+        "last": "Celebrini",
+        "asciiFirst": "Macklin",
+        "asciiLast": "Celebrini"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/32763",
+      "editorialPlayerKey": "nhl.p.32763",
+      "editorialTeamKey": "nhl.t.18",
+      "editorialTeamFullName": "San Jose Sharks",
+      "editorialTeamAbbr": "SJ",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/san-jose/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 71,
+      "displayPosition": "C",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/t7sI1GGOLKdscoDdHRPq_Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/32763.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/t7sI1GGOLKdscoDdHRPq_Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/32763.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "C"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763959554
+    },
+    {
+      "playerKey": "465.p.6728",
+      "playerId": 6728,
+      "name": {
+        "full": "Artemi Panarin",
+        "first": "Artemi",
+        "last": "Panarin",
+        "asciiFirst": "Artemi",
+        "asciiLast": "Panarin"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6728",
+      "editorialPlayerKey": "nhl.p.6728",
+      "editorialTeamKey": "nhl.t.13",
+      "editorialTeamFullName": "New York Rangers",
+      "editorialTeamAbbr": "NYR",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/ny-rangers/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 10,
+      "displayPosition": "LW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/_dS1nJnc1v2qrIVz3C01Mg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10172025/6728.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/_dS1nJnc1v2qrIVz3C01Mg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10172025/6728.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "LW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763879059
+    },
+    {
+      "playerKey": "465.p.7527",
+      "playerId": 7527,
+      "name": {
+        "full": "Martin Necas",
+        "first": "Martin",
+        "last": "Necas",
+        "asciiFirst": "Martin",
+        "asciiLast": "Necas"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/7527",
+      "editorialPlayerKey": "nhl.p.7527",
+      "editorialTeamKey": "nhl.t.17",
+      "editorialTeamFullName": "Colorado Avalanche",
+      "editorialTeamAbbr": "COL",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/colorado/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 88,
+      "displayPosition": "RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/Mpsm6hgUHVs7fyUQtV93HA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/01272025/7527.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/Mpsm6hgUHVs7fyUQtV93HA--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/01272025/7527.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": "RW"
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763735465
+    },
+    {
+      "playerKey": "465.p.6368",
+      "playerId": 6368,
+      "name": {
+        "full": "Sam Reinhart",
+        "first": "Sam",
+        "last": "Reinhart",
+        "asciiFirst": "Sam",
+        "asciiLast": "Reinhart"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/6368",
+      "editorialPlayerKey": "nhl.p.6368",
+      "editorialTeamKey": "nhl.t.26",
+      "editorialTeamFullName": "Florida Panthers",
+      "editorialTeamAbbr": "FLA",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/florida/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 13,
+      "displayPosition": "C,RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/_pFeRaMOjSzELP7ZOsyTFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10142025/6368.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/_pFeRaMOjSzELP7ZOsyTFQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10142025/6368.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "C",
+          "RW"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "hasRecentPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763922058
+    },
+    {
+      "playerKey": "465.p.8290",
+      "playerId": 8290,
+      "name": {
+        "full": "Matt Boldy",
+        "first": "Matt",
+        "last": "Boldy",
+        "asciiFirst": "Matt",
+        "asciiLast": "Boldy"
+      },
+      "url": "https://sports.yahoo.com/nhl/players/8290",
+      "editorialPlayerKey": "nhl.p.8290",
+      "editorialTeamKey": "nhl.t.30",
+      "editorialTeamFullName": "Minnesota Wild",
+      "editorialTeamAbbr": "MIN",
+      "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/minnesota/",
+      "isKeeper": {
+        "status": "",
+        "cost": ""
+      },
+      "uniformNumber": 12,
+      "displayPosition": "LW,RW",
+      "headshot": {
+        "url": "https://s.yimg.com/iu/api/res/1.2/jKwQ9jvG0kHwy.T4LpPgeg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/8290.png",
+        "size": "small"
+      },
+      "imageUrl": "https://s.yimg.com/iu/api/res/1.2/jKwQ9jvG0kHwy.T4LpPgeg--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10162024/8290.png",
+      "isUndroppable": false,
+      "positionType": "P",
+      "eligiblePositions": {
+        "position": [
+          "LW",
+          "RW"
+        ]
+      },
+      "eligiblePositionsToAdd": "",
+      "hasPlayerNotes": true,
+      "playerNotesLastTimestamp": 1763831272
+    }
+  ],
+  "statCategories": {
+    "stats": [
+      {
+        "statId": 0,
+        "name": "Games Played",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P",
+          "G"
+        ]
+      },
+      {
+        "statId": 1,
+        "name": "Goals",
+        "displayName": "G",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 2,
+        "name": "Assists",
+        "displayName": "A",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 3,
+        "name": "Points",
+        "displayName": "P",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 4,
+        "name": "Plus/Minus",
+        "displayName": "+/-",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 5,
+        "name": "Penalty Minutes",
+        "displayName": "PIM",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 6,
+        "name": "Powerplay Goals",
+        "displayName": "PPG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 7,
+        "name": "Powerplay Assists",
+        "displayName": "PPA",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 8,
+        "name": "Powerplay Points",
+        "displayName": "PPP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 9,
+        "name": "Shorthanded Goals",
+        "displayName": "SHG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 10,
+        "name": "Shorthanded Assists",
+        "displayName": "SHA",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 11,
+        "name": "Shorthanded Points",
+        "displayName": "SHP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 12,
+        "name": "Game-Winning Goals",
+        "displayName": "GWG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 13,
+        "name": "Game-Tying Goals",
+        "displayName": "GTG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 14,
+        "name": "Shots on Goal",
+        "displayName": "SOG",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 15,
+        "name": "Shooting Percentage",
+        "displayName": "SH%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 1
+          },
+          {
+            "statId": 14
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 16,
+        "name": "Faceoffs Won",
+        "displayName": "FW",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 17,
+        "name": "Faceoffs Lost",
+        "displayName": "FL",
+        "sortOrder": false,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 18,
+        "name": "Games Started",
+        "displayName": "GS",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 19,
+        "name": "Wins",
+        "displayName": "W",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 20,
+        "name": "Losses",
+        "displayName": "L",
+        "sortOrder": false,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 21,
+        "name": "Ties",
+        "displayName": "T",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 22,
+        "name": "Goals Against",
+        "displayName": "GA",
+        "sortOrder": false,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 23,
+        "name": "Goals Against Average",
+        "displayName": "GAA",
+        "sortOrder": false,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 22
+          },
+          {
+            "statId": 28
+          }
+        ],
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 24,
+        "name": "Shots Against",
+        "displayName": "SA",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 25,
+        "name": "Saves",
+        "displayName": "SV",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 26,
+        "name": "Save Percentage",
+        "displayName": "SV%",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 25
+          },
+          {
+            "statId": 24
+          }
+        ],
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 27,
+        "name": "Shutouts",
+        "displayName": "SHO",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 28,
+        "name": "Time on Ice",
+        "displayName": "TOI",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 29,
+        "name": "F/D Games",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 30,
+        "name": "Goalie Games",
+        "displayName": "GP",
+        "sortOrder": true,
+        "positionTypes": [
+          "G"
+        ]
+      },
+      {
+        "statId": 31,
+        "name": "Hits",
+        "displayName": "HIT",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 32,
+        "name": "Blocks",
+        "displayName": "BLK",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 33,
+        "name": "Time on Ice",
+        "displayName": "TOI",
+        "sortOrder": true,
+        "positionTypes": [
+          "P"
+        ]
+      },
+      {
+        "statId": 34,
+        "name": "Average Time on Ice",
+        "displayName": "TOI/G",
+        "sortOrder": true,
+        "isCompositeStat": true,
+        "baseStats": [
+          {
+            "statId": 33
+          },
+          {
+            "statId": 29
+          }
+        ],
+        "positionTypes": [
+          "P"
+        ]
+      }
+    ]
+  },
+  "positionTypes": [
+    {
+      "type": "P",
+      "displayName": "Forwards/Defensemen"
+    },
+    {
+      "type": "G",
+      "displayName": "Goaltenders"
+    }
+  ]
+}

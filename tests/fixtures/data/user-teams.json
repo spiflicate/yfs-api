@@ -1,0 +1,906 @@
+[
+  {
+    "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+    "games": [
+      {
+        "gameKey": "419",
+        "gameId": 419,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2022/hockey",
+        "season": 2022,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "419.l.5634.t.2",
+            "teamId": 2,
+            "name": "Minnesota North Stars",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2022/hockey/5634/2",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/5493e2f67e5b438402763667963272c36d12ed0538afa635ea1f3ad50e050bf9.png"
+              }
+            ],
+            "previousSeasonTeamRank": 6,
+            "divisionId": 2,
+            "waiverPriority": 7,
+            "numberOfMoves": 63,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "leagueScoringType": "headpoint",
+            "draftPosition": 1,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 2,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCommissioner": true,
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 841,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "419.l.5874.t.3",
+            "teamId": 3,
+            "name": "Danbury Trashers",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2022/hockey/5874/3",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/f8c5461b2c1ef25d0edba895126d224e3925dab54152e695cc49a7dcd121d2fe.png"
+              }
+            ],
+            "previousSeasonTeamRank": 1,
+            "waiverPriority": 10,
+            "numberOfMoves": 46,
+            "numberOfTrades": 3,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 3,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 841,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "419.l.8871.t.7",
+            "teamId": 7,
+            "name": "Scoreface",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2022/hockey/8871/7",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+              }
+            ],
+            "previousSeasonTeamRank": 1,
+            "waiverPriority": 11,
+            "numberOfMoves": 100,
+            "numberOfTrades": 4,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 7,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 841,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "419.l.75918.t.2",
+            "teamId": 2,
+            "name": "OutSeider Trading",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2022/hockey/75918/2",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/0029fb3608fb91d70b05a664a29b6ed53de534acea8b60ea78abffa8ce6fa405.png"
+              }
+            ],
+            "waiverPriority": 11,
+            "faabBalance": 0,
+            "numberOfMoves": 93,
+            "numberOfTrades": 1,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 2,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 841,
+                "feloTier": "platinum"
+              },
+              {
+                "managerId": 6,
+                "nickname": "--hidden--",
+                "guid": "--",
+                "isComanager": true,
+                "email": "--hidden--",
+                "feloScore": 594,
+                "feloTier": "bronze"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "419.l.75431.t.13",
+            "teamId": 13,
+            "name": "JT Miller Genuine Draft Reach",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2022/hockey/75431/13",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/30961612978_a829ae.jpg"
+              }
+            ],
+            "waiverPriority": 2,
+            "faabBalance": 0,
+            "numberOfMoves": 70,
+            "numberOfTrades": 1,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 15,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 841,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "396",
+        "gameId": 396,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2019/hockey",
+        "season": 2019,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "396.l.60225.t.7",
+            "teamId": 7,
+            "name": "Rantanen Ravin’",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2019/hockey/60225/7",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/82981038066ff9ad089d98f41417ce8db94239e3b88584c45b159281fcbd1279.jpg"
+              }
+            ],
+            "previousSeasonTeamRank": 4,
+            "divisionId": 1,
+            "waiverPriority": 12,
+            "numberOfMoves": 46,
+            "numberOfTrades": 3,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 21,
+              "value": 2
+            },
+            "leagueScoringType": "head",
+            "draftPosition": 5,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 7,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 638,
+                "feloTier": "silver"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "396.l.100400.t.1",
+            "teamId": 1,
+            "name": "John's Team",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2019/hockey/100400/1",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://s.yimg.com/cv/apiv2/default/nhl/nhl_5_j.png"
+              }
+            ],
+            "waiverPriority": 4,
+            "numberOfMoves": 0,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 21,
+              "value": 0
+            },
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 1,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCommissioner": true,
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 638,
+                "feloTier": "silver"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "386",
+        "gameId": 386,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2018/hockey",
+        "season": 2018,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "386.l.46669.t.9",
+            "teamId": 9,
+            "name": "McJesusTakeTheWheel",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2018/hockey/46669/9",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/30961612978_a829ae.jpg"
+              }
+            ],
+            "divisionId": 1,
+            "waiverPriority": 7,
+            "numberOfMoves": 31,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 24,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "draftPosition": 1,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 9,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 589,
+                "feloTier": "bronze"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "403",
+        "gameId": 403,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2020/hockey",
+        "season": 2020,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "403.l.7916.t.12",
+            "teamId": 12,
+            "name": "Alexisonfrenière",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2020/hockey/7916/12",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/17bf31e72a605527a86b9c5fcfcf1f1bee4154c56c0778649f62e347d7140d74.jpg"
+              }
+            ],
+            "previousSeasonTeamRank": 12,
+            "waiverPriority": 5,
+            "numberOfMoves": 56,
+            "numberOfTrades": 8,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 17,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 12,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 810,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "403.l.10349.t.11",
+            "teamId": 11,
+            "name": "Toaster Stuetzle",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2020/hockey/10349/11",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/6ca7088e99da36bfaae8e8ab77edd370c224d14971cb6a91efe7f31331bc3d02.jpg"
+              }
+            ],
+            "previousSeasonTeamRank": 1,
+            "divisionId": 1,
+            "waiverPriority": 10,
+            "numberOfMoves": 47,
+            "numberOfTrades": 1,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 17,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headone",
+            "draftPosition": 12,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 11,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCommissioner": true,
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 810,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "411",
+        "gameId": 411,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2021/hockey",
+        "season": 2021,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "411.l.578.t.4",
+            "teamId": 4,
+            "name": "Mistah Svechnikov!",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2021/hockey/578/4",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/6d9e1ab740f397224c0d440111b74fc2389d9eba3446494c91387f67941ce8f8.jpg"
+              }
+            ],
+            "previousSeasonTeamRank": 3,
+            "waiverPriority": 10,
+            "numberOfMoves": 79,
+            "numberOfTrades": 6,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 26,
+              "value": 4
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 4,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 917,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "411.l.13391.t.5",
+            "teamId": 5,
+            "name": "Danbury Trashers",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2021/hockey/13391/5",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/f8c5461b2c1ef25d0edba895126d224e3925dab54152e695cc49a7dcd121d2fe.png"
+              }
+            ],
+            "waiverPriority": 12,
+            "numberOfMoves": 71,
+            "numberOfTrades": 2,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 26,
+              "value": 3
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 5,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 917,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "411.l.15471.t.12",
+            "teamId": 12,
+            "name": "A.J. Galante",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2021/hockey/15471/12",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/91d50653e1dc8cd9688c2018835b2afdd8e45cb118f0cc6f893af4d0c8391782.png"
+              }
+            ],
+            "previousSeasonTeamRank": 4,
+            "divisionId": 2,
+            "waiverPriority": 8,
+            "numberOfMoves": 77,
+            "numberOfTrades": 3,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 26,
+              "value": 3
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headone",
+            "draftPosition": 3,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 12,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCommissioner": true,
+                "isCurrentLogin": 1,
+                "email": "jbruno404@gmail.com",
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 917,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "427",
+        "gameId": 427,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2023/hockey",
+        "season": 2023,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "427.l.16805.t.9",
+            "teamId": 9,
+            "name": "Scoreface",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2023/hockey/16805/9",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+              }
+            ],
+            "previousSeasonTeamRank": 4,
+            "waiverPriority": 9,
+            "numberOfMoves": 112,
+            "numberOfTrades": 6,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 26,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 9,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 890,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "427.l.82393.t.5",
+            "teamId": 5,
+            "name": "Haters Be Hayton",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2023/hockey/82393/5",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/335d52fdcfc62a5cb5a19f9b711619c234cfb42ec1199bfd49dfd2be45b34805.png"
+              }
+            ],
+            "waiverPriority": 10,
+            "faabBalance": 0,
+            "numberOfMoves": 100,
+            "numberOfTrades": 1,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 26,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 5,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 890,
+                "feloTier": "platinum"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "453",
+        "gameId": 453,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2024/hockey",
+        "season": 2024,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true,
+        "teams": [
+          {
+            "teamKey": "453.l.13803.t.9",
+            "teamId": 9,
+            "name": "Scoreface",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2024/hockey/13803/9",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+              }
+            ],
+            "previousSeasonTeamRank": 2,
+            "waiverPriority": 12,
+            "numberOfMoves": 95,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 1
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 9,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 905,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "453.l.86873.t.7",
+            "teamId": 7,
+            "name": "Jbru Hockey Club",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/2024/hockey/86873/7",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://s.yimg.com/ep/cx/blendr/v2/image-j-png_1721246982897.png"
+              }
+            ],
+            "waiverPriority": 13,
+            "faabBalance": 0,
+            "numberOfMoves": 82,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 25,
+              "value": 0
+            },
+            "clinchedPlayoffs": 1,
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 7,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 905,
+                "feloTier": "diamond"
+              },
+              {
+                "managerId": 16,
+                "nickname": "--hidden--",
+                "guid": "--",
+                "isComanager": true,
+                "email": "--hidden--"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "465",
+        "gameId": 465,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/hockey",
+        "season": 2025,
+        "isRegistrationOver": false,
+        "isGameOver": false,
+        "isOffseason": false,
+        "isLiveDraftLobbyActive": true,
+        "teams": [
+          {
+            "teamKey": "465.l.30702.t.9",
+            "teamId": 9,
+            "name": "Scoreface",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/9",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+              }
+            ],
+            "previousSeasonTeamRank": 2,
+            "waiverPriority": 10,
+            "numberOfMoves": 27,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 8,
+              "value": 1
+            },
+            "leagueScoringType": "head",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 9,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 916,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          },
+          {
+            "teamKey": "465.l.121384.t.14",
+            "teamId": 14,
+            "name": "Third Row Penalty Box",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              }
+            ],
+            "waiverPriority": 1,
+            "faabBalance": 62,
+            "numberOfMoves": 27,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 8,
+              "value": 1
+            },
+            "leagueScoringType": "headpoint",
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 15,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 916,
+                "feloTier": "diamond"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      },
+      {
+        "gameKey": "466",
+        "gameId": 466,
+        "name": "Basketball",
+        "code": "nba",
+        "type": "full",
+        "url": "https://basketball.fantasysports.yahoo.com/nba",
+        "season": 2025,
+        "isRegistrationOver": false,
+        "isGameOver": false,
+        "isOffseason": false,
+        "isLiveDraftLobbyActive": true,
+        "teams": [
+          {
+            "teamKey": "466.l.260774.t.8",
+            "teamId": 8,
+            "name": "jbru's Unrivaled Team",
+            "isOwnedByCurrentLogin": 1,
+            "url": "https://basketball.fantasysports.yahoo.com/nba/260774/8",
+            "teamLogos": [
+              {
+                "size": "large",
+                "url": "https://s.yimg.com/ep/cx/blendr/v2/image-troll-1-png_1729555787446.png"
+              }
+            ],
+            "waiverPriority": 8,
+            "faabBalance": 100,
+            "numberOfMoves": 0,
+            "numberOfTrades": 0,
+            "rosterAdds": {
+              "coverageType": "week",
+              "coverageValue": 6,
+              "value": 0
+            },
+            "leagueScoringType": "headpoint",
+            "draftPosition": 3,
+            "hasDraftGrade": false,
+            "managers": [
+              {
+                "managerId": 8,
+                "nickname": "jbru",
+                "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+                "isCurrentLogin": 1,
+                "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+                "feloScore": 592,
+                "feloTier": "bronze"
+              }
+            ],
+            "index-1": ""
+          }
+        ]
+      }
+    ]
+  }
+]

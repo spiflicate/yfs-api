@@ -1,0 +1,38 @@
+{
+  "playerKey": "465.p.32763",
+  "playerId": 32763,
+  "name": {
+    "full": "Macklin Celebrini",
+    "first": "Macklin",
+    "last": "Celebrini",
+    "asciiFirst": "Macklin",
+    "asciiLast": "Celebrini"
+  },
+  "url": "https://sports.yahoo.com/nhl/players/32763",
+  "editorialPlayerKey": "nhl.p.32763",
+  "editorialTeamKey": "nhl.t.18",
+  "editorialTeamFullName": "San Jose Sharks",
+  "editorialTeamAbbr": "SJ",
+  "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/san-jose/",
+  "isKeeper": {
+    "status": "",
+    "cost": ""
+  },
+  "uniformNumber": 71,
+  "displayPosition": "C",
+  "headshot": {
+    "url": "https://s.yimg.com/iu/api/res/1.2/t7sI1GGOLKdscoDdHRPq_Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/32763.png",
+    "size": "small"
+  },
+  "imageUrl": "https://s.yimg.com/iu/api/res/1.2/t7sI1GGOLKdscoDdHRPq_Q--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10222025/32763.png",
+  "isUndroppable": false,
+  "positionType": "P",
+  "eligiblePositions": {
+    "position": "C"
+  },
+  "eligiblePositionsToAdd": "",
+  "hasPlayerNotes": true,
+  "hasRecentPlayerNotes": true,
+  "playerNotesLastTimestamp": 1763959554,
+  "ownership": ""
+}

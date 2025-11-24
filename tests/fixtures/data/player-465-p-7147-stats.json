@@ -1,0 +1,187 @@
+{
+  "playerKey": "465.p.7147",
+  "playerId": 7147,
+  "name": {
+    "full": "Alex DeBrincat",
+    "first": "Alex",
+    "last": "DeBrincat",
+    "asciiFirst": "Alex",
+    "asciiLast": "DeBrincat"
+  },
+  "url": "https://sports.yahoo.com/nhl/players/7147",
+  "editorialPlayerKey": "nhl.p.7147",
+  "editorialTeamKey": "nhl.t.5",
+  "editorialTeamFullName": "Detroit Red Wings",
+  "editorialTeamAbbr": "DET",
+  "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/detroit/",
+  "isKeeper": {
+    "status": "",
+    "cost": ""
+  },
+  "uniformNumber": 93,
+  "displayPosition": "LW,RW",
+  "headshot": {
+    "url": "https://s.yimg.com/iu/api/res/1.2/_iB1bJzh2oZp9WFVBVdH.w--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/7147.png",
+    "size": "small"
+  },
+  "imageUrl": "https://s.yimg.com/iu/api/res/1.2/_iB1bJzh2oZp9WFVBVdH.w--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10102025/7147.png",
+  "isUndroppable": false,
+  "positionType": "P",
+  "eligiblePositions": {
+    "position": [
+      "LW",
+      "RW"
+    ]
+  },
+  "eligiblePositionsToAdd": "",
+  "hasPlayerNotes": true,
+  "playerNotesLastTimestamp": 1763856198,
+  "playerStats": {
+    "coverageType": "season",
+    "season": 2025,
+    "stats": [
+      {
+        "statId": 0,
+        "value": 22
+      },
+      {
+        "statId": 29,
+        "value": 22
+      },
+      {
+        "statId": 1,
+        "value": 10
+      },
+      {
+        "statId": 2,
+        "value": 14
+      },
+      {
+        "statId": 3,
+        "value": 24
+      },
+      {
+        "statId": 4,
+        "value": -1
+      },
+      {
+        "statId": 5,
+        "value": 2
+      },
+      {
+        "statId": 6,
+        "value": 6
+      },
+      {
+        "statId": 7,
+        "value": 3
+      },
+      {
+        "statId": 8,
+        "value": 9
+      },
+      {
+        "statId": 9,
+        "value": 0
+      },
+      {
+        "statId": 10,
+        "value": 0
+      },
+      {
+        "statId": 11,
+        "value": 0
+      },
+      {
+        "statId": 12,
+        "value": 2
+      },
+      {
+        "statId": 13,
+        "value": "-"
+      },
+      {
+        "statId": 14,
+        "value": 86
+      },
+      {
+        "statId": 15,
+        "value": 0.116
+      },
+      {
+        "statId": 16,
+        "value": 4
+      },
+      {
+        "statId": 17,
+        "value": 6
+      },
+      {
+        "statId": 31,
+        "value": 9
+      },
+      {
+        "statId": 32,
+        "value": 7
+      },
+      {
+        "statId": 33,
+        "value": 23565
+      },
+      {
+        "statId": 34,
+        "value": "17:51"
+      }
+    ]
+  },
+  "playerAdvancedStats": {
+    "coverageType": "season",
+    "season": 2025,
+    "stats": [
+      {
+        "statId": 1001,
+        "value": 0
+      },
+      {
+        "statId": 1002,
+        "value": 0
+      },
+      {
+        "statId": 1003,
+        "value": 0
+      },
+      {
+        "statId": 1004,
+        "value": 0
+      },
+      {
+        "statId": 1005,
+        "value": 0
+      },
+      {
+        "statId": 1006,
+        "value": 0
+      },
+      {
+        "statId": 1007,
+        "value": 0
+      },
+      {
+        "statId": 1008,
+        "value": 0
+      },
+      {
+        "statId": 1009,
+        "value": 0
+      },
+      {
+        "statId": 1010,
+        "value": 0
+      },
+      {
+        "statId": 1011,
+        "value": 0
+      }
+    ]
+  }
+}

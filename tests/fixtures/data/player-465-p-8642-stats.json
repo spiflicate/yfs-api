@@ -1,0 +1,187 @@
+{
+  "playerKey": "465.p.8642",
+  "playerId": 8642,
+  "name": {
+    "full": "Quinton Byfield",
+    "first": "Quinton",
+    "last": "Byfield",
+    "asciiFirst": "Quinton",
+    "asciiLast": "Byfield"
+  },
+  "url": "https://sports.yahoo.com/nhl/players/8642",
+  "editorialPlayerKey": "nhl.p.8642",
+  "editorialTeamKey": "nhl.t.8",
+  "editorialTeamFullName": "Los Angeles Kings",
+  "editorialTeamAbbr": "LA",
+  "editorialTeamUrl": "https://sports.yahoo.com/nhl/teams/los-angeles/",
+  "isKeeper": {
+    "status": "",
+    "cost": ""
+  },
+  "uniformNumber": 55,
+  "displayPosition": "C,LW",
+  "headshot": {
+    "url": "https://s.yimg.com/iu/api/res/1.2/NL8pqwGF1nxIDhYy7e_MSQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10142025/8642.png",
+    "size": "small"
+  },
+  "imageUrl": "https://s.yimg.com/iu/api/res/1.2/NL8pqwGF1nxIDhYy7e_MSQ--~C/YXBwaWQ9eXNwb3J0cztjaD0yMzM2O2NyPTE7Y3c9MTc5MDtkeD04NTc7ZHk9MDtmaT11bGNyb3A7aD02MDtxPTEwMDt3PTQ2/https://s.yimg.com/xe/i/us/sp/v/nhl_cutout/players_l/10142025/8642.png",
+  "isUndroppable": false,
+  "positionType": "P",
+  "eligiblePositions": {
+    "position": [
+      "C",
+      "LW"
+    ]
+  },
+  "eligiblePositionsToAdd": "",
+  "hasPlayerNotes": true,
+  "playerNotesLastTimestamp": 1763314871,
+  "playerStats": {
+    "coverageType": "season",
+    "season": 2025,
+    "stats": [
+      {
+        "statId": 0,
+        "value": 22
+      },
+      {
+        "statId": 29,
+        "value": 22
+      },
+      {
+        "statId": 1,
+        "value": 4
+      },
+      {
+        "statId": 2,
+        "value": 13
+      },
+      {
+        "statId": 3,
+        "value": 17
+      },
+      {
+        "statId": 4,
+        "value": 1
+      },
+      {
+        "statId": 5,
+        "value": 8
+      },
+      {
+        "statId": 6,
+        "value": 1
+      },
+      {
+        "statId": 7,
+        "value": 4
+      },
+      {
+        "statId": 8,
+        "value": 5
+      },
+      {
+        "statId": 9,
+        "value": 0
+      },
+      {
+        "statId": 10,
+        "value": 1
+      },
+      {
+        "statId": 11,
+        "value": 1
+      },
+      {
+        "statId": 12,
+        "value": 2
+      },
+      {
+        "statId": 13,
+        "value": "-"
+      },
+      {
+        "statId": 14,
+        "value": 57
+      },
+      {
+        "statId": 15,
+        "value": 0.07
+      },
+      {
+        "statId": 16,
+        "value": 131
+      },
+      {
+        "statId": 17,
+        "value": 187
+      },
+      {
+        "statId": 31,
+        "value": 17
+      },
+      {
+        "statId": 32,
+        "value": 7
+      },
+      {
+        "statId": 33,
+        "value": 26453
+      },
+      {
+        "statId": 34,
+        "value": "20:02"
+      }
+    ]
+  },
+  "playerAdvancedStats": {
+    "coverageType": "season",
+    "season": 2025,
+    "stats": [
+      {
+        "statId": 1001,
+        "value": 0
+      },
+      {
+        "statId": 1002,
+        "value": 0
+      },
+      {
+        "statId": 1003,
+        "value": 0
+      },
+      {
+        "statId": 1004,
+        "value": 0
+      },
+      {
+        "statId": 1005,
+        "value": 0
+      },
+      {
+        "statId": 1006,
+        "value": 0
+      },
+      {
+        "statId": 1007,
+        "value": 0
+      },
+      {
+        "statId": 1008,
+        "value": 0
+      },
+      {
+        "statId": 1009,
+        "value": 0
+      },
+      {
+        "statId": 1010,
+        "value": 0
+      },
+      {
+        "statId": 1011,
+        "value": 0
+      }
+    ]
+  }
+}

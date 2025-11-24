@@ -1,0 +1,117 @@
+[
+  {
+    "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+    "games": [
+      {
+        "gameKey": "419",
+        "gameId": 419,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2022/hockey",
+        "season": 2022,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "396",
+        "gameId": 396,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2019/hockey",
+        "season": 2019,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "386",
+        "gameId": 386,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2018/hockey",
+        "season": 2018,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "403",
+        "gameId": 403,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2020/hockey",
+        "season": 2020,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "411",
+        "gameId": 411,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2021/hockey",
+        "season": 2021,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "427",
+        "gameId": 427,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2023/hockey",
+        "season": 2023,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "453",
+        "gameId": 453,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/2024/hockey",
+        "season": 2024,
+        "isRegistrationOver": true,
+        "isGameOver": true,
+        "isOffseason": true
+      },
+      {
+        "gameKey": "465",
+        "gameId": 465,
+        "name": "Hockey",
+        "code": "nhl",
+        "type": "full",
+        "url": "https://hockey.fantasysports.yahoo.com/hockey",
+        "season": 2025,
+        "isRegistrationOver": false,
+        "isGameOver": false,
+        "isOffseason": false,
+        "isLiveDraftLobbyActive": true
+      },
+      {
+        "gameKey": "466",
+        "gameId": 466,
+        "name": "Basketball",
+        "code": "nba",
+        "type": "full",
+        "url": "https://basketball.fantasysports.yahoo.com/nba",
+        "season": 2025,
+        "isRegistrationOver": false,
+        "isGameOver": false,
+        "isOffseason": false,
+        "isLiveDraftLobbyActive": true
+      }
+    ]
+  }
+]

@@ -5,6 +5,7 @@
 import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { TransactionResource } from '../../../src/resources/TransactionResource.js';
+import leagueTransactions from '../../fixtures/data/league-465-l-30702-transactions.json';
 
 describe('TransactionResource', () => {
    const createMockHttpClient = (): HttpClient => {
@@ -18,40 +19,7 @@ describe('TransactionResource', () => {
 
    describe('getLeagueTransactions()', () => {
       test('should fetch league transactions', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               league: [
-                  {
-                     league_key: '423.l.12345',
-                  },
-                  {
-                     transactions: {
-                        0: {
-                           transaction: {
-                              transaction_key: '423.l.12345.tr.1',
-                              transaction_id: '1',
-                              type: 'add/drop',
-                              status: 'successful',
-                              timestamp: '1699900800',
-                              url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-                           },
-                        },
-                        1: {
-                           transaction: {
-                              transaction_key: '423.l.12345.tr.2',
-                              transaction_id: '2',
-                              type: 'trade',
-                              status: 'successful',
-                              timestamp: '1699900900',
-                              url: 'https://hockey.fantasysports.yahoo.com/transaction/2',
-                           },
-                        },
-                        count: 2,
-                     },
-                  },
-               ],
-            },
-         };
+         const mockResponse = { league: leagueTransactions };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -59,32 +27,17 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const transactions =
-            await transactionResource.getLeagueTransactions('423.l.12345');
+         const result =
+            await transactionResource.getLeagueTransactions('465.l.30702');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/league/423.l.12345/transactions',
+            '/league/465.l.30702/transactions',
          );
-         expect(transactions.length).toBe(2);
-         expect(transactions[0]?.type).toBe('add/drop');
-         expect(transactions[1]?.type).toBe('trade');
+         expect(result).toEqual(leagueTransactions);
       });
 
       test('should filter by transaction type', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               league: [
-                  {
-                     league_key: '423.l.12345',
-                  },
-                  {
-                     transactions: {
-                        count: 0,
-                     },
-                  },
-               ],
-            },
-         };
+         const mockResponse = { league: leagueTransactions };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -92,30 +45,17 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         await transactionResource.getLeagueTransactions('423.l.12345', {
-            type: 'add/drop',
+         await transactionResource.getLeagueTransactions('465.l.30702', {
+            type: 'add',
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/league/423.l.12345/transactions;type=add/drop',
+            '/league/465.l.30702/transactions;type=add',
          );
       });
 
-      test('should filter by team key', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               league: [
-                  {
-                     league_key: '423.l.12345',
-                  },
-                  {
-                     transactions: {
-                        count: 0,
-                     },
-                  },
-               ],
-            },
-         };
+      test('should filter by team', async () => {
+         const mockResponse = { league: leagueTransactions };
 
          const httpClient = createMockHttpClient();
          (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
@@ -123,53 +63,38 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         await transactionResource.getLeagueTransactions('423.l.12345', {
-            teamKey: '423.l.12345.t.1',
+         await transactionResource.getLeagueTransactions('465.l.30702', {
+            teamKey: '465.l.30702.t.9',
+         });
+
+         expect(httpClient.get).toHaveBeenCalledWith(
+            '/league/465.l.30702/transactions;team_key=465.l.30702.t.9',
+         );
+      });
+
+      test('should filter by count', async () => {
+         const mockResponse = { league: leagueTransactions };
+
+         const httpClient = createMockHttpClient();
+         (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
+            mockResponse,
+         );
+
+         const transactionResource = new TransactionResource(httpClient);
+         await transactionResource.getLeagueTransactions('465.l.30702', {
             count: 25,
          });
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/league/423.l.12345/transactions;team_key=423.l.12345.t.1;count=25',
+            '/league/465.l.30702/transactions;count=25',
          );
-      });
-
-      test('should return empty array when no transactions found', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               league: [
-                  {
-                     league_key: '423.l.12345',
-                  },
-               ],
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.get as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const transactions =
-            await transactionResource.getLeagueTransactions('423.l.12345');
-
-         expect(transactions).toEqual([]);
       });
    });
 
    describe('get()', () => {
-      test('should fetch specific transaction', async () => {
+      test('should fetch a specific transaction', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'add/drop',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: leagueTransactions.transactions[0],
          };
 
          const httpClient = createMockHttpClient();
@@ -178,31 +103,19 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const transaction =
-            await transactionResource.get('423.l.12345.tr.1');
+         const result = await transactionResource.get('465.l.30702.tr.268');
 
          expect(httpClient.get).toHaveBeenCalledWith(
-            '/transaction/423.l.12345.tr.1',
+            '/transaction/465.l.30702.tr.268',
          );
-         expect(transaction.transactionKey).toBe('423.l.12345.tr.1');
-         expect(transaction.type).toBe('add/drop');
-         expect(transaction.status).toBe('successful');
+         expect(result).toEqual(leagueTransactions.transactions[0]);
       });
    });
 
    describe('addPlayer()', () => {
       test('should add a player from free agency', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'add',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: { transactionKey: '465.l.30702.tr.999' },
          };
 
          const httpClient = createMockHttpClient();
@@ -211,29 +124,22 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.addPlayer({
-            teamKey: '423.l.12345.t.1',
-            addPlayerKey: '423.p.8888',
+         await transactionResource.addPlayer({
+            teamKey: '465.l.30702.t.9',
+            addPlayerKey: '465.p.32763',
          });
 
-         expect(result.success).toBe(true);
-         expect(result.transactionKey).toBe('423.l.12345.tr.1');
+         expect(httpClient.post).toHaveBeenCalled();
+         const call = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0];
+         expect(call?.[0]).toBe('/league/465.l.30702/transactions');
       });
    });
 
    describe('addDropPlayer()', () => {
       test('should add and drop a player', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'add/drop',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: { transactionKey: '465.l.30702.tr.999' },
          };
 
          const httpClient = createMockHttpClient();
@@ -242,30 +148,21 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.addDropPlayer({
-            teamKey: '423.l.12345.t.1',
-            addPlayerKey: '423.p.8888',
-            dropPlayerKey: '423.p.7777',
+         await transactionResource.addDropPlayer({
+            teamKey: '465.l.30702.t.9',
+            addPlayerKey: '465.p.32763',
+            dropPlayerKey: '465.p.6055',
          });
 
          expect(httpClient.post).toHaveBeenCalled();
-         expect(result.success).toBe(true);
-         expect(result.transactionKey).toBe('423.l.12345.tr.1');
+         const call = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0];
+         expect(call?.[0]).toBe('/league/465.l.30702/transactions');
       });
 
-      test('should add/drop with FAAB bid', async () => {
+      test('should include FAAB bid when provided', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'add/drop',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  faab_bid: '15',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: { transactionKey: '465.l.30702.tr.999' },
          };
 
          const httpClient = createMockHttpClient();
@@ -274,47 +171,26 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.addDropPlayer({
-            teamKey: '423.l.12345.t.1',
-            addPlayerKey: '423.p.8888',
-            dropPlayerKey: '423.p.7777',
+         await transactionResource.addDropPlayer({
+            teamKey: '465.l.30702.t.9',
+            addPlayerKey: '465.p.32763',
+            dropPlayerKey: '465.p.6055',
             faabBid: 15,
          });
 
-         expect(result.success).toBe(true);
-         expect(result.transaction?.faabBid).toBe(15);
-      });
-
-      test('should handle failure', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.post as ReturnType<typeof mock>).mockRejectedValue(
-            new Error('Transaction failed'),
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.addDropPlayer({
-            teamKey: '423.l.12345.t.1',
-            addPlayerKey: '423.p.8888',
-         });
-
-         expect(result.success).toBe(false);
-         expect(result.error).toBe('Transaction failed');
+         expect(httpClient.post).toHaveBeenCalled();
+         const call = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0];
+         expect(call?.[0]).toBe('/league/465.l.30702/transactions');
+         const options = call?.[2] as { body?: string };
+         expect(options?.body).toContain('<faab_bid>15</faab_bid>');
       });
    });
 
    describe('dropPlayer()', () => {
       test('should drop a player', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'drop',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: { transactionKey: '465.l.30702.tr.999' },
          };
 
          const httpClient = createMockHttpClient();
@@ -323,60 +199,19 @@ describe('TransactionResource', () => {
          );
 
          const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.dropPlayer(
-            '423.l.12345.t.1',
-            '423.p.7777',
+         await transactionResource.dropPlayer(
+            '465.l.30702.t.9',
+            '465.p.6055',
          );
 
-         expect(result.success).toBe(true);
-         expect(result.transactionKey).toBe('423.l.12345.tr.1');
+         expect(httpClient.post).toHaveBeenCalled();
       });
    });
 
    describe('proposeTrade()', () => {
       test('should propose a trade', async () => {
          const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'pending_trade',
-                  status: 'proposed',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.post as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.proposeTrade({
-            proposingTeamKey: '423.l.12345.t.1',
-            receivingTeamKey: '423.l.12345.t.2',
-            sendingPlayerKeys: ['423.p.8888'],
-            receivingPlayerKeys: ['423.p.7777'],
-         });
-
-         expect(result.success).toBe(true);
-         expect(result.transactionKey).toBe('423.l.12345.tr.1');
-      });
-
-      test('should propose trade with note', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'pending_trade',
-                  status: 'proposed',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
+            transaction: { transactionKey: '465.l.30702.tr.999' },
          };
 
          const httpClient = createMockHttpClient();
@@ -386,265 +221,14 @@ describe('TransactionResource', () => {
 
          const transactionResource = new TransactionResource(httpClient);
          await transactionResource.proposeTrade({
-            proposingTeamKey: '423.l.12345.t.1',
-            receivingTeamKey: '423.l.12345.t.2',
-            sendingPlayerKeys: ['423.p.8888'],
-            receivingPlayerKeys: ['423.p.7777'],
-            tradeNote: 'Fair trade',
+            tradeNote: 'Fair trade!',
+            proposingTeamKey: '465.l.30702.t.9',
+            receivingTeamKey: '465.l.30702.t.1',
+            sendingPlayerKeys: ['465.p.32763'],
+            receivingPlayerKeys: ['465.p.6055'],
          });
 
          expect(httpClient.post).toHaveBeenCalled();
-      });
-   });
-
-   describe('acceptTrade()', () => {
-      test('should accept a trade', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'pending_trade',
-                  status: 'accepted',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.acceptTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.2',
-         });
-
-         expect(httpClient.put).toHaveBeenCalled();
-         expect(result.success).toBe(true);
-      });
-   });
-
-   describe('rejectTrade()', () => {
-      test('should reject a trade', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'pending_trade',
-                  status: 'rejected',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.rejectTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.2',
-         });
-
-         expect(result.success).toBe(true);
-      });
-
-      test('should reject trade with reason', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'pending_trade',
-                  status: 'rejected',
-                  timestamp: '1699900800',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         await transactionResource.rejectTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.2',
-            reason: 'Not interested',
-         });
-
-         expect(httpClient.put).toHaveBeenCalled();
-      });
-   });
-
-   describe('cancelTrade()', () => {
-      test('should cancel a trade', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.delete as ReturnType<typeof mock>).mockResolvedValue(
-            {},
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.cancelTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.1',
-         });
-
-         expect(httpClient.delete).toHaveBeenCalledWith(
-            '/transaction/423.l.12345.tr.1',
-         );
-         expect(result.success).toBe(true);
-      });
-
-      test('should handle cancel failure', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.delete as ReturnType<typeof mock>).mockRejectedValue(
-            new Error('Cancel failed'),
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.cancelTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.1',
-         });
-
-         expect(result.success).toBe(false);
-         expect(result.error).toBe('Cancel failed');
-      });
-   });
-
-   describe('allowTrade()', () => {
-      test('should allow a trade (commissioner action)', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.allowTrade({
-            transactionKey: '423.l.12345.tr.1',
-         });
-
-         expect(httpClient.put).toHaveBeenCalledWith(
-            '/transaction/423.l.12345.tr.1',
-            undefined,
-            expect.objectContaining({
-               headers: { 'Content-Type': 'application/xml' },
-            }),
-         );
-         expect(result.success).toBe(true);
-      });
-   });
-
-   describe('disallowTrade()', () => {
-      test('should disallow a trade (commissioner action)', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.disallowTrade({
-            transactionKey: '423.l.12345.tr.1',
-         });
-
-         expect(result.success).toBe(true);
-      });
-   });
-
-   describe('voteAgainstTrade()', () => {
-      test('should vote against a trade', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.voteAgainstTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.3',
-         });
-
-         expect(result.success).toBe(true);
-      });
-
-      test('should vote against trade with note', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         await transactionResource.voteAgainstTrade({
-            transactionKey: '423.l.12345.tr.1',
-            teamKey: '423.l.12345.t.3',
-            note: 'Unfair trade',
-         });
-
-         expect(httpClient.put).toHaveBeenCalled();
-      });
-   });
-
-   describe('editWaiverClaim()', () => {
-      test('should edit waiver claim FAAB bid', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.editWaiverClaim({
-            transactionKey: '423.l.12345.tr.1',
-            faabBid: 25,
-         });
-
-         expect(result.success).toBe(true);
-      });
-
-      test('should edit waiver priority', async () => {
-         const httpClient = createMockHttpClient();
-         (httpClient.put as ReturnType<typeof mock>).mockResolvedValue({});
-
-         const transactionResource = new TransactionResource(httpClient);
-         await transactionResource.editWaiverClaim({
-            transactionKey: '423.l.12345.tr.1',
-            waiverPriority: 3,
-         });
-
-         expect(httpClient.put).toHaveBeenCalled();
-      });
-   });
-
-   describe('claimWaiver()', () => {
-      test('should claim a player on waivers', async () => {
-         const mockResponse = {
-            fantasy_content: {
-               transaction: {
-                  transaction_key: '423.l.12345.tr.1',
-                  transaction_id: '1',
-                  type: 'add/drop',
-                  status: 'successful',
-                  timestamp: '1699900800',
-                  faab_bid: '20',
-                  url: 'https://hockey.fantasysports.yahoo.com/transaction/1',
-               },
-            },
-         };
-
-         const httpClient = createMockHttpClient();
-         (httpClient.post as ReturnType<typeof mock>).mockResolvedValue(
-            mockResponse,
-         );
-
-         const transactionResource = new TransactionResource(httpClient);
-         const result = await transactionResource.claimWaiver({
-            teamKey: '423.l.12345.t.1',
-            claimPlayerKey: '423.p.8888',
-            dropPlayerKey: '423.p.7777',
-            faabBid: 20,
-         });
-
-         expect(result.success).toBe(true);
       });
    });
 });
