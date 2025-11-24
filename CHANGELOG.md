@@ -111,9 +111,11 @@ Breaking changes will be clearly documented in major version releases.
 
 ---
 
-## [1.1.0] - Unreleased
+## [1.1.0] - 2025-11-24
 
-> This version is in preparation and may change before release.
+### Overview
+
+Major refactor addressing significant implementation flaws in v1.0.0. This release improves XML parsing, enhances the API with an advanced query builder, and reorganizes documentation for clarity.
 
 ### Added
 
@@ -167,8 +169,14 @@ Breaking changes will be clearly documented in major version releases.
 - Cleaned out legacy fixture data and consolidated test infrastructure
 - Minor improvements to error handling and validation
 
-Additional fixes, features, or documentation updates may be added here before the final 1.1.0 release.
+### Upgrade Guide from 1.0.0
+
+If upgrading from v1.0.0, be aware of:
+- **Response property names** have been updated for consistency - review your usage of resource responses
+- **Array normalization** has been improved - nested arrays should now parse correctly
+- **Advanced query builder** is experimental - prefer standard resource methods for stable APIs
 
 ---
 
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
+[1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
