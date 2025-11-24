@@ -14,6 +14,7 @@ import type {
    // TransactionStatus,
    // TransactionType,
 } from '../types/common.js';
+import type { LeagueResourceResponse } from '../types/resources/league.js';
 import type {
    AcceptTradeParams,
    AddDropPlayerParams,
@@ -25,7 +26,7 @@ import type {
    ProposeTradeParams,
    RejectTradeParams,
    Transaction,
-   // TransactionPlayer,
+   TransactionResourceResponse,
    TransactionResponse,
    VoteAgainstTradeParams,
    WaiverClaimParams,
@@ -107,7 +108,7 @@ export class TransactionResource {
    async getLeagueTransactions(
       leagueKey: ResourceKey,
       params?: GetTransactionsParams,
-   ): Promise<Transaction[]> {
+   ): Promise<unknown> {
       let path = `/league/${leagueKey}/transactions`;
 
       const queryParams: string[] = [];
@@ -135,15 +136,9 @@ export class TransactionResource {
          path += `;${queryParams.join(';')}`;
       }
 
-      const response = await this.http.get<{
-         league: { transactions?: unknown[] };
-      }>(path);
+      const response = await this.http.get<LeagueResourceResponse>(path);
 
-      if (!response.league.transactions) {
-         return [];
-      }
-
-      return response.league.transactions as Transaction[];
+      return response.league;
    }
 
    /**
@@ -157,12 +152,12 @@ export class TransactionResource {
     * const transaction = await transactionClient.get('423.l.12345.tr.123');
     * ```
     */
-   async get(transactionKey: ResourceKey): Promise<Transaction> {
-      const response = await this.http.get<{
-         transaction: unknown;
-      }>(`/transaction/${transactionKey}`);
+   async get(transactionKey: ResourceKey): Promise<unknown> {
+      const path = `/transaction/${transactionKey}`;
+      const response =
+         await this.http.get<TransactionResourceResponse>(path);
 
-      return response.transaction as Transaction;
+      return response.transaction;
    }
 
    /**

@@ -8,9 +8,7 @@ import type { HttpClient } from '../client/HttpClient.js';
 import type {
    GetUserGamesParams,
    GetUserTeamsParams,
-   // User,
-   // UserGame,
-   // UserTeam,
+   UsersResourceResponse,
 } from '../types/resources/user.js';
 
 /**
@@ -53,12 +51,9 @@ export class UserResource {
     * ```
     */
    async getCurrentUser(): Promise<unknown> {
-      const response = await this.http.get<{
-         users: unknown[];
-      }>('/users;use_login=1');
-
-      // In XML, user is directly accessible (no numeric keys)
-      return response;
+      const path = '/users;use_login=1';
+      const response = await this.http.get<UsersResourceResponse>(path);
+      return response.users;
    }
 
    /**
@@ -98,21 +93,9 @@ export class UserResource {
          path += '/teams';
       }
 
-      const response = await this.http.get<{
-         users: unknown[];
-      }>(path);
+      const response = await this.http.get<UsersResourceResponse>(path);
 
-      // In XML, user is directly accessible
-      const userData = response.users[0] as Record<string, unknown>;
-
-      if (!userData?.games) {
-         return [];
-      }
-
-      const games = userData.games as unknown[];
-
-      // Games are in a simple array structure in XML
-      return games;
+      return response.users;
    }
 
    /**
@@ -146,19 +129,8 @@ export class UserResource {
 
       path += '/teams';
 
-      const response = await this.http.get<{
-         users: unknown[];
-      }>(path);
+      const response = await this.http.get<UsersResourceResponse>(path);
 
-      // In XML, user is directly accessible
-      const userData = response.users[0] as Record<string, unknown>;
-
-      if (!userData?.games) {
-         return [];
-      }
-
-      const games = userData.games as unknown[];
-
-      return games;
+      return response.users;
    }
 }

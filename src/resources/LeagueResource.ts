@@ -15,13 +15,7 @@ import type {
    GetLeagueScoreboardParams,
    GetLeagueStandingsParams,
    GetLeagueTeamsParams,
-   // League,
-   // LeagueScoreboard,
-   // LeagueSettings,
-   // LeagueStandings,
-   // Matchup,
-   // MatchupTeam,
-   // StandingsTeam,
+   LeagueResourceResponse,
 } from '../types/resources/league.js';
 // import type { Team } from '../types/resources/team.js';
 
@@ -103,9 +97,9 @@ export class LeagueResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get(path);
+      const response = await this.http.get<LeagueResourceResponse>(path);
 
-      return response;
+      return response.league;
    }
 
    /**
@@ -122,15 +116,9 @@ export class LeagueResource {
     * ```
     */
    async getSettings(leagueKey: ResourceKey): Promise<unknown> {
-      const response = await this.http.get<{
-         league: { settings?: unknown };
-      }>(`/league/${leagueKey}/settings`);
-
-      if (!response.league.settings) {
-         throw new Error('Settings not found in response');
-      }
-
-      return response;
+      const path = `/league/${leagueKey}/settings`;
+      const response = await this.http.get<LeagueResourceResponse>(path);
+      return response.league;
    }
    /**
     * Get league standings
@@ -157,15 +145,9 @@ export class LeagueResource {
          path += `;week=${params.week}`;
       }
 
-      const response = await this.http.get<{
-         league: { standings?: unknown };
-      }>(path);
+      const response = await this.http.get<LeagueResourceResponse>(path);
 
-      if (!response.league.standings) {
-         throw new Error('Standings not found in response');
-      }
-
-      return response;
+      return response.league;
    }
 
    /**
@@ -195,15 +177,9 @@ export class LeagueResource {
          path += `;week=${params.week}`;
       }
 
-      const response = await this.http.get<{
-         league: { scoreboard?: unknown };
-      }>(path);
+      const response = await this.http.get<LeagueResourceResponse>(path);
 
-      if (!response.league.scoreboard) {
-         throw new Error('Scoreboard not found in response');
-      }
-
-      return response;
+      return response.league;
    }
 
    /**
@@ -255,14 +231,8 @@ export class LeagueResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         league: { teams?: unknown[] };
-      }>(path);
+      const response = await this.http.get<LeagueResourceResponse>(path);
 
-      if (!response.league.teams) {
-         return [];
-      }
-
-      return response;
+      return response.league;
    }
 }

@@ -6,6 +6,8 @@
 import type { HttpClient } from '../client/HttpClient.js';
 // import type { GameCode } from '../types/common.js';
 import type {
+   GameResourceResponse,
+   GamesResourceResponse,
    // Game,
    // GamePositionType,
    // GameStatCategory,
@@ -97,11 +99,9 @@ export class GameResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         game: unknown;
-      }>(path);
+      const response = await this.http.get<GameResourceResponse>(path);
 
-      return response;
+      return response.game;
    }
 
    /**
@@ -156,11 +156,9 @@ export class GameResource {
          path += `;${queryParams.join(';')}`;
       }
 
-      const response = await this.http.get<{
-         games: unknown[];
-      }>(path);
+      const response = await this.http.get<GamesResourceResponse>(path);
 
-      return response;
+      return response.games;
    }
 
    /**
@@ -264,15 +262,9 @@ export class GameResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         game: { players?: unknown[] };
-      }>(path);
+      const response = await this.http.get<GameResourceResponse>(path);
 
-      if (!response.game.players) {
-         return { count: 0, players: [] };
-      }
-
-      return response;
+      return response.game;
    }
 
    /**
@@ -287,15 +279,9 @@ export class GameResource {
     * ```
     */
    async getGameWeeks(gameKey: string): Promise<unknown> {
-      const response = await this.http.get<{
-         game: { gameWeeks?: unknown[] };
-      }>(`/game/${gameKey}/game_weeks`);
-
-      if (!response.game.gameWeeks) {
-         return [];
-      }
-
-      return response;
+      const path = `/game/${gameKey}/game_weeks`;
+      const response = await this.http.get<GameResourceResponse>(path);
+      return response.game;
    }
 
    /**
@@ -310,15 +296,9 @@ export class GameResource {
     * ```
     */
    async getStatCategories(gameKey: string): Promise<unknown> {
-      const response = await this.http.get<{
-         game: { statCategories?: { stats?: unknown[] } };
-      }>(`/game/${gameKey}/stat_categories`);
-
-      if (!response.game.statCategories?.stats) {
-         return [];
-      }
-
-      return response;
+      const path = `/game/${gameKey}/stat_categories`;
+      const response = await this.http.get<GameResourceResponse>(path);
+      return response.game;
    }
 
    /**
@@ -333,14 +313,8 @@ export class GameResource {
     * ```
     */
    async getPositionTypes(gameKey: string): Promise<unknown> {
-      const response = await this.http.get<{
-         game: { positionTypes?: unknown[] };
-      }>(`/game/${gameKey}/position_types`);
-
-      if (!response.game.positionTypes) {
-         return [];
-      }
-
-      return response;
+      const path = `/game/${gameKey}/position_types`;
+      const response = await this.http.get<GameResourceResponse>(path);
+      return response.game;
    }
 }

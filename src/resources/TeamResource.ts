@@ -11,13 +11,7 @@ import type {
    GetTeamRosterParams,
    GetTeamStatsParams,
    RosterChangeRequest,
-   // RosterChangeResponse,
-   // RosterPlayer,
-   // Team,
-   // TeamManager,
-   // TeamRoster,
-   // TeamStandings,
-   // TeamStats,
+   TeamResourceResponse,
 } from '../types/resources/team.js';
 
 /**
@@ -104,11 +98,8 @@ export class TeamResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         team: unknown;
-      }>(path);
-
-      return response;
+      const response = await this.http.get<TeamResourceResponse>(path);
+      return response.team;
    }
 
    /**
@@ -157,15 +148,8 @@ export class TeamResource {
          path += ';out=stats';
       }
 
-      const response = await this.http.get<{
-         team: { roster?: unknown };
-      }>(path);
-
-      if (!response.team.roster) {
-         throw new Error('Roster not found in response');
-      }
-
-      return response;
+      const response = await this.http.get<TeamResourceResponse>(path);
+      return response.team;
    }
 
    /**
@@ -211,17 +195,8 @@ export class TeamResource {
          path += `;date=${params.date}`;
       }
 
-      const response = await this.http.get<{
-         team: { teamStats?: unknown };
-      }>(path);
-
-      const stats = response.team.teamStats;
-
-      if (!stats) {
-         throw new Error('Stats not found in response');
-      }
-
-      return response;
+      const response = await this.http.get<TeamResourceResponse>(path);
+      return response.team;
    }
 
    /**
@@ -260,15 +235,8 @@ export class TeamResource {
          path += `;weeks=${weeks}`;
       }
 
-      const response = await this.http.get<{
-         team: { matchups?: unknown };
-      }>(path);
-
-      if (!response.team.matchups) {
-         return [];
-      }
-
-      return response;
+      const response = await this.http.get<TeamResourceResponse>(path);
+      return response.team;
    }
 
    /**

@@ -8,11 +8,8 @@ import type { ResourceKey } from '../types/common.js';
 import type {
    GetPlayerParams,
    GetPlayerStatsParams,
-   // Player,
-   // PlayerCollectionResponse,
-   // PlayerOwnership,
-   // PlayerPercentOwned,
-   // PlayerStats,
+   PlayerResourceResponse,
+   PlayersResourceResponse,
    SearchPlayersParams,
 } from '../types/resources/player.js';
 
@@ -101,11 +98,9 @@ export class PlayerResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         player: unknown;
-      }>(path);
+      const response = await this.http.get<PlayerResourceResponse>(path);
 
-      return response;
+      return response.player;
    }
 
    /**
@@ -217,15 +212,9 @@ export class PlayerResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<{
-         league: { players?: unknown[] };
-      }>(path);
+      const response = await this.http.get<PlayersResourceResponse>(path);
 
-      if (!response.league.players) {
-         return { count: 0, players: [] };
-      }
-
-      return response; //{ count: players.length, players };
+      return response.players;
    }
 
    /**
@@ -277,15 +266,9 @@ export class PlayerResource {
          path += `;season=${params.season}`;
       }
 
-      const response = await this.http.get<{
-         player: { playerStats?: unknown };
-      }>(path);
+      const response = await this.http.get<PlayerResourceResponse>(path);
 
-      if (!response.player.playerStats) {
-         throw new Error('Stats not found in response');
-      }
-
-      return response;
+      return response.player;
    }
 
    /**
@@ -302,17 +285,8 @@ export class PlayerResource {
     * ```
     */
    async getOwnership(playerKey: ResourceKey): Promise<unknown> {
-      const response = await this.http.get<{
-         player: { ownership?: unknown };
-      }>(`/player/${playerKey}/ownership`);
-
-      // Yahoo may return an empty <ownership/> element, which still
-      // indicates that ownership data is present (just empty), so we
-      // only treat it as missing if the property itself is absent.
-      if (!('ownership' in response.player)) {
-         throw new Error('Ownership not found in response');
-      }
-
-      return response;
+      const path = `/player/${playerKey}/ownership`;
+      const response = await this.http.get<PlayerResourceResponse>(path);
+      return response.player;
    }
 }
