@@ -198,6 +198,53 @@ Check out the `/examples` directory for complete working examples:
 - `examples/hockey/02-client-test.ts` - Testing API endpoints
 - `examples/public-api/01-public-endpoints.ts` - Public API without auth
 - `examples/token-storage/usage-example.ts` - Token persistence
+- `examples/advanced-query/usage-examples.ts` - **Advanced query builder for complex requests**
+
+### Advanced Queries
+
+For complex API requests not covered by the standard methods, use the advanced query builder:
+
+```typescript
+import { YahooFantasyClient } from "yfs-api";
+
+const client = new YahooFantasyClient({
+  clientId: process.env.YAHOO_CLIENT_ID!,
+  clientSecret: process.env.YAHOO_CLIENT_SECRET!,
+  redirectUri: "oob",
+});
+
+// Complex chain: User's NFL leagues with settings and standings
+const result = await client.advanced()
+  .resource('users')
+  .param('use_login', '1')
+  .collection('games')
+  .param('game_keys', 'nfl')
+  .collection('leagues')
+  .out(['settings', 'standings'])
+  .execute();
+
+// Team roster for specific week
+const roster = await client.advanced()
+  .resource('team', '423.l.12345.t.1')
+  .collection('roster')
+  .param('week', '10')
+  .collection('players')
+  .execute();
+
+// Available players with filters
+const qbs = await client.advanced()
+  .resource('league', '423.l.12345')
+  .collection('players')
+  .params({
+    position: 'QB',
+    status: 'A',
+    sort: 'AR',
+    count: '25'
+  })
+  .execute();
+```
+
+See [Advanced Query README](examples/advanced-query/README.md) for comprehensive documentation.
 
 ## Documentation
 
