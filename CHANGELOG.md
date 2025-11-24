@@ -117,24 +117,55 @@ Breaking changes will be clearly documented in major version releases.
 
 ### Added
 
-- Option to return raw XML responses from the Yahoo API for debugging and advanced use cases
-- XML parsing utilities and fixtures to convert Yahoo Fantasy Sports XML responses to JSON
-- New integration tests covering authentication and core league/team flows
-- Additional fixture data and helper scripts to support development and testing
+#### Advanced Query Builder (⚠️ Experimental)
+- **Advanced Query Builder** - New `client.advanced()` method for constructing complex API requests with fluent API
+- Support for resource chaining, parameter passing, and output selection
+- Enables queries not covered by standard resource methods
+- ⚠️ API and behavior may change; use with caution in production
+
+#### Testing & Fixtures
+- **Data Collection Script** - `multi-league-collector.ts` for gathering comprehensive fixture data from real Yahoo Fantasy API
+- Enhanced fixture data covering multiple sports and league configurations
+- Script-based discovery of league and team keys for integration testing
+
+#### Developer Tools
+- **Auto-Discovery Script** - Automatically find and configure test resources from user's Yahoo Fantasy account
+- Comprehensive fixture management and data collection infrastructure
 
 ### Changed
 
-- Refactored the main client implementation and resource clients to work directly with XML responses
-- Updated internal test structure and fixtures to align with XML-based parsing
-- Restored and reorganized TypeScript response types into a dedicated folder
+#### Core Improvements
+- **Response Property Names** - Updated game, player, and team response property names for consistency
+- **Array Normalization** - Enhanced XML parser array normalization with mappings for users and leagues
+- **Transaction Interfaces** - Streamlined transaction API interfaces and documentation
+- **Response Handling** - Updated response handling in resource classes for better data extraction
+
+#### Documentation
+- **Restructured Docs** - Reorganized documentation files for the Yahoo API guide
+- **Removed Outdated Docs** - Cleaned up CI/CD and OAuth improvement documentation
+- **API Documentation** - Added comprehensive documentation for players, teams, transactions, and users
+- **Design Folder Cleanup** - Removed outdated design documents and summaries
+- **README Updates** - Updated README to remove design folder references and reflect current capabilities
+
+#### Type System
+- **Type Organization** - Restored and reorganized TypeScript response types into dedicated folder structure
+- **Type Consistency** - Improved type consistency across resource clients
 
 ### Fixed
 
-- Resolved TypeScript warnings and diagnostic errors in tests and supporting code
+#### Parser & XML Handling
+- **Array Normalization** - Fixed nested array handling for Yahoo API responses (`[[{...}], null]` format)
+- **XML Parser Mappings** - Added proper mappings for users and leagues in array normalization
 
-### Documentation
+#### Type & Build Issues
+- **TypeScript Diagnostics** - Resolved TypeScript warnings and diagnostic errors in tests
+- **Import Cleanup** - Cleaned up imports to enable proper building
 
-- Updated README and CHANGELOG wording to better reflect current capabilities and to avoid overpromising
+### Other
+
+- Removed exposed client credentials from repository history
+- Cleaned out legacy fixture data and consolidated test infrastructure
+- Minor improvements to error handling and validation
 
 Additional fixes, features, or documentation updates may be added here before the final 1.1.0 release.
 

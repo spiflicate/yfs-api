@@ -5,9 +5,6 @@ A TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2
 [![npm version](https://img.shields.io/npm/v/yfs-api.svg)](https://www.npmjs.com/package/yfs-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Status:** v1.0.0
-> **Test Coverage:** See TEST_SUMMARY.md for details
-
 ## Features
 
 - TypeScript client for Yahoo Fantasy Sports
@@ -200,9 +197,9 @@ Check out the `/examples` directory for complete working examples:
 - `examples/token-storage/usage-example.ts` - Token persistence
 - `examples/advanced-query/usage-examples.ts` - **Advanced query builder for complex requests**
 
-### Advanced Queries
+### Advanced Queries (⚠️ Experimental)
 
-For complex API requests not covered by the standard methods, use the advanced query builder:
+For complex API requests not covered by the standard methods, use the advanced query builder. **Note:** This API is experimental and may change before the 1.1.0 release:
 
 ```typescript
 import { YahooFantasyClient } from "yfs-api";
@@ -250,9 +247,7 @@ See [Advanced Query README](examples/advanced-query/README.md) for comprehensive
 
 - **[Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)** - Running integration tests
 - **[OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)** - OAuth details
-- **[Design Documentation](design/)** - Architecture and design decisions
-- **[API Coverage Matrix](design/plans/api-coverage-matrix.md)** - Detailed API mapping
-- **[Test Summary](TEST_SUMMARY.md)** - Test coverage report
+- **[Advanced Query Implementation](docs/ADVANCED_QUERY_IMPLEMENTATION.md)** - Complex query builder documentation
 
 ## Development
 
@@ -315,11 +310,12 @@ yfs-api/
 │   │   └── errors.ts        # Error types
 │   └── utils/               # Utilities (validators, formatters)
 ├── tests/
-│   ├── unit/                # Unit tests (38 passing)
-│   └── integration/         # Integration tests (45 passing)
+│   ├── unit/                # Unit tests (301 passing)
+│   ├── integration/         # Integration tests (45 passing)
+│   └── fixtures/            # Test fixtures and mock data
 ├── examples/                # Usage examples
-├── design/                  # Design documentation
-└── docs/                    # User documentation
+├── docs/                    # User documentation
+└── scripts/                 # Development and discovery scripts
 ```
 
 ## Philosophy
@@ -330,12 +326,11 @@ This library aims to be easy to understand and use while staying close to Yahoo'
 
 Contributions welcome! Please:
 
-1. Check the [API Coverage Matrix](design/plans/api-coverage-matrix.md) for what needs work
-2. Review [Architecture Decision Records](design/decisions/) for context
-3. Follow existing code patterns and style
-4. Add comprehensive JSDoc comments
-5. Include tests for new functionality
-6. Update documentation
+1. Follow existing code patterns and style
+2. Add comprehensive JSDoc comments
+3. Include tests for new functionality
+4. Update documentation
+5. Test against real Yahoo Fantasy API when possible
 
 If you have real-world usage that surfaces missing or incomplete types, contributions to improve type information are very welcome—please open an issue or pull request.
 
@@ -360,8 +355,8 @@ Built by [jbru](https://github.com/spiflicate) for the fantasy sports community 
 
 ## Changelog
 
-See [CHANGELOG.md](design/CHANGELOG.md) for release history.
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ---
 
-_Last Updated: 2025-11-21_
+_Last Updated: 2025-11-24_
