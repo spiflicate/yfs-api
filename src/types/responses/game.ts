@@ -1,8 +1,21 @@
+import type { PositionType } from '../common';
+
 /**
  * API response wrapper for game data.
  *
- * @interface GameResponse
  * @description Wraps the Game object returned from API endpoints.
+ * @example
+ * ```typescript
+ * const response: GameResponse = {
+ *   game: {
+ *     gameKey: "423",
+ *     gameId: 423,
+ *     name: "Hockey",
+ *     code: "nhl",
+ *     // ... other properties
+ *   }
+ * };
+ * ```
  */
 export interface GameResponse {
    /** The game data */
@@ -12,129 +25,98 @@ export interface GameResponse {
 /**
  * Represents a game (sport) in the Yahoo Fantasy Sports system.
  *
- * @interface Game
- * @description Contains game metadata including name, code, season, and current
- * state information. A game represents a specific sport like NHL, NFL, etc.
- *
- * @example
- * ```typescript
- * const game: Game = {
- *   gameKey: "394",
- *   gameId: 394,
- *   name: "NHL",
- *   code: "nhl",
- *   season: 2024,
- *   isGameOver: false,
- *   isOffseason: false,
- * };
- * ```
+ * @description Contains comprehensive information about a fantasy sports game,
+ * including its identifier, season details, registration status, and available
+ * position types and statistics.
  */
 export interface Game {
-   /** Unique identifier for the game in format "gameId" */
+   /** Game key - unique identifier that can be numeric (e.g., "423") or code-based (e.g., "nhl") */
    gameKey: string;
+
    /** Numeric game identifier */
    gameId: number;
-   /** Display name of the game (e.g., "NHL", "NFL") */
+
+   /** Name of the sport (e.g., "Hockey", "Football", "Baseball") */
    name: string;
-   /** Short code identifier for the game (e.g., "nhl", "nfl") */
+
+   /** Sport code used by Yahoo (e.g., "nhl", "nfl", "mlb", "nba") */
    code: string;
-   /** Type of game */
+
+   /** Type of fantasy sports game (e.g., "full", "pickem") */
    type: string;
-   /** URL to access the game on Yahoo Fantasy Sports */
+
+   /** URL to access the game on Yahoo Fantasy Sports website */
    url: string;
-   /** The season/year of the game */
+
+   /** The season year as a four-digit number (e.g., 2024, 2025) */
    season: number;
    /** Whether new league registration for this game is closed */
    isRegistrationOver: boolean;
+
    /** Whether the game season has finished */
    isGameOver: boolean;
+
    /** Whether the game is currently in its offseason */
    isOffseason: boolean;
-   /** Whether a live draft lobby is currently active (optional) */
+
+   /** Whether a live draft lobby is currently active */
    isLiveDraftLobbyActive?: boolean;
-   /** Alternate start deadline timestamp for registration (optional) */
+
+   /** Alternate start deadline timestamp for registration in ISO 8601 format */
    alternateStartDeadline?: string;
-}
 
-/**
- * Container for position types available in a game.
- *
- * @interface GamePositionTypes
- * @description Wraps a collection of position type definitions for a game.
- */
-export interface GamePositionTypes {
    /** Array of position types available in this game */
-   positionTypes: PositionTypeObject[];
-}
+   positionTypes?: PositionTypeObject[];
 
-/**
- * Container for stat categories available in a game.
- *
- * @interface GameStatCategories
- * @description Wraps the available stat categories for a game.
- */
-export interface GameStatCategories {
-   /** Stat categories for this game (optional) */
+   /** Statistical categories tracked for this game */
    statCategories?: StatCategories;
-}
 
-/**
- * Container for game weeks/schedule.
- *
- * @interface GameGameWeeks
- * @description Wraps the schedule information with game weeks for a game season.
- */
-export interface GameGameWeeks {
-   /** Array of game weeks in the season (optional) */
+   /** Array of game weeks/periods in the season */
    gameWeeks?: GameWeek[];
 }
 
 /**
  * Represents a single week/period within a game season.
  *
- * @interface GameWeek
- * @description Contains temporal boundaries and metadata for a week of play.
+ * @description Contains temporal boundaries and metadata for a week of play,
+ * including start/end dates and whether it's the current active week.
  */
 export interface GameWeek {
-   /** Week number in the season */
+   /** Week number in the season (1-indexed) */
    week: number;
-   /** Display name for the week */
+
+   /** Display number for the week (may differ from week number) */
    displayName: number;
-   /** Start date/timestamp of the week */
+
+   /** Start date/timestamp of the week in ISO 8601 format */
    start: string;
-   /** End date/timestamp of the week */
+
+   /** End date/timestamp of the week in ISO 8601 format */
    end: string;
-   /** Indicator for whether this is the current week */
+
+   /** Indicator for whether this is the current active week */
    current: string;
 }
 
 /**
  * Represents a position type available in a game.
  *
- * @interface PositionTypeObject
- * @description Defines a single position type with its metadata.
+ * @description Defines a player position category with its code and display name.
+ * Examples include offensive, defensive, and special teams positions.
  */
 export interface PositionTypeObject {
-   /** Position type code (P for players, G for goalies) */
+   /** Position type code (e.g., "O" for offense, "D" for defense) */
    type: PositionType;
-   /** Human-readable display name for the position type */
+
+   /** Human-readable display name for the position type (e.g., "Offense", "Defense") */
    displayName: string;
 }
 
 /**
- * Position types for sports.
- * P represents player positions, G represents goalie positions.
- *
- * @type {PositionType}
- * @enum {string}
- */
-export type PositionType = 'P' | 'G';
-
-/**
  * Container for stat categories in a game.
  *
- * @interface StatCategories
- * @description Contains a collection of stat category definitions available for a game.
+ * @description Contains a collection of stat category definitions available for a game,
+ * including both basic statistics and composite stats derived from base stats.
  */
 export interface StatCategories {
    /** Array of stat category definitions */
@@ -144,32 +126,38 @@ export interface StatCategories {
 /**
  * Represents a single stat category available in a game.
  *
- * @interface Stat
  * @description Defines a statistical metric that can be tracked for players,
  * including whether it's composite and its applicable position types.
+ * Composite stats are calculated from multiple base stats.
  */
 export interface Stat {
    /** Unique identifier for the stat */
    statId: number;
-   /** Machine-readable name for the stat */
+
+   /** Machine-readable name for the stat (e.g., "GP", "G", "A") */
    name: string;
-   /** Human-readable display name for the stat */
+
+   /** Human-readable display name for the stat (e.g., "Games Played", "Goals", "Assists") */
    displayName: string;
-   /** Sort order for displaying this stat */
+
+   /** Sort order for displaying this stat - true for ascending (lower is better), false for descending (higher is better) */
    sortOrder: boolean;
+
    /** Position types for which this stat is applicable */
    positionTypes: PositionType[];
-   /** Whether this stat is computed from base stats (optional) */
+
+   /** Whether this stat is computed from other base stats rather than being tracked directly */
    isCompositeStat?: boolean;
-   /** Base stats used to compute this stat if it's composite (optional) */
+
+   /** Base stats used to compute this stat if it's composite */
    baseStats?: BaseStat[];
 }
 
 /**
  * Reference to a base stat used in composite stat calculations.
  *
- * @interface BaseStat
  * @description Links to a base stat that contributes to a composite stat's value.
+ * For example, a points per game stat might reference games played and total points.
  */
 export interface BaseStat {
    /** Unique identifier for the base stat */

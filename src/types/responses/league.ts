@@ -181,11 +181,8 @@ export interface Headshot {
    /** URL to the image */
    url: string;
    /** Size of the image */
-   size: Size;
+   size: 'small' | 'large';
 }
-
-/** Image size options */
-export type Size = 'small' | 'large';
 
 /**
  * Represents keeper status information for a player.
@@ -221,7 +218,9 @@ export interface Name {
    asciiLast: string;
 }
 
-/** Position types for hockey: Players (P) and Goalies (G) */
+/**
+ * Position types for hockey: Players (P) and Goalies (G)
+ */
 export type PositionType = 'P' | 'G';
 
 /**

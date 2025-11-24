@@ -13,132 +13,72 @@ import type {
 } from '../common';
 
 /**
+ * Response structure for a single league resource
+ */
+export interface LeagueResourceResponse {
+   league: League;
+}
+
+/**
+ * Response structure for multiple league resources
+ */
+export interface LeaguesResourceResponse {
+   leagues: League[];
+}
+
+/**
  * League information
  */
 export interface League extends BaseMetadata {
-   /**
-    * League key
-    */
+   /** League key */
    leagueKey: ResourceKey;
-
-   /**
-    * League ID
-    */
+   /** League ID */
    leagueId: string;
-
-   /**
-    * League name
-    */
+   /** League name */
    name: string;
-
-   /**
-    * Game key this league belongs to
-    */
+   /** Game key this league belongs to */
    gameKey: string;
-
-   /**
-    * Game code (sport)
-    */
+   /** Game code (sport) */
    gameCode: GameCode;
-
-   /**
-    * Season year
-    */
+   /** Season year */
    season: number;
-
-   /**
-    * Scoring type
-    */
+   /** Scoring type */
    scoringType: ScoringType;
-
-   /**
-    * League type
-    */
+   /** League type */
    leagueType: 'private' | 'public';
-
-   /**
-    * Number of teams
-    */
+   /** Number of teams */
    numberOfTeams: number;
-
-   /**
-    * Current week (1 for non-weekly sports like NHL)
-    */
+   /** Current week (1 for non-weekly sports like NHL) */
    currentWeek: number;
-
-   /**
-    * Start week
-    */
+   /** Start week */
    startWeek?: number;
-
-   /**
-    * End week
-    */
+   /** End week */
    endWeek?: number;
-
-   /**
-    * Start date (YYYY-MM-DD)
-    */
+   /** Start date (YYYY-MM-DD) */
    startDate?: string;
-
-   /**
-    * End date (YYYY-MM-DD)
-    */
+   /** End date (YYYY-MM-DD) */
    endDate?: string;
-
-   /**
-    * Draft status
-    */
+   /** Draft status */
    draftStatus: DraftStatus;
-
-   /**
-    * Is finished
-    */
+   /** Is finished */
    isFinished: boolean;
-
-   /**
-    * Logo URL
-    */
+   /** Logo URL */
    logoUrl?: string;
-
-   /**
-    * Password (if public league with password)
-    */
+   /** Password (if public league with password) */
    password?: string;
-
-   /**
-    * Renew URL
-    */
+   /** Renew URL */
    renewUrl?: string;
-
-   /**
-    * Short invitation URL
-    */
+   /** Short invitation URL */
    shortInvitationUrl?: string;
-
-   /**
-    * Is pro league
-    */
+   /** Is pro league */
    isProLeague?: boolean;
-
-   /**
-    * Is cash league
-    */
+   /** Is cash league */
    isCashLeague?: boolean;
-
-   /**
-    * League settings (detailed configuration)
-    */
+   /** League settings (detailed configuration) */
    settings?: LeagueSettings;
-
-   /**
-    * League standings
-    */
+   /** League standings */
    standings?: LeagueStandings;
-
-   /**
-    * Scoreboard data
-    */
+   /** Scoreboard data */
    scoreboard?: LeagueScoreboard;
 }
 
@@ -146,129 +86,55 @@ export interface League extends BaseMetadata {
  * League settings
  */
 export interface LeagueSettings {
-   /**
-    * Draft type
-    */
+   /** Draft type */
    draftType: 'live' | 'offline' | 'autopick';
-
-   /**
-    * Is auction draft
-    */
+   /** Is auction draft */
    isAuctionDraft: boolean;
-
-   /**
-    * Scoring type
-    */
+   /** Scoring type */
    scoringType: ScoringType;
-
-   /**
-    * Uses playoff
-    */
+   /** Uses playoff */
    usesPlayoff: boolean;
-
-   /**
-    * Uses playoff reseeding
-    */
+   /** Uses playoff reseeding */
    usesPlayoffReseeding?: boolean;
-
-   /**
-    * Uses lock eliminated teams
-    */
+   /** Uses lock eliminated teams */
    usesLockEliminatedTeams?: boolean;
-
-   /**
-    * Playoff start week/date
-    */
+   /** Playoff start week/date */
    playoffStartWeek?: number;
-
-   /**
-    * Number of playoff teams
-    */
+   /** Number of playoff teams */
    numberOfPlayoffTeams?: number;
-
-   /**
-    * Has playoff consolation games
-    */
+   /** Has playoff consolation games */
    hasPlayoffConsolationGames?: boolean;
-
-   /**
-    * Max teams
-    */
+   /** Max teams */
    maxTeams: number;
-
-   /**
-    * Waiver type
-    */
+   /** Waiver type */
    waiverType: 'FR' | 'FCFS' | 'continual' | 'gametime';
-
-   /**
-    * Waiver rule
-    */
+   /** Waiver rule */
    waiverRule?: 'all' | 'gametime';
-
-   /**
-    * Uses FAAB
-    */
+   /** Uses FAAB */
    usesFaab: boolean;
-
-   /**
-    * Draft time (Unix timestamp)
-    */
+   /** Draft time (Unix timestamp) */
    draftTime?: number;
-
-   /**
-    * Post draft players
-    */
+   /** Post draft players */
    postDraftPlayers?: 'W' | 'FA';
-
-   /**
-    * Max weekly adds
-    */
+   /** Max weekly adds */
    maxWeeklyAdds?: number;
-
-   /**
-    * Max season adds
-    */
+   /** Max season adds */
    maxSeasonAdds?: number;
-
-   /**
-    * Trade end date
-    */
+   /** Trade end date */
    tradeEndDate?: string;
-
-   /**
-    * Trade ratify type
-    */
+   /** Trade ratify type */
    tradeRatifyType?: 'commish' | 'vote' | 'no_review';
-
-   /**
-    * Trade reject time (in days)
-    */
+   /** Trade reject time (in days) */
    tradeRejectTime?: number;
-
-   /**
-    * Player pool
-    */
+   /** Player pool */
    playerPool?: 'ALL' | 'nhl';
-
-   /**
-    * Can't cut list
-    */
+   /** Can't cut list */
    cantCutList?: 'yahoo' | 'none';
-
-   /**
-    * Roster positions
-    */
+   /** Roster positions */
    rosterPositions?: RosterPosition[];
-
-   /**
-    * Stat categories
-    */
+   /** Stat categories */
    statCategories?: StatCategory[];
-
-   /**
-    * Stat modifiers (for points leagues)
-    */
+   /** Stat modifiers (for points leagues) */
    statModifiers?: StatModifier[];
 }
 
@@ -276,29 +142,15 @@ export interface LeagueSettings {
  * Roster position configuration
  */
 export interface RosterPosition {
-   /**
-    * Position code
-    */
+   /** Position code */
    position: string;
-
-   /**
-    * Position type
-    */
+   /** Position type */
    positionType: string;
-
-   /**
-    * Number of slots
-    */
+   /** Number of slots */
    count: number;
-
-   /**
-    * Display name
-    */
+   /** Display name */
    displayName?: string;
-
-   /**
-    * Abbreviation
-    */
+   /** Abbreviation */
    abbreviation?: string;
 }
 
@@ -306,34 +158,17 @@ export interface RosterPosition {
  * Stat category configuration
  */
 export interface StatCategory {
-   /**
-    * Stat ID
-    */
+   /** Stat ID */
    statId: number;
-
-   /**
-    * Enabled for the league
-    */
+   /** Enabled for the league */
    enabled: boolean;
-
-   /**
-    * Display name
-    */
+   /** Display name */
    name: string;
-
-   /**
-    * Display order/position
-    */
+   /** Display order/position */
    displayOrder?: number;
-
-   /**
-    * Sort order (for roto)
-    */
+   /** Sort order (for roto) */
    sortOrder?: number;
-
-   /**
-    * Position type this applies to
-    */
+   /** Position type this applies to */
    positionType?: string;
 }
 
@@ -341,14 +176,9 @@ export interface StatCategory {
  * Stat modifier (for points leagues)
  */
 export interface StatModifier {
-   /**
-    * Stat ID
-    */
+   /** Stat ID */
    statId: number;
-
-   /**
-    * Points per unit
-    */
+   /** Points per unit */
    points: number;
 }
 
@@ -356,9 +186,7 @@ export interface StatModifier {
  * League standings
  */
 export interface LeagueStandings {
-   /**
-    * Teams in order of standings
-    */
+   /** Teams in order of standings */
    teams: StandingsTeam[];
 }
 
@@ -366,77 +194,42 @@ export interface LeagueStandings {
  * Team in standings
  */
 export interface StandingsTeam {
-   /**
-    * Team key
-    */
+   /** Team key */
    teamKey: ResourceKey;
-
-   /**
-    * Team ID
-    */
+   /** Team ID */
    teamId: string;
-
-   /**
-    * Team name
-    */
+   /** Team name */
    name: string;
-
-   /**
-    * Team logo URL
-    */
+   /** Team logo URL */
    teamLogoUrl?: string;
-
-   /**
-    * Rank
-    */
+   /** Rank */
    rank: number;
-
-   /**
-    * Playoff seed (if in playoffs)
-    */
+   /** Playoff seed (if in playoffs) */
    playoffSeed?: number;
-
-   /**
-    * Outcome totals (for head-to-head)
-    */
+   /** Outcome totals (for head-to-head) */
    outcomeTotals?: {
       wins: number;
       losses: number;
       ties: number;
       percentage: number;
    };
-
-   /**
-    * Points (for points leagues)
-    */
+   /** Points (for points leagues) */
    points?: number;
-
-   /**
-    * Team points (for roto leagues)
-    */
+   /** Team points (for roto leagues) */
    teamPoints?: {
       total: number;
    };
-
-   /**
-    * Streak (current winning/losing streak)
-    */
+   /** Streak (current winning/losing streak) */
    streak?: {
       type: 'win' | 'loss' | 'tie';
       value: number;
    };
-
-   /**
-    * Manager info
-    */
+   /** Manager info */
    managers?: {
       guid: string;
       nickname: string;
    }[];
-
-   /**
-    * URL to team page
-    */
+   /** URL to team page */
    url: string;
 }
 
@@ -444,14 +237,9 @@ export interface StandingsTeam {
  * League scoreboard
  */
 export interface LeagueScoreboard {
-   /**
-    * Week number (for weekly sports)
-    */
+   /** Week number (for weekly sports) */
    week?: number;
-
-   /**
-    * Matchups
-    */
+   /** Matchups */
    matchups: Matchup[];
 }
 
@@ -459,39 +247,19 @@ export interface LeagueScoreboard {
  * Matchup between two teams
  */
 export interface Matchup {
-   /**
-    * Week number
-    */
+   /** Week number */
    week?: number;
-
-   /**
-    * Matchup grade (for playoffs)
-    */
+   /** Matchup grade (for playoffs) */
    matchupGrade?: string;
-
-   /**
-    * Winner team key
-    */
+   /** Winner team key */
    winnerTeamKey?: ResourceKey;
-
-   /**
-    * Is tied
-    */
+   /** Is tied */
    isTied?: boolean;
-
-   /**
-    * Is playoffs
-    */
+   /** Is playoffs */
    isPlayoffs?: boolean;
-
-   /**
-    * Is consolation
-    */
+   /** Is consolation */
    isConsolation?: boolean;
-
-   /**
-    * Teams in the matchup (usually 2)
-    */
+   /** Teams in the matchup (usually 2) */
    teams: MatchupTeam[];
 }
 
@@ -499,44 +267,21 @@ export interface Matchup {
  * Team in a matchup
  */
 export interface MatchupTeam {
-   /**
-    * Team key
-    */
+   /** Team key */
    teamKey: ResourceKey;
-
-   /**
-    * Team ID
-    */
+   /** Team ID */
    teamId: string;
-
-   /**
-    * Team name
-    */
+   /** Team name */
    name: string;
-
-   /**
-    * Team logo URL
-    */
+   /** Team logo URL */
    teamLogoUrl?: string;
-
-   /**
-    * Points scored
-    */
+   /** Points scored */
    points?: number;
-
-   /**
-    * Projected points
-    */
+   /** Projected points */
    projectedPoints?: number;
-
-   /**
-    * Team stats for this matchup
-    */
+   /** Team stats for this matchup */
    stats?: MatchupStat[];
-
-   /**
-    * URL to team page
-    */
+   /** URL to team page */
    url: string;
 }
 
@@ -544,14 +289,9 @@ export interface MatchupTeam {
  * Stat in a matchup
  */
 export interface MatchupStat {
-   /**
-    * Stat ID
-    */
+   /** Stat ID */
    statId: number;
-
-   /**
-    * Value
-    */
+   /** Value */
    value: string | number;
 }
 
@@ -559,19 +299,11 @@ export interface MatchupStat {
  * Parameters for getting league metadata
  */
 export interface GetLeagueParams {
-   /**
-    * Include settings
-    */
+   /** Include settings */
    includeSettings?: boolean;
-
-   /**
-    * Include standings
-    */
+   /** Include standings */
    includeStandings?: boolean;
-
-   /**
-    * Include scoreboard
-    */
+   /** Include scoreboard */
    includeScoreboard?: boolean;
 }
 
@@ -579,9 +311,7 @@ export interface GetLeagueParams {
  * Parameters for getting league standings
  */
 export interface GetLeagueStandingsParams {
-   /**
-    * Week number (for weekly sports)
-    */
+   /** Week number (for weekly sports) */
    week?: number;
 }
 
@@ -589,9 +319,7 @@ export interface GetLeagueStandingsParams {
  * Parameters for getting league scoreboard
  */
 export interface GetLeagueScoreboardParams {
-   /**
-    * Week number (for weekly sports)
-    */
+   /** Week number (for weekly sports) */
    week?: number;
 }
 
@@ -599,13 +327,8 @@ export interface GetLeagueScoreboardParams {
  * Parameters for getting league teams
  */
 export interface GetLeagueTeamsParams extends PaginationParams {
-   /**
-    * Include team stats
-    */
+   /** Include team stats */
    includeStats?: boolean;
-
-   /**
-    * Include team standings
-    */
+   /** Include team standings */
    includeStandings?: boolean;
 }

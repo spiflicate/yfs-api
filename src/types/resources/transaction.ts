@@ -15,53 +15,35 @@ import type {
    TransactionType,
 } from '../common';
 
+export interface TransactionResourceResponse {
+   transaction: Transaction;
+}
+
+export interface TransactionsResourceResponse {
+   transactions: Transaction[];
+}
+
 /**
  * Transaction information
  */
 export interface Transaction extends BaseMetadata {
-   /**
-    * Transaction key
-    */
+   /** Transaction key */
    transactionKey: ResourceKey;
-
-   /**
-    * Transaction ID
-    */
+   /** Transaction ID */
    transactionId: string;
-
-   /**
-    * Transaction type
-    */
+   /** Transaction type */
    type: TransactionType;
-
-   /**
-    * Transaction status
-    */
+   /** Transaction status */
    status: TransactionStatus;
-
-   /**
-    * Timestamp (Unix timestamp)
-    */
+   /** Timestamp (Unix timestamp) */
    timestamp: number;
-
-   /**
-    * Players involved in the transaction
-    */
+   /** Players involved in the transaction */
    players?: TransactionPlayer[];
-
-   /**
-    * Waiver details (if waiver transaction)
-    */
+   /** Waiver details (if waiver transaction) */
    waiver?: WaiverDetails;
-
-   /**
-    * Trade details (if trade transaction)
-    */
+   /** Trade details (if trade transaction) */
    trade?: TradeDetails;
-
-   /**
-    * FAAB bid (if waiver with FAAB)
-    */
+   /** FAAB bid (if waiver with FAAB) */
    faabBid?: number;
 }
 
@@ -69,68 +51,34 @@ export interface Transaction extends BaseMetadata {
  * Player in a transaction
  */
 export interface TransactionPlayer {
-   /**
-    * Player key
-    */
+   /** Player key */
    playerKey: ResourceKey;
-
-   /**
-    * Player ID
-    */
+   /** Player ID */
    playerId: string;
-
-   /**
-    * Player name
-    */
+   /** Player name */
    name: {
       full: string;
       first: string;
       last: string;
    };
-
-   /**
-    * Transaction data for this player
-    */
+   /** Transaction data for this player */
    transactionData: {
-      /**
-       * Type (add, drop, trade)
-       */
+      /** Type (add, drop, trade) */
       type: 'add' | 'drop' | 'trade';
-
-      /**
-       * Source type (freeagents, waivers, team)
-       */
+      /** Source type (freeagents, waivers, team) */
       sourceType?: 'freeagents' | 'waivers' | 'team';
-
-      /**
-       * Source team key (if from team)
-       */
+      /** Source team key (if from team) */
       sourceTeamKey?: ResourceKey;
-
-      /**
-       * Destination type
-       */
+      /** Destination type */
       destinationType?: 'team' | 'waivers' | 'freeagents';
-
-      /**
-       * Destination team key (if to team)
-       */
+      /** Destination team key (if to team) */
       destinationTeamKey?: ResourceKey;
    };
-
-   /**
-    * Editorial team abbreviation
-    */
+   /** Editorial team abbreviation */
    editorialTeamAbbr?: string;
-
-   /**
-    * Display position
-    */
+   /** Display position */
    displayPosition?: string;
-
-   /**
-    * Headshot URL
-    */
+   /** Headshot URL */
    headshotUrl?: string;
 }
 
@@ -138,14 +86,9 @@ export interface TransactionPlayer {
  * Waiver details
  */
 export interface WaiverDetails {
-   /**
-    * Waiver priority
-    */
+   /** Waiver priority */
    waiverPriority?: number;
-
-   /**
-    * Waiver date (Unix timestamp)
-    */
+   /** Waiver date (Unix timestamp) */
    waiverDate?: number;
 }
 
@@ -153,54 +96,27 @@ export interface WaiverDetails {
  * Trade details
  */
 export interface TradeDetails {
-   /**
-    * Teams involved in trade
-    */
+   /** Teams involved in trade */
    teams: Array<{
-      /**
-       * Team key
-       */
+      /** Team key */
       teamKey: ResourceKey;
-
-      /**
-       * Team name
-       */
+      /** Team name */
       teamName: string;
    }>;
-
-   /**
-    * Trade note
-    */
+   /** Trade note */
    tradeNote?: string;
-
-   /**
-    * Trade votes
-    */
+   /** Trade votes */
    votes?: {
-      /**
-       * Votes to allow
-       */
+      /** Votes to allow */
       allow: number;
-
-      /**
-       * Votes to veto
-       */
+      /** Votes to veto */
       veto: number;
-
-      /**
-       * Votes remaining
-       */
+      /** Votes remaining */
       remaining: number;
    };
-
-   /**
-    * Trade proposed time (Unix timestamp)
-    */
+   /** Trade proposed time (Unix timestamp) */
    tradeProposedTime?: number;
-
-   /**
-    * Trade accepted time (Unix timestamp)
-    */
+   /** Trade accepted time (Unix timestamp) */
    tradeAcceptedTime?: number;
 }
 
@@ -208,14 +124,9 @@ export interface TradeDetails {
  * Parameters for getting transactions
  */
 export interface GetTransactionsParams extends PaginationParams {
-   /**
-    * Filter by transaction type
-    */
+   /** Filter by transaction type */
    type?: TransactionType | TransactionType[];
-
-   /**
-    * Filter by team key
-    */
+   /** Filter by team key */
    teamKey?: ResourceKey;
 }
 
@@ -223,24 +134,13 @@ export interface GetTransactionsParams extends PaginationParams {
  * Parameters for add/drop transaction
  */
 export interface AddDropPlayerParams {
-   /**
-    * Team key performing the transaction
-    */
+   /** Team key performing the transaction */
    teamKey: ResourceKey;
-
-   /**
-    * Player key to add
-    */
+   /** Player key to add */
    addPlayerKey: ResourceKey;
-
-   /**
-    * Player key to drop (optional for adds from free agents)
-    */
+   /** Player key to drop (optional for adds from free agents) */
    dropPlayerKey?: ResourceKey;
-
-   /**
-    * FAAB bid (if using FAAB waivers)
-    */
+   /** FAAB bid (if using FAAB waivers) */
    faabBid?: number;
 }
 
@@ -248,29 +148,15 @@ export interface AddDropPlayerParams {
  * Parameters for waiver claim
  */
 export interface WaiverClaimParams {
-   /**
-    * Team key performing the claim
-    */
+   /** Team key performing the claim */
    teamKey: ResourceKey;
-
-   /**
-    * Player key to claim
-    */
+   /** Player key to claim */
    claimPlayerKey: ResourceKey;
-
-   /**
-    * Player key to drop
-    */
+   /** Player key to drop */
    dropPlayerKey: ResourceKey;
-
-   /**
-    * FAAB bid (if using FAAB)
-    */
+   /** FAAB bid (if using FAAB) */
    faabBid?: number;
-
-   /**
-    * Waiver priority (if applicable)
-    */
+   /** Waiver priority (if applicable) */
    waiverPriority?: number;
 }
 
@@ -278,29 +164,15 @@ export interface WaiverClaimParams {
  * Parameters for proposing a trade
  */
 export interface ProposeTradeParams {
-   /**
-    * Team key proposing the trade
-    */
+   /** Team key proposing the trade */
    proposingTeamKey: ResourceKey;
-
-   /**
-    * Team key receiving the trade offer
-    */
+   /** Team key receiving the trade offer */
    receivingTeamKey: ResourceKey;
-
-   /**
-    * Player keys being sent by proposing team
-    */
+   /** Player keys being sent by proposing team */
    sendingPlayerKeys: ResourceKey[];
-
-   /**
-    * Player keys being received by proposing team
-    */
+   /** Player keys being received by proposing team */
    receivingPlayerKeys: ResourceKey[];
-
-   /**
-    * Trade note
-    */
+   /** Trade note */
    tradeNote?: string;
 }
 
@@ -308,14 +180,9 @@ export interface ProposeTradeParams {
  * Parameters for accepting a trade
  */
 export interface AcceptTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
-
-   /**
-    * Team key accepting the trade
-    */
+   /** Team key accepting the trade */
    teamKey: ResourceKey;
 }
 
@@ -323,19 +190,11 @@ export interface AcceptTradeParams {
  * Parameters for rejecting a trade
  */
 export interface RejectTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
-
-   /**
-    * Team key rejecting the trade
-    */
+   /** Team key rejecting the trade */
    teamKey: ResourceKey;
-
-   /**
-    * Rejection reason
-    */
+   /** Rejection reason */
    reason?: string;
 }
 
@@ -343,14 +202,9 @@ export interface RejectTradeParams {
  * Parameters for canceling a trade
  */
 export interface CancelTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
-
-   /**
-    * Team key canceling the trade (must be proposer)
-    */
+   /** Team key canceling the trade (must be proposer) */
    teamKey: ResourceKey;
 }
 
@@ -358,9 +212,7 @@ export interface CancelTradeParams {
  * Parameters for commissioner allowing a trade
  */
 export interface AllowTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
 }
 
@@ -368,9 +220,7 @@ export interface AllowTradeParams {
  * Parameters for commissioner disallowing a trade
  */
 export interface DisallowTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
 }
 
@@ -378,19 +228,11 @@ export interface DisallowTradeParams {
  * Parameters for voting against a trade
  */
 export interface VoteAgainstTradeParams {
-   /**
-    * Transaction key of the trade
-    */
+   /** Transaction key of the trade */
    transactionKey: ResourceKey;
-
-   /**
-    * Team key voting against the trade
-    */
+   /** Team key voting against the trade */
    teamKey: ResourceKey;
-
-   /**
-    * Vote note/reason
-    */
+   /** Vote note/reason */
    note?: string;
 }
 
@@ -398,19 +240,11 @@ export interface VoteAgainstTradeParams {
  * Parameters for editing a waiver claim
  */
 export interface EditWaiverClaimParams {
-   /**
-    * Transaction key of the waiver claim
-    */
+   /** Transaction key of the waiver claim */
    transactionKey: ResourceKey;
-
-   /**
-    * New FAAB bid (if changing)
-    */
+   /** New FAAB bid (if changing) */
    faabBid?: number;
-
-   /**
-    * New waiver priority (if changing)
-    */
+   /** New waiver priority (if changing) */
    waiverPriority?: number;
 }
 
@@ -418,28 +252,14 @@ export interface EditWaiverClaimParams {
  * Transaction response
  */
 export interface TransactionResponse {
-   /**
-    * Success status
-    */
+   /** Success status */
    success: boolean;
-
-   /**
-    * Transaction key (if successful)
-    */
+   /** Transaction key (if successful) */
    transactionKey?: ResourceKey;
-
-   /**
-    * Transaction details (if successful)
-    */
+   /** Transaction details (if successful) */
    transaction?: Transaction;
-
-   /**
-    * Error message (if failed)
-    */
+   /** Error message (if failed) */
    error?: string;
-
-   /**
-    * Error code (if failed)
-    */
+   /** Error code (if failed) */
    errorCode?: string;
 }

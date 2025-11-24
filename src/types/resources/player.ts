@@ -12,128 +12,68 @@ import type {
    SortParams,
 } from '../common';
 
+export interface PlayerResourceResponse {
+   player: Player;
+}
+
+export interface PlayersResourceResponse {
+   players: Player[];
+}
+
 /**
  * Player information
  */
 export interface Player extends BaseMetadata {
-   /**
-    * Player key
-    */
+   /** Player key */
    playerKey: ResourceKey;
-
-   /**
-    * Player ID
-    */
+   /** Player ID */
    playerId: string;
-
-   /**
-    * Player name
-    */
+   /** Player name */
    name: {
       full: string;
       first: string;
       last: string;
       ascii?: string;
    };
-
-   /**
-    * Editorial player key (for news/content)
-    */
+   /** Editorial player key (for news/content) */
    editorialPlayerKey?: string;
-
-   /**
-    * Editorial team key
-    */
+   /** Editorial team key */
    editorialTeamKey?: string;
-
-   /**
-    * Editorial team full name
-    */
+   /** Editorial team full name */
    editorialTeamFullName?: string;
-
-   /**
-    * Editorial team abbreviation
-    */
+   /** Editorial team abbreviation */
    editorialTeamAbbr?: string;
-
-   /**
-    * Bye week (for NFL)
-    */
+   /** Bye week (for NFL) */
    byeWeek?: number;
-
-   /**
-    * Uniform number
-    */
+   /** Uniform number */
    uniformNumber?: string;
-
-   /**
-    * Display position
-    */
+   /** Display position */
    displayPosition: string;
-
-   /**
-    * Headshot URL
-    */
+   /** Headshot URL */
    headshotUrl?: string;
-
-   /**
-    * Image URL
-    */
+   /** Image URL */
    imageUrl?: string;
-
-   /**
-    * Is undroppable
-    */
+   /** Is undroppable */
    isUndroppable?: boolean;
-
-   /**
-    * Position type
-    */
+   /** Position type */
    positionType?: string;
-
-   /**
-    * Primary position
-    */
+   /** Primary position */
    primaryPosition?: string;
-
-   /**
-    * Eligible positions
-    */
+   /** Eligible positions */
    eligiblePositions?: string[];
-
-   /**
-    * Has player notes
-    */
+   /** Has player notes */
    hasPlayerNotes?: boolean;
-
-   /**
-    * Has recent player notes
-    */
+   /** Has recent player notes */
    hasRecentPlayerNotes?: boolean;
-
-   /**
-    * Injury status
-    */
+   /** Injury status */
    injuryNote?: string;
-
-   /**
-    * Player stats (if requested)
-    */
+   /** Player stats (if requested) */
    stats?: PlayerStats;
-
-   /**
-    * Ownership info (if requested)
-    */
+   /** Ownership info (if requested) */
    ownership?: PlayerOwnership;
-
-   /**
-    * Percent owned (league-specific, if requested)
-    */
+   /** Percent owned (league-specific, if requested) */
    percentOwned?: PlayerPercentOwned;
-
-   /**
-    * Player status in league context
-    */
+   /** Player status in league context */
    status?: PlayerStatus;
 }
 
@@ -141,29 +81,15 @@ export interface Player extends BaseMetadata {
  * Player statistics
  */
 export interface PlayerStats {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType: CoverageType;
-
-   /**
-    * Season year
-    */
+   /** Season year */
    season?: number;
-
-   /**
-    * Week number (for weekly sports)
-    */
+   /** Week number (for weekly sports) */
    week?: number;
-
-   /**
-    * Date (YYYY-MM-DD) (for date-based)
-    */
+   /** Date (YYYY-MM-DD) (for date-based) */
    date?: string;
-
-   /**
-    * Stats as key-value pairs (stat ID -> value)
-    */
+   /** Stats as key-value pairs (stat ID -> value) */
    stats: Record<number, string | number>;
 }
 
@@ -171,24 +97,13 @@ export interface PlayerStats {
  * Player ownership information
  */
 export interface PlayerOwnership {
-   /**
-    * Ownership type
-    */
+   /** Ownership type */
    ownershipType: 'team' | 'waivers' | 'freeagents';
-
-   /**
-    * Owner team key (if owned)
-    */
+   /** Owner team key (if owned) */
    ownerTeamKey?: ResourceKey;
-
-   /**
-    * Owner team name (if owned)
-    */
+   /** Owner team name (if owned) */
    ownerTeamName?: string;
-
-   /**
-    * Percent owned across all leagues
-    */
+   /** Percent owned across all leagues */
    percentOwned?: number;
 }
 
@@ -196,24 +111,13 @@ export interface PlayerOwnership {
  * Player percent owned in league
  */
 export interface PlayerPercentOwned {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType: 'date';
-
-   /**
-    * Date (YYYY-MM-DD)
-    */
+   /** Date (YYYY-MM-DD) */
    date: string;
-
-   /**
-    * Percent owned
-    */
+   /** Percent owned */
    percentOwned: number;
-
-   /**
-    * Delta (change from previous)
-    */
+   /** Delta (change from previous) */
    delta?: number;
 }
 
@@ -221,70 +125,34 @@ export interface PlayerPercentOwned {
  * Parameters for searching players
  */
 export interface SearchPlayersParams extends PaginationParams, SortParams {
-   /**
-    * Search query (player name)
-    */
+   /** Search query (player name) */
    search?: string;
-
-   /**
-    * Filter by position
-    */
+   /** Filter by position */
    position?: string;
-
-   /**
-    * Filter by player status
-    */
+   /** Filter by player status */
    status?: PlayerStatus | PlayerStatus[];
-
    /**
     * Sort type dimension (maps to sort_type)
     * e.g. 'season', 'date', 'week', 'lastweek', 'lastmonth'
     */
    sortType?: 'season' | 'date' | 'week' | 'lastweek' | 'lastmonth';
-
-   /**
-    * Sort season year (maps to sort_season)
-    */
+   /** Sort season year (maps to sort_season) */
    sortSeason?: number;
-
-   /**
-    * Sort week (maps to sort_week, football only)
-    */
+   /** Sort week (maps to sort_week, football only) */
    sortWeek?: number;
-
-   /**
-    * Sort date (maps to sort_date, YYYY-MM-DD)
-    */
+   /** Sort date (maps to sort_date, YYYY-MM-DD) */
    sortDate?: string;
-
-   /**
-    * Include player stats
-    */
+   /** Include player stats */
    includeStats?: boolean;
-
-   /**
-    * Include ownership info
-    */
+   /** Include ownership info */
    includeOwnership?: boolean;
-
-   /**
-    * Include percent owned
-    */
+   /** Include percent owned */
    includePercentOwned?: boolean;
-
-   /**
-    * Stats coverage type (if includeStats is true)
-    */
+   /** Stats coverage type (if includeStats is true) */
    statsCoverageType?: CoverageType;
-
-   /**
-    * Stats week (if statsCoverageType is 'week')
-    */
+   /** Stats week (if statsCoverageType is 'week') */
    statsWeek?: number;
-
-   /**
-    * Stats date (if statsCoverageType is 'date')
-    */
+   /** Stats date (if statsCoverageType is 'date') */
    statsDate?: string;
 }
 
@@ -292,34 +160,17 @@ export interface SearchPlayersParams extends PaginationParams, SortParams {
  * Parameters for getting player details
  */
 export interface GetPlayerParams {
-   /**
-    * Include player stats
-    */
+   /** Include player stats */
    includeStats?: boolean;
-
-   /**
-    * Include ownership info
-    */
+   /** Include ownership info */
    includeOwnership?: boolean;
-
-   /**
-    * Include percent owned
-    */
+   /** Include percent owned */
    includePercentOwned?: boolean;
-
-   /**
-    * Stats coverage type
-    */
+   /** Stats coverage type */
    statsCoverageType?: CoverageType;
-
-   /**
-    * Stats week
-    */
+   /** Stats week */
    statsWeek?: number;
-
-   /**
-    * Stats date
-    */
+   /** Stats date */
    statsDate?: string;
 }
 
@@ -327,24 +178,13 @@ export interface GetPlayerParams {
  * Parameters for getting player stats
  */
 export interface GetPlayerStatsParams {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType: CoverageType;
-
-   /**
-    * Week number (for week coverage)
-    */
+   /** Week number (for week coverage) */
    week?: number;
-
-   /**
-    * Date (YYYY-MM-DD) (for date coverage)
-    */
+   /** Date (YYYY-MM-DD) (for date coverage) */
    date?: string;
-
-   /**
-    * Season year
-    */
+   /** Season year */
    season?: number;
 }
 
@@ -352,13 +192,8 @@ export interface GetPlayerStatsParams {
  * Player collection response
  */
 export interface PlayerCollectionResponse {
-   /**
-    * Total count of matching players
-    */
+   /** Total count of matching players */
    count: number;
-
-   /**
-    * Players
-    */
+   /** Players */
    players: Player[];
 }

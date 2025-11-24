@@ -49,12 +49,13 @@
  * ```
  */
 
+export { AdvancedQuery } from './client/AdvancedQuery.js';
 export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
-// Export main client and related types
-export {
-   type TokenStorage,
-   YahooFantasyClient,
-} from './client/YahooFantasyClient.js';
+// Export advanced query builder
+export { QueryBuilder, query } from './client/QueryBuilder.js';
+export type { TokenStorage } from './client/YahooFantasyClient.js';
+// Export client
+export { YahooFantasyClient } from './client/YahooFantasyClient.js';
 // Export all types
 // Resource types
 // NHL-specific types

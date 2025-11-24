@@ -5,103 +5,56 @@
 
 import type { BaseMetadata, ResourceKey } from '../common';
 
+export interface TeamResourceResponse {
+   team: Team;
+}
+
+export interface TeamsResourceResponse {
+   teams: Team[];
+}
+
 /**
  * Team information
  */
 export interface Team extends BaseMetadata {
-   /**
-    * Team key
-    */
+   /** Team key */
    teamKey: ResourceKey;
-
-   /**
-    * Team ID
-    */
+   /** Team ID */
    teamId: string;
-
-   /**
-    * Team name
-    */
+   /** Team name */
    name: string;
-
-   /**
-    * Is owned by current user
-    */
+   /** Is owned by current user */
    isOwnedByCurrentLogin?: boolean;
-
-   /**
-    * League the team belongs to
-    */
+   /** League the team belongs to */
    league: {
-      /**
-       * League key
-       */
+      /** League key */
       leagueKey: ResourceKey;
-
-      /**
-       * League ID
-       */
+      /** League ID */
       leagueId: string;
-
-      /**
-       * League name
-       */
+      /** League name */
       name: string;
-
-      /**
-       * URL to league page
-       */
+      /** URL to league page */
       url: string;
    };
-
-   /**
-    * Waiver priority
-    */
+   /** Waiver priority */
    waiverPriority?: number;
-
-   /**
-    * Number of moves made
-    */
+   /** Number of moves made */
    numberOfMoves?: number;
-
-   /**
-    * Number of trades made
-    */
+   /** Number of trades made */
    numberOfTrades?: number;
-
-   /**
-    * FAAB balance
-    */
+   /** FAAB balance */
    faabBalance?: number;
-
-   /**
-    * Clinched playoffs
-    */
+   /** Clinched playoffs */
    clinchedPlayoffs?: boolean;
-
-   /**
-    * Team logo URL
-    */
+   /** Team logo URL */
    teamLogoUrl?: string;
-
-   /**
-    * Team managers
-    */
+   /** Team managers */
    managers?: TeamManager[];
-
-   /**
-    * Team stats (if requested)
-    */
+   /** Team stats (if requested) */
    stats?: TeamStats;
-
-   /**
-    * Team standings (if requested)
-    */
+   /** Team standings (if requested) */
    standings?: TeamStandings;
-
-   /**
-    * Team roster (if requested)
-    */
+   /** Team roster (if requested) */
    roster?: TeamRoster;
 }
 
@@ -109,34 +62,17 @@ export interface Team extends BaseMetadata {
  * Team manager information
  */
 export interface TeamManager {
-   /**
-    * Manager GUID
-    */
+   /** Manager GUID */
    guid: string;
-
-   /**
-    * Nickname
-    */
+   /** Nickname */
    nickname: string;
-
-   /**
-    * Email (if available)
-    */
+   /** Email (if available) */
    email?: string;
-
-   /**
-    * Image URL
-    */
+   /** Image URL */
    imageUrl?: string;
-
-   /**
-    * Is commissioner
-    */
+   /** Is commissioner */
    isCommissioner?: boolean;
-
-   /**
-    * Is current login
-    */
+   /** Is current login */
    isCurrentLogin?: boolean;
 }
 
@@ -144,29 +80,15 @@ export interface TeamManager {
  * Team statistics
  */
 export interface TeamStats {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType: 'season' | 'week' | 'date' | 'lastweek' | 'lastmonth';
-
-   /**
-    * Season year
-    */
+   /** Season year */
    season?: number;
-
-   /**
-    * Week number (for weekly sports)
-    */
+   /** Week number (for weekly sports) */
    week?: number;
-
-   /**
-    * Date (YYYY-MM-DD) (for date-based sports)
-    */
+   /** Date (YYYY-MM-DD) (for date-based sports) */
    date?: string;
-
-   /**
-    * Stats as key-value pairs (stat ID -> value)
-    */
+   /** Stats as key-value pairs (stat ID -> value) */
    stats: Record<number, string | number>;
 }
 
@@ -174,46 +96,26 @@ export interface TeamStats {
  * Team standings information
  */
 export interface TeamStandings {
-   /**
-    * Rank
-    */
+   /** Rank */
    rank: number;
-
-   /**
-    * Playoff seed
-    */
+   /** Playoff seed */
    playoffSeed?: number;
-
-   /**
-    * Outcome totals (for head-to-head)
-    */
+   /** Outcome totals (for head-to-head) */
    outcomeTotals?: {
       wins: number;
       losses: number;
       ties: number;
       percentage: number;
    };
-
-   /**
-    * Points (for points leagues)
-    */
+   /** Points (for points leagues) */
    points?: number;
-
-   /**
-    * Points change (compared to previous period)
-    */
+   /** Points change (compared to previous period) */
    pointsChange?: number;
-
-   /**
-    * Team points (for roto)
-    */
+   /** Team points (for roto) */
    teamPoints?: {
       total: number;
    };
-
-   /**
-    * Streak
-    */
+   /** Streak */
    streak?: {
       type: 'win' | 'loss' | 'tie';
       value: number;
@@ -224,29 +126,15 @@ export interface TeamStandings {
  * Team roster
  */
 export interface TeamRoster {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType?: 'date' | 'week' | 'season';
-
-   /**
-    * Date (YYYY-MM-DD) for date-based rosters
-    */
+   /** Date (YYYY-MM-DD) for date-based rosters */
    date?: string;
-
-   /**
-    * Week number for week-based rosters
-    */
+   /** Week number for week-based rosters */
    week?: number;
-
-   /**
-    * Is editable
-    */
+   /** Is editable */
    isEditable?: boolean;
-
-   /**
-    * Roster entries (players)
-    */
+   /** Roster entries (players) */
    players: RosterPlayer[];
 }
 
@@ -254,119 +142,55 @@ export interface TeamRoster {
  * Player on a team's roster
  */
 export interface RosterPlayer {
-   /**
-    * Player key
-    */
+   /** Player key */
    playerKey: ResourceKey;
-
-   /**
-    * Player ID
-    */
+   /** Player ID */
    playerId: string;
-
-   /**
-    * Player name
-    */
+   /** Player name */
    name: {
       full: string;
       first: string;
       last: string;
       ascii?: string;
    };
-
-   /**
-    * Editorial player key (for news)
-    */
+   /** Editorial player key (for news) */
    editorialPlayerKey?: string;
-
-   /**
-    * Editorial team key
-    */
+   /** Editorial team key */
    editorialTeamKey?: string;
-
-   /**
-    * Editorial team full name
-    */
+   /** Editorial team full name */
    editorialTeamFullName?: string;
-
-   /**
-    * Editorial team abbreviation
-    */
+   /** Editorial team abbreviation */
    editorialTeamAbbr?: string;
-
-   /**
-    * Uniform number
-    */
+   /** Uniform number */
    uniformNumber?: string;
-
-   /**
-    * Display position
-    */
+   /** Display position */
    displayPosition: string;
-
-   /**
-    * Headshot URL
-    */
+   /** Headshot URL */
    headshotUrl?: string;
-
-   /**
-    * Image URL
-    */
+   /** Image URL */
    imageUrl?: string;
-
-   /**
-    * Is undroppable
-    */
+   /** Is undroppable */
    isUndroppable?: boolean;
-
-   /**
-    * Position type
-    */
+   /** Position type */
    positionType?: string;
-
-   /**
-    * Eligible positions
-    */
+   /** Eligible positions */
    eligiblePositions?: string[];
-
-   /**
-    * Has player notes
-    */
+   /** Has player notes */
    hasPlayerNotes?: boolean;
-
-   /**
-    * Has recent player notes
-    */
+   /** Has recent player notes */
    hasRecentPlayerNotes?: boolean;
-
-   /**
-    * Selected position in roster
-    */
+   /** Selected position in roster */
    selectedPosition: {
-      /**
-       * Position code
-       */
+      /** Position code */
       position: string;
-
-      /**
-       * Coverage type
-       */
+      /** Coverage type */
       coverageType?: string;
-
-      /**
-       * Date (for date-based)
-       */
+      /** Date (for date-based) */
       date?: string;
-
-      /**
-       * Week (for week-based)
-       */
+      /** Week (for week-based) */
       week?: number;
    };
-
-   /**
-    * Player stats (if requested)
-    */
+   /** Player stats (if requested) */
    stats?: {
       coverageType: string;
       season?: number;
@@ -374,10 +198,7 @@ export interface RosterPlayer {
       date?: string;
       stats: Record<number, string | number>;
    };
-
-   /**
-    * Player URL
-    */
+   /** Player URL */
    url: string;
 }
 
@@ -385,19 +206,11 @@ export interface RosterPlayer {
  * Parameters for getting team
  */
 export interface GetTeamParams {
-   /**
-    * Include team stats
-    */
+   /** Include team stats */
    includeStats?: boolean;
-
-   /**
-    * Include team standings
-    */
+   /** Include team standings */
    includeStandings?: boolean;
-
-   /**
-    * Include team roster
-    */
+   /** Include team roster */
    includeRoster?: boolean;
 }
 
@@ -405,19 +218,11 @@ export interface GetTeamParams {
  * Parameters for getting team roster
  */
 export interface GetTeamRosterParams {
-   /**
-    * Date (YYYY-MM-DD) for date-based rosters
-    */
+   /** Date (YYYY-MM-DD) for date-based rosters */
    date?: string;
-
-   /**
-    * Week number for week-based rosters
-    */
+   /** Week number for week-based rosters */
    week?: number;
-
-   /**
-    * Include player stats
-    */
+   /** Include player stats */
    includeStats?: boolean;
 }
 
@@ -425,19 +230,11 @@ export interface GetTeamRosterParams {
  * Parameters for getting team stats
  */
 export interface GetTeamStatsParams {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType?: 'season' | 'week' | 'date' | 'lastweek' | 'lastmonth';
-
-   /**
-    * Week number
-    */
+   /** Week number */
    week?: number;
-
-   /**
-    * Date (YYYY-MM-DD)
-    */
+   /** Date (YYYY-MM-DD) */
    date?: string;
 }
 
@@ -445,9 +242,7 @@ export interface GetTeamStatsParams {
  * Parameters for getting team matchups
  */
 export interface GetTeamMatchupsParams {
-   /**
-    * Week number(s)
-    */
+   /** Week number(s) */
    weeks?: number | number[];
 }
 
@@ -455,33 +250,17 @@ export interface GetTeamMatchupsParams {
  * Roster change request
  */
 export interface RosterChangeRequest {
-   /**
-    * Coverage type
-    */
+   /** Coverage type */
    coverageType: 'date' | 'week';
-
-   /**
-    * Date (YYYY-MM-DD) for date-based
-    */
+   /** Date (YYYY-MM-DD) for date-based */
    date?: string;
-
-   /**
-    * Week number for week-based
-    */
+   /** Week number for week-based */
    week?: number;
-
-   /**
-    * Player position changes
-    */
+   /** Player position changes */
    players: Array<{
-      /**
-       * Player key
-       */
+      /** Player key */
       playerKey: ResourceKey;
-
-      /**
-       * New position
-       */
+      /** New position */
       position: string;
    }>;
 }
@@ -490,23 +269,12 @@ export interface RosterChangeRequest {
  * Roster change response
  */
 export interface RosterChangeResponse {
-   /**
-    * Success status
-    */
+   /** Success status */
    success: boolean;
-
-   /**
-    * Team key
-    */
+   /** Team key */
    teamKey: ResourceKey;
-
-   /**
-    * Updated roster
-    */
+   /** Updated roster */
    roster?: TeamRoster;
-
-   /**
-    * Error message (if failed)
-    */
+   /** Error message (if failed) */
    error?: string;
 }

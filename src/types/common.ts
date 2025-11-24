@@ -14,18 +14,64 @@ export type Sport = 'nfl' | 'nhl' | 'mlb' | 'nba';
 export type GameCode = 'nfl' | 'nhl' | 'mlb' | 'nba';
 
 /**
+ * Game types used by Yahoo Fantasy Sports API
+ */
+export type GameType =
+   | 'full'
+   | 'pickem-team'
+   | 'pickem-group'
+   | 'pickem-team-list';
+
+/**
  * Resource key format: {game_id}.{resource_type}.{id}
  *
  * @example "423.l.12345" - League key (game 423, league 12345)
  * @example "423.l.12345.t.1" - Team key
  * @example "423.p.8888" - Player key
  */
-export type ResourceKey = string;
+export type ResourceKey =
+   | string
+   | GameKey
+   | LeagueKey
+   | TeamKey
+   | PlayerKey
+   | TransactionKey
+   | WaiverClaimKey
+   | PendingTradeKey;
 
+/**
+ * Game key format: `{game_id}`
+ */
+export type GameKey = `${number}`;
+
+/**
+ * League key format: `{game_id}.l.{league_id}`
+ */
 export type LeagueKey = `${number}.l.${number}`;
+
+/**
+ * Team key format: `{game_id}.l.{league_id}.t.{team_id}`
+ */
 export type TeamKey = `${number}.l.${number}.t.${number}`;
+
+/**
+ * Player key format: `{game_id}.p.{player_id}`
+ */
 export type PlayerKey = `${number}.p.${number}`;
+
+/**
+ * Transaction key format: `{game_id}.l.{league_id}.tr.{transaction_id}`
+ */
 export type TransactionKey = `${number}.l.${number}.tr.${number}`;
+
+/**
+ * Waiver claim key format: `{game_id}.l.{league_id}.w.c.{claim_id}`
+ */
+export type WaiverClaimKey = `${number}.l.${number}.w.c.${number}`;
+
+/**
+ * Pending trade key format: `{game_id}.l.{league_id}.pt.{pending_trade_id}`
+ */
 export type PendingTradeKey = `${number}.l.${number}.pt.${number}`;
 
 /**
@@ -78,9 +124,20 @@ export type CoverageType =
    | 'lastmonth';
 
 /**
+ * Elo rating tiers for competitive fantasy leagues.
+ * Higher tiers indicate more competitive/experienced players.
+ */
+export type FeloTier =
+   | 'platinum'
+   | 'diamond'
+   | 'gold'
+   | 'silver'
+   | 'bronze';
+
+/**
  * Position type category
  */
-export type PositionType = 'O' | 'D' | 'K' | 'P' | 'B' | 'DT';
+export type PositionType = 'O' | 'D' | 'K' | 'P' | 'B' | 'DT' | 'G';
 
 /**
  * Generic stat value (can be number or string depending on stat)

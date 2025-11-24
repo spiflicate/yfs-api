@@ -5,6 +5,14 @@
 
 import type { BaseMetadata, GameCode, ResourceKey } from '../common';
 
+export interface UserResourceResponse {
+   users: User;
+}
+
+export interface UsersResourceResponse {
+   users: User[];
+}
+
 /**
  * Yahoo user GUID
  */
@@ -14,14 +22,9 @@ export type UserGUID = string;
  * User information
  */
 export interface User extends BaseMetadata {
-   /**
-    * User's unique GUID
-    */
+   /** User's unique GUID */
    guid: UserGUID;
-
-   /**
-    * Games the user has participated in
-    */
+   /** Games the user has participated in */
    games?: UserGame[];
 }
 
@@ -29,29 +32,15 @@ export interface User extends BaseMetadata {
  * User's game information
  */
 export interface UserGame {
-   /**
-    * Game key
-    */
+   /** Game key */
    gameKey: string;
-
-   /**
-    * Game ID
-    */
+   /** Game ID */
    gameId: string;
-
-   /**
-    * Game code (sport)
-    */
+   /** Game code (sport) */
    gameCode: GameCode;
-
-   /**
-    * Season year
-    */
+   /** Season year */
    season: number;
-
-   /**
-    * User's teams in this game
-    */
+   /** User's teams in this game */
    teams?: UserTeam[];
 }
 
@@ -59,74 +48,34 @@ export interface UserGame {
  * User's team summary
  */
 export interface UserTeam {
-   /**
-    * Team key
-    */
+   /** Team key */
    teamKey: ResourceKey;
-
-   /**
-    * Team ID
-    */
+   /** Team ID */
    teamId: string;
-
-   /**
-    * Team name
-    */
+   /** Team name */
    name: string;
-
-   /**
-    * Team logo URL
-    */
+   /** Team logo URL */
    teamLogoUrl?: string;
-
-   /**
-    * Waiver priority
-    */
+   /** Waiver priority */
    waiverPriority?: number;
-
-   /**
-    * FAAB balance
-    */
+   /** FAAB balance */
    faabBalance?: number;
-
-   /**
-    * Number of moves made
-    */
+   /** Number of moves made */
    numberOfMoves?: number;
-
-   /**
-    * Number of trades made
-    */
+   /** Number of trades made */
    numberOfTrades?: number;
-
-   /**
-    * League the team belongs to
-    */
+   /** League the team belongs to */
    league: {
-      /**
-       * League key
-       */
+      /** League key */
       leagueKey: ResourceKey;
-
-      /**
-       * League ID
-       */
+      /** League ID */
       leagueId: string;
-
-      /**
-       * League name
-       */
+      /** League name */
       name: string;
-
-      /**
-       * URL to league page
-       */
+      /** URL to league page */
       url: string;
    };
-
-   /**
-    * URL to team page
-    */
+   /** URL to team page */
    url: string;
 }
 
@@ -134,19 +83,11 @@ export interface UserTeam {
  * Parameters for getting user's games
  */
 export interface GetUserGamesParams {
-   /**
-    * Filter by game codes
-    */
+   /** Filter by game codes */
    gameCodes?: GameCode[];
-
-   /**
-    * Filter by seasons
-    */
+   /** Filter by seasons */
    seasons?: number[];
-
-   /**
-    * Include user's teams
-    */
+   /** Include user's teams */
    includeTeams?: boolean;
 }
 
@@ -154,13 +95,8 @@ export interface GetUserGamesParams {
  * Parameters for getting user's teams
  */
 export interface GetUserTeamsParams {
-   /**
-    * Filter by game code
-    */
+   /** Filter by game code */
    gameCode?: GameCode;
-
-   /**
-    * Filter by season
-    */
+   /** Filter by season */
    season?: number;
 }

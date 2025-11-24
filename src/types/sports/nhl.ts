@@ -11,6 +11,7 @@ export type NHLPosition =
    | 'LW' // Left Wing
    | 'RW' // Right Wing
    | 'D' // Defense
+   | 'UTIL' // Utility
    | 'G' // Goalie
    | 'BN' // Bench
    | 'IR' // Injured Reserve
@@ -35,44 +36,114 @@ export type NHLInjuryStatus =
 /**
  * NHL skater stat IDs used by Yahoo
  */
-export enum NHLSkaterStat {
-   GamesPlayed = 0,
-   Goals = 1,
-   Assists = 2,
-   Points = 3,
-   PlusMinus = 4,
-   PenaltyMinutes = 5,
-   PowerPlayGoals = 6,
-   PowerPlayAssists = 7,
-   PowerPlayPoints = 8,
-   ShorthandedGoals = 9,
-   ShorthandedAssists = 10,
-   ShorthandedPoints = 11,
-   GameWinningGoals = 12,
-   Shots = 13,
-   ShootingPercentage = 14,
-   FaceoffsWon = 15,
-   FaceoffsLost = 16,
-   Hits = 17,
-   Blocks = 18,
-}
+export type NHLSkaterStat = keyof typeof NHLSkaterStatEnum;
+
+export const NHLSkaterStatEnum = {
+   GamesPlayed: 0,
+   GP: 0,
+   Goals: 1,
+   G: 1,
+   Assists: 2,
+   A: 2,
+   Points: 3,
+   P: 3,
+   PlusMinus: 4,
+   '+/-': 4,
+   PenaltyMinutes: 5,
+   PIM: 5,
+   PowerPlayGoals: 6,
+   PPG: 6,
+   PowerPlayAssists: 7,
+   PPA: 7,
+   PowerPlayPoints: 8,
+   PPP: 8,
+   ShorthandedGoals: 9,
+   SHG: 9,
+   ShorthandedAssists: 10,
+   SHA: 10,
+   ShorthandedPoints: 11,
+   SHP: 11,
+   GameWinningGoals: 12,
+   GWG: 12,
+   Shots: 13,
+   SOG: 13,
+   ShootingPercentage: 14,
+   'SH%': 14,
+   FaceoffsWon: 15,
+   FOW: 15,
+   FaceoffsLost: 16,
+   FOL: 16,
+   Hits: 17,
+   HIT: 17,
+   Blocks: 18,
+   BLK: 18,
+} as const;
+
+export const NHLSkaterStatIdMap = {
+   0: { name: 'GamesPlayed', abbrev: 'GP' },
+   1: { name: 'Goals', abbrev: 'G' },
+   2: { name: 'Assists', abbrev: 'A' },
+   3: { name: 'Points', abbrev: 'P' },
+   4: { name: 'PlusMinus', abbrev: '+/-' },
+   5: { name: 'PenaltyMinutes', abbrev: 'PIM' },
+   6: { name: 'PowerPlayGoals', abbrev: 'PPG' },
+   7: { name: 'PowerPlayAssists', abbrev: 'PPA' },
+   8: { name: 'PowerPlayPoints', abbrev: 'PPP' },
+   9: { name: 'ShorthandedGoals', abbrev: 'SHG' },
+   10: { name: 'ShorthandedAssists', abbrev: 'SHA' },
+   11: { name: 'ShorthandedPoints', abbrev: 'SHP' },
+   12: { name: 'GameWinningGoals', abbrev: 'GWG' },
+   13: { name: 'Shots', abbrev: 'SOG' },
+   14: { name: 'ShootingPercentage', abbrev: 'SH%' },
+   15: { name: 'FaceoffsWon', abbrev: 'FOW' },
+   16: { name: 'FaceoffsLost', abbrev: 'FOL' },
+   17: { name: 'Hits', abbrev: 'HIT' },
+   18: { name: 'Blocks', abbrev: 'BLK' },
+} as const;
 
 /**
  * NHL goalie stat IDs used by Yahoo
  */
-export enum NHLGoalieStat {
-   GamesPlayed = 0,
-   GamesStarted = 19,
-   Wins = 20,
-   Losses = 21,
-   OvertimeLosses = 22,
-   Shutouts = 23,
-   GoalsAgainst = 24,
-   GoalsAgainstAverage = 25,
-   Saves = 26,
-   SavePercentage = 27,
-   ShotsAgainst = 28,
-}
+export type NHLGoalieStat = keyof typeof NHLGoalieStatEnum;
+
+export const NHLGoalieStatEnum = {
+   GamesPlayed: 0,
+   GP: 0,
+   GamesStarted: 19,
+   GS: 19,
+   Wins: 20,
+   W: 20,
+   Losses: 21,
+   L: 21,
+   OvertimeLosses: 22,
+   OTL: 22,
+   Shutouts: 23,
+   SHO: 23,
+   GoalsAgainst: 24,
+   GA: 24,
+   GoalsAgainstAverage: 25,
+   GAA: 25,
+   Saves: 26,
+   SV: 26,
+   SavePercentage: 27,
+   'SV%': 27,
+   ShotsAgainst: 28,
+   SA: 28,
+} as const;
+
+export const NHLGoalieStatIdMap = {
+   0: { name: 'GamesPlayed', abbrev: 'GP' },
+   19: { name: 'GamesStarted', abbrev: 'GS' },
+   20: { name: 'Wins', abbrev: 'W' },
+   21: { name: 'Losses', abbrev: 'L' },
+   22: { name: 'OvertimeLosses', abbrev: 'OTL' },
+   23: { name: 'Shutouts', abbrev: 'SHO' },
+   24: { name: 'GoalsAgainst', abbrev: 'GA' },
+   25: { name: 'GoalsAgainstAverage', abbrev: 'GAA' },
+   26: { name: 'Saves', abbrev: 'SV' },
+   27: { name: 'SavePercentage', abbrev: 'SV%' },
+   28: { name: 'ShotsAgainst', abbrev: 'SA' },
+} as const;
 
 /**
  * All NHL stats (union of skater and goalie stats)
@@ -83,29 +154,19 @@ export type NHLStat = NHLSkaterStat | NHLGoalieStat;
  * NHL scoring category configuration
  */
 export interface NHLScoringCategory {
-   /**
-    * Stat ID
-    */
+   /** Stat ID */
    statId: number;
 
-   /**
-    * Display name
-    */
+   /** Display name */
    displayName: string;
 
-   /**
-    * Points per unit (for points leagues)
-    */
+   /** Points per unit (for points leagues) */
    points?: number;
 
-   /**
-    * Sort order (for roto leagues)
-    */
+   /** Sort order (for roto leagues) */
    sortOrder?: number;
 
-   /**
-    * Position type this stat applies to
-    */
+   /** Position type this stat applies to */
    positionType: 'skater' | 'goalie' | 'both';
 }
 
@@ -113,19 +174,13 @@ export interface NHLScoringCategory {
  * NHL roster slot configuration
  */
 export interface NHLRosterSlot {
-   /**
-    * Position code
-    */
+   /** Position code */
    position: NHLPosition;
 
-   /**
-    * Number of slots for this position
-    */
+   /** Number of slots for this position */
    count: number;
 
-   /**
-    * Display name
-    */
+   /** Display name */
    displayName: string;
 }
 
@@ -133,69 +188,43 @@ export interface NHLRosterSlot {
  * NHL player information
  */
 export interface NHLPlayer {
-   /**
-    * Player key
-    */
+   /** Player key */
    playerKey: string;
 
-   /**
-    * Player ID
-    */
+   /** Player ID */
    playerId: string;
 
-   /**
-    * Player name (full)
-    */
+   /** Player name (full) */
    name: string;
 
-   /**
-    * First name
-    */
+   /** First name */
    firstName: string;
 
-   /**
-    * Last name
-    */
+   /** Last name */
    lastName: string;
 
-   /**
-    * Jersey number
-    */
+   /** Jersey number */
    uniformNumber?: string;
 
-   /**
-    * Display position
-    */
+   /** Display position */
    displayPosition: string;
 
-   /**
-    * Eligible positions
-    */
+   /** Eligible positions */
    eligiblePositions: NHLPosition[];
 
-   /**
-    * NHL team abbreviation (e.g., "TOR", "BOS")
-    */
+   /** NHL team abbreviation (e.g., "TOR", "BOS") */
    team: string;
 
-   /**
-    * Injury status
-    */
+   /** Injury status */
    injuryStatus?: NHLInjuryStatus;
 
-   /**
-    * Injury note
-    */
+   /** Injury note */
    injuryNote?: string;
 
-   /**
-    * Headshot URL
-    */
+   /** Headshot URL */
    headshotUrl?: string;
 
-   /**
-    * Player page URL
-    */
+   /** Player page URL */
    url: string;
 }
 
@@ -203,19 +232,13 @@ export interface NHLPlayer {
  * NHL team roster entry
  */
 export interface NHLRosterEntry {
-   /**
-    * Player information
-    */
+   /** Player information */
    player: NHLPlayer;
 
-   /**
-    * Selected position in roster
-    */
+   /** Selected position in roster */
    selectedPosition: NHLPosition;
 
-   /**
-    * Date this position assignment is for (YYYY-MM-DD)
-    */
+   /** Date this position assignment is for (YYYY-MM-DD) */
    date?: string;
 }
 
@@ -223,29 +246,19 @@ export interface NHLRosterEntry {
  * NHL stats for a player
  */
 export interface NHLPlayerStats {
-   /**
-    * Coverage type (season, week, date, etc.)
-    */
+   /** Coverage type (season, week, date, etc.) */
    coverageType: 'season' | 'date' | 'week' | 'lastweek' | 'lastmonth';
 
-   /**
-    * Season year
-    */
+   /** Season year */
    season?: number;
 
-   /**
-    * Date (YYYY-MM-DD) if date-based
-    */
+   /** Date (YYYY-MM-DD) if date-based */
    date?: string;
 
-   /**
-    * Week number if week-based
-    */
+   /** Week number if week-based */
    week?: number;
 
-   /**
-    * Stats as key-value pairs (stat ID -> value)
-    */
+   /** Stats as key-value pairs (stat ID -> value) */
    stats: Record<number, string | number>;
 }
 
@@ -253,59 +266,37 @@ export interface NHLPlayerStats {
  * NHL game information
  */
 export interface NHLGame {
-   /**
-    * Game key
-    */
+   /** Game key */
    gameKey: string;
 
-   /**
-    * Game ID
-    */
+   /** Game ID */
    gameId: string;
 
-   /**
-    * Season year
-    */
+   /** Season year */
    season: number;
 
-   /**
-    * Game code
-    */
+   /** Game code */
    gameCode: 'nhl';
 
-   /**
-    * League type
-    */
+   /** League type */
    type: 'full' | 'pickem-team';
 
-   /**
-    * Display name
-    */
+   /** Display name */
    name: string;
 
-   /**
-    * Current week (always 1 for NHL)
-    */
+   /** Current week (always 1 for NHL) */
    currentWeek: 1;
 
-   /**
-    * Is the game available for new leagues
-    */
+   /** Is the game available for new leagues */
    isAvailable: boolean;
 
-   /**
-    * Season start date
-    */
+   /** Season start date */
    seasonStartDate: string;
 
-   /**
-    * Season end date
-    */
+   /** Season end date */
    seasonEndDate: string;
 
-   /**
-    * URL to game page
-    */
+   /** URL to game page */
    url: string;
 }
 
@@ -313,48 +304,30 @@ export interface NHLGame {
  * NHL league settings specific to hockey
  */
 export interface NHLLeagueSettings {
-   /**
-    * Roster positions configuration
-    */
+   /** Roster positions configuration */
    rosterPositions: NHLRosterSlot[];
 
-   /**
-    * Scoring categories
-    */
+   /** Scoring categories */
    scoringCategories: NHLScoringCategory[];
 
-   /**
-    * Trade deadline date (YYYY-MM-DD)
-    */
+   /** Trade deadline date (YYYY-MM-DD) */
    tradeDeadline?: string;
 
-   /**
-    * Waiver time (in days)
-    */
+   /** Waiver time (in days) */
    waiverTime?: number;
 
-   /**
-    * Waiver type
-    */
+   /** Waiver type */
    waiverType?: 'FR' | 'FCFS' | 'continual' | 'gametime';
 
-   /**
-    * Can't cut list enabled
-    */
+   /** Can't cut list enabled */
    cantCutList?: boolean;
 
-   /**
-    * Uses playoff bracket
-    */
+   /** Uses playoff bracket */
    usesPlayoffBracket?: boolean;
 
-   /**
-    * Playoff start week
-    */
+   /** Playoff start week */
    playoffStartWeek?: number;
 
-   /**
-    * Number of playoff teams
-    */
+   /** Number of playoff teams */
    numberOfPlayoffTeams?: number;
 }
