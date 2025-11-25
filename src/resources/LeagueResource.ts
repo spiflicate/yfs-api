@@ -17,6 +17,7 @@ import type {
    GetLeagueTeamsParams,
    LeagueResourceResponse,
 } from '../types/resources/league.js';
+import type { League, LeagueResponse } from '../types/responses/league.js';
 // import type { Team } from '../types/resources/team.js';
 
 /**
@@ -170,14 +171,14 @@ export class LeagueResource {
    async getScoreboard(
       leagueKey: ResourceKey,
       params?: GetLeagueScoreboardParams,
-   ): Promise<unknown> {
+   ): Promise<League> {
       let path = `/league/${leagueKey}/scoreboard`;
 
       if (params?.week) {
          path += `;week=${params.week}`;
       }
 
-      const response = await this.http.get<LeagueResourceResponse>(path);
+      const response = await this.http.get<LeagueResponse>(path);
 
       return response.league;
    }
