@@ -63,7 +63,7 @@ export class QueryBuilder {
     * builder.resource('users') // No key needed for users
     * ```
     */
-   resource(name: string, key?: string): this {
+   resource(name: ResourceName, key?: string): this {
       this.segments.push({
          type: 'resource',
          name,
@@ -85,7 +85,7 @@ export class QueryBuilder {
     * builder.collection('players')
     * ```
     */
-   collection(name: string): this {
+   collection(name: CollectionName): this {
       this.segments.push({
          type: 'collection',
          name,
@@ -110,7 +110,7 @@ export class QueryBuilder {
     * builder.param('position', 'QB')
     * ```
     */
-   param(key: string, value: string | string[]): this {
+   param(key: ParamKey, value: string | string[]): this {
       if (this.segments.length === 0) {
          throw new Error(
             'Cannot add parameters without a resource or collection. Call resource() or collection() first.',
@@ -142,7 +142,7 @@ export class QueryBuilder {
     * })
     * ```
     */
-   params(params: Record<string, string | string[]>): this {
+   params(params: Record<ParamKey, string | string[]>): this {
       for (const [key, value] of Object.entries(params)) {
          this.param(key, value);
       }
@@ -162,7 +162,7 @@ export class QueryBuilder {
     * builder.out(['settings', 'standings', 'scoreboard'])
     * ```
     */
-   out(subResources: string | string[]): this {
+   out(subResources: SubResourceName | SubResourceName[]): this {
       return this.param('out', subResources);
    }
 
@@ -252,3 +252,39 @@ export class QueryBuilder {
 export function query(): QueryBuilder {
    return new QueryBuilder();
 }
+
+type ResourceName = 'game' | 'league' | 'team' | 'player' | (string & {});
+type CollectionName =
+   | 'games'
+   | 'leagues'
+   | 'teams'
+   | 'players'
+   | 'stats'
+   | 'transactions'
+   | 'drafts'
+   | (string & {});
+type SubResourceName =
+   | 'settings'
+   | 'standings'
+   | 'scoreboard'
+   | 'roster'
+   | 'ownership'
+   | 'draftresults'
+   | (string & {});
+type ParamKey =
+   | 'out'
+   | 'sort'
+   | 'sort_type'
+   | 'sort_season'
+   | 'sort_date'
+   | 'sort_week'
+   | 'league_keys'
+   | 'game_keys'
+   | 'team_keys'
+   | 'player_keys'
+   | 'search'
+   | 'start'
+   | 'count'
+   | 'status'
+   | 'position'
+   | (string & {});

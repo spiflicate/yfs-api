@@ -75,8 +75,10 @@ const leagues = [
 
 client
    .advanced()
-   .collection('leagues')
-   .param('league_keys', leagues)
+   .resource('league', leagues[0] as string)
+   .collection('players')
+   .param('start', '2000')
+   .param('count', '25')
    .execute()
    .then((data) => {
       Bun.write(
@@ -85,32 +87,83 @@ client
       );
       console.log('Data written to scripts/multi-leauge-data.json');
    });
+// let wrapper: Record<string, any> = {};
+// const playerData = [];
+// for (let i = 0; i < 1500; i += 25) {
+//    await client
+//       .advanced()
+//       .resource('league', '465.l.50894')
+//       .collection('players')
+//       // .param('status', 'A,T')
+//       // .param('status', 'A')
+//       // .param('status', 'W')
+//       .param('count', '25')
+//       .param('start', i.toString())
+//       .resource('ownership')
+//       .execute()
+//       .then((data) => {
+//          // Bun.write('scripts/players-data.json', JSON.stringify(data, null, 2));
+//          if (!data.league.players) {
+//             return;
+//          }
+//          playerData.push(...data.league.players);
+//          // console.log('Data written to scripts/players-data.json');
 
-const resp = (await client
-   .advanced()
-   .collection('leagues')
-   .param('league_keys', leagues)
-   .collection('transactions')
-   .execute()) as any;
+//          console.log(`Fetched ${i + 25} players...`);
 
-const transactionsPastDay = [];
-for (const league of resp.leagues) {
-   transactionsPastDay.push(
-      league.transactions.filter((tx) => {
-         const txDate = new Date(tx.timestamp * 1000);
-         const yesterday = new Date();
-         yesterday.setDate(yesterday.getDate() - 1);
-         return txDate > yesterday;
-      }),
-   );
-}
+//          if (i < 25) {
+//             wrapper = data as Record<string, any>;
+//          }
+//       });
+// }
+// wrapper.league.players = playerData;
+// Bun.write('scripts/players-data.json', JSON.stringify(wrapper, null, 2));
+// console.log('Data written to scripts/players-data.json');
 
-Bun.write(
-   'scripts/multi-transaction-data.json',
-   JSON.stringify(resp, null, 2),
-);
-Bun.write(
-   'scripts/transactions-past-day.json',
-   JSON.stringify(transactionsPastDay, null, 2),
-);
-console.log('Data written to scripts/transactions-past-day.json');
+// const resp = (await client
+//    .advanced()
+//    .collection('leagues')
+//    .param('league_keys', leagues)
+//    .collection('transactions')
+//    .execute()) as any;
+
+// const transactionsPastDay = [];
+// for (const league of resp.leagues) {
+//    transactionsPastDay.push(
+//       league.transactions.filter((tx) => {
+//          const txDate = new Date(tx.timestamp * 1000);
+//          const yesterday = new Date();
+//          yesterday.setDate(yesterday.getDate() - 1);
+//          return txDate > yesterday;
+//       }),
+//    );
+// }
+
+// const transactions = [];
+// for (const league of resp.leagues) {
+//    for (const tx of league.transactions) {
+//       if (
+//          tx?.players?.some(
+//             (p) =>
+//                p.playerKey === '465.p.7900' &&
+//                p.transactionData.type === 'drop',
+//          )
+//       ) {
+//          transactions.push(tx);
+//       }
+//    }
+// }
+
+// Bun.write(
+//    'scripts/multi-transaction-data.json',
+//    JSON.stringify(resp, null, 2),
+// );
+// Bun.write(
+//    'scripts/transactions-with-player-465.p.7900.json',
+//    JSON.stringify(transactions, null, 2),
+// );
+// Bun.write(
+//    'scripts/transactions-past-day.json',
+//    JSON.stringify(transactionsPastDay, null, 2),
+// );
+// console.log('Data written to scripts/transactions-past-day.json');
