@@ -6,7 +6,7 @@
 /**
  * NHL roster positions
  */
-export type NHLPosition =
+export type RosterPosition =
    | 'C' // Center
    | 'LW' // Left Wing
    | 'RW' // Right Wing
@@ -17,69 +17,47 @@ export type NHLPosition =
    | 'IR' // Injured Reserve
    | 'IR+'; // Injured Reserve Plus
 
-export type FantasyRosterPosition = NHLPosition;
+/**
+ * NHL player positions
+ */
+export type PlayerPosition =
+   | 'C'
+   | 'LW'
+   | 'RW'
+   | 'C,LW'
+   | 'C,RW'
+   | 'LW,RW'
+   | 'C,LW,RW'
+   | 'D'
+   | 'G';
 
 /**
- * NHL position categories for roster requirements
+ * NHL position type for player/stats categorization
+ * This is used to differentiate between skaters and goalies
  */
-export type NHLPositionType = 'C' | 'W' | 'D' | 'G' | 'UTIL';
+export type NHLPositionType = 'P' | 'G';
 
 /**
  * NHL player injury status
  */
 export type NHLInjuryStatus =
-   | 'IR' // Injured Reserve
-   | 'DTD' // Day to Day
-   | 'O' // Out
-   | 'Suspension'
+   | 'IR'
+   | 'IR-LT'
+   | 'IR-NR'
+   | 'DTD'
+   | 'O'
+   | 'SUSP'
    | 'NA'
    | '';
 
 /**
  * NHL skater stat IDs used by Yahoo
  */
-export type NHLSkaterStat = keyof typeof NHLSkaterStatEnum;
-
-export const NHLSkaterStatEnum = {
-   GamesPlayed: 0,
-   GP: 0,
-   Goals: 1,
-   G: 1,
-   Assists: 2,
-   A: 2,
-   Points: 3,
-   P: 3,
-   PlusMinus: 4,
-   '+/-': 4,
-   PenaltyMinutes: 5,
-   PIM: 5,
-   PowerPlayGoals: 6,
-   PPG: 6,
-   PowerPlayAssists: 7,
-   PPA: 7,
-   PowerPlayPoints: 8,
-   PPP: 8,
-   ShorthandedGoals: 9,
-   SHG: 9,
-   ShorthandedAssists: 10,
-   SHA: 10,
-   ShorthandedPoints: 11,
-   SHP: 11,
-   GameWinningGoals: 12,
-   GWG: 12,
-   Shots: 13,
-   SOG: 13,
-   ShootingPercentage: 14,
-   'SH%': 14,
-   FaceoffsWon: 15,
-   FOW: 15,
-   FaceoffsLost: 16,
-   FOL: 16,
-   Hits: 17,
-   HIT: 17,
-   Blocks: 18,
-   BLK: 18,
-} as const;
+export type NHLSkaterStatId = keyof typeof NHLSkaterStatIdMap;
+export type NHLSkaterStatName =
+   (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap]['name'];
+export type NHLSkaterStatAbbrev =
+   (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap]['abbrev'];
 
 export const NHLSkaterStatIdMap = {
    0: { name: 'GamesPlayed', abbrev: 'GP' },
@@ -103,35 +81,28 @@ export const NHLSkaterStatIdMap = {
    18: { name: 'Blocks', abbrev: 'BLK' },
 } as const;
 
+export const NHLSkaterStatEnum = Object.entries(NHLSkaterStatIdMap).reduce(
+   (acc, [id, { name, abbrev }]) => {
+      acc[name] = Number(id);
+      acc[abbrev] = Number(id);
+      return acc;
+   },
+   {} as Record<
+      (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap][
+         | 'name'
+         | 'abbrev'],
+      number
+   >,
+);
+
 /**
  * NHL goalie stat IDs used by Yahoo
  */
-export type NHLGoalieStat = keyof typeof NHLGoalieStatEnum;
-
-export const NHLGoalieStatEnum = {
-   GamesPlayed: 0,
-   GP: 0,
-   GamesStarted: 19,
-   GS: 19,
-   Wins: 20,
-   W: 20,
-   Losses: 21,
-   L: 21,
-   OvertimeLosses: 22,
-   OTL: 22,
-   Shutouts: 23,
-   SHO: 23,
-   GoalsAgainst: 24,
-   GA: 24,
-   GoalsAgainstAverage: 25,
-   GAA: 25,
-   Saves: 26,
-   SV: 26,
-   SavePercentage: 27,
-   'SV%': 27,
-   ShotsAgainst: 28,
-   SA: 28,
-} as const;
+export type NHLGoalieStatId = keyof typeof NHLGoalieStatIdMap;
+export type NHLGoalieStatName =
+   (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap]['name'];
+export type NHLGoalieStatAbbrev =
+   (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap]['abbrev'];
 
 export const NHLGoalieStatIdMap = {
    0: { name: 'GamesPlayed', abbrev: 'GP' },
@@ -147,352 +118,158 @@ export const NHLGoalieStatIdMap = {
    28: { name: 'ShotsAgainst', abbrev: 'SA' },
 } as const;
 
+export const NHLGoalieStatEnum = Object.entries(NHLGoalieStatIdMap).reduce(
+   (acc, [id, { name, abbrev }]) => {
+      acc[name] = Number(id);
+      acc[abbrev] = Number(id);
+      return acc;
+   },
+   {} as Record<
+      (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap][
+         | 'name'
+         | 'abbrev'],
+      number
+   >,
+);
+
 /**
  * All NHL stats (union of skater and goalie stats)
  */
-export type NHLStat = NHLSkaterStat | NHLGoalieStat;
+export type NHLStat =
+   | NHLSkaterStatName
+   | NHLSkaterStatAbbrev
+   | NHLGoalieStatName
+   | NHLGoalieStatAbbrev;
 
-/**
- * NHL scoring category configuration
- */
-export interface NHLScoringCategory {
-   /** Stat ID */
-   statId: number;
-
-   /** Display name */
-   displayName: string;
-
-   /** Points per unit (for points leagues) */
-   points?: number;
-
-   /** Sort order (for roto leagues) */
-   sortOrder?: number;
-
-   /** Position type this stat applies to */
-   positionType: 'skater' | 'goalie' | 'both';
-}
-
-/**
- * NHL roster slot configuration
- */
-export interface NHLRosterSlot {
-   /** Position code */
-   position: NHLPosition;
-
-   /** Number of slots for this position */
-   count: number;
-
-   /** Display name */
-   displayName: string;
-}
-
-/**
- * NHL player information
- */
-export interface NHLPlayer {
-   /** Player key */
-   playerKey: string;
-
-   /** Player ID */
-   playerId: string;
-
-   /** Player name (full) */
-   name: string;
-
-   /** First name */
-   firstName: string;
-
-   /** Last name */
-   lastName: string;
-
-   /** Jersey number */
-   uniformNumber?: string;
-
-   /** Display position */
-   displayPosition: string;
-
-   /** Eligible positions */
-   eligiblePositions: NHLPosition[];
-
-   /** NHL team abbreviation (e.g., "TOR", "BOS") */
-   team: string;
-
-   /** Injury status */
-   injuryStatus?: NHLInjuryStatus;
-
-   /** Injury note */
-   injuryNote?: string;
-
-   /** Headshot URL */
-   headshotUrl?: string;
-
-   /** Player page URL */
-   url: string;
-}
-
-/**
- * NHL team roster entry
- */
-export interface NHLRosterEntry {
-   /** Player information */
-   player: NHLPlayer;
-
-   /** Selected position in roster */
-   selectedPosition: NHLPosition;
-
-   /** Date this position assignment is for (YYYY-MM-DD) */
-   date?: string;
-}
-
-/**
- * NHL stats for a player
- */
-export interface NHLPlayerStats {
-   /** Coverage type (season, week, date, etc.) */
-   coverageType: 'season' | 'date' | 'week' | 'lastweek' | 'lastmonth';
-
-   /** Season year */
-   season?: number;
-
-   /** Date (YYYY-MM-DD) if date-based */
-   date?: string;
-
-   /** Week number if week-based */
-   week?: number;
-
-   /** Stats as key-value pairs (stat ID -> value) */
-   stats: Record<number, string | number>;
-}
-
-/**
- * NHL game information
- */
-export interface NHLGame {
-   /** Game key */
-   gameKey: string;
-
-   /** Game ID */
-   gameId: string;
-
-   /** Season year */
-   season: number;
-
-   /** Game code */
-   gameCode: 'nhl';
-
-   /** League type */
-   type: 'full' | 'pickem-team';
-
-   /** Display name */
-   name: string;
-
-   /** Current week (always 1 for NHL) */
-   currentWeek: 1;
-
-   /** Is the game available for new leagues */
-   isAvailable: boolean;
-
-   /** Season start date */
-   seasonStartDate: string;
-
-   /** Season end date */
-   seasonEndDate: string;
-
-   /** URL to game page */
-   url: string;
-}
-
-/**
- * NHL league settings specific to hockey
- */
-export interface NHLLeagueSettings {
-   /** Roster positions configuration */
-   rosterPositions: NHLRosterSlot[];
-
-   /** Scoring categories */
-   scoringCategories: NHLScoringCategory[];
-
-   /** Trade deadline date (YYYY-MM-DD) */
-   tradeDeadline?: string;
-
-   /** Waiver time (in days) */
-   waiverTime?: number;
-
-   /** Waiver type */
-   waiverType?: 'FR' | 'FCFS' | 'continual' | 'gametime';
-
-   /** Can't cut list enabled */
-   cantCutList?: boolean;
-
-   /** Uses playoff bracket */
-   usesPlayoffBracket?: boolean;
-
-   /** Playoff start week */
-   playoffStartWeek?: number;
-
-   /** Number of playoff teams */
-   numberOfPlayoffTeams?: number;
-}
-
-export const nhlTeamsData = [
-   {
-      teamKey: 'nhl.t.19',
+export const TeamKeyMappings = {
+   'nhl.t.19': {
       teamFullName: 'St. Louis Blues',
       teamAbbr: 'STL',
    },
-   {
-      teamKey: 'nhl.t.17',
+   'nhl.t.17': {
       teamFullName: 'Colorado Avalanche',
       teamAbbr: 'COL',
    },
-   {
-      teamKey: 'nhl.t.8',
+   'nhl.t.8': {
       teamFullName: 'Los Angeles Kings',
       teamAbbr: 'LA',
    },
-   {
-      teamKey: 'nhl.t.23',
+   'nhl.t.23': {
       teamFullName: 'Washington Capitals',
       teamAbbr: 'WSH',
    },
-   {
-      teamKey: 'nhl.t.16',
+   'nhl.t.16': {
       teamFullName: 'Pittsburgh Penguins',
       teamAbbr: 'PIT',
    },
-   {
-      teamKey: 'nhl.t.30',
+   'nhl.t.30': {
       teamFullName: 'Minnesota Wild',
       teamAbbr: 'MIN',
    },
-   {
-      teamKey: 'nhl.t.18',
+   'nhl.t.18': {
       teamFullName: 'San Jose Sharks',
       teamAbbr: 'SJ',
    },
-   {
-      teamKey: 'nhl.t.7',
+   'nhl.t.7': {
       teamFullName: 'Carolina Hurricanes',
       teamAbbr: 'CAR',
    },
-   {
-      teamKey: 'nhl.t.28',
+   'nhl.t.28': {
       teamFullName: 'Winnipeg Jets',
       teamAbbr: 'WPG',
    },
-   {
-      teamKey: 'nhl.t.2',
+   'nhl.t.2': {
       teamFullName: 'Buffalo Sabres',
       teamAbbr: 'BUF',
    },
-   {
-      teamKey: 'nhl.t.14',
+   'nhl.t.14': {
       teamFullName: 'Ottawa Senators',
       teamAbbr: 'OTT',
    },
-   {
-      teamKey: 'nhl.t.12',
+   'nhl.t.12': {
       teamFullName: 'New York Islanders',
       teamAbbr: 'NYI',
    },
-   {
-      teamKey: 'nhl.t.4',
+   'nhl.t.4': {
       teamFullName: 'Chicago Blackhawks',
       teamAbbr: 'CHI',
    },
-   {
-      teamKey: 'nhl.t.13',
+   'nhl.t.13': {
       teamFullName: 'New York Rangers',
       teamAbbr: 'NYR',
    },
-   {
-      teamKey: 'nhl.t.5',
+   'nhl.t.5': {
       teamFullName: 'Detroit Red Wings',
       teamAbbr: 'DET',
    },
-   {
-      teamKey: 'nhl.t.20',
+   'nhl.t.20': {
       teamFullName: 'Tampa Bay Lightning',
       teamAbbr: 'TB',
    },
-   {
-      teamKey: 'nhl.t.60',
+   'nhl.t.60': {
       teamFullName: 'Utah Mammoth',
       teamAbbr: 'UTA',
    },
-   {
-      teamKey: 'nhl.t.21',
+   'nhl.t.21': {
       teamFullName: 'Toronto Maple Leafs',
       teamAbbr: 'TOR',
    },
-   {
-      teamKey: 'nhl.t.3',
+   'nhl.t.3': {
       teamFullName: 'Calgary Flames',
       teamAbbr: 'CGY',
    },
-   {
-      teamKey: 'nhl.t.29',
+   'nhl.t.29': {
       teamFullName: 'Columbus Blue Jackets',
       teamAbbr: 'CBJ',
    },
-   {
-      teamKey: 'nhl.t.26',
+   'nhl.t.26': {
       teamFullName: 'Florida Panthers',
       teamAbbr: 'FLA',
    },
-   {
-      teamKey: 'nhl.t.27',
+   'nhl.t.27': {
       teamFullName: 'Nashville Predators',
       teamAbbr: 'NSH',
    },
-   {
-      teamKey: 'nhl.t.58',
+   'nhl.t.58': {
       teamFullName: 'Vegas Golden Knights',
       teamAbbr: 'VGK',
    },
-   {
-      teamKey: 'nhl.t.22',
+   'nhl.t.22': {
       teamFullName: 'Vancouver Canucks',
       teamAbbr: 'VAN',
    },
-   {
-      teamKey: 'nhl.t.59',
+   'nhl.t.59': {
       teamFullName: 'Seattle Kraken',
       teamAbbr: 'SEA',
    },
-   {
-      teamKey: 'nhl.t.9',
+   'nhl.t.9': {
       teamFullName: 'Dallas Stars',
       teamAbbr: 'DAL',
    },
-   {
-      teamKey: 'nhl.t.11',
+   'nhl.t.11': {
       teamFullName: 'New Jersey Devils',
       teamAbbr: 'NJ',
    },
-   {
-      teamKey: 'nhl.t.15',
+   'nhl.t.15': {
       teamFullName: 'Philadelphia Flyers',
       teamAbbr: 'PHI',
    },
-   {
-      teamKey: 'nhl.t.25',
+   'nhl.t.25': {
       teamFullName: 'Anaheim Ducks',
       teamAbbr: 'ANA',
    },
-   {
-      teamKey: 'nhl.t.10',
+   'nhl.t.10': {
       teamFullName: 'Montreal Canadiens',
       teamAbbr: 'MTL',
    },
-   {
-      teamKey: 'nhl.t.6',
+   'nhl.t.6': {
       teamFullName: 'Edmonton Oilers',
       teamAbbr: 'EDM',
    },
-   {
-      teamKey: 'nhl.t.1',
+   'nhl.t.1': {
       teamFullName: 'Boston Bruins',
       teamAbbr: 'BOS',
    },
-];
+};
+
+export type TeamKey = keyof typeof TeamKeyMappings;
