@@ -39,6 +39,41 @@ export type ResourceKey =
    | WaiverClaimKey
    | PendingTradeKey;
 
+export type PlayerPosition =
+   | NHLPlayerPosition
+   | NBAPlayerPosition
+   | NFLPlayerPosition
+   | MLBPlayerPosition;
+
+type NHLPlayerPosition = 'C' | 'LW' | 'RW' | 'D' | 'G';
+
+type NBAPlayerPosition = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
+
+type NFLPlayerPosition = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DEF';
+
+type MLBPlayerPosition =
+   | 'C'
+   | '1B'
+   | '2B'
+   | '3B'
+   | 'SS'
+   | 'LF'
+   | 'CF'
+   | 'RF'
+   | 'DH'
+   | 'P';
+
+type NHLRosterPosition =
+   | 'C'
+   | 'LW'
+   | 'RW'
+   | 'D'
+   | 'G'
+   | 'Util'
+   | 'BN'
+   | 'IR'
+   | 'IR+';
+
 /**
  * Game key format: `{game_id}`
  */
@@ -143,6 +178,18 @@ export type PositionType = 'O' | 'D' | 'K' | 'P' | 'B' | 'DT' | 'G';
  * Generic stat value (can be number or string depending on stat)
  */
 export type StatValue = string | number;
+
+/**
+ * Represents an image (headshot or logo).
+ * Contains URL and size information for an image.
+ */
+export interface ImageSource {
+   /** URL to the image */
+   url: string;
+
+   /** Size of the image */
+   size: 'small' | 'large';
+}
 
 /**
  * Base metadata common to many resources
