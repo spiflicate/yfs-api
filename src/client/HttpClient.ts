@@ -385,6 +385,12 @@ export class HttpClient {
                );
             }
 
+            //TODO: Handle automatic token refresh when refresh token is available, otherwise user may recieve AuthenticationError while tokens expire during a single script execution.
+            /* AuthenticationError: Authentication failed. Token may be expired.: Invalid cookie, please log in again.
+               statusCode: 401,
+               response: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<error xml:lang=\"en-us\" yahoo:uri=\"http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.50894/players;statuses=A;position=C,D;count=25;start=275/ownership?format=xml\" xmlns:yahoo=\"http://www.yahooapis.com/v1/base.rng\" xmlns=\"http://www.yahooapis.com/v1/base.rng\">\n <description>Invalid cookie, please log in again.</description>\n <detail/>\n</error>",
+               errorCode: "AUTH_ERROR",
+               errorDescription: "Invalid cookie, please log in again.", */
             // Handle authentication errors
             if (response.status === HTTP_STATUS.UNAUTHORIZED) {
                throw new AuthenticationError(
