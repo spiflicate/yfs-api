@@ -339,6 +339,12 @@ export function normalizeArrays(data: Record<string, unknown>) {
             data.weekHasEnoughQualifyingDays = newWeekQualDays;
          }
       }
+      // finally, check for any empty arrays represented as empty strings
+      for (const key of Object.keys(data)) {
+         if (arrayMapping.has(key) && data[key] === '') {
+            data[key] = [];
+         }
+      }
 
       // Recursively normalize nested objects
       for (const key of Object.keys(data)) {
