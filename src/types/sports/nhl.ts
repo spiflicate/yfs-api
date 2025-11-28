@@ -17,6 +17,8 @@ export type NHLPosition =
    | 'IR' // Injured Reserve
    | 'IR+'; // Injured Reserve Plus
 
+export type FantasyRosterPosition = NHLPosition;
+
 /**
  * NHL position categories for roster requirements
  */
@@ -331,3 +333,166 @@ export interface NHLLeagueSettings {
    /** Number of playoff teams */
    numberOfPlayoffTeams?: number;
 }
+
+export const nhlTeamsData = [
+   {
+      teamKey: 'nhl.t.19',
+      teamFullName: 'St. Louis Blues',
+      teamAbbr: 'STL',
+   },
+   {
+      teamKey: 'nhl.t.17',
+      teamFullName: 'Colorado Avalanche',
+      teamAbbr: 'COL',
+   },
+   {
+      teamKey: 'nhl.t.8',
+      teamFullName: 'Los Angeles Kings',
+      teamAbbr: 'LA',
+   },
+   {
+      teamKey: 'nhl.t.23',
+      teamFullName: 'Washington Capitals',
+      teamAbbr: 'WSH',
+   },
+   {
+      teamKey: 'nhl.t.16',
+      teamFullName: 'Pittsburgh Penguins',
+      teamAbbr: 'PIT',
+   },
+   {
+      teamKey: 'nhl.t.30',
+      teamFullName: 'Minnesota Wild',
+      teamAbbr: 'MIN',
+   },
+   {
+      teamKey: 'nhl.t.18',
+      teamFullName: 'San Jose Sharks',
+      teamAbbr: 'SJ',
+   },
+   {
+      teamKey: 'nhl.t.7',
+      teamFullName: 'Carolina Hurricanes',
+      teamAbbr: 'CAR',
+   },
+   {
+      teamKey: 'nhl.t.28',
+      teamFullName: 'Winnipeg Jets',
+      teamAbbr: 'WPG',
+   },
+   {
+      teamKey: 'nhl.t.2',
+      teamFullName: 'Buffalo Sabres',
+      teamAbbr: 'BUF',
+   },
+   {
+      teamKey: 'nhl.t.14',
+      teamFullName: 'Ottawa Senators',
+      teamAbbr: 'OTT',
+   },
+   {
+      teamKey: 'nhl.t.12',
+      teamFullName: 'New York Islanders',
+      teamAbbr: 'NYI',
+   },
+   {
+      teamKey: 'nhl.t.4',
+      teamFullName: 'Chicago Blackhawks',
+      teamAbbr: 'CHI',
+   },
+   {
+      teamKey: 'nhl.t.13',
+      teamFullName: 'New York Rangers',
+      teamAbbr: 'NYR',
+   },
+   {
+      teamKey: 'nhl.t.5',
+      teamFullName: 'Detroit Red Wings',
+      teamAbbr: 'DET',
+   },
+   {
+      teamKey: 'nhl.t.20',
+      teamFullName: 'Tampa Bay Lightning',
+      teamAbbr: 'TB',
+   },
+   {
+      teamKey: 'nhl.t.60',
+      teamFullName: 'Utah Mammoth',
+      teamAbbr: 'UTA',
+   },
+   {
+      teamKey: 'nhl.t.21',
+      teamFullName: 'Toronto Maple Leafs',
+      teamAbbr: 'TOR',
+   },
+   {
+      teamKey: 'nhl.t.3',
+      teamFullName: 'Calgary Flames',
+      teamAbbr: 'CGY',
+   },
+   {
+      teamKey: 'nhl.t.29',
+      teamFullName: 'Columbus Blue Jackets',
+      teamAbbr: 'CBJ',
+   },
+   {
+      teamKey: 'nhl.t.26',
+      teamFullName: 'Florida Panthers',
+      teamAbbr: 'FLA',
+   },
+   {
+      teamKey: 'nhl.t.27',
+      teamFullName: 'Nashville Predators',
+      teamAbbr: 'NSH',
+   },
+   {
+      teamKey: 'nhl.t.58',
+      teamFullName: 'Vegas Golden Knights',
+      teamAbbr: 'VGK',
+   },
+   {
+      teamKey: 'nhl.t.22',
+      teamFullName: 'Vancouver Canucks',
+      teamAbbr: 'VAN',
+   },
+   {
+      teamKey: 'nhl.t.59',
+      teamFullName: 'Seattle Kraken',
+      teamAbbr: 'SEA',
+   },
+   {
+      teamKey: 'nhl.t.9',
+      teamFullName: 'Dallas Stars',
+      teamAbbr: 'DAL',
+   },
+   {
+      teamKey: 'nhl.t.11',
+      teamFullName: 'New Jersey Devils',
+      teamAbbr: 'NJ',
+   },
+   {
+      teamKey: 'nhl.t.15',
+      teamFullName: 'Philadelphia Flyers',
+      teamAbbr: 'PHI',
+   },
+   {
+      teamKey: 'nhl.t.25',
+      teamFullName: 'Anaheim Ducks',
+      teamAbbr: 'ANA',
+   },
+   {
+      teamKey: 'nhl.t.10',
+      teamFullName: 'Montreal Canadiens',
+      teamAbbr: 'MTL',
+   },
+   {
+      teamKey: 'nhl.t.6',
+      teamFullName: 'Edmonton Oilers',
+      teamAbbr: 'EDM',
+   },
+   {
+      teamKey: 'nhl.t.1',
+      teamFullName: 'Boston Bruins',
+      teamAbbr: 'BOS',
+   },
+];
