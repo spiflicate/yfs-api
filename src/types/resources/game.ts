@@ -5,30 +5,12 @@
  * @module
  */
 
-import type { GameCode } from '../common.js';
-import type { Game } from '../responses/game.js';
+import type { GameCode, GameType } from '../common.js';
 
 /**
  * Game metadata
  */
-export type {
-   Game,
-   PositionTypeObject as GamePositionType,
-} from '../responses/game.js';
-
-/**
- * Response structure for a single game resource
- */
-export interface GameResourceResponse {
-   game: Game;
-}
-
-/**
- * Response structure for multiple game resources
- */
-export interface GamesResourceResponse {
-   games: Game[];
-}
+export type { PositionTypeObject as GamePositionType } from '../responses/game.js';
 
 /**
  * Parameters for getting a game
@@ -55,12 +37,7 @@ export interface GetGamesParams {
    /** Filter to only available games */
    isAvailable?: boolean;
    /** Filter by game types */
-   gameTypes?: (
-      | 'full'
-      | 'pickem-team'
-      | 'pickem-group'
-      | 'pickem-team-list'
-   )[];
+   gameTypes?: GameType[];
    /** Filter by game codes */
    gameCodes?: GameCode[];
    /** Filter by seasons */

@@ -7,15 +7,15 @@
  * NHL roster positions
  */
 export type RosterPosition =
-   | 'C' // Center
-   | 'LW' // Left Wing
-   | 'RW' // Right Wing
-   | 'D' // Defense
-   | 'UTIL' // Utility
-   | 'G' // Goalie
-   | 'BN' // Bench
-   | 'IR' // Injured Reserve
-   | 'IR+'; // Injured Reserve Plus
+   | 'C'
+   | 'LW'
+   | 'RW'
+   | 'D'
+   | 'UTIL'
+   | 'G'
+   | 'BN'
+   | 'IR'
+   | 'IR+';
 
 /**
  * NHL player positions
@@ -35,12 +35,12 @@ export type PlayerPosition =
  * NHL position type for player/stats categorization
  * This is used to differentiate between skaters and goalies
  */
-export type NHLPositionType = 'P' | 'G';
+export type PositionType = 'P' | 'G';
 
 /**
  * NHL player injury status
  */
-export type NHLInjuryStatus =
+export type InjuryStatus =
    | 'IR'
    | 'IR-LT'
    | 'IR-NR'
@@ -53,13 +53,13 @@ export type NHLInjuryStatus =
 /**
  * NHL skater stat IDs used by Yahoo
  */
-export type NHLSkaterStatId = keyof typeof NHLSkaterStatIdMap;
-export type NHLSkaterStatName =
-   (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap]['name'];
-export type NHLSkaterStatAbbrev =
-   (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap]['abbrev'];
+export type SkaterStatId = keyof typeof SkaterStatIdMap;
+export type SkaterStatName =
+   (typeof SkaterStatIdMap)[keyof typeof SkaterStatIdMap]['name'];
+export type SkaterStatAbbrev =
+   (typeof SkaterStatIdMap)[keyof typeof SkaterStatIdMap]['abbrev'];
 
-export const NHLSkaterStatIdMap = {
+export const SkaterStatIdMap = {
    0: { name: 'GamesPlayed', abbrev: 'GP' },
    1: { name: 'Goals', abbrev: 'G' },
    2: { name: 'Assists', abbrev: 'A' },
@@ -81,14 +81,14 @@ export const NHLSkaterStatIdMap = {
    18: { name: 'Blocks', abbrev: 'BLK' },
 } as const;
 
-export const NHLSkaterStatEnum = Object.entries(NHLSkaterStatIdMap).reduce(
+export const SkaterStatEnum = Object.entries(SkaterStatIdMap).reduce(
    (acc, [id, { name, abbrev }]) => {
       acc[name] = Number(id);
       acc[abbrev] = Number(id);
       return acc;
    },
    {} as Record<
-      (typeof NHLSkaterStatIdMap)[keyof typeof NHLSkaterStatIdMap][
+      (typeof SkaterStatIdMap)[keyof typeof SkaterStatIdMap][
          | 'name'
          | 'abbrev'],
       number
@@ -98,13 +98,13 @@ export const NHLSkaterStatEnum = Object.entries(NHLSkaterStatIdMap).reduce(
 /**
  * NHL goalie stat IDs used by Yahoo
  */
-export type NHLGoalieStatId = keyof typeof NHLGoalieStatIdMap;
-export type NHLGoalieStatName =
-   (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap]['name'];
-export type NHLGoalieStatAbbrev =
-   (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap]['abbrev'];
+export type GoalieStatId = keyof typeof GoalieStatIdMap;
+export type GoalieStatName =
+   (typeof GoalieStatIdMap)[keyof typeof GoalieStatIdMap]['name'];
+export type GoalieStatAbbrev =
+   (typeof GoalieStatIdMap)[keyof typeof GoalieStatIdMap]['abbrev'];
 
-export const NHLGoalieStatIdMap = {
+export const GoalieStatIdMap = {
    0: { name: 'GamesPlayed', abbrev: 'GP' },
    19: { name: 'GamesStarted', abbrev: 'GS' },
    20: { name: 'Wins', abbrev: 'W' },
@@ -118,14 +118,14 @@ export const NHLGoalieStatIdMap = {
    28: { name: 'ShotsAgainst', abbrev: 'SA' },
 } as const;
 
-export const NHLGoalieStatEnum = Object.entries(NHLGoalieStatIdMap).reduce(
+export const GoalieStatEnum = Object.entries(GoalieStatIdMap).reduce(
    (acc, [id, { name, abbrev }]) => {
       acc[name] = Number(id);
       acc[abbrev] = Number(id);
       return acc;
    },
    {} as Record<
-      (typeof NHLGoalieStatIdMap)[keyof typeof NHLGoalieStatIdMap][
+      (typeof GoalieStatIdMap)[keyof typeof GoalieStatIdMap][
          | 'name'
          | 'abbrev'],
       number
@@ -136,10 +136,10 @@ export const NHLGoalieStatEnum = Object.entries(NHLGoalieStatIdMap).reduce(
  * All NHL stats (union of skater and goalie stats)
  */
 export type NHLStat =
-   | NHLSkaterStatName
-   | NHLSkaterStatAbbrev
-   | NHLGoalieStatName
-   | NHLGoalieStatAbbrev;
+   | SkaterStatName
+   | SkaterStatAbbrev
+   | GoalieStatName
+   | GoalieStatAbbrev;
 
 export const TeamKeyMappings = {
    'nhl.t.19': {

@@ -1,5 +1,6 @@
-import type { FeloTier, ImageSource } from '../common.js';
+import type { FeloTier, PositionType } from '../common.js';
 import type { Player } from './player.js';
+import type { BaseTeam } from './team.js';
 
 /**
  * API response wrapper for league data.
@@ -130,11 +131,6 @@ export interface League {
 }
 
 /**
- * Position types for hockey: Players (P) and Goalies (G)
- */
-export type PositionType = 'P' | 'G';
-
-/**
  * Represents a weekly scoreboard with all matchups.
  * Contains matchups for a specific week, showing head-to-head
  * results and team performance data.
@@ -202,46 +198,7 @@ export interface StatWinner {
  * Contains all team information, players' stats, projections,
  * and manager details for a team in a specific matchup.
  */
-export interface MatchupTeam {
-   /** Unique identifier for the team in format "gameId.l.leagueId.t.teamId" */
-   teamKey: string;
-
-   /** Numeric team identifier */
-   teamId: number;
-
-   /** Team name */
-   name: string;
-
-   /** URL to the team on Yahoo Fantasy Sports */
-   url: string;
-
-   /** Team logo images in different sizes */
-   teamLogos: ImageSource[];
-
-   /** Waiver priority number for this team */
-   waiverPriority: number;
-
-   /** Remaining FAAB (Free Agent Acquisition Budget) balance */
-   faabBalance: number;
-
-   /** Number of roster moves made (pickup/drops) */
-   numberOfMoves: number;
-
-   /** Number of trades completed */
-   numberOfTrades: number;
-
-   /** Roster additions data (pickups/drops) */
-   rosterAdds: RosterAdds;
-
-   /** Scoring type used in the league for this team */
-   leagueScoringType: string;
-
-   /** Whether this team has a draft grade available */
-   hasDraftGrade: boolean;
-
-   /** Managers of this team */
-   managers: Manager[];
-
+export interface MatchupTeam extends BaseTeam {
    /** Stats for this team's players */
    teamStats: TeamStats;
 
@@ -503,7 +460,7 @@ export interface RosterPosition {
    /** Position code (e.g., "C", "LW", "RW", "D", "G", "UTIL") */
    position: string;
 
-   /** Position type (P for players, G for goalies) */
+   /** Position type, specific to the sport */
    positionType?: PositionType;
 
    /** Number of players required for this position */
@@ -573,16 +530,10 @@ export interface StatCategoriesStat {
    positionType: PositionType;
 
    /** Which position types can score this stat */
-   statPositionTypes: StatPositionType[];
-}
-
-/**
- * Represents which position type(s) can score a stat.
- * Maps a stat to the position types that score it.
- */
-export interface StatPositionType {
-   /** Position type that can score this stat */
-   positionType: PositionType;
+   statPositionTypes: Array<{
+      /** Position type that can score this stat */
+      positionType: PositionType;
+   }>;
 }
 
 /**
@@ -608,46 +559,7 @@ export interface Standings {
  * Contains team information with season-long statistics
  * and standings position.
  */
-export interface StandingsTeam {
-   /** Unique identifier for the team */
-   teamKey: string;
-
-   /** Numeric team identifier */
-   teamId: number;
-
-   /** Team name */
-   name: string;
-
-   /** URL to the team on Yahoo Fantasy Sports */
-   url: string;
-
-   /** Team logo images */
-   teamLogos: ImageSource[];
-
-   /** Waiver priority for this team */
-   waiverPriority: number;
-
-   /** FAAB balance remaining */
-   faabBalance: number;
-
-   /** Number of roster moves made */
-   numberOfMoves: number;
-
-   /** Number of trades completed */
-   numberOfTrades: number;
-
-   /** Roster additions data */
-   rosterAdds: RosterAdds;
-
-   /** Scoring type for the league */
-   leagueScoringType: string;
-
-   /** Whether team has a draft grade */
-   hasDraftGrade: boolean;
-
-   /** Team managers */
-   managers: Manager[];
-
+export interface StandingsTeam extends BaseTeam {
    /** Season-long team stats (optional) */
    teamStats?: SeasonTeamStats;
 
@@ -672,13 +584,12 @@ export interface SeasonTeamPoints {
    /** Total points for the season */
    total: number;
 
-   /** Breakdown of points by stat category */
+   /** Breakdown of points by stat type */
    stats: TeamPointsStat[];
 }
 
 /**
- * Represents points for a specific stat.
- * A stat category with its point value.
+ * A game stat with its point value.
  */
 export interface TeamPointsStat {
    /** Stat category ID */
@@ -689,7 +600,6 @@ export interface TeamPointsStat {
 }
 
 /**
- * Represents a team's standings position and record.
  * Contains ranking, playoff information, and head-to-head record.
  */
 export interface TeamStandings {
@@ -710,8 +620,7 @@ export interface TeamStandings {
 }
 
 /**
- * Represents a team's win-loss-tie record.
- * Summarizes a team's competitive record.
+ * Summarizes a team's win-loss-tie record.
  */
 export interface OutcomeTotals {
    /** Number of wins */
@@ -728,7 +637,6 @@ export interface OutcomeTotals {
 }
 
 /**
- * Represents a team's season-long statistics.
  * Contains individual stat values accumulated over the season.
  */
 export interface SeasonTeamStats {

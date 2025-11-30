@@ -18,7 +18,6 @@ export type {
    ResourceKey,
    ScoringType,
    SortParams,
-   Sport,
    StatValue,
    TransactionStatus,
    TransactionType,
@@ -42,7 +41,6 @@ export {
    YahooFantasyError,
 } from './errors.js';
 export type {
-   Game,
    GamePositionType,
    GameStatCategory,
    GameWeek,
@@ -121,18 +119,32 @@ export type {
 } from './resources/user.js';
 
 // Sport-specific types
+
 export type {
-   NHLGame,
-   NHLGoalieStat,
-   NHLInjuryStatus,
-   NHLLeagueSettings,
-   NHLPlayer,
-   NHLPlayerStats,
-   NHLPosition,
-   NHLPositionType,
-   NHLRosterEntry,
-   NHLRosterSlot,
-   NHLScoringCategory,
-   NHLSkaterStat,
-   NHLStat,
+   PlayerPosition as MLBPlayerPosition,
+   PositionType as MLBPositionType,
+   RosterPosition as MLBRosterPosition,
+   StatEnum as MLBStatEnum,
+} from './sports/mlb.js';
+
+export type {
+   PlayerPosition as NBAPlayerPosition,
+   PositionType as NBAPositionType,
+   RosterPosition as NBARosterPosition,
+   StatEnum as NBAStatEnum,
+} from './sports/nba.js';
+
+export type {
+   PlayerPosition as NFLPlayerPosition,
+   PositionType as NFLPositionType,
+   RosterPosition as NFLRosterPosition,
+   StatEnum as NFLStatEnum,
+} from './sports/nfl.js';
+
+export type {
+   GoalieStatEnum as NHLGoalieStatEnum,
+   PlayerPosition as NHLPlayerPosition,
+   PositionType as NHLPositionType,
+   RosterPosition as NHLRosterPosition,
+   SkaterStatEnum as NHLSkaterStatEnum,
 } from './sports/nhl.js';

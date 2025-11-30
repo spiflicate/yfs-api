@@ -13,15 +13,7 @@ import type {
    ResourceKey,
    TransactionStatus,
    TransactionType,
-} from '../common';
-
-export interface TransactionResourceResponse {
-   transaction: Transaction;
-}
-
-export interface TransactionsResourceResponse {
-   transactions: Transaction[];
-}
+} from '../common.js';
 
 /**
  * Transaction information

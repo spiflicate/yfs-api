@@ -3,10 +3,10 @@
  * @module
  */
 
-/**
- * Supported fantasy sports
- */
-export type Sport = 'nfl' | 'nhl' | 'mlb' | 'nba';
+import * as MLB from './sports/mlb.js';
+import * as NBA from './sports/nba.js';
+import * as NFL from './sports/nfl.js';
+import type * as NHL from './sports/nhl.js';
 
 /**
  * Game codes used by Yahoo Fantasy Sports API
@@ -39,40 +39,10 @@ export type ResourceKey =
    | WaiverClaimKey
    | PendingTradeKey;
 
-export type PlayerPosition =
-   | NHLPlayerPosition
-   | NBAPlayerPosition
-   | NFLPlayerPosition
-   | MLBPlayerPosition;
-
-type NHLPlayerPosition = 'C' | 'LW' | 'RW' | 'D' | 'G';
-
-type NBAPlayerPosition = 'PG' | 'SG' | 'SF' | 'PF' | 'C';
-
-type NFLPlayerPosition = 'QB' | 'RB' | 'WR' | 'TE' | 'K' | 'DEF';
-
-type MLBPlayerPosition =
-   | 'C'
-   | '1B'
-   | '2B'
-   | '3B'
-   | 'SS'
-   | 'LF'
-   | 'CF'
-   | 'RF'
-   | 'DH'
-   | 'P';
-
-type NHLRosterPosition =
-   | 'C'
-   | 'LW'
-   | 'RW'
-   | 'D'
-   | 'G'
-   | 'Util'
-   | 'BN'
-   | 'IR'
-   | 'IR+';
+export type PlayerPosition = NHL.PlayerPosition;
+// | NBA.PlayerPosition
+// | NFL.PlayerPosition
+// | MLB.PlayerPosition;
 
 /**
  * Game key format: `{game_id}`
@@ -172,7 +142,7 @@ export type FeloTier =
 /**
  * Position type category
  */
-export type PositionType = 'O' | 'D' | 'K' | 'P' | 'B' | 'DT' | 'G';
+export type PositionType = NHL.PositionType | 'O' | 'D' | 'K' | 'B' | 'DT';
 
 /**
  * Generic stat value (can be number or string depending on stat)
