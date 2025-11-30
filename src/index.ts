@@ -88,16 +88,7 @@ export type {
    GetUserTeamsParams,
    League,
    LeagueSettings,
-   NHLGame,
-   NHLGoalieStat,
-   NHLInjuryStatus,
-   NHLLeagueSettings,
-   NHLPlayer,
-   NHLPlayerStats,
-   NHLPosition,
    NHLPositionType,
-   NHLSkaterStat,
-   NHLStat,
    PaginationParams,
    Player,
    PlayerStats,
@@ -111,7 +102,6 @@ export type {
    SearchGamePlayersParams,
    SearchPlayersParams,
    SortParams,
-   Sport,
    StatValue,
    Team,
    TeamRoster,
@@ -144,13 +134,5 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './types/index.js';
-// Export OAuth utilities
-export {
-   type LocalOAuthServerOptions,
-   type OAuthCallbackError,
-   type OAuthCallbackResult,
-   openBrowser,
-   startLocalOAuthServer,
-} from './utils/localOAuthServer.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';

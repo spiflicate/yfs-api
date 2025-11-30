@@ -15,10 +15,11 @@ import type {
    GetLeagueScoreboardParams,
    GetLeagueStandingsParams,
    GetLeagueTeamsParams,
-   LeagueResourceResponse,
 } from '../types/resources/league.js';
-import type { League, LeagueResponse } from '../types/responses/league.js';
-// import type { Team } from '../types/resources/team.js';
+import type {
+   LeagueResponse,
+   // LeaguesResponse,
+} from '../types/responses/wrappers.js';
 
 /**
  * League resource client
@@ -79,7 +80,7 @@ export class LeagueResource {
    async get(
       leagueKey: ResourceKey,
       params?: GetLeagueParams,
-   ): Promise<unknown> {
+   ): Promise<LeagueResponse> {
       let path = `/league/${leagueKey}`;
 
       // Build sub-resources to include
@@ -98,9 +99,7 @@ export class LeagueResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<LeagueResourceResponse>(path);
-
-      return response.league;
+      return this.http.get<LeagueResponse>(path);
    }
 
    /**
@@ -116,10 +115,10 @@ export class LeagueResource {
     * console.log(settings.statCategories);
     * ```
     */
-   async getSettings(leagueKey: ResourceKey): Promise<unknown> {
+   async getSettings(leagueKey: ResourceKey): Promise<LeagueResponse> {
       const path = `/league/${leagueKey}/settings`;
-      const response = await this.http.get<LeagueResourceResponse>(path);
-      return response.league;
+      const response = await this.http.get<LeagueResponse>(path);
+      return response;
    }
    /**
     * Get league standings
@@ -139,16 +138,16 @@ export class LeagueResource {
    async getStandings(
       leagueKey: ResourceKey,
       params?: GetLeagueStandingsParams,
-   ): Promise<unknown> {
+   ): Promise<LeagueResponse> {
       let path = `/league/${leagueKey}/standings`;
 
       if (params?.week) {
          path += `;week=${params.week}`;
       }
 
-      const response = await this.http.get<LeagueResourceResponse>(path);
+      const response = await this.http.get<LeagueResponse>(path);
 
-      return response.league;
+      return response;
    }
 
    /**
@@ -171,7 +170,7 @@ export class LeagueResource {
    async getScoreboard(
       leagueKey: ResourceKey,
       params?: GetLeagueScoreboardParams,
-   ): Promise<League> {
+   ): Promise<LeagueResponse> {
       let path = `/league/${leagueKey}/scoreboard`;
 
       if (params?.week) {
@@ -180,7 +179,7 @@ export class LeagueResource {
 
       const response = await this.http.get<LeagueResponse>(path);
 
-      return response.league;
+      return response;
    }
 
    /**
@@ -205,7 +204,7 @@ export class LeagueResource {
    async getTeams(
       leagueKey: ResourceKey,
       params?: GetLeagueTeamsParams,
-   ): Promise<unknown> {
+   ): Promise<LeagueResponse> {
       let path = `/league/${leagueKey}/teams`;
 
       const queryParams: string[] = [];
@@ -232,8 +231,8 @@ export class LeagueResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<LeagueResourceResponse>(path);
+      const response = await this.http.get<LeagueResponse>(path);
 
-      return response.league;
+      return response;
    }
 }

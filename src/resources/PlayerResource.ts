@@ -8,10 +8,14 @@ import type { ResourceKey } from '../types/common.js';
 import type {
    GetPlayerParams,
    GetPlayerStatsParams,
-   PlayerResourceResponse,
-   PlayersResourceResponse,
    SearchPlayersParams,
 } from '../types/resources/player.js';
+import type {
+   LeagueResponse,
+   // LeaguesResponse,
+   PlayerResponse,
+   PlayersResponse,
+} from '../types/responses/wrappers.js';
 
 /**
  * Player resource client
@@ -79,7 +83,7 @@ export class PlayerResource {
    async get(
       playerKey: ResourceKey,
       params?: GetPlayerParams,
-   ): Promise<unknown> {
+   ): Promise<PlayerResponse> {
       let path = `/player/${playerKey}`;
 
       // Build sub-resources to include
@@ -98,9 +102,9 @@ export class PlayerResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<PlayerResourceResponse>(path);
+      const response = await this.http.get<PlayerResponse>(path);
 
-      return response.player;
+      return response;
    }
 
    /**
@@ -143,7 +147,7 @@ export class PlayerResource {
    async search(
       leagueKey: ResourceKey,
       params?: SearchPlayersParams,
-   ): Promise<unknown> {
+   ): Promise<PlayersResponse> {
       let path = `/league/${leagueKey}/players`;
 
       // Build query parameters
@@ -212,9 +216,10 @@ export class PlayerResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<PlayersResourceResponse>(path);
+      const response =
+         await this.http.get<LeagueResponse<PlayersResponse>>(path);
 
-      return response.players;
+      return { players: response.league.players };
    }
 
    /**
@@ -247,7 +252,7 @@ export class PlayerResource {
    async getStats(
       playerKey: ResourceKey,
       params: GetPlayerStatsParams,
-   ): Promise<unknown> {
+   ): Promise<PlayerResponse> {
       let path = `/player/${playerKey}/stats`;
 
       if (params.coverageType) {
@@ -266,9 +271,9 @@ export class PlayerResource {
          path += `;season=${params.season}`;
       }
 
-      const response = await this.http.get<PlayerResourceResponse>(path);
+      const response = await this.http.get<PlayerResponse>(path);
 
-      return response.player;
+      return response;
    }
 
    /**
@@ -286,7 +291,7 @@ export class PlayerResource {
     */
    async getOwnership(playerKey: ResourceKey): Promise<unknown> {
       const path = `/player/${playerKey}/ownership`;
-      const response = await this.http.get<PlayerResourceResponse>(path);
-      return response.player;
+      const response = await this.http.get<PlayerResponse>(path);
+      return response;
    }
 }

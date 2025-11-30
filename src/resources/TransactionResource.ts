@@ -14,7 +14,6 @@ import type {
    // TransactionStatus,
    // TransactionType,
 } from '../types/common.js';
-import type { LeagueResourceResponse } from '../types/resources/league.js';
 import type {
    AcceptTradeParams,
    AddDropPlayerParams,
@@ -25,12 +24,16 @@ import type {
    GetTransactionsParams,
    ProposeTradeParams,
    RejectTradeParams,
-   Transaction,
-   TransactionResourceResponse,
-   TransactionResponse,
    VoteAgainstTradeParams,
    WaiverClaimParams,
 } from '../types/resources/transaction.js';
+import type { Transaction } from '../types/responses/transaction.js';
+import type {
+   LeagueResponse,
+   TransactionResponse,
+   TransactionResult,
+   TransactionsResponse,
+} from '../types/responses/wrappers.js';
 
 /**
  * Transaction resource client
@@ -108,7 +111,7 @@ export class TransactionResource {
    async getLeagueTransactions(
       leagueKey: ResourceKey,
       params?: GetTransactionsParams,
-   ): Promise<unknown> {
+   ): Promise<TransactionsResponse> {
       let path = `/league/${leagueKey}/transactions`;
 
       const queryParams: string[] = [];
@@ -136,9 +139,10 @@ export class TransactionResource {
          path += `;${queryParams.join(';')}`;
       }
 
-      const response = await this.http.get<LeagueResourceResponse>(path);
+      const response =
+         await this.http.get<LeagueResponse<TransactionsResponse>>(path);
 
-      return response.league;
+      return { transactions: response.league.transactions };
    }
 
    /**
@@ -152,12 +156,10 @@ export class TransactionResource {
     * const transaction = await transactionClient.get('423.l.12345.tr.123');
     * ```
     */
-   async get(transactionKey: ResourceKey): Promise<unknown> {
+   async get(transactionKey: ResourceKey): Promise<TransactionResponse> {
       const path = `/transaction/${transactionKey}`;
-      const response =
-         await this.http.get<TransactionResourceResponse>(path);
-
-      return response.transaction;
+      const response = await this.http.get<TransactionResponse>(path);
+      return response;
    }
 
    /**
@@ -181,8 +183,72 @@ export class TransactionResource {
     */
    async addPlayer(
       params: Omit<AddDropPlayerParams, 'dropPlayerKey'>,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       return this.addDropPlayer(params);
+   }
+
+   /**
+    * Drop a player (no add)
+    *
+    * @param teamKey - Team key
+    * @param playerKey - Player key to drop
+    * @returns Transaction response
+    *
+    * @example
+    * ```typescript
+    * const result = await transactionClient.dropPlayer(
+    *   '423.l.12345.t.1',
+    *   '423.p.7777'
+    * );
+    * ```
+    */
+   async dropPlayer(
+      teamKey: ResourceKey,
+      playerKey: ResourceKey,
+   ): Promise<TransactionResult> {
+      const path = `/league/${this.extractLeagueKey(teamKey)}/transactions`;
+
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content>
+	<transaction>
+		<type>drop</type>
+		<players>
+			<player>
+				<player_key>${playerKey}</player_key>
+				<transaction_data>
+					<type>drop</type>
+					<source_type>team</source_type>
+					<source_team_key>${teamKey}</source_team_key>
+				</transaction_data>
+			</player>
+		</players>
+	</transaction>
+</fantasy_content>`;
+
+      try {
+         const response = await this.http.post<{
+            fantasy_content: { transaction: Record<string, unknown> };
+         }>(path, undefined, {
+            body: xml,
+            headers: {
+               'Content-Type': 'application/xml',
+            },
+         });
+
+         const transaction = response.fantasy_content.transaction;
+
+         return {
+            success: true,
+            transactionKey: transaction.transactionKey as string,
+            transaction: transaction as unknown as Transaction,
+         };
+      } catch (error) {
+         return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+            errorCode: 'TRANSACTION_FAILED',
+         };
+      }
    }
 
    /**
@@ -211,7 +277,7 @@ export class TransactionResource {
     */
    async addDropPlayer(
       params: AddDropPlayerParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       const path = `/league/${this.extractLeagueKey(params.teamKey)}/transactions`;
 
       // Build XML for add/drop transaction
@@ -295,7 +361,7 @@ export class TransactionResource {
     */
    async claimWaiver(
       params: WaiverClaimParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       // Waiver claims use the same add/drop mechanism
       return this.addDropPlayer({
          teamKey: params.teamKey,
@@ -303,70 +369,6 @@ export class TransactionResource {
          dropPlayerKey: params.dropPlayerKey,
          faabBid: params.faabBid,
       });
-   }
-
-   /**
-    * Drop a player (no add)
-    *
-    * @param teamKey - Team key
-    * @param playerKey - Player key to drop
-    * @returns Transaction response
-    *
-    * @example
-    * ```typescript
-    * const result = await transactionClient.dropPlayer(
-    *   '423.l.12345.t.1',
-    *   '423.p.7777'
-    * );
-    * ```
-    */
-   async dropPlayer(
-      teamKey: ResourceKey,
-      playerKey: ResourceKey,
-   ): Promise<TransactionResponse> {
-      const path = `/league/${this.extractLeagueKey(teamKey)}/transactions`;
-
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content>
-	<transaction>
-		<type>drop</type>
-		<players>
-			<player>
-				<player_key>${playerKey}</player_key>
-				<transaction_data>
-					<type>drop</type>
-					<source_type>team</source_type>
-					<source_team_key>${teamKey}</source_team_key>
-				</transaction_data>
-			</player>
-		</players>
-	</transaction>
-</fantasy_content>`;
-
-      try {
-         const response = await this.http.post<{
-            fantasy_content: { transaction: Record<string, unknown> };
-         }>(path, undefined, {
-            body: xml,
-            headers: {
-               'Content-Type': 'application/xml',
-            },
-         });
-
-         const transaction = response.fantasy_content.transaction;
-
-         return {
-            success: true,
-            transactionKey: transaction.transactionKey as string,
-            transaction: transaction as unknown as Transaction,
-         };
-      } catch (error) {
-         return {
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
-            errorCode: 'TRANSACTION_FAILED',
-         };
-      }
    }
 
    /**
@@ -388,7 +390,7 @@ export class TransactionResource {
     */
    async proposeTrade(
       params: ProposeTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       const path = `/league/${this.extractLeagueKey(params.proposingTeamKey)}/transactions`;
 
       // Build players XML
@@ -483,7 +485,7 @@ export class TransactionResource {
     */
    async acceptTrade(
       params: AcceptTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <fantasy_content>
 	<transaction>
@@ -540,7 +542,7 @@ export class TransactionResource {
     */
    async rejectTrade(
       params: RejectTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <fantasy_content>
 	<transaction>
@@ -597,7 +599,7 @@ export class TransactionResource {
     */
    async cancelTrade(
       params: CancelTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       try {
          await this.http.delete(`/transaction/${params.transactionKey}`);
 
@@ -628,9 +630,7 @@ export class TransactionResource {
     * });
     * ```
     */
-   async allowTrade(
-      params: AllowTradeParams,
-   ): Promise<TransactionResponse> {
+   async allowTrade(params: AllowTradeParams): Promise<TransactionResult> {
       try {
          const xmlBody = `<?xml version="1.0" encoding="UTF-8"?>
 <fantasy_content>
@@ -680,7 +680,7 @@ export class TransactionResource {
     */
    async disallowTrade(
       params: DisallowTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       try {
          const xmlBody = `<?xml version="1.0" encoding="UTF-8"?>
 <fantasy_content>
@@ -732,7 +732,7 @@ export class TransactionResource {
     */
    async voteAgainstTrade(
       params: VoteAgainstTradeParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       try {
          const noteXml = params.note
             ? `<trade_note>${this.escapeXml(params.note)}</trade_note>`
@@ -789,7 +789,7 @@ export class TransactionResource {
     */
    async editWaiverClaim(
       params: EditWaiverClaimParams,
-   ): Promise<TransactionResponse> {
+   ): Promise<TransactionResult> {
       try {
          const faabXml =
             params.faabBid !== undefined

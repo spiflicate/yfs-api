@@ -11,8 +11,8 @@ import type {
    GetTeamRosterParams,
    GetTeamStatsParams,
    RosterChangeRequest,
-   TeamResourceResponse,
 } from '../types/resources/team.js';
+import type { TeamResponse } from '../types/responses/wrappers.js';
 
 /**
  * Team resource client
@@ -79,7 +79,7 @@ export class TeamResource {
    async get(
       teamKey: ResourceKey,
       params?: GetTeamParams,
-   ): Promise<unknown> {
+   ): Promise<TeamResponse> {
       let path = `/team/${teamKey}`;
 
       // Build sub-resources to include
@@ -98,8 +98,8 @@ export class TeamResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<TeamResourceResponse>(path);
-      return response.team;
+      const response = await this.http.get<TeamResponse>(path);
+      return response;
    }
 
    /**
@@ -133,7 +133,7 @@ export class TeamResource {
    async getRoster(
       teamKey: ResourceKey,
       params?: GetTeamRosterParams,
-   ): Promise<unknown> {
+   ): Promise<TeamResponse> {
       let path = `/team/${teamKey}/roster`;
 
       // Add date or week if specified
@@ -148,8 +148,8 @@ export class TeamResource {
          path += ';out=stats';
       }
 
-      const response = await this.http.get<TeamResourceResponse>(path);
-      return response.team;
+      const response = await this.http.get<TeamResponse>(path);
+      return response;
    }
 
    /**
@@ -180,7 +180,7 @@ export class TeamResource {
    async getStats(
       teamKey: ResourceKey,
       params?: GetTeamStatsParams,
-   ): Promise<unknown> {
+   ): Promise<TeamResponse> {
       let path = `/team/${teamKey}/stats`;
 
       if (params?.coverageType) {
@@ -195,8 +195,8 @@ export class TeamResource {
          path += `;date=${params.date}`;
       }
 
-      const response = await this.http.get<TeamResourceResponse>(path);
-      return response.team;
+      const response = await this.http.get<TeamResponse>(path);
+      return response;
    }
 
    /**
@@ -225,7 +225,7 @@ export class TeamResource {
    async getMatchups(
       teamKey: ResourceKey,
       params?: GetTeamMatchupsParams,
-   ): Promise<unknown> {
+   ): Promise<TeamResponse> {
       let path = `/team/${teamKey}/matchups`;
 
       if (params?.weeks) {
@@ -235,8 +235,8 @@ export class TeamResource {
          path += `;weeks=${weeks}`;
       }
 
-      const response = await this.http.get<TeamResourceResponse>(path);
-      return response.team;
+      const response = await this.http.get<TeamResponse>(path);
+      return response;
    }
 
    /**
@@ -274,6 +274,7 @@ export class TeamResource {
       teamKey: ResourceKey,
       request: RosterChangeRequest,
    ): Promise<unknown> {
+      // TODO: Define proper response type
       let path = `/team/${teamKey}/roster`;
 
       // Add coverage type

@@ -8,9 +8,8 @@ import type { HttpClient } from '../client/HttpClient.js';
 import type {
    GetUserGamesParams,
    GetUserTeamsParams,
-   UsersResourceResponse,
 } from '../types/resources/user.js';
-
+import type { UsersResponse } from '../types/responses/wrappers.js';
 /**
  * User resource client
  *
@@ -52,8 +51,8 @@ export class UserResource {
     */
    async getCurrentUser(): Promise<unknown> {
       const path = '/users;use_login=1';
-      const response = await this.http.get<UsersResourceResponse>(path);
-      return response.users;
+      const response = await this.http.get<UsersResponse>(path);
+      return response;
    }
 
    /**
@@ -93,9 +92,9 @@ export class UserResource {
          path += '/teams';
       }
 
-      const response = await this.http.get<UsersResourceResponse>(path);
+      const response = await this.http.get<UsersResponse>(path);
 
-      return response.users;
+      return response;
    }
 
    /**
@@ -116,7 +115,7 @@ export class UserResource {
     * const teams2024 = await userClient.getTeams({ gameCode: 'nhl', season: 2024 });
     * ```
     */
-   async getTeams(params?: GetUserTeamsParams): Promise<unknown> {
+   async getTeams(params?: GetUserTeamsParams): Promise<UsersResponse> {
       let path = '/users;use_login=1/games';
 
       if (params?.gameCode) {
@@ -129,8 +128,8 @@ export class UserResource {
 
       path += '/teams';
 
-      const response = await this.http.get<UsersResourceResponse>(path);
+      const response = await this.http.get<UsersResponse>(path);
 
-      return response.users;
+      return response;
    }
 }

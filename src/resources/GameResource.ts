@@ -6,8 +6,6 @@
 import type { HttpClient } from '../client/HttpClient.js';
 // import type { GameCode } from '../types/common.js';
 import type {
-   GameResourceResponse,
-   GamesResourceResponse,
    // Game,
    // GamePositionType,
    // GameStatCategory,
@@ -16,6 +14,10 @@ import type {
    GetGamesParams,
    SearchGamePlayersParams,
 } from '../types/resources/game.js';
+import type {
+   GameResponse,
+   GamesResponse,
+} from '../types/responses/wrappers.js';
 // import type {
 //    Player,
 //    PlayerCollectionResponse,
@@ -74,7 +76,10 @@ export class GameResource {
     * });
     * ```
     */
-   async get(gameKey: string, params?: GetGameParams): Promise<unknown> {
+   async get(
+      gameKey: string,
+      params?: GetGameParams,
+   ): Promise<GameResponse> {
       let path = `/game/${gameKey}`;
 
       // Build sub-resources to include
@@ -99,9 +104,9 @@ export class GameResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<GameResourceResponse>(path);
+      const response = await this.http.get<GameResponse>(path);
 
-      return response.game;
+      return response;
    }
 
    /**
@@ -127,7 +132,7 @@ export class GameResource {
     * });
     * ```
     */
-   async getGames(params?: GetGamesParams): Promise<unknown> {
+   async getGames(params?: GetGamesParams): Promise<GamesResponse> {
       let path = '/games';
 
       const queryParams: string[] = [];
@@ -156,9 +161,9 @@ export class GameResource {
          path += `;${queryParams.join(';')}`;
       }
 
-      const response = await this.http.get<GamesResourceResponse>(path);
+      const response = await this.http.get<GamesResponse>(path);
 
-      return response.games;
+      return response;
    }
 
    /**
@@ -172,8 +177,8 @@ export class GameResource {
     * const leagues = await gameClient.getLeagues('423');
     * ```
     */
-   async getLeagues(gameKey: string): Promise<unknown> {
-      return this.http.get(`/game/${gameKey}/leagues`);
+   async getLeagues(gameKey: string): Promise<GameResponse> {
+      return this.http.get<GameResponse>(`/game/${gameKey}/leagues`);
    }
 
    /**
@@ -202,7 +207,7 @@ export class GameResource {
    async searchPlayers(
       gameKey: string,
       params?: SearchGamePlayersParams,
-   ): Promise<unknown> {
+   ): Promise<GameResponse> {
       let path = `/game/${gameKey}/players`;
 
       const queryParams: string[] = [];
@@ -262,9 +267,9 @@ export class GameResource {
          path += `;out=${subResources.join(',')}`;
       }
 
-      const response = await this.http.get<GameResourceResponse>(path);
+      const response = await this.http.get<GameResponse>(path);
 
-      return response.game;
+      return response;
    }
 
    /**
@@ -278,10 +283,10 @@ export class GameResource {
     * const weeks = await gameClient.getGameWeeks('nfl');
     * ```
     */
-   async getGameWeeks(gameKey: string): Promise<unknown> {
+   async getGameWeeks(gameKey: string): Promise<GameResponse> {
       const path = `/game/${gameKey}/game_weeks`;
-      const response = await this.http.get<GameResourceResponse>(path);
-      return response.game;
+      const response = await this.http.get<GameResponse>(path);
+      return response;
    }
 
    /**
@@ -295,10 +300,10 @@ export class GameResource {
     * const stats = await gameClient.getStatCategories('nhl');
     * ```
     */
-   async getStatCategories(gameKey: string): Promise<unknown> {
+   async getStatCategories(gameKey: string): Promise<GameResponse> {
       const path = `/game/${gameKey}/stat_categories`;
-      const response = await this.http.get<GameResourceResponse>(path);
-      return response.game;
+      const response = await this.http.get<GameResponse>(path);
+      return response;
    }
 
    /**
@@ -312,9 +317,9 @@ export class GameResource {
     * const positions = await gameClient.getPositionTypes('nhl');
     * ```
     */
-   async getPositionTypes(gameKey: string): Promise<unknown> {
+   async getPositionTypes(gameKey: string): Promise<GameResponse> {
       const path = `/game/${gameKey}/position_types`;
-      const response = await this.http.get<GameResourceResponse>(path);
-      return response.game;
+      const response = await this.http.get<GameResponse>(path);
+      return response;
    }
 }
