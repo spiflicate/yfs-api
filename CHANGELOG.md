@@ -178,26 +178,32 @@ If upgrading from v1.0.0, be aware of:
 
 ---
 
-## [1.1.1] - Unreleased
+## [1.1.1] - 2025-11-29
 
-> This version is being prepared and may change before release.
+Patch release with bug fixes, parser improvements, and type/refactor cleanups.
 
-### Overview
+### Changed
 
-Minor patch release addressing issues found in v1.1.0. This release includes bug fixes and performance improvements.
+- **Refactor:** Response types and resource handling reorganized for consistency (game, league, player, team, transaction).
+- **Refactor:** Streamlined TypeScript types and simplified `AdvancedQuery` / `QueryBuilder` type safety.
+- **Remove:** Unused local OAuth server implementation removed.
 
 ### Fixed
 
-#### Bug Fixes
-- **Advanced Query Builder** - Fixed issues with query parameter serialization in the experimental query builder
-- **Response Handling** - Resolved edge cases in response handling for certain API endpoints
+- **XML Parser:** Handle empty arrays represented as empty strings and optimized parsing performance.
+- **Advanced Query Builder:** Fixed query parameter serialization edge cases.
+- **Response Handling:** Resolved edge cases when extracting data from parsed XML responses.
 
-#### Performance Improvements
-- **XML Parsing** - Optimized XML parsing logic for improved performance
-- **Data Collection** - Enhanced data collection script to reduce API call overhead
+### Added
 
-### Upgrade Guide from 1.1.0
-No breaking changes; recommended to upgrade for bug fixes and performance improvements.
+- **Types:** Stubs for MLB, NBA, and NFL added to support future sport-specific types.
+
+### Notes
+
+- **HttpClient:** TODO added to track automatic token-refresh handling in a future patch.
+- **LeagueResource:** `getScoreboard` updated to return a `League`-typed response.
+
+No breaking changes; safe to upgrade for fixes and refactors.
 
 
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
