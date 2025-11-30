@@ -178,5 +178,28 @@ If upgrading from v1.0.0, be aware of:
 
 ---
 
+## [1.1.1] - Unreleased
+
+> This version is being prepared and may change before release.
+
+### Overview
+
+Minor patch release addressing issues found in v1.1.0. This release includes bug fixes and performance improvements.
+
+### Fixed
+
+#### Bug Fixes
+- **Advanced Query Builder** - Fixed issues with query parameter serialization in the experimental query builder
+- **Response Handling** - Resolved edge cases in response handling for certain API endpoints
+
+#### Performance Improvements
+- **XML Parsing** - Optimized XML parsing logic for improved performance
+- **Data Collection** - Enhanced data collection script to reduce API call overhead
+
+### Upgrade Guide from 1.1.0
+No breaking changes; recommended to upgrade for bug fixes and performance improvements.
+
+
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
+[1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
