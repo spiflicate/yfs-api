@@ -32,7 +32,7 @@ describe('GameResource', () => {
          const game = await gameResource.get('465');
 
          expect(httpClient.get).toHaveBeenCalledWith('/game/465');
-         expect(game).toEqual(gameNhl);
+         expect(game).toEqual(mockResponse);
       });
 
       test('should include stat categories sub-resource when requested', async () => {
@@ -82,10 +82,10 @@ describe('GameResource', () => {
          );
 
          const gameResource = new GameResource(httpClient);
-         const games = await gameResource.getGames();
+         const response = await gameResource.getGames();
 
          expect(httpClient.get).toHaveBeenCalledWith('/games');
-         expect(Array.isArray(games)).toBe(true);
+         expect(Array.isArray(response.games)).toBe(true);
       });
 
       test('should filter games by availability', async () => {
