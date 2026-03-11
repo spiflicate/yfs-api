@@ -33,6 +33,7 @@
  * ```
  */
 
+import { QueryBuilder } from '../query/builder.js';
 import { GameResource } from '../resources/GameResource.js';
 import { LeagueResource } from '../resources/LeagueResource.js';
 import { PlayerResource } from '../resources/PlayerResource.js';
@@ -470,6 +471,55 @@ export class YahooFantasyClient {
     */
    advanced<T = unknown>(): AdvancedQuery<T> {
       return new AdvancedQuery<T>(this.httpClient);
+   }
+
+   /**
+    * Create a new composable query builder
+    *
+    * A type-safe, chainable API for building Yahoo Fantasy API queries.
+    * Provides autocomplete and sensible defaults.
+    *
+    * @returns A new QueryBuilder instance
+    *
+    * @example Query league settings
+    * ```typescript
+    * const league = await client.q()
+    *   .league('423.l.12345')
+    *   .settings()
+    *   .execute();
+    * ```
+    *
+    * @example Query players with filters
+    * ```typescript
+    * const players = await client.q()
+    *   .league('423.l.12345')
+    *   .players()
+    *   .position('C')
+    *   .status('FA')
+    *   .count(25)
+    *   .execute();
+    * ```
+    *
+    * @example Query team roster
+    * ```typescript
+    * const roster = await client.q()
+    *   .team('423.l.12345.t.1')
+    *   .roster({ week: 10 })
+    *   .execute();
+    * ```
+    *
+    * @example Query user's games
+    * ```typescript
+    * const games = await client.q()
+    *   .users()
+    *   .useLogin()
+    *   .games()
+    *   .execute();
+    * ```
+    */
+   q(): QueryBuilder {
+      const builder = new QueryBuilder(this.httpClient);
+      return builder as QueryBuilder;
    }
 
    /**

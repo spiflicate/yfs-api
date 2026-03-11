@@ -3,9 +3,9 @@
  * @module
  */
 
-import * as MLB from './sports/mlb.js';
-import * as NBA from './sports/nba.js';
-import * as NFL from './sports/nfl.js';
+// import * as MLB from './sports/mlb.js';
+// import * as NBA from './sports/nba.js';
+// import * as NFL from './sports/nfl.js';
 import type * as NHL from './sports/nhl.js';
 
 /**
