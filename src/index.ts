@@ -72,7 +72,6 @@ export type {
    DisallowTradeParams,
    DraftStatus,
    EditWaiverClaimParams,
-   Game,
    GameCode,
    GamePositionType,
    GameStatCategory,
