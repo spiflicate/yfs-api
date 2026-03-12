@@ -271,10 +271,10 @@ describe('RequestBuilder', () => {
          expect(builder.toString()).toBe('/league/423.l.12345/scoreboard');
       });
 
-      it('returns a placeholder for an incomplete query', () => {
+      it('returns a placeholder for an incomplete request', () => {
          const builder = new RequestBuilder(createMockHttpClient());
 
-         expect(builder.toString()).toBe('<incomplete query>');
+         expect(builder.toString()).toBe('<incomplete request>');
       });
 
       it('throws when building without segments', () => {
