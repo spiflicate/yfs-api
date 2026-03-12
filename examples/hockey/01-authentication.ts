@@ -64,7 +64,7 @@ async function loadTokens(): Promise<OAuth2Tokens | null> {
       const tokens = JSON.parse(content) as OAuth2Tokens;
       console.log('✓ Tokens loaded successfully');
       return tokens;
-   } catch (error) {
+   } catch (_error) {
       console.log('✗ No existing tokens found');
       return null;
    }
@@ -269,13 +269,13 @@ async function main() {
             Bun.write('api_test_response.json', body);
             console.log();
             console.log('Response preview:');
-            console.log(body.substring(0, 300) + '...');
+            console.log(`${body.substring(0, 300)}...`);
          } else {
             console.log(
                `✗ API test failed with status: ${response.status}`,
             );
             const error = await response.text();
-            console.log('Error:', error.substring(0, 200));
+            console.log(`Error: ${error.substring(0, 200)}...`);
          }
       } catch (error) {
          console.error('✗ API test failed:', error);
