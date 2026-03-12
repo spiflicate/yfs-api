@@ -103,7 +103,7 @@ const rosterPlayersExecuteAssertion: RosterPlayersExecuteAssertion = true;
 void rosterPlayersExecuteAssertion;
 
 // @ts-expect-error league() requires a Yahoo league key shape
-createRequest(typeOnlyHttpClient).league('nhl');
+createRequest(typeOnlyHttpClient).league(12345);
 
 // @ts-expect-error players() is not a valid next chain after users().games()
 createRequest(typeOnlyHttpClient).users().games().players();
