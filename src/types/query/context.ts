@@ -13,7 +13,7 @@ import type {
    SubResourceName,
 } from './graph.js';
 import type { QueryParams } from './params.js';
-import type { AllResponseTypes } from './responses.js';
+import type { InferResponseType } from './response-routes.ts';
 
 /**
  * Base interface for all query contexts
@@ -119,118 +119,7 @@ export type QueryContext =
  * Type to build the response type from path segments
  * This is the key type for inferring return types
  */
-export type InferResponseType<TPath extends string[]> = TPath extends [
-   'game',
-   string,
-]
-   ? import('./responses.js').GameResourceResponse
-   : TPath extends ['game', string, 'leagues']
-     ? import('./responses.js').GameLeaguesResponse
-     : TPath extends ['game', string, 'players']
-       ? import('./responses.js').GamePlayersResponse
-       : TPath extends ['game', string, 'stat_categories']
-         ? import('./responses.js').GameStatCategoriesResponse
-         : TPath extends ['game', string, 'position_types']
-           ? import('./responses.js').GamePositionTypesResponse
-           : TPath extends ['game', string, 'game_weeks']
-             ? import('./responses.js').GameGameWeeksResponse
-             : TPath extends ['games']
-               ? import('./responses.js').GamesCollectionResponse
-               : TPath extends ['league', string]
-                 ? import('./responses.js').LeagueResourceResponse
-                 : TPath extends ['league', string, 'settings']
-                   ? import('./responses.js').LeagueSettingsResponse
-                   : TPath extends ['league', string, 'standings']
-                     ? import('./responses.js').LeagueStandingsResponse
-                     : TPath extends ['league', string, 'scoreboard']
-                       ? import('./responses.js').LeagueScoreboardResponse
-                       : TPath extends ['league', string, 'teams']
-                         ? import('./responses.js').LeagueTeamsResponse
-                         : TPath extends ['league', string, 'players']
-                           ? import('./responses.js').LeaguePlayersResponse
-                           : TPath extends [
-                                  'league',
-                                  string,
-                                  'transactions',
-                               ]
-                             ? import('./responses.js').LeagueTransactionsResponse
-                             : TPath extends ['league', string, 'drafts']
-                               ? import('./responses.js').LeagueDraftsResponse
-                               : TPath extends ['team', string]
-                                 ? import('./responses.js').TeamResourceResponse
-                                 : TPath extends ['team', string, 'roster']
-                                   ? import('./responses.js').TeamRosterResponse
-                                   : TPath extends [
-                                          'team',
-                                          string,
-                                          'roster',
-                                          'players',
-                                       ]
-                                     ? import('./responses.js').TeamRosterPlayersResponse
-                                     : TPath extends [
-                                            'team',
-                                            string,
-                                            'matchups',
-                                         ]
-                                       ? import('./responses.js').TeamMatchupsResponse
-                                       : TPath extends [
-                                              'team',
-                                              string,
-                                              'stats',
-                                           ]
-                                         ? import('./responses.js').TeamStatsResponse
-                                         : TPath extends ['player', string]
-                                           ? import('./responses.js').PlayerResourceResponse
-                                           : TPath extends [
-                                                  'player',
-                                                  string,
-                                                  'stats',
-                                               ]
-                                             ? import('./responses.js').PlayerStatsResponse
-                                             : TPath extends [
-                                                    'player',
-                                                    string,
-                                                    'ownership',
-                                                 ]
-                                               ? import('./responses.js').PlayerOwnershipResponse
-                                               : TPath extends [
-                                                      'player',
-                                                      string,
-                                                      'percent_owned',
-                                                   ]
-                                                 ? import('./responses.js').PlayerPercentOwnedResponse
-                                                 : TPath extends [
-                                                        'player',
-                                                        string,
-                                                        'draft_analysis',
-                                                     ]
-                                                   ? import('./responses.js').PlayerDraftAnalysisResponse
-                                                   : TPath extends ['users']
-                                                     ? import('./responses.js').UsersCollectionResponse
-                                                     : TPath extends [
-                                                            'users',
-                                                            string,
-                                                            'games',
-                                                         ]
-                                                       ? import('./responses.js').UserGamesResponse
-                                                       : TPath extends [
-                                                              'users',
-                                                              string,
-                                                              'leagues',
-                                                           ]
-                                                         ? import('./responses.js').UserLeaguesResponse
-                                                         : TPath extends [
-                                                                'users',
-                                                                string,
-                                                                'teams',
-                                                             ]
-                                                           ? import('./responses.js').UserTeamsResponse
-                                                           : TPath extends [
-                                                                  'transaction',
-                                                                  string,
-                                                               ]
-                                                             ? import('./responses.js').TransactionResourceResponse
-                                                             : AllResponseTypes;
+export type { InferResponseType };
 
 /**
  * Helper type to check if we're at a valid point to add a collection

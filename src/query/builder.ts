@@ -7,6 +7,18 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { InferResponseType } from '../types/query/context.js';
+import type {
+   GameKey,
+   GetSubResources,
+   LeagueKey,
+   PlayerKey,
+   TeamKey,
+} from '../types/query/graph.js';
+import type {
+   PlayerStatusParam,
+   SortParam,
+} from '../types/query/params.js';
 import type { AllResponseTypes } from '../types/query/responses.js';
 
 interface PathSegment {
@@ -22,10 +34,34 @@ interface QueryState {
    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
 }
 
+type RootPath = [];
+type GamesPath = ['games'];
+type GamePath = ['game', GameKey];
+type LeaguePath = ['league', LeagueKey];
+type TeamPath = ['team', TeamKey];
+type PlayerPath = ['player', PlayerKey];
+type UsersPath = ['users'];
+type LeagueOutValue = Extract<
+   GetSubResources<'league'>[number],
+   'settings' | 'standings' | 'scoreboard'
+>;
+type TeamOutValue = Extract<
+   GetSubResources<'team'>[number],
+   'roster' | 'matchups' | 'stats' | 'standings'
+>;
+type GameOutValue = Extract<
+   GetSubResources<'game'>[number],
+   'stat_categories' | 'position_types' | 'game_weeks'
+>;
+type PlayerOutValue = Extract<
+   GetSubResources<'player'>[number],
+   'stats' | 'ownership' | 'percent_owned' | 'draft_analysis'
+>;
+
 /**
  * Composable Query Builder
  */
-export class QueryBuilder {
+export class QueryBuilder<TPath extends string[] = RootPath> {
    protected state: QueryState;
    protected httpClient: HttpClient;
 
@@ -50,131 +86,190 @@ export class QueryBuilder {
       return this.state.segments[this.state.segments.length - 1];
    }
 
+   private as<TNextPath extends string[]>(): QueryBuilder<TNextPath> {
+      return this as unknown as QueryBuilder<TNextPath>;
+   }
+
    // ===== Resource Entry Points =====
 
-   game(key: string): this {
+   game(
+      this: QueryBuilder<RootPath>,
+      key: GameKey,
+   ): QueryBuilder<GamePath> {
       this.addSegment('resource', 'game', key);
-      return this;
+      return this.as<GamePath>();
    }
 
-   league(key: string): this {
+   league(
+      this: QueryBuilder<RootPath>,
+      key: LeagueKey,
+   ): QueryBuilder<LeaguePath> {
       this.addSegment('resource', 'league', key);
-      return this;
+      return this.as<LeaguePath>();
    }
 
-   team(key: string): this {
+   team(
+      this: QueryBuilder<RootPath>,
+      key: TeamKey,
+   ): QueryBuilder<TeamPath> {
       this.addSegment('resource', 'team', key);
-      return this;
+      return this.as<TeamPath>();
    }
 
-   player(key: string): this {
+   player(
+      this: QueryBuilder<RootPath>,
+      key: PlayerKey,
+   ): QueryBuilder<PlayerPath> {
       this.addSegment('resource', 'player', key);
-      return this;
+      return this.as<PlayerPath>();
    }
 
-   users(): this {
+   users(this: QueryBuilder<RootPath>): QueryBuilder<UsersPath> {
       this.addSegment('resource', 'users');
-      return this;
+      return this.as<UsersPath>();
    }
 
    // ===== Sub-Resources =====
 
-   settings(): this {
+   settings(
+      this: QueryBuilder<LeaguePath>,
+   ): QueryBuilder<[...LeaguePath, 'settings']> {
       this.addSegment('subResource', 'settings');
-      return this;
+      return this.as<[...LeaguePath, 'settings']>();
    }
 
-   standings(): this {
+   standings<TPath extends LeaguePath | TeamPath>(
+      this: QueryBuilder<TPath>,
+   ): QueryBuilder<[...TPath, 'standings']> {
       this.addSegment('subResource', 'standings');
-      return this;
+      return this.as<[...TPath, 'standings']>();
    }
 
-   scoreboard(): this {
+   scoreboard(
+      this: QueryBuilder<LeaguePath>,
+   ): QueryBuilder<[...LeaguePath, 'scoreboard']> {
       this.addSegment('subResource', 'scoreboard');
-      return this;
+      return this.as<[...LeaguePath, 'scoreboard']>();
    }
 
-   roster(params?: { week?: string; date?: string }): this {
+   roster(
+      this: QueryBuilder<TeamPath>,
+      params?: { week?: string | number; date?: string },
+   ): QueryBuilder<[...TeamPath, 'roster']> {
       this.addSegment('subResource', 'roster');
-      if (params?.week) this.param('week', params.week);
+      if (params?.week) this.param('week', String(params.week));
       if (params?.date) this.param('date', params.date);
-      return this;
+      return this.as<[...TeamPath, 'roster']>();
    }
 
-   matchups(params?: { weeks?: string }): this {
+   matchups(
+      this: QueryBuilder<TeamPath>,
+      params?: { weeks?: string },
+   ): QueryBuilder<[...TeamPath, 'matchups']> {
       this.addSegment('subResource', 'matchups');
       if (params?.weeks) this.param('weeks', params.weeks);
-      return this;
+      return this.as<[...TeamPath, 'matchups']>();
    }
 
-   stats(params?: { type?: string; week?: string; date?: string }): this {
+   stats<TPath extends TeamPath | PlayerPath>(
+      this: QueryBuilder<TPath>,
+      params?: { type?: string; week?: string | number; date?: string },
+   ): QueryBuilder<[...TPath, 'stats']> {
       this.addSegment('subResource', 'stats');
       if (params?.type) this.param('type', params.type);
-      if (params?.week) this.param('week', params.week);
+      if (params?.week) this.param('week', String(params.week));
       if (params?.date) this.param('date', params.date);
-      return this;
+      return this.as<[...TPath, 'stats']>();
    }
 
-   ownership(): this {
+   ownership(
+      this: QueryBuilder<PlayerPath>,
+   ): QueryBuilder<[...PlayerPath, 'ownership']> {
       this.addSegment('subResource', 'ownership');
-      return this;
+      return this.as<[...PlayerPath, 'ownership']>();
    }
 
-   percentOwned(): this {
+   percentOwned(
+      this: QueryBuilder<PlayerPath>,
+   ): QueryBuilder<[...PlayerPath, 'percent_owned']> {
       this.addSegment('subResource', 'percent_owned');
-      return this;
+      return this.as<[...PlayerPath, 'percent_owned']>();
    }
 
-   draftAnalysis(): this {
+   draftAnalysis(
+      this: QueryBuilder<PlayerPath>,
+   ): QueryBuilder<[...PlayerPath, 'draft_analysis']> {
       this.addSegment('subResource', 'draft_analysis');
-      return this;
+      return this.as<[...PlayerPath, 'draft_analysis']>();
    }
 
-   statCategories(): this {
+   statCategories(
+      this: QueryBuilder<GamePath>,
+   ): QueryBuilder<[...GamePath, 'stat_categories']> {
       this.addSegment('subResource', 'stat_categories');
-      return this;
+      return this.as<[...GamePath, 'stat_categories']>();
    }
 
-   positionTypes(): this {
+   positionTypes(
+      this: QueryBuilder<GamePath>,
+   ): QueryBuilder<[...GamePath, 'position_types']> {
       this.addSegment('subResource', 'position_types');
-      return this;
+      return this.as<[...GamePath, 'position_types']>();
    }
 
-   gameWeeks(): this {
+   gameWeeks(
+      this: QueryBuilder<GamePath>,
+   ): QueryBuilder<[...GamePath, 'game_weeks']> {
       this.addSegment('subResource', 'game_weeks');
-      return this;
+      return this.as<[...GamePath, 'game_weeks']>();
    }
 
    // ===== Collections =====
 
-   leagues(): this {
+   leagues<TPath extends GamePath | UsersPath | [...UsersPath, 'games']>(
+      this: QueryBuilder<TPath>,
+   ): QueryBuilder<[...TPath, 'leagues']> {
       this.addSegment('collection', 'leagues');
-      return this;
+      return this.as<[...TPath, 'leagues']>();
    }
 
-   teams(): this {
+   teams<TPath extends LeaguePath | UsersPath | [...UsersPath, 'games']>(
+      this: QueryBuilder<TPath>,
+   ): QueryBuilder<[...TPath, 'teams']> {
       this.addSegment('collection', 'teams');
-      return this;
+      return this.as<[...TPath, 'teams']>();
    }
 
-   players(): this {
+   players<TPath extends GamePath | LeaguePath | [...TeamPath, 'roster']>(
+      this: QueryBuilder<TPath>,
+   ): QueryBuilder<[...TPath, 'players']> {
       this.addSegment('collection', 'players');
-      return this;
+      return this.as<[...TPath, 'players']>();
    }
 
-   transactions(): this {
+   transactions(
+      this: QueryBuilder<LeaguePath>,
+   ): QueryBuilder<[...LeaguePath, 'transactions']> {
       this.addSegment('collection', 'transactions');
-      return this;
+      return this.as<[...LeaguePath, 'transactions']>();
    }
 
-   drafts(): this {
+   drafts(
+      this: QueryBuilder<LeaguePath>,
+   ): QueryBuilder<[...LeaguePath, 'drafts']> {
       this.addSegment('collection', 'drafts');
-      return this;
+      return this.as<[...LeaguePath, 'drafts']>();
    }
 
-   games(): this {
+   games<TThisPath extends RootPath | UsersPath>(
+      this: QueryBuilder<TThisPath>,
+   ): QueryBuilder<
+      TThisPath extends RootPath ? GamesPath : [...UsersPath, 'games']
+   > {
       this.addSegment('collection', 'games');
-      return this;
+      return this.as<
+         TThisPath extends RootPath ? GamesPath : [...UsersPath, 'games']
+      >();
    }
 
    // ===== Parameters =====
@@ -195,17 +290,36 @@ export class QueryBuilder {
       return this;
    }
 
-   out(subResources: string | string[]): this {
-      return this.param('out', subResources);
+   out<TPath extends GamePath | LeaguePath | TeamPath | PlayerPath>(
+      this: QueryBuilder<TPath>,
+      subResources:
+         | (TPath extends GamePath
+              ? GameOutValue
+              : TPath extends LeaguePath
+                ? LeagueOutValue
+                : TPath extends TeamPath
+                  ? TeamOutValue
+                  : PlayerOutValue)
+         | Array<
+              TPath extends GamePath
+                 ? GameOutValue
+                 : TPath extends LeaguePath
+                   ? LeagueOutValue
+                   : TPath extends TeamPath
+                     ? TeamOutValue
+                     : PlayerOutValue
+           >,
+   ): this {
+      return this.param('out', subResources) as this;
    }
 
    position(pos: string): this {
       return this.param('position', pos);
    }
-   status(status: string): this {
+   status(status: PlayerStatusParam | string): this {
       return this.param('status', status);
    }
-   sort(sort: string): this {
+   sort(sort: SortParam | string): this {
       return this.param('sort', sort);
    }
    count(n: number): this {
@@ -269,26 +383,38 @@ export class QueryBuilder {
       return `/${parts.join('/')}`;
    }
 
-   async execute<T = AllResponseTypes>(): Promise<T> {
+   async execute<
+      T = InferResponseType<TPath> extends never
+         ? AllResponseTypes
+         : InferResponseType<TPath>,
+   >(): Promise<T> {
       const path = this.buildPath();
       return this.httpClient.get<T>(path);
    }
 
-   async post<T = AllResponseTypes>(
-      data?: Record<string, unknown>,
-   ): Promise<T> {
+   async post<
+      T = InferResponseType<TPath> extends never
+         ? AllResponseTypes
+         : InferResponseType<TPath>,
+   >(data?: Record<string, unknown>): Promise<T> {
       const path = this.buildPath();
       return this.httpClient.post<T>(path, data);
    }
 
-   async put<T = AllResponseTypes>(
-      data?: Record<string, unknown>,
-   ): Promise<T> {
+   async put<
+      T = InferResponseType<TPath> extends never
+         ? AllResponseTypes
+         : InferResponseType<TPath>,
+   >(data?: Record<string, unknown>): Promise<T> {
       const path = this.buildPath();
       return this.httpClient.put<T>(path, data);
    }
 
-   async delete<T = AllResponseTypes>(): Promise<T> {
+   async delete<
+      T = InferResponseType<TPath> extends never
+         ? AllResponseTypes
+         : InferResponseType<TPath>,
+   >(): Promise<T> {
       const path = this.buildPath();
       return this.httpClient.delete<T>(path);
    }

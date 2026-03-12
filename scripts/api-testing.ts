@@ -19,6 +19,7 @@ const client = new YahooFantasyClient({
    redirectUri: 'oob',
 });
 
+// All KKUPFL leagues for the 2025-2026 season
 const leagues = [
    '465.l.50894',
    '465.l.50896',
@@ -75,16 +76,21 @@ const leagues = [
 
 client
    .advanced()
-   .resource('league', leagues[0])
-   .resource('player', '465.p.8895')
+   .collection('leagues')
+   .param('league_keys', leagues)
+   // .resource('league', `465.l.121384`)
+   // .resource('player', '465.p.8895')
    // .param('player_keys', '465.p.8895')
    // .param('sort_type', 'date')
    // .param('sort_date', '2025-10-07')
-   .resource('ownership')
+   // .resource('stats')
+   // .param('type', 'season')
+   .resource('scoreboard')
+   .param('type', 'season')
    .execute()
    .then((response) => {
       Bun.write(
-         './scripts/wallstedt.json',
+         './scripts/league-scoreboard-20260301.json',
          JSON.stringify(response, null, 2),
       );
       // console.log(JSON.stringify(response, null, 2));

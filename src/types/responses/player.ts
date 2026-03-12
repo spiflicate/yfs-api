@@ -92,6 +92,15 @@ export interface Player extends BasePlayer {
    /** Player advanced statistics (if requested) */
    playerAdvancedStats?: PlayerAdvancedStats;
 
+   /** Player ownership details (if requested) */
+   ownership?: PlayerOwnership;
+
+   /** League-specific percent owned data (if requested) */
+   percentOwned?: PlayerPercentOwned;
+
+   /** Draft analysis details (if requested) */
+   draftAnalysis?: PlayerDraftAnalysis;
+
    /** Starting status for current period */
    startingStatus?: StartingStatus;
 
@@ -251,4 +260,74 @@ export interface PlayerStatsStat {
 
    /** Value for this stat (number or string) */
    value: number | string;
+}
+
+/**
+ * Represents player ownership information.
+ * Contains roster ownership or waiver details for a player.
+ */
+export interface PlayerOwnership {
+   /** Ownership type (e.g., owned, waivers, freeagents) */
+   ownershipType: string;
+
+   /** Owning team key, if currently rostered */
+   ownerTeamKey?: string;
+
+   /** Owning team name, if currently rostered */
+   ownerTeamName?: string;
+
+   /** Waiver period value, if applicable */
+   waPeriod?: number;
+
+   /** FAAB balance associated with the owning team, if applicable */
+   faabBalance?: number;
+}
+
+/**
+ * Represents league-specific percent-owned metrics for a player.
+ */
+export interface PlayerPercentOwned {
+   /** Coverage period type */
+   coverageType: string;
+
+   /** Week number, if applicable */
+   week?: number;
+
+   /** Date, if applicable */
+   date?: string;
+
+   /** Percent of leagues where the player is rostered */
+   percentOwned: number;
+
+   /** Percent of leagues where the player is started */
+   percentStarted?: number;
+
+   /** Percent of leagues where the player is recommended */
+   percentRecommended?: number;
+
+   /** Delta from the previous period, if available */
+   delta?: number;
+}
+
+/**
+ * Represents draft analysis metrics for a player.
+ */
+export interface PlayerDraftAnalysis {
+   /** Average overall draft pick */
+   averagePick?: number;
+
+   /** Average draft round */
+   averageRound?: number;
+
+   /** Average auction cost */
+   averageCost?: number;
+
+   /** Current auction cost */
+   cost?: number;
+
+   /** Percentage of leagues where the player is owned */
+   percentageOwned?: number;
+
+   /** Percentage of leagues where the player is started */
+   percentageStarted?: number;
 }

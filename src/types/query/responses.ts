@@ -7,6 +7,12 @@
  * @module
  */
 
+import type { Game } from '../responses/game.js';
+import type { League } from '../responses/league.js';
+import type { Player } from '../responses/player.js';
+import type { Team } from '../responses/team.js';
+import type { Transaction } from '../responses/transaction.js';
+import type { User, UserGame } from '../responses/user.js';
 import type {
    GameResponse,
    GamesResponse,
@@ -28,6 +34,32 @@ import type {
 export interface FantasyContentResponse<T> {
    [key: string]: T;
 }
+
+type Simplify<T> = {
+   [K in keyof T]: T[K];
+} & {};
+
+type RequiredProps<T, K extends keyof T> = Simplify<
+   Omit<T, K> & {
+      [P in K]-?: NonNullable<T[P]>;
+   }
+>;
+
+interface ResourcePayloadMap {
+   game: Game;
+   league: League;
+   team: Team;
+   player: Player;
+   transaction: Transaction;
+   user: User;
+}
+
+export type ResourceWrapperResponse<
+   TResource extends keyof ResourcePayloadMap,
+   TFragment = unknown,
+> = {
+   [K in TResource]: Simplify<ResourcePayloadMap[K] & TFragment>;
+};
 
 /**
  * Response for game resource
@@ -52,49 +84,26 @@ export type GamePlayersResponse = PlayersResponse;
 /**
  * Response for game/stat_categories sub-resource
  */
-export interface GameStatCategoriesResponse {
-   game: {
-      game_key: string;
-      stat_categories: {
-         stats: Array<{
-            stat_id: number;
-            name: string;
-            display_name: string;
-         }>;
-      };
-   };
-}
+export type GameStatCategoriesResponse = ResourceWrapperResponse<
+   'game',
+   RequiredProps<Game, 'statCategories'>
+>;
 
 /**
  * Response for game/position_types sub-resource
  */
-export interface GamePositionTypesResponse {
-   game: {
-      game_key: string;
-      position_types: {
-         position_type: Array<{
-            type: string;
-            display_name: string;
-         }>;
-      };
-   };
-}
+export type GamePositionTypesResponse = ResourceWrapperResponse<
+   'game',
+   RequiredProps<Game, 'positionTypes'>
+>;
 
 /**
  * Response for game/game_weeks sub-resource
  */
-export interface GameGameWeeksResponse {
-   game: {
-      game_key: string;
-      game_weeks: {
-         game_week: Array<{
-            week: number;
-            start_date: string;
-            end_date: string;
-         }>;
-      };
-   };
-}
+export type GameGameWeeksResponse = ResourceWrapperResponse<
+   'game',
+   RequiredProps<Game, 'gameWeeks'>
+>;
 
 /**
  * Response for league resource
@@ -109,51 +118,58 @@ export type LeaguesCollectionResponse = LeaguesResponse;
 /**
  * Response for league/settings sub-resource
  */
-export type LeagueSettingsResponse = LeagueResponse;
+export type LeagueSettingsResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'settings'>
+>;
 
 /**
  * Response for league/standings sub-resource
  */
-export type LeagueStandingsResponse = LeagueResponse;
+export type LeagueStandingsResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'standings'>
+>;
 
 /**
  * Response for league/scoreboard sub-resource
  */
-export type LeagueScoreboardResponse = LeagueResponse;
+export type LeagueScoreboardResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'scoreboard'>
+>;
 
 /**
  * Response for league/teams sub-resource
  */
-export type LeagueTeamsResponse = LeagueResponse;
+export type LeagueTeamsResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'teams'>
+>;
 
 /**
  * Response for league/players sub-resource
  */
-export type LeaguePlayersResponse = LeagueResponse;
+export type LeaguePlayersResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'players'>
+>;
 
 /**
  * Response for league/transactions sub-resource
  */
-export type LeagueTransactionsResponse = LeagueResponse;
+export type LeagueTransactionsResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'transactions'>
+>;
 
 /**
  * Response for league/drafts sub-resource
  */
-export interface LeagueDraftsResponse {
-   league: {
-      league_key: string;
-      drafts: {
-         draft: Array<{
-            draft_key: string;
-            draft_id: number;
-            status: string;
-            draft_type: string;
-            start_time: number;
-            end_time: number;
-         }>;
-      };
-   };
-}
+export type LeagueDraftsResponse = ResourceWrapperResponse<
+   'league',
+   RequiredProps<League, 'drafts'>
+>;
 
 /**
  * Response for team resource
@@ -168,22 +184,39 @@ export type TeamsCollectionResponse = TeamsResponse;
 /**
  * Response for team/roster sub-resource
  */
-export type TeamRosterResponse = TeamResponse;
+export type TeamRosterResponse = ResourceWrapperResponse<
+   'team',
+   RequiredProps<Team, 'roster'>
+>;
 
 /**
  * Response for team/roster/players sub-resource
  */
-export type TeamRosterPlayersResponse = TeamResponse;
+export type TeamRosterPlayersResponse = TeamRosterResponse;
 
 /**
  * Response for team/matchups sub-resource
  */
-export type TeamMatchupsResponse = TeamResponse;
+export type TeamMatchupsResponse = ResourceWrapperResponse<
+   'team',
+   RequiredProps<Team, 'matchups'>
+>;
+
+/**
+ * Response for team/standings sub-resource
+ */
+export type TeamStandingsResponse = ResourceWrapperResponse<
+   'team',
+   RequiredProps<Team, 'teamStandings'>
+>;
 
 /**
  * Response for team/stats sub-resource
  */
-export type TeamStatsResponse = TeamResponse;
+export type TeamStatsResponse = ResourceWrapperResponse<
+   'team',
+   RequiredProps<Team, 'teamStats'>
+>;
 
 /**
  * Response for player resource
@@ -198,130 +231,82 @@ export type PlayersCollectionResponse = PlayersResponse;
 /**
  * Response for player/stats sub-resource
  */
-export interface PlayerStatsResponse {
-   player: {
-      player_key: string;
-      player_id: number;
-      stats: {
-         coverage_type: string;
-         season: number;
-         stats: Array<{
-            stat_id: number;
-            value: string | number;
-         }>;
-      };
-   };
-}
+export type PlayerStatsResponse = ResourceWrapperResponse<
+   'player',
+   RequiredProps<Player, 'playerStats'>
+>;
 
 /**
  * Response for player/ownership sub-resource
  */
-export interface PlayerOwnershipResponse {
-   player: {
-      player_key: string;
-      ownership: {
-         ownership_type: string;
-         owner_team_key: string;
-         owner_team_name: string;
-         wa_period: number;
-         faab_balance: number;
-      };
-   };
-}
+export type PlayerOwnershipResponse = ResourceWrapperResponse<
+   'player',
+   RequiredProps<Player, 'ownership'>
+>;
 
 /**
  * Response for player/percent_owned sub-resource
  */
-export interface PlayerPercentOwnedResponse {
-   player: {
-      player_key: string;
-      percent_owned: {
-         coverage_type: string;
-         week: number;
-         percent_owned: number;
-         percent_started: number;
-         percent_recommended: number;
-      };
-   };
-}
+export type PlayerPercentOwnedResponse = ResourceWrapperResponse<
+   'player',
+   RequiredProps<Player, 'percentOwned'>
+>;
 
 /**
  * Response for player/draft_analysis sub-resource
  */
-export interface PlayerDraftAnalysisResponse {
-   player: {
-      player_key: string;
-      draft_analysis: {
-         average_pick: number;
-         average_round: number;
-         average_cost: number;
-         cost: number;
-         percentage_owned: number;
-         percentage_started: number;
-      };
-   };
-}
+export type PlayerDraftAnalysisResponse = ResourceWrapperResponse<
+   'player',
+   RequiredProps<Player, 'draftAnalysis'>
+>;
 
 /**
  * Response for users resource
  */
 export type UsersResourceResponse = UserResponse;
+export type UserResourceResponse = UserResponse;
 
 /**
  * Response for users collection
  */
 export type UsersCollectionResponse = UsersResponse;
 
+type UsersWrapperResponse<TUserFragment = unknown> = {
+   users: Array<Simplify<User & TUserFragment>>;
+};
+
+type UserGamesWrapperResponse<TGameFragment = unknown> =
+   UsersWrapperResponse<{
+      games: Array<Simplify<UserGame & TGameFragment>>;
+   }>;
+
 /**
  * Response for users/games sub-resource
  */
-export interface UserGamesResponse {
-   users: Array<{
-      user: UserResponse['user'] & {
-         games: {
-            game: Array<{
-               game_key: string;
-               game_id: number;
-               name: string;
-               code: string;
-               type: string;
-            }>;
-         };
-      };
-   }>;
-}
+export type UserGamesResponse = UsersWrapperResponse<
+   RequiredProps<User, 'games'>
+>;
+
+/**
+ * Response for users/games/leagues sub-resource
+ */
+export type UserGameLeaguesResponse = UserGamesWrapperResponse<
+   RequiredProps<UserGame, 'leagues'>
+>;
 
 /**
  * Response for users/leagues sub-resource
  */
-export interface UserLeaguesResponse {
-   users: Array<{
-      user: UserResponse['user'] & {
-         leagues: {
-            league: Array<{
-               league_key: string;
-               name: string;
-            }>;
-         };
-      };
-   }>;
-}
+export type UserLeaguesResponse = UsersWrapperResponse<
+   RequiredProps<User, 'leagues'>
+>;
 
 /**
  * Response for users/teams sub-resource
  */
-export interface UserTeamsResponse {
-   users: Array<{
-      user: UserResponse['user'] & {
-         teams: {
-            team: Array<{
-               team_key: string;
-               name: string;
-            }>;
-         };
-      };
-   }>;
-}
+export type UserTeamsResponse = UserGamesWrapperResponse<
+   RequiredProps<UserGame, 'teams'>
+>;
 
 /**
  * Response for transaction resource
@@ -350,7 +335,7 @@ export interface ResourceResponseMap {
    teams: TeamsCollectionResponse;
    player: PlayerResourceResponse;
    players: PlayersCollectionResponse;
-   user: UsersResourceResponse;
+   user: UserResourceResponse;
    users: UsersCollectionResponse;
    transaction: TransactionResourceResponse;
    transactions: TransactionsCollectionResponse;
@@ -382,6 +367,7 @@ export type AllResponseTypes =
    | TeamRosterResponse
    | TeamRosterPlayersResponse
    | TeamMatchupsResponse
+   | TeamStandingsResponse
    | TeamStatsResponse
    | PlayerResourceResponse
    | PlayersCollectionResponse
@@ -392,6 +378,7 @@ export type AllResponseTypes =
    | UsersResourceResponse
    | UsersCollectionResponse
    | UserGamesResponse
+   | UserGameLeaguesResponse
    | UserLeaguesResponse
    | UserTeamsResponse
    | TransactionResourceResponse

@@ -1,0 +1,130 @@
+{
+  "team": {
+    "teamKey": "465.l.121384.t.14",
+    "teamId": 14,
+    "name": "Third Row Penalty Box",
+    "isOwnedByCurrentLogin": 1,
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+    "teamLogos": [
+      {
+        "size": "large",
+        "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+      }
+    ],
+    "waiverPriority": 1,
+    "faabBalance": 62,
+    "numberOfMoves": 27,
+    "numberOfTrades": 0,
+    "rosterAdds": {
+      "coverageType": "week",
+      "coverageValue": 9,
+      "value": 0
+    },
+    "leagueScoringType": "headpoint",
+    "hasDraftGrade": false,
+    "managers": [
+      {
+        "managerId": 15,
+        "nickname": "jbru",
+        "guid": "ZJE6QAFOUXVLFTLA5F2HL5MWUH",
+        "isCurrentLogin": 1,
+        "imageUrl": "https://s.yimg.com/ag/images/5cdd6c15-bbc3-49db-8c25-61b77b188eb8_64sq.jpg",
+        "feloScore": 914,
+        "feloTier": "diamond"
+      }
+    ],
+    "teamStats": {
+      "coverageType": "season",
+      "season": 2025,
+      "stats": [
+        {
+          "statId": 1,
+          "value": 119
+        },
+        {
+          "statId": 2,
+          "value": 213
+        },
+        {
+          "statId": 11,
+          "value": 5
+        },
+        {
+          "statId": 14,
+          "value": 900
+        },
+        {
+          "statId": 31,
+          "value": 331
+        },
+        {
+          "statId": 32,
+          "value": 285
+        },
+        {
+          "statId": 19,
+          "value": 13
+        },
+        {
+          "statId": 22,
+          "value": 80
+        },
+        {
+          "statId": 25,
+          "value": 752
+        },
+        {
+          "statId": 27,
+          "value": 3
+        }
+      ]
+    },
+    "teamPoints": {
+      "coverageType": "season",
+      "season": 2025,
+      "total": 1931.65,
+      "stats": [
+        {
+          "statId": 1,
+          "value": ""
+        },
+        {
+          "statId": 2,
+          "value": ""
+        },
+        {
+          "statId": 11,
+          "value": ""
+        },
+        {
+          "statId": 14,
+          "value": ""
+        },
+        {
+          "statId": 31,
+          "value": ""
+        },
+        {
+          "statId": 32,
+          "value": ""
+        },
+        {
+          "statId": 19,
+          "value": ""
+        },
+        {
+          "statId": 22,
+          "value": ""
+        },
+        {
+          "statId": 25,
+          "value": ""
+        },
+        {
+          "statId": 27,
+          "value": ""
+        }
+      ]
+    }
+  }
+}

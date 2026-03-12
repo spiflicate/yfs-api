@@ -17,18 +17,18 @@
  * - YAHOO_TOKEN_EXPIRES_AT (timestamp)
  */
 
-import { describe, test, expect, beforeAll } from 'bun:test';
+import { beforeAll, describe, expect, test } from 'bun:test';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import {
    getOAuth2Config,
-   shouldSkipIntegrationTests,
-   hasValidCredentials,
-   hasStoredTokens,
    getStoredTokens,
+   hasStoredTokens,
+   hasValidCredentials,
+   shouldSkipIntegrationTests,
 } from '../helpers/testConfig.js';
 import {
-   InMemoryTokenStorage,
    createMockTokenStorage,
+   InMemoryTokenStorage,
 } from '../helpers/testStorage.js';
 
 describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
@@ -46,14 +46,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             expect(client).toBeInstanceOf(YahooFantasyClient);
          });
 
-         test('should initialize all resource clients', () => {
+         test('should expose query builders', () => {
             const client = new YahooFantasyClient(config);
-            expect(client.user).toBeDefined();
-            expect(client.league).toBeDefined();
-            expect(client.team).toBeDefined();
-            expect(client.player).toBeDefined();
-            expect(client.transaction).toBeDefined();
-            expect(client.game).toBeDefined();
+            expect(client.q()).toBeDefined();
          });
 
          test('should not be authenticated without tokens', () => {
@@ -250,7 +245,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const response = await httpClient.get('/users;use_login=1');
 
             expect(response).toBeDefined();
-            expect((response as any).fantasy_content).toBeDefined();
+            expect(
+               (response as { fantasy_content?: unknown }).fantasy_content,
+            ).toBeDefined();
          });
 
          test('should automatically refresh token if expired', async () => {

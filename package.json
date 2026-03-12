@@ -60,7 +60,7 @@
    },
    "homepage": "https://github.com/spiflicate/yfs-api#readme",
    "devDependencies": {
-      "@biomejs/biome": "^2.3.5",
+      "@biomejs/biome": "^2.4.6",
       "@types/bun": "latest",
       "typescript": "^5.9.3"
    },
@@ -68,7 +68,7 @@
       "typescript": "^5.9.3"
    },
    "dependencies": {
-      "fast-xml-parser": "^5.3.2"
+      "fast-xml-parser": "^5.5.3"
    },
    "engines": {
       "node": ">=18.0.0",

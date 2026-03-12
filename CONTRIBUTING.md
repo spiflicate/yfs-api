@@ -62,7 +62,6 @@ bun run format
 When adding or modifying types:
 
 1. Add JSDoc comments with:
-
    - Clear description
    - `@example` with code samples
    - Links to Yahoo API docs if applicable
@@ -79,11 +78,11 @@ When adding or modifying types:
 If adding a new Yahoo API resource:
 
 1. Create type definitions in `src/types/resources/`
-2. Create resource client in `src/resources/`
-3. Add resource to main client in `src/client/YahooFantasyClient.ts`
-4. Export types from `src/types/index.ts`
-5. Add unit tests in `tests/unit/resources/`
-6. Add integration tests in `tests/integration/resources/`
+2. Extend the query graph and builder surface in `src/query/` and `src/types/query/`
+3. Add or update response typing in `src/types/responses/` and `src/types/query/responses.ts`
+4. Export any new public types from `src/types/index.ts`
+5. Add unit tests covering the query builder path and inferred response type
+6. Add integration tests for the new query path if applicable
 7. Add examples in `examples/`
 8. Update documentation
 

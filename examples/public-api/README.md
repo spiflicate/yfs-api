@@ -25,20 +25,20 @@ According to [Yahoo's documentation](https://developer.yahoo.com/fantasysports/g
 
 ## Differences from User Authentication
 
-| Feature | User Authentication | Public API Mode |
-|---------|-------------------|-----------------|
-| **OAuth Flow** | OAuth 2.0 Authorization Code Grant | OAuth 1.0 2-legged |
-| **User Authorization** | Required | Not required |
-| **Redirect URI** | Required | Not required |
-| **Access Level** | User-specific data | Public data only |
-| **Endpoints** | All endpoints | Public endpoints only |
+| Feature                | User Authentication                | Public API Mode       |
+| ---------------------- | ---------------------------------- | --------------------- |
+| **OAuth Flow**         | OAuth 2.0 Authorization Code Grant | OAuth 1.0 2-legged    |
+| **User Authorization** | Required                           | Not required          |
+| **Redirect URI**       | Required                           | Not required          |
+| **Access Level**       | User-specific data                 | Public data only      |
+| **Endpoints**          | All endpoints                      | Public endpoints only |
 
 ## Usage
 
 ### Configuration
 
 ```typescript
-import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+import { YahooFantasyClient } from "yahoo-fantasy-sports";
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
@@ -48,7 +48,7 @@ const client = new YahooFantasyClient({
 
 // No authentication flow needed!
 // Start making API calls immediately
-const games = await client.game.getGames();
+const game = await client.q().game("nhl").execute();
 ```
 
 ### Running the Examples
@@ -67,6 +67,7 @@ bun run examples/public-api/01-public-endpoints.ts
 ### 01-public-endpoints.ts
 
 Demonstrates accessing various public endpoints:
+
 - Getting game metadata (game info, seasons, availability)
 - Listing all available games
 - Filtering games by code and season
@@ -77,14 +78,17 @@ Demonstrates accessing various public endpoints:
 Based on Yahoo's API documentation, the following endpoints work in public mode:
 
 ### Game Resource ✅
+
 - `GET /game/{game_key}` - Get game metadata
 - `GET /games` - List games with filters
 - `GET /game/{game_key}/players` - Search players in a game
 
 ### League Resource (limited)
+
 - `GET /league/{league_key}` - Get public league info (if league is public)
 
 ### Player Resource (game-level)
+
 - `GET /game/{game_key}/players` - Search and filter players
 
 ## Limitations
@@ -101,12 +105,14 @@ For these endpoints, you must use **user authentication mode** with the full OAu
 ## When to Use Public Mode
 
 Use public mode when you need to:
+
 - Build a fantasy sports information app
 - Create player search/comparison tools
 - Display game and season information
 - Show public league standings
 
 Use user authentication when you need to:
+
 - Access user's teams and leagues
 - Manage rosters
 - Make transactions (add/drop/trade)
@@ -124,6 +130,7 @@ Use user authentication when you need to:
 ### "Authentication failed" error
 
 If you get authentication errors in public mode:
+
 1. Verify your Client ID and Client Secret are correct
 2. Check that your Yahoo Developer App is properly configured
 3. Ensure the endpoint you're accessing supports public access

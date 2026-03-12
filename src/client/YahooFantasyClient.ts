@@ -28,19 +28,12 @@
  * await client.authenticate(code);
  *
  * // Make API calls
- * const leagues = await client.league.get('423.l.12345');
- * const roster = await client.team.getRoster('423.l.12345.t.1');
+ * const league = await client.q().league('423.l.12345').execute();
+ * const roster = await client.q().team('423.l.12345.t.1').roster().execute();
  * ```
  */
 
-import { AdvancedQuery } from '../adv-query/AdvancedQuery.js';
 import { QueryBuilder } from '../query/builder.js';
-import { GameResource } from '../resources/GameResource.js';
-import { LeagueResource } from '../resources/LeagueResource.js';
-import { PlayerResource } from '../resources/PlayerResource.js';
-import { TeamResource } from '../resources/TeamResource.js';
-import { TransactionResource } from '../resources/TransactionResource.js';
-import { UserResource } from '../resources/UserResource.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
 import { HttpClient } from './HttpClient.js';
@@ -71,8 +64,7 @@ export interface TokenStorage {
 /**
  * Main Yahoo Fantasy Sports API client
  *
- * Provides access to all fantasy sports resources through a fluent, resource-based API.
- * Each resource (league, team, player, etc.) is accessed via properties on this client.
+ * Provides access to Yahoo Fantasy Sports through a fluent query-builder API.
  *
  * @example
  * ```typescript
@@ -92,9 +84,9 @@ export interface TokenStorage {
  * // Step 3: Complete authentication
  * await client.authenticate(code);
  *
- * // Use resource clients
- * const league = await client.league.get('423.l.12345');
- * const teams = await client.user.getTeams({ gameCode: 'nhl' });
+ * // Use the query builder
+ * const league = await client.q().league('423.l.12345').execute();
+ * const teams = await client.q().users().useLogin().games().teams().execute();
  * ```
  */
 export class YahooFantasyClient {
@@ -110,144 +102,6 @@ export class YahooFantasyClient {
    private httpClient: HttpClient;
    private tokenStorage?: TokenStorage;
    private tokens?: OAuth2Tokens;
-
-   /**
-    * User resource client
-    *
-    * Access user-related operations
-    *
-    * @example
-    * ```typescript
-    * // Get current user
-    * const user = await client.user.getCurrentUser();
-    *
-    * // Get user's teams
-    * const teams = await client.user.getTeams({ gameCode: 'nhl' });
-    * ```
-    */
-   public readonly user!: UserResource;
-
-   /**
-    * League resource client
-    *
-    * Access league-related operations
-    *
-    * @example
-    * ```typescript
-    * // Get league info
-    * const league = await client.league.get('423.l.12345');
-    *
-    * // Get league standings
-    * const standings = await client.league.getStandings('423.l.12345');
-    *
-    * // Get league scoreboard
-    * const scoreboard = await client.league.getScoreboard('423.l.12345');
-    * ```
-    */
-   public readonly league!: LeagueResource;
-
-   /**
-    * Team resource client
-    *
-    * Access team-related operations
-    *
-    * @example
-    * ```typescript
-    * // Get team info
-    * const team = await client.team.get('423.l.12345.t.1');
-    *
-    * // Get team roster
-    * const roster = await client.team.getRoster('423.l.12345.t.1');
-    *
-    * // Update roster positions
-    * await client.team.updateRoster('423.l.12345.t.1', {
-    *   coverageType: 'date',
-    *   date: '2024-11-20',
-    *   players: [
-    *     { playerKey: '423.p.8888', position: 'C' },
-    *     { playerKey: '423.p.7777', position: 'LW' },
-    *   ],
-    * });
-    * ```
-    */
-   public readonly team!: TeamResource;
-
-   /**
-    * Player resource client
-    *
-    * Access player-related operations
-    *
-    * @example
-    * ```typescript
-    * // Search for players
-    * const results = await client.player.search('423.l.12345', {
-    *   search: 'McDavid',
-    * });
-    *
-    * // Get free agents
-    * const freeAgents = await client.player.search('423.l.12345', {
-    *   status: 'FA',
-    *   position: 'C',
-    *   sort: '60',
-    *   count: 25,
-    * });
-    *
-    * // Get player details
-    * const player = await client.player.get('423.p.8888', {
-    *   includeStats: true,
-    * });
-    * ```
-    */
-   public readonly player!: PlayerResource;
-
-   /**
-    * Transaction resource client
-    *
-    * Access transaction operations (add/drop, waivers, trades)
-    *
-    * @example
-    * ```typescript
-    * // Add a free agent
-    * await client.transaction.addPlayer({
-    *   teamKey: '423.l.12345.t.1',
-    *   addPlayerKey: '423.p.8888',
-    * });
-    *
-    * // Add/drop with FAAB bid
-    * await client.transaction.addDropPlayer({
-    *   teamKey: '423.l.12345.t.1',
-    *   addPlayerKey: '423.p.8888',
-    *   dropPlayerKey: '423.p.7777',
-    *   faabBid: 15,
-    * });
-    *
-    * // View league transactions
-    * const transactions = await client.transaction.getLeagueTransactions('423.l.12345');
-    * ```
-    */
-   public readonly transaction!: TransactionResource;
-
-   /**
-    * Game resource client
-    *
-    * Access game-related operations
-    *
-    * @example
-    * ```typescript
-    * // Get game info
-    * const game = await client.game.get('423');
-    *
-    * // Get available games
-    * const games = await client.game.getGames({ isAvailable: true });
-    *
-    * // Search for players in a game
-    * const players = await client.game.searchPlayers('423', {
-    *   search: 'McDavid',
-    *   position: 'C',
-    * });
-    * ```
-    */
-   public readonly game!: GameResource;
 
    /**
     * Creates a new Yahoo Fantasy Sports API client
@@ -392,85 +246,6 @@ export class YahooFantasyClient {
             oauth1Client: this.oauth1Client,
          },
       );
-
-      // Initialize resource clients
-      this.user = new UserResource(this.httpClient);
-      this.league = new LeagueResource(this.httpClient);
-      this.team = new TeamResource(this.httpClient);
-      this.player = new PlayerResource(this.httpClient);
-      this.transaction = new TransactionResource(this.httpClient);
-      this.game = new GameResource(this.httpClient);
-   }
-
-   /**
-    * Create an advanced query builder for complex API requests
-    *
-    * Provides a flexible interface for constructing and executing advanced queries
-    * that may not be covered by the standard resource methods.
-    *
-    * @template T - Expected response type
-    * @returns A new AdvancedQuery instance
-    *
-    * @example Simple query
-    * ```typescript
-    * const league = await client.advanced()
-    *   .resource('league', '423.l.12345')
-    *   .execute();
-    * ```
-    *
-    * @example Complex query with parameters
-    * ```typescript
-    * const result = await client.advanced()
-    *   .resource('users')
-    *   .param('use_login', '1')
-    *   .collection('games')
-    *   .param('game_keys', 'nfl')
-    *   .collection('leagues')
-    *   .out(['settings', 'standings'])
-    *   .execute();
-    * ```
-    *
-    * @example Deep resource chain
-    * ```typescript
-    * const roster = await client.advanced()
-    *   .resource('team', '423.l.12345.t.1')
-    *   .collection('roster')
-    *   .param('week', '10')
-    *   .collection('players')
-    *   .execute();
-    * ```
-    *
-    * @example With typed response
-    * ```typescript
-    * interface LeagueWithSettings {
-    *   league: {
-    *     league_key: string;
-    *     settings: unknown;
-    *   };
-    * }
-    *
-    * const result = await client.advanced<LeagueWithSettings>()
-    *   .resource('league', '423.l.12345')
-    *   .out('settings')
-    *   .execute();
-    * ```
-    *
-    * @example Available players with filters
-    * ```typescript
-    * const qbs = await client.advanced()
-    *   .resource('league', '423.l.12345')
-    *   .collection('players')
-    *   .params({
-    *     position: 'QB',
-    *     status: 'A',
-    *     sort: 'AR',
-    *     count: '25'
-    *   })
-    *   .execute();
-    * ```
-    */
-   advanced<T = unknown>(): AdvancedQuery<T> {
-      return new AdvancedQuery<T>(this.httpClient);
    }
 
    /**
@@ -511,6 +286,14 @@ export class YahooFantasyClient {
     * @example Query user's games
     * ```typescript
     * const games = await client.q()
+    *   .games()
+    *   .gameKeys(['nhl', 'nfl'])
+    *   .execute();
+    * ```
+    *
+    * @example Query user's games
+    * ```typescript
+    * const userGames = await client.q()
     *   .users()
     *   .useLogin()
     *   .games()

@@ -1,0 +1,129 @@
+{
+  "team": {
+    "teamKey": "465.l.50894.t.1",
+    "teamId": 1,
+    "name": "Hughes Jugs (of Seider)",
+    "url": "https://hockey.fantasysports.yahoo.com/hockey/50894/1",
+    "teamLogos": [
+      {
+        "size": "large",
+        "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a947af70db515be1e2c2e136ce04a3a022ee18c792c79fa04ceb219ea72f40cf.png"
+      }
+    ],
+    "waiverPriority": 14,
+    "faabBalance": 83,
+    "numberOfMoves": 35,
+    "numberOfTrades": 0,
+    "rosterAdds": {
+      "coverageType": "week",
+      "coverageValue": 9,
+      "value": 2
+    },
+    "leagueScoringType": "headpoint",
+    "hasDraftGrade": false,
+    "auctionBudgetTotal": 200,
+    "auctionBudgetSpent": 260,
+    "managers": [
+      {
+        "managerId": 1,
+        "nickname": "--hidden--",
+        "guid": "FVO6XZXJW4VZCKYLA5DPGKKAYI",
+        "feloScore": 1025,
+        "feloTier": "diamond"
+      }
+    ],
+    "teamStats": {
+      "coverageType": "season",
+      "season": 2025,
+      "stats": [
+        {
+          "statId": 1,
+          "value": 99
+        },
+        {
+          "statId": 2,
+          "value": 154
+        },
+        {
+          "statId": 11,
+          "value": 4
+        },
+        {
+          "statId": 14,
+          "value": 827
+        },
+        {
+          "statId": 31,
+          "value": 317
+        },
+        {
+          "statId": 32,
+          "value": 304
+        },
+        {
+          "statId": 19,
+          "value": 29
+        },
+        {
+          "statId": 22,
+          "value": 126
+        },
+        {
+          "statId": 25,
+          "value": 1233
+        },
+        {
+          "statId": 27,
+          "value": 4
+        }
+      ]
+    },
+    "teamPoints": {
+      "coverageType": "season",
+      "season": 2025,
+      "total": 1822.3,
+      "stats": [
+        {
+          "statId": 1,
+          "value": ""
+        },
+        {
+          "statId": 2,
+          "value": ""
+        },
+        {
+          "statId": 11,
+          "value": ""
+        },
+        {
+          "statId": 14,
+          "value": ""
+        },
+        {
+          "statId": 31,
+          "value": ""
+        },
+        {
+          "statId": 32,
+          "value": ""
+        },
+        {
+          "statId": 19,
+          "value": ""
+        },
+        {
+          "statId": 22,
+          "value": ""
+        },
+        {
+          "statId": 25,
+          "value": ""
+        },
+        {
+          "statId": 27,
+          "value": ""
+        }
+      ]
+    }
+  }
+}

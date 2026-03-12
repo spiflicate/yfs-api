@@ -17,15 +17,67 @@
  * - TEST_TEAM_KEY (optional)
  */
 
-import { describe, test, expect, beforeAll } from 'bun:test';
+import { beforeAll, describe, expect, test } from 'bun:test';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import {
    getOAuth2Config,
-   shouldSkipIntegrationTests,
-   hasStoredTokens,
    getStoredTokens,
+   hasStoredTokens,
+   shouldSkipIntegrationTests,
 } from '../helpers/testConfig.js';
 import { InMemoryTokenStorage } from '../helpers/testStorage.js';
+
+function extractTeams(
+   response: unknown,
+): Array<{ teamKey: string; name?: string }> {
+   if (!response || typeof response !== 'object') {
+      return [];
+   }
+
+   const users = (response as { users?: unknown[] }).users;
+   if (!Array.isArray(users)) {
+      return [];
+   }
+
+   return users.flatMap((user) => {
+      if (!user || typeof user !== 'object') {
+         return [];
+      }
+
+      const games = (user as { games?: unknown[] }).games;
+      if (!Array.isArray(games)) {
+         return [];
+      }
+
+      return games.flatMap((game) => {
+         if (!game || typeof game !== 'object') {
+            return [];
+         }
+
+         const teams = (game as { teams?: unknown[] }).teams;
+         if (!Array.isArray(teams)) {
+            return [];
+         }
+
+         return teams.flatMap((team) => {
+            if (!team || typeof team !== 'object') {
+               return [];
+            }
+
+            const record = team as {
+               teamKey?: string;
+               team_key?: string;
+               name?: string;
+            };
+
+            const teamKey = record.teamKey ?? record.team_key;
+            return typeof teamKey === 'string'
+               ? [{ teamKey, name: record.name }]
+               : [];
+         });
+      });
+   });
+}
 
 describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
    'End-to-End Workflow Tests',
@@ -83,13 +135,20 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get current user
-            const user = await client.user.getCurrentUser();
+            const user = await client.q().users().useLogin().execute();
             expect(user).toBeDefined();
 
             // Get user's teams (if any)
-            const teams = await client.user.getTeams({
-               gameCode: 'nhl',
-            });
+            const teams = extractTeams(
+               await client
+                  .q()
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nhl')
+                  .teams()
+                  .execute(),
+            );
             expect(teams).toBeDefined();
             expect(Array.isArray(teams)).toBe(true);
          });
@@ -100,27 +159,47 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get user's teams
-            const teams = await client.user.getTeams({
-               gameCode: 'nhl',
-            });
+            const teams = extractTeams(
+               await client
+                  .q()
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nhl')
+                  .teams()
+                  .execute(),
+            );
 
             if (teams && teams.length > 0) {
                const teamKey = teams[0]?.teamKey;
                if (!teamKey) return;
 
                // Get team details
-               const team = await client.team.get(teamKey);
+               const team = await client
+                  .q()
+                  .team(teamKey as `${number}.l.${number}.t.${number}`)
+                  .execute();
                expect(team).toBeDefined();
-               expect(team.teamKey).toBe(teamKey);
+               expect(team.team.teamKey).toBe(teamKey);
 
                // Get current roster
-               const roster = await client.team.getRoster(teamKey);
+               const roster = await client
+                  .q()
+                  .team(teamKey as `${number}.l.${number}.t.${number}`)
+                  .roster()
+                  .execute();
                expect(roster).toBeDefined();
-               expect(roster.players).toBeDefined();
-               expect(Array.isArray(roster.players)).toBe(true);
+               expect(roster.team.roster?.players).toBeDefined();
+               expect(Array.isArray(roster.team.roster?.players)).toBe(
+                  true,
+               );
 
                // Get team stats
-               const stats = await client.team.getStats(teamKey);
+               const stats = await client
+                  .q()
+                  .team(teamKey as `${number}.l.${number}.t.${number}`)
+                  .stats()
+                  .execute();
                expect(stats).toBeDefined();
             }
          });
@@ -129,17 +208,19 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       describe('Player Search and Analysis', () => {
          test('should search and analyze players', async () => {
             // Get NHL game
-            const game = await client.game.get('nhl');
+            const game = (await client.q().game('nhl').execute()).game;
             expect(game).toBeDefined();
 
             // Search for a specific player
-            const searchResult = await client.game.searchPlayers(
-               game.gameKey,
-               {
-                  search: 'McDavid',
-                  count: 5,
-               },
-            );
+            const searchResult = (
+               await client
+                  .q()
+                  .game(game.gameKey)
+                  .players()
+                  .search('McDavid')
+                  .count(5)
+                  .execute()
+            ).game;
 
             expect(searchResult).toBeDefined();
             expect(searchResult.players).toBeDefined();
@@ -149,19 +230,27 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                if (!firstPlayer?.playerKey) return;
 
                // Get detailed player information
-               const player = await client.player.get(
-                  firstPlayer.playerKey,
-               );
+               const player = await client
+                  .q()
+                  .player(firstPlayer.playerKey as `${number}.p.${number}`)
+                  .execute();
                expect(player).toBeDefined();
-               expect(player.name).toBeTruthy();
+               expect(player.player.name).toBeTruthy();
             }
          });
 
          test('should find free agents in league', async () => {
             // Get user's teams
-            const teams = await client.user.getTeams({
-               gameCode: 'nhl',
-            });
+            const teams = extractTeams(
+               await client
+                  .q()
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nhl')
+                  .teams()
+                  .execute(),
+            );
 
             if (teams && teams.length > 0) {
                const team = teams[0];
@@ -172,16 +261,19 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                if (!leagueKey) return;
 
                // Search for free agents
-               const freeAgents = await client.player.search(leagueKey, {
-                  status: 'FA',
-                  position: 'C',
-                  sort: '60',
-                  count: 25,
-               });
+               const freeAgents = await client
+                  .q()
+                  .league(leagueKey as `${number}.l.${number}`)
+                  .players()
+                  .status('FA')
+                  .position('C')
+                  .sort('60')
+                  .count(25)
+                  .execute();
 
                expect(freeAgents).toBeDefined();
-               expect(freeAgents.players).toBeDefined();
-               expect(Array.isArray(freeAgents.players)).toBe(true);
+               expect(freeAgents.league.players).toBeDefined();
+               expect(Array.isArray(freeAgents.league.players)).toBe(true);
             }
          });
       });
@@ -189,9 +281,16 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       describe('League Analysis Workflow', () => {
          test('should analyze league standings and matchups', async () => {
             // Get user's teams first
-            const teams = await client.user.getTeams({
-               gameCode: 'nhl',
-            });
+            const teams = extractTeams(
+               await client
+                  .q()
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nhl')
+                  .teams()
+                  .execute(),
+            );
 
             if (teams && teams.length > 0) {
                const teamKey = teams[0]?.teamKey;
@@ -202,23 +301,36 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                if (!leagueKey) return;
 
                // Get league details
-               const league = await client.league.get(leagueKey);
+               const league = await client
+                  .q()
+                  .league(leagueKey as `${number}.l.${number}`)
+                  .execute();
                expect(league).toBeDefined();
 
                // Get current standings
-               const standings =
-                  await client.league.getStandings(leagueKey);
+               const standings = await client
+                  .q()
+                  .league(leagueKey as `${number}.l.${number}`)
+                  .standings()
+                  .execute();
                expect(standings).toBeDefined();
-               expect(standings.teams).toBeDefined();
+               expect(standings.league.standings).toBeDefined();
 
                // Get current week scoreboard
-               const scoreboard =
-                  await client.league.getScoreboard(leagueKey);
+               const scoreboard = await client
+                  .q()
+                  .league(leagueKey as `${number}.l.${number}`)
+                  .scoreboard()
+                  .execute();
                expect(scoreboard).toBeDefined();
-               expect(scoreboard.matchups).toBeDefined();
+               expect(scoreboard.league.scoreboard).toBeDefined();
 
                // Get league settings
-               const settings = await client.league.getSettings(leagueKey);
+               const settings = await client
+                  .q()
+                  .league(leagueKey as `${number}.l.${number}`)
+                  .settings()
+                  .execute();
                expect(settings).toBeDefined();
             }
          });
@@ -229,20 +341,32 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get user's teams
-            const teams = await client.user.getTeams({
-               gameCode: 'nhl',
-            });
+            const teams = extractTeams(
+               await client
+                  .q()
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nhl')
+                  .teams()
+                  .execute(),
+            );
 
             if (teams && teams.length > 0) {
                const userTeam = teams[0];
                if (!userTeam?.teamKey) return;
 
                // Get the same team via team resource
-               const teamDetails = await client.team.get(userTeam.teamKey);
+               const teamDetails = await client
+                  .q()
+                  .team(
+                     userTeam.teamKey as `${number}.l.${number}.t.${number}`,
+                  )
+                  .execute();
 
                // Data should be consistent
-               expect(teamDetails.teamKey).toBe(userTeam.teamKey);
-               expect(teamDetails.name).toBe(userTeam.name);
+               expect(teamDetails.team.teamKey).toBe(userTeam.teamKey);
+               expect(teamDetails.team.name).toBe(userTeam.name);
             }
          });
       });
@@ -252,19 +376,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // This should retry on network issues
-            const user = await client.user.getCurrentUser();
+            const user = await client.q().users().useLogin().execute();
             expect(user).toBeDefined();
          });
 
          test('should handle invalid resource keys gracefully', async () => {
             expect(async () => {
-               await client.league.get('invalid.l.99999');
+               await client.q().league('999.l.99999').execute();
             }).toThrow();
 
             // Should still be able to make valid requests
-            const games = await client.game.getGames({
-               isAvailable: true,
-            });
+            const games = await client.q().game('nhl').execute();
             expect(games).toBeDefined();
          });
       });
