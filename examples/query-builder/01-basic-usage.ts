@@ -11,7 +11,7 @@ const pathOnly = process.argv.includes('--path-only');
 const TEST_LEAGUE_KEY = '465.l.121384';
 const TEST_TEAM_KEY = '465.l.121384.t.2';
 const TEST_PLAYER_KEY = '465.p.4961';
-const TEST_PLAYER_KEYS = [TEST_PLAYER_KEY, '465.p.5993', '465.p.7161'];
+const TEST_PLAYER_KEYS = ['465.p.4961', '465.p.5993', '465.p.7161'];
 
 async function runExamples() {
    const clientId = process.env.YAHOO_CLIENT_ID ?? '';
