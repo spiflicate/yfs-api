@@ -26,6 +26,10 @@ import {
 } from '../../../src/types/errors.js';
 import { API_BASE_URL, HTTP_STATUS } from '../../../src/utils/constants.js';
 
+function createTokenProvider(tokens?: OAuth2Tokens) {
+   return () => tokens;
+}
+
 describe('HttpClient', () => {
    let oauth2Client: OAuth2Client;
    let tokens: OAuth2Tokens;
@@ -59,7 +63,10 @@ describe('HttpClient', () => {
 
    describe('constructor', () => {
       test('should create HttpClient with tokens', () => {
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          expect(client).toBeInstanceOf(HttpClient);
       });
 
@@ -69,27 +76,48 @@ describe('HttpClient', () => {
       });
 
       test('should accept custom options', () => {
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            timeout: 60000,
-            maxRetries: 5,
-            debug: true,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               timeout: 60000,
+               maxRetries: 5,
+               debug: true,
+            },
+         );
          expect(client).toBeInstanceOf(HttpClient);
       });
    });
 
-   describe('setTokens', () => {
-      test('should set tokens', () => {
+   describe('setTokenProvider', () => {
+      test('should set token provider', async () => {
          const client = new HttpClient(oauth2Client);
-         client.setTokens(tokens);
-         // Token is set internally, verify by making a request
+         client.setTokenProvider(createTokenProvider(tokens));
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         await client.get('/test/path');
          expect(client).toBeInstanceOf(HttpClient);
       });
    });
 
    describe('setTokenRefreshCallback', () => {
       test('should set token refresh callback', () => {
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          const callback = async () => tokens;
          client.setTokenRefreshCallback(callback);
          expect(client).toBeInstanceOf(HttpClient);
@@ -109,7 +137,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          const result = await client.get('/test/path');
 
          expect(result).toHaveProperty('data');
@@ -140,7 +171,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.get('/test/path');
 
          const calls = fetchMock.mock.calls;
@@ -167,7 +201,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.get('/test/path', {
             params: { status: 'A', count: 25, active: true },
          });
@@ -196,7 +233,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.get('/test/path', {
             params: { status: 'A', count: undefined },
          });
@@ -224,7 +264,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.get('/test/path', { skipAuth: true });
 
          const calls = fetchMock.mock.calls;
@@ -252,7 +295,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          const result = await client.post('/test/path', requestBody);
 
          expect(result).toHaveProperty('success');
@@ -283,7 +329,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          const result = await client.put('/test/path', requestBody);
 
          expect(result).toHaveProperty('success');
@@ -312,7 +361,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          const result = await client.delete('/test/path');
 
          expect(result).toHaveProperty('success');
@@ -338,7 +390,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             AuthenticationError,
@@ -355,7 +410,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             NotFoundError,
@@ -376,9 +434,14 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 0, // Don't retry to speed up test
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0, // Don't retry to speed up test
+            },
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             RateLimitError,
@@ -396,7 +459,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             YahooApiError,
@@ -419,9 +485,14 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 0,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0,
+            },
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             NetworkError,
@@ -434,9 +505,14 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 0,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0,
+            },
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             NetworkError,
@@ -457,9 +533,11 @@ describe('HttpClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
+         let currentTokens = expiredTokens;
          let refreshCalled = false;
          const refreshCallback = async () => {
             refreshCalled = true;
+            currentTokens = newTokens;
             return newTokens;
          };
 
@@ -477,7 +555,7 @@ describe('HttpClient', () => {
 
          const client = new HttpClient(
             oauth2Client,
-            expiredTokens,
+            () => currentTokens,
             refreshCallback,
          );
          await client.get('/test/path');
@@ -502,7 +580,10 @@ describe('HttpClient', () => {
             expiresAt: Date.now() - 1000,
          };
 
-         const client = new HttpClient(oauth2Client, expiredTokens); // No callback
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(expiredTokens),
+         ); // No callback
 
          await expect(client.get('/test/path')).rejects.toThrow(
             AuthenticationError,
@@ -516,9 +597,11 @@ describe('HttpClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
+         let currentTokens = tokens;
          let refreshCalled = false;
          const refreshCallback = async () => {
             refreshCalled = true;
+            currentTokens = newTokens;
             return newTokens;
          };
 
@@ -549,7 +632,7 @@ describe('HttpClient', () => {
 
          const client = new HttpClient(
             oauth2Client,
-            tokens,
+            () => currentTokens,
             refreshCallback,
             {
                maxRetries: 0,
@@ -584,9 +667,11 @@ describe('HttpClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
+         let currentTokens = tokens;
          let refreshCalls = 0;
          const refreshCallback = async () => {
             refreshCalls++;
+            currentTokens = newTokens;
             return newTokens;
          };
 
@@ -604,7 +689,7 @@ describe('HttpClient', () => {
 
          const client = new HttpClient(
             oauth2Client,
-            tokens,
+            () => currentTokens,
             refreshCallback,
             {
                maxRetries: 0,
@@ -642,9 +727,14 @@ describe('HttpClient', () => {
          });
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 1,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
 
          const result = await client.get('/test/path');
          expect(result).toHaveProperty('success');
@@ -677,9 +767,14 @@ describe('HttpClient', () => {
          });
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 1,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
 
          const result = await client.get('/test/path');
          expect(result).toHaveProperty('success');
@@ -696,9 +791,14 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 2,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 2,
+            },
+         );
 
          await expect(client.get('/test/path')).rejects.toThrow(
             YahooApiError,
@@ -724,9 +824,14 @@ describe('HttpClient', () => {
          });
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens, undefined, {
-            maxRetries: 1,
-         });
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
 
          const result = await client.get('/test/path');
          expect(result).toHaveProperty('success');
@@ -748,7 +853,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.get('/test/path', {
             headers: { 'X-Custom-Header': 'custom-value' },
          });
@@ -775,7 +883,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
          await client.post('/test/path', {
             body: 'raw-string-body',
          } as any);
@@ -804,7 +915,10 @@ describe('HttpClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new HttpClient(oauth2Client, tokens);
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
 
          // Make multiple rapid requests
          await Promise.all([
