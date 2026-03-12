@@ -5,6 +5,152 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-beta.0] - 2026-03-12
+
+### Overview
+
+First beta release of the v2 line, driven by a major refactor/rewrite after v1.1.1.
+This release reshapes the API around a composable request-building workflow and removes the legacy resource-oriented surface.
+
+### Added
+
+- **Composable Request Builder:** Introduced request-builder-first API (`src/request/builder.ts`, `src/request/index.ts`) for flexible Yahoo path composition.
+- **Query Type Layer:** Added dedicated query typing modules under `src/types/query/*`.
+- **Client Test Coverage:** Added request-builder-centric and client-focused tests, including `RequestBuilderClient` unit coverage.
+
+### Changed
+
+- **Client Flow:** Refactored `HttpClient` token handling to use a token-provider callback and improved 401 refresh behavior.
+- **Examples & Docs:** Reworked examples and docs to align with request-builder usage; removed outdated advanced-query docs/examples.
+- **Project Cleanup:** Consolidated and removed obsolete scripts and debug helpers no longer aligned with the v2 direction.
+
+### Removed
+
+- **Legacy Resources:** Removed resource modules (`GameResource`, `LeagueResource`, `PlayerResource`, `TeamResource`, `TransactionResource`, `UserResource`).
+- **Legacy Query APIs:** Removed `AdvancedQuery` and `QueryBuilder` implementations from the v1.x approach.
+
+### Breaking Changes
+
+- **Public API Surface:** v1.x resource-based usage patterns are no longer the primary API in this beta.
+- **Migration Required:** Existing integrations using removed resource/query-builder APIs will require code changes.
+- **Beta Stability:** This is a beta release and public API details may still evolve before stable v2.0.0.
+
+### Deprecated
+
+- **v1.x Line:** All v1.x releases are officially deprecated and no longer recommended for new or existing production use.
+- **Support Status:** v1.x is in end-of-life maintenance status and should be migrated to v2.
+
+### Notes
+
+- Migrate all active integrations to the v2 API surface as soon as possible.
+
+---
+
+## [1.1.1] - 2025-11-29
+
+Patch release with bug fixes, parser improvements, and type/refactor cleanups.
+
+### Changed
+
+- **Refactor:** Response types and resource handling reorganized for consistency (game, league, player, team, transaction).
+- **Refactor:** Streamlined TypeScript types and simplified `AdvancedQuery` / `QueryBuilder` type safety.
+- **Remove:** Unused local OAuth server implementation removed.
+
+### Fixed
+
+- **XML Parser:** Handle empty arrays represented as empty strings and optimized parsing performance.
+- **Advanced Query Builder:** Fixed query parameter serialization edge cases.
+- **Response Handling:** Resolved edge cases when extracting data from parsed XML responses.
+
+### Added
+
+- **Types:** Stubs for MLB, NBA, and NFL added to support future sport-specific types.
+
+### Notes
+
+- **HttpClient:** TODO added to track automatic token-refresh handling in a future patch.
+- **LeagueResource:** `getScoreboard` updated to return a `League`-typed response.
+
+No breaking changes; safe to upgrade for fixes and refactors.
+
+---
+
+## [1.1.0] - 2025-11-24
+
+### Overview
+
+Major refactor addressing significant implementation flaws in v1.0.0. This release improves XML parsing, enhances the API with an advanced query builder, and reorganizes documentation for clarity.
+
+### Added
+
+#### Advanced Query Builder (⚠️ Experimental)
+
+- **Advanced Query Builder** - New `client.advanced()` method for constructing complex API requests with fluent API
+- Support for resource chaining, parameter passing, and output selection
+- Enables queries not covered by standard resource methods
+- ⚠️ API and behavior may change; use with caution in production
+
+#### Testing & Fixtures
+
+- **Data Collection Script** - `multi-league-collector.ts` for gathering comprehensive fixture data from real Yahoo Fantasy API
+- Enhanced fixture data covering multiple sports and league configurations
+- Script-based discovery of league and team keys for integration testing
+
+#### Developer Tools
+
+- **Auto-Discovery Script** - Automatically find and configure test resources from user's Yahoo Fantasy account
+- Comprehensive fixture management and data collection infrastructure
+
+### Changed
+
+#### Core Improvements
+
+- **Response Property Names** - Updated game, player, and team response property names for consistency
+- **Array Normalization** - Enhanced XML parser array normalization with mappings for users and leagues
+- **Transaction Interfaces** - Streamlined transaction API interfaces and documentation
+- **Response Handling** - Updated response handling in resource classes for better data extraction
+
+#### Documentation
+
+- **Restructured Docs** - Reorganized documentation files for the Yahoo API guide
+- **Removed Outdated Docs** - Cleaned up CI/CD and OAuth improvement documentation
+- **API Documentation** - Added comprehensive documentation for players, teams, transactions, and users
+- **Design Folder Cleanup** - Removed outdated design documents and summaries
+- **README Updates** - Updated README to remove design folder references and reflect current capabilities
+
+#### Type System
+
+- **Type Organization** - Restored and reorganized TypeScript response types into dedicated folder structure
+- **Type Consistency** - Improved type consistency across resource clients
+
+### Fixed
+
+#### Parser & XML Handling
+
+- **Array Normalization** - Fixed nested array handling for Yahoo API responses (`[[{...}], null]` format)
+- **XML Parser Mappings** - Added proper mappings for users and leagues in array normalization
+
+#### Type & Build Issues
+
+- **TypeScript Diagnostics** - Resolved TypeScript warnings and diagnostic errors in tests
+- **Import Cleanup** - Cleaned up imports to enable proper building
+
+### Other
+
+- Removed exposed client credentials from repository history
+- Cleaned out legacy fixture data and consolidated test infrastructure
+- Minor improvements to error handling and validation
+
+### Upgrade Guide from 1.0.0
+
+If upgrading from v1.0.0, be aware of:
+
+- **Response property names** have been updated for consistency - review your usage of resource responses
+- **Array normalization** has been improved - nested arrays should now parse correctly
+- **Advanced query builder** is experimental - prefer standard resource methods for stable APIs
+
+---
+
 ## [1.0.0] - 2025-11-16
 
 ### Initial Release
@@ -119,111 +265,7 @@ Future updates may include:
 
 Breaking changes will be clearly documented in major version releases.
 
----
-
-## [1.1.0] - 2025-11-24
-
-### Overview
-
-Major refactor addressing significant implementation flaws in v1.0.0. This release improves XML parsing, enhances the API with an advanced query builder, and reorganizes documentation for clarity.
-
-### Added
-
-#### Advanced Query Builder (⚠️ Experimental)
-
-- **Advanced Query Builder** - New `client.advanced()` method for constructing complex API requests with fluent API
-- Support for resource chaining, parameter passing, and output selection
-- Enables queries not covered by standard resource methods
-- ⚠️ API and behavior may change; use with caution in production
-
-#### Testing & Fixtures
-
-- **Data Collection Script** - `multi-league-collector.ts` for gathering comprehensive fixture data from real Yahoo Fantasy API
-- Enhanced fixture data covering multiple sports and league configurations
-- Script-based discovery of league and team keys for integration testing
-
-#### Developer Tools
-
-- **Auto-Discovery Script** - Automatically find and configure test resources from user's Yahoo Fantasy account
-- Comprehensive fixture management and data collection infrastructure
-
-### Changed
-
-#### Core Improvements
-
-- **Response Property Names** - Updated game, player, and team response property names for consistency
-- **Array Normalization** - Enhanced XML parser array normalization with mappings for users and leagues
-- **Transaction Interfaces** - Streamlined transaction API interfaces and documentation
-- **Response Handling** - Updated response handling in resource classes for better data extraction
-
-#### Documentation
-
-- **Restructured Docs** - Reorganized documentation files for the Yahoo API guide
-- **Removed Outdated Docs** - Cleaned up CI/CD and OAuth improvement documentation
-- **API Documentation** - Added comprehensive documentation for players, teams, transactions, and users
-- **Design Folder Cleanup** - Removed outdated design documents and summaries
-- **README Updates** - Updated README to remove design folder references and reflect current capabilities
-
-#### Type System
-
-- **Type Organization** - Restored and reorganized TypeScript response types into dedicated folder structure
-- **Type Consistency** - Improved type consistency across resource clients
-
-### Fixed
-
-#### Parser & XML Handling
-
-- **Array Normalization** - Fixed nested array handling for Yahoo API responses (`[[{...}], null]` format)
-- **XML Parser Mappings** - Added proper mappings for users and leagues in array normalization
-
-#### Type & Build Issues
-
-- **TypeScript Diagnostics** - Resolved TypeScript warnings and diagnostic errors in tests
-- **Import Cleanup** - Cleaned up imports to enable proper building
-
-### Other
-
-- Removed exposed client credentials from repository history
-- Cleaned out legacy fixture data and consolidated test infrastructure
-- Minor improvements to error handling and validation
-
-### Upgrade Guide from 1.0.0
-
-If upgrading from v1.0.0, be aware of:
-
-- **Response property names** have been updated for consistency - review your usage of resource responses
-- **Array normalization** has been improved - nested arrays should now parse correctly
-- **Advanced query builder** is experimental - prefer standard resource methods for stable APIs
-
----
-
-## [1.1.1] - 2025-11-29
-
-Patch release with bug fixes, parser improvements, and type/refactor cleanups.
-
-### Changed
-
-- **Refactor:** Response types and resource handling reorganized for consistency (game, league, player, team, transaction).
-- **Refactor:** Streamlined TypeScript types and simplified `AdvancedQuery` / `QueryBuilder` type safety.
-- **Remove:** Unused local OAuth server implementation removed.
-
-### Fixed
-
-- **XML Parser:** Handle empty arrays represented as empty strings and optimized parsing performance.
-- **Advanced Query Builder:** Fixed query parameter serialization edge cases.
-- **Response Handling:** Resolved edge cases when extracting data from parsed XML responses.
-
-### Added
-
-- **Types:** Stubs for MLB, NBA, and NFL added to support future sport-specific types.
-
-### Notes
-
-- **HttpClient:** TODO added to track automatic token-refresh handling in a future patch.
-- **LeagueResource:** `getScoreboard` updated to return a `League`-typed response.
-
-No breaking changes; safe to upgrade for fixes and refactors.
-
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
 [1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
+[2.0.0-beta1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
