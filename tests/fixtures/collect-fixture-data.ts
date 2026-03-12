@@ -112,34 +112,54 @@ async function main() {
    // User-level data
    if (config.users) {
       await collect('user-current.json', () =>
-         client.user.getCurrentUser(),
+         client.request().users().useLogin().execute(),
       );
       await collect('user-games.json', () =>
-         client.user.getGames({
-            gameCodes: context.gameCodes as unknown as string[],
-         } as Parameters<typeof client.user.getGames>[0]),
+         client
+            .request()
+            .users()
+            .useLogin()
+            .games()
+            .gameKeys(context.gameCodes)
+            .execute(),
       );
-      await collect('user-teams.json', () => client.user.getTeams({}));
+      await collect('user-teams.json', () =>
+         client
+            .request()
+            .users()
+            .useLogin()
+            .games()
+            .gameKeys(context.gameCodes)
+            .teams()
+            .execute(),
+      );
    }
 
    // Game-level data
    if (config.games) {
       for (const gameCode of context.gameCodes) {
          await collect(`game-${gameCode}.json`, () =>
-            client.game.get(gameCode),
+            client.request().game(gameCode).execute(),
          );
          await collect(`game-${gameCode}-players.json`, () =>
-            client.game.searchPlayers(gameCode, { start: 0, count: 25 }),
+            client
+               .request()
+               .game(gameCode)
+               .players()
+               .start(0)
+               .count(25)
+               .execute(),
          );
          await collect(`game-${gameCode}-stat-categories.json`, () =>
-            client.game.getStatCategories(gameCode),
+            client.request().game(gameCode).statCategories().execute(),
          );
          await collect(`game-${gameCode}-multiple.json`, () =>
-            client.game.get(gameCode, {
-               includePlayers: true,
-               includePositionTypes: true,
-               includeStatCategories: true,
-            }),
+            client
+               .request()
+               .game(gameCode)
+               .out(['position_types', 'stat_categories'])
+               .players()
+               .execute(),
          );
       }
    }
@@ -148,26 +168,27 @@ async function main() {
    if (config.leagues) {
       for (const leagueKey of context.leagueKeys) {
          await collect(`league-${sanitizeKey(leagueKey)}.json`, () =>
-            client.league.get(leagueKey),
+            client.request().league(leagueKey).execute(),
          );
          await collect(
             `league-${sanitizeKey(leagueKey)}-settings.json`,
-            () => client.league.getSettings(leagueKey),
+            () => client.request().league(leagueKey).settings().execute(),
          );
          await collect(
             `league-${sanitizeKey(leagueKey)}-standings.json`,
-            () => client.league.getStandings(leagueKey),
+            () => client.request().league(leagueKey).standings().execute(),
          );
          await collect(
             `league-${sanitizeKey(leagueKey)}-scoreboard.json`,
-            () => client.league.getScoreboard(leagueKey),
+            () => client.request().league(leagueKey).scoreboard().execute(),
          );
          await collect(`league-${sanitizeKey(leagueKey)}-teams.json`, () =>
-            client.league.getTeams(leagueKey),
+            client.request().league(leagueKey).teams().execute(),
          );
          await collect(
             `league-${sanitizeKey(leagueKey)}-transactions.json`,
-            () => client.transaction.getLeagueTransactions(leagueKey),
+            () =>
+               client.request().league(leagueKey).transactions().execute(),
          );
       }
    }
@@ -176,16 +197,20 @@ async function main() {
    if (config.teams) {
       for (const teamKey of context.teamKeys) {
          await collect(`team-${sanitizeKey(teamKey)}.json`, () =>
-            client.team.get(teamKey),
+            client.request().team(teamKey).execute(),
          );
          await collect(`team-${sanitizeKey(teamKey)}-roster.json`, () =>
-            client.team.getRoster(teamKey),
+            client.request().team(teamKey).roster().execute(),
          );
          await collect(
             `team-${sanitizeKey(teamKey)}-stats.json`,
             async () => {
                try {
-                  return await client.team.getStats(teamKey);
+                  return await client
+                     .request()
+                     .team(teamKey)
+                     .stats()
+                     .execute();
                } catch (err) {
                   const msg =
                      err instanceof Error ? err.message : String(err);
@@ -200,7 +225,7 @@ async function main() {
             },
          );
          await collect(`team-${sanitizeKey(teamKey)}-matchups.json`, () =>
-            client.team.getMatchups(teamKey),
+            client.request().team(teamKey).matchups().execute(),
          );
       }
    }
@@ -209,16 +234,14 @@ async function main() {
    if (config.players) {
       for (const playerKey of context.playerKeys) {
          await collect(`player-${sanitizeKey(playerKey)}.json`, () =>
-            client.player.get(playerKey),
+            client.request().player(playerKey).execute(),
          );
          await collect(`player-${sanitizeKey(playerKey)}-stats.json`, () =>
-            client.player.getStats(playerKey, {
-               coverageType: 'season',
-            }),
+            client.request().player(playerKey).stats().execute(),
          );
          await collect(
             `player-${sanitizeKey(playerKey)}-ownership.json`,
-            () => client.player.getOwnership(playerKey),
+            () => client.request().player(playerKey).ownership().execute(),
          );
       }
    }
@@ -276,10 +299,12 @@ async function buildContext(client: YahooFantasyClient) {
       // realistic keys for games, leagues, and teams. The response shape is:
       // { users: [{ guid: string, games: [...] }] }
       // Each game has a `teams` array (see tests/fixtures/data/user-teams.json).
-      const response = (await client.user.getTeams({})) as Record<
-         string,
-         unknown
-      >;
+      const response = (await client
+         .request()
+         .users()
+         .useLogin()
+         .games()
+         .execute()) as Record<string, unknown>;
       const gamesWithTeams = (response?.[0] as Record<string, unknown>)
          ?.games;
 
@@ -321,9 +346,11 @@ async function buildContext(client: YahooFantasyClient) {
    // Second pass: fetch rosters to discover player keys
    for (const teamKey of teamKeys) {
       try {
-         const rosterResponse = (await client.team.getRoster(
-            teamKey,
-         )) as Record<string, unknown>;
+         const rosterResponse = (await client
+            .request()
+            .team(teamKey)
+            .roster()
+            .execute()) as Record<string, unknown>;
 
          // Try multiple possible roster response structures
          let rosterPlayers: Record<string, unknown>[] = [];
