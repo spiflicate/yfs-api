@@ -51,7 +51,10 @@ try {
    console.log('-'.repeat(70));
    console.log('RAW XML MODE (rawXml: true)');
    console.log('-'.repeat(70));
-   const rawXml = await clientRaw.q().league(leagueKey).execute();
+   const rawXml = (await clientRaw
+      .q()
+      .league(leagueKey)
+      .execute()) as string;
    console.log('Type:', typeof rawXml);
    console.log('First 500 characters:');
    console.log(rawXml.substring(0, 500));
