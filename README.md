@@ -10,7 +10,7 @@ A TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2
 - TypeScript client for Yahoo Fantasy Sports
 - OAuth 1.0 (public API) and OAuth 2.0 (user auth)
 - Token refresh support for OAuth 2.0
-- Resource clients: user, league, team, player, transaction, game
+- Composable query builder via `client.q()` for typed Yahoo API paths
 - Integration-tested against real Yahoo Fantasy leagues (primarily NHL)
 - Transaction APIs are implemented but still experimental
 
@@ -41,16 +41,20 @@ const client = new YahooFantasyClient({
   publicMode: true, // OAuth 1.0 for public endpoints
 });
 
-// Get available games
-const games = await client.game.getGames({ isAvailable: true });
+// Get a public game resource
+const nhl = await client.q().game("nhl").execute();
 
-// Search for players
-const players = await client.game.searchPlayers("nhl", {
-  search: "mcdavid",
-  count: 10,
-});
+// Search public game-level players
+const playerSearch = await client
+  .q()
+  .game("nhl")
+  .players()
+  .search("mcdavid")
+  .count(10)
+  .execute();
 
-console.log(`Found ${players.length} players`);
+console.log(`Game: ${nhl.game.name}`);
+console.log(`Found ${playerSearch.game.players?.length ?? 0} players`);
 ```
 
 ### User Authentication (OAuth 2.0)
@@ -74,29 +78,48 @@ console.log("Visit this URL to authorize:", authUrl);
 await client.authenticate(authorizationCode);
 
 // Step 3: Use authenticated endpoints
-const user = await client.user.getCurrentUser();
-const teams = await client.user.getTeams({ gameCode: "nhl" });
+const teamsResponse = await client
+  .q()
+  .users()
+  .useLogin()
+  .games()
+  .gameKeys("nhl")
+  .teams()
+  .execute();
 
-console.log(`Found ${teams.length} teams for user ${user.guid}`);
+const teams = teamsResponse.users.flatMap((user) =>
+  (user.games ?? []).flatMap((game) => game.teams ?? []),
+);
+
+console.log(`Found ${teams.length} teams`);
 
 // Get league details
-const league = await client.league.get(teams[0].league.leagueKey);
-console.log(`League: ${league.name} (${league.season})`);
+const league = await client.q().league(teams[0].league.leagueKey).execute();
+console.log(`League: ${league.league.name} (${league.league.season})`);
 
 // Get team roster
-const roster = await client.team.getRoster(teams[0].teamKey);
-console.log(`Roster has ${roster.players.length} players`);
+const roster = await client.q().team(teams[0].teamKey).roster().execute();
+console.log(`Roster has ${roster.team.roster?.players?.length ?? 0} players`);
 
 // Get league standings
-const standings = await client.league.getStandings(league.leagueKey);
-console.log(`${standings.length} teams in standings`);
+const standings = await client
+  .q()
+  .league(teams[0].league.leagueKey)
+  .standings()
+  .execute();
+console.log(
+  `${standings.league.standings?.teams?.length ?? 0} teams in standings`,
+);
 
 // Search for players in league
-const freeAgents = await client.player.search(league.leagueKey, {
-  status: "FA",
-  position: "C",
-  count: 25,
-});
+const freeAgents = await client
+  .q()
+  .league(teams[0].league.leagueKey)
+  .players()
+  .status("FA")
+  .position("C")
+  .count(25)
+  .execute();
 ```
 
 ### Token Storage & Persistence
@@ -131,7 +154,7 @@ const client = new YahooFantasyClient(
     clientSecret: process.env.YAHOO_CLIENT_SECRET!,
     redirectUri: "oob",
   },
-  tokenStorage
+  tokenStorage,
 );
 
 // Try to load existing tokens
@@ -146,26 +169,27 @@ if (!client.hasValidTokens()) {
 }
 
 // Tokens are automatically saved and refreshed
-const teams = await client.user.getTeams({ gameCode: "nhl" });
+const teams = await client.q().users().useLogin().games().teams().execute();
 ```
 
-## API Coverage
+## Query Coverage
 
-### Implemented and Tested
+The main public surface is the composable query builder returned by `client.q()`.
 
-| Resource   | Methods                                                           | Status    |
-| ---------- | ----------------------------------------------------------------- | --------- |
-| **User**   | getCurrentUser, getGames, getTeams                                | Tested   |
-| **League** | get, getSettings, getStandings, getScoreboard, getTeams           | Tested   |
-| **Team**   | get, getRoster, getMatchups, getStats                             | Tested   |
-| **Player** | get, search, getStats, getOwnership                               | Tested   |
-| **Game**   | get, getGames, searchPlayers, getPositionTypes, getStatCategories | Tested   |
+| Query Pattern | Example                                              | Status |
+| ------------- | ---------------------------------------------------- | ------ |
+| **Users**     | `client.q().users().useLogin().games().teams()`      | Tested |
+| **League**    | `client.q().league(key).settings()`                  | Tested |
+| **Team**      | `client.q().team(key).roster()`                      | Tested |
+| **Player**    | `client.q().player(key).stats()`                     | Tested |
+| **Game**      | `client.q().game('nhl').players().search('McDavid')` | Tested |
+| **Games**     | `client.q().games().gameKeys(['nhl', 'nfl'])`        | Tested |
 
 ### Experimental (Not Fully Tested)
 
-| Resource        | Methods                                                    | Status          |
-| --------------- | ---------------------------------------------------------- | --------------- |
-| **Transaction** | addPlayer, dropPlayer, addDropPlayer, proposeTradeWithVote | ⚠️ Experimental |
+| Query Pattern          | Example                                           | Status          |
+| ---------------------- | ------------------------------------------------- | --------------- |
+| **Transaction writes** | `client.q().league(key).transactions().post(...)` | ⚠️ Experimental |
 
 Transaction operations are implemented but have limited real-world testing so far. Use with caution and please report any issues.
 
@@ -195,11 +219,12 @@ Check out the `/examples` directory for complete working examples:
 - `examples/hockey/02-client-test.ts` - Testing API endpoints
 - `examples/public-api/01-public-endpoints.ts` - Public API without auth
 - `examples/token-storage/usage-example.ts` - Token persistence
-- `examples/advanced-query/usage-examples.ts` - **Advanced query builder for complex requests**
+- `examples/query-builder/01-basic-usage.ts` - Query builder basics
+- `examples/query-builder/02-type-safety.ts` - Query builder typing examples
 
-### Advanced Queries (⚠️ Experimental)
+### Query Builder Patterns
 
-For complex API requests not covered by the standard methods, use the advanced query builder. **Note:** This API is experimental and may change before the 1.1.0 release:
+The query builder covers both keyed resources and the root `/games` collection:
 
 ```typescript
 import { YahooFantasyClient } from "yfs-api";
@@ -211,43 +236,44 @@ const client = new YahooFantasyClient({
 });
 
 // Complex chain: User's NFL leagues with settings and standings
-const result = await client.advanced()
-  .resource('users')
-  .param('use_login', '1')
-  .collection('games')
-  .param('game_keys', 'nfl')
-  .collection('leagues')
-  .out(['settings', 'standings'])
+const result = await client
+  .q()
+  .users()
+  .useLogin()
+  .games()
+  .gameKeys("nfl")
+  .leagues()
+  .out(["settings", "standings"])
   .execute();
 
+// Root games collection
+const games = await client.q().games().gameKeys(["nhl", "nfl"]).execute();
+
 // Team roster for specific week
-const roster = await client.advanced()
-  .resource('team', '423.l.12345.t.1')
-  .collection('roster')
-  .param('week', '10')
-  .collection('players')
+const roster = await client
+  .q()
+  .team("423.l.12345.t.1")
+  .roster({ week: 10 })
+  .players()
   .execute();
 
 // Available players with filters
-const qbs = await client.advanced()
-  .resource('league', '423.l.12345')
-  .collection('players')
-  .params({
-    position: 'QB',
-    status: 'A',
-    sort: 'AR',
-    count: '25'
-  })
+const qbs = await client
+  .q()
+  .league("423.l.12345")
+  .players()
+  .position("QB")
+  .status("A")
+  .sort("AR")
+  .count(25)
   .execute();
 ```
-
-See [Advanced Query README](examples/advanced-query/README.md) for comprehensive documentation.
 
 ## Documentation
 
 - **[Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)** - Running integration tests
 - **[OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)** - OAuth details
-- **[Advanced Query Implementation](docs/ADVANCED_QUERY_IMPLEMENTATION.md)** - Complex query builder documentation
+- **[URL Pattern Guide](docs/URL_PATTERN_GUIDE.md)** - Query path patterns and composition
 
 ## Development
 
@@ -302,7 +328,7 @@ source .env.test && bun test tests/integration
 yfs-api/
 ├── src/
 │   ├── client/              # OAuth clients and main client
-│   ├── resources/           # Resource-specific clients
+│   ├── query/               # Composable query builder
 │   ├── types/               # TypeScript type definitions
 │   │   ├── resources/       # Resource types (league, team, etc.)
 │   │   ├── sports/          # Sport-specific types (NHL, etc.)

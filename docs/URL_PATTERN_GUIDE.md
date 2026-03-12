@@ -31,43 +31,53 @@ The Yahoo Fantasy API uses a hierarchical, chainable URL pattern that allows tra
 
 ## Separator Rules
 
-| Separator | Purpose | Example |
-|-----------|---------|---------|
-| `/` | Separate resources/collections | `/league/423.l.12345/teams` |
-| `;` | Separate parameters | `/league/423.l.12345;out=settings` |
-| `=` | Assign parameter values | `;week=10` |
-| `,` | Multiple values for same parameter | `;out=settings,standings,scoreboard` |
+| Separator | Purpose                            | Example                              |
+| --------- | ---------------------------------- | ------------------------------------ |
+| `/`       | Separate resources/collections     | `/league/423.l.12345/teams`          |
+| `;`       | Separate parameters                | `/league/423.l.12345;out=settings`   |
+| `=`       | Assign parameter values            | `;week=10`                           |
+| `,`       | Multiple values for same parameter | `;out=settings,standings,scoreboard` |
 
 ## Common Patterns
 
 ### 1. Simple Resource Access
+
 ```
 /league/423.l.12345
 ```
+
 Get a single league by key.
 
 ### 2. Resource with Sub-resources (using `out`)
+
 ```
 /league/423.l.12345;out=settings,standings
 ```
+
 Get league data plus settings and standings.
 
 ### 3. Collection with Filters
+
 ```
 /league/423.l.12345/players;position=QB;status=A
 ```
+
 Get available quarterbacks in the league.
 
 ### 4. Resource Chain
+
 ```
 /users;use_login=1/games;game_keys=nfl/leagues
 ```
+
 Get current user's NFL leagues.
 
 ### 5. Deep Nesting
+
 ```
 /team/423.l.12345.t.1/roster;week=10/players
 ```
+
 Get team's roster players for week 10.
 
 ## Parameter Scope
@@ -77,12 +87,14 @@ Parameters apply to the **immediately preceding** resource or collection:
 ```
 /league/423.l.12345;out=settings/teams;team_keys=t.1,t.2
 ```
+
 - `;out=settings` applies to `league/423.l.12345`
 - `;team_keys=t.1,t.2` applies to `teams` collection
 
 ## Common Parameters
 
 ### `out` - Include Sub-resources
+
 Fetch additional related data in a single request.
 
 ```
@@ -91,6 +103,7 @@ Fetch additional related data in a single request.
 ```
 
 ### Resource Key Filters
+
 Filter collections to specific items.
 
 ```
@@ -100,6 +113,7 @@ Filter collections to specific items.
 ```
 
 ### Status Filters (Players Collection)
+
 ```
 ;status=A    // Available (free agents)
 ;status=FA   // Free agents only
@@ -109,24 +123,28 @@ Filter collections to specific items.
 ```
 
 ### Position Filters
+
 ```
 ;position=QB
 ;position=C,LW,RW  // Multiple positions
 ```
 
 ### Search
+
 ```
 ;search=mcdavid
 ;search=mahomes
 ```
 
 ### Pagination
+
 ```
 ;start=0;count=25
 ;start=25;count=25
 ```
 
 ### Sorting
+
 ```
 ;sort=NAME           // Last name, first name
 ;sort=OR             // Overall rank
@@ -138,17 +156,20 @@ Filter collections to specific items.
 ### Time-based Filters
 
 **Week (Football)**
+
 ```
 ;week=10
 ;weeks=1,5,10
 ```
 
 **Date (Baseball, Basketball, Hockey)**
+
 ```
 ;date=2023-11-15
 ```
 
 **Type & Season**
+
 ```
 ;type=season
 ;type=week;week=10
@@ -157,6 +178,7 @@ Filter collections to specific items.
 ```
 
 ### League/Game Filters
+
 ```
 ;is_available=1      // Only available games
 ;game_types=full,pickem-team
@@ -165,6 +187,7 @@ Filter collections to specific items.
 ```
 
 ### Other Filters
+
 ```
 ;use_login=1         // Current logged-in user
 ```
@@ -174,43 +197,51 @@ Filter collections to specific items.
 The same resource can appear in different contexts with different meanings:
 
 ### Team → Players (Roster Context)
+
 ```
 /team/423.l.12345.t.1/roster/players
 ```
+
 **Question:** "Which players are on my roster?"
 
 ### Player → Team (Ownership Context)
+
 ```
 /player/423.p.8261/ownership
 ```
+
 **Question:** "Which team owns this player?"
 
 ### League → Players (Availability Context)
+
 ```
 /league/423.l.12345/players;status=A
 ```
+
 **Question:** "Which players are available to pick up?"
 
 ## Resource Keys
 
 ### Format Patterns
 
-| Resource | Key Format | Example |
-|----------|------------|---------|
-| Game | `{game_id}` or `{game_code}` | `423` or `nfl` |
-| League | `{game_id}.l.{league_id}` | `423.l.12345` |
-| Team | `{game_id}.l.{league_id}.t.{team_id}` | `423.l.12345.t.1` |
-| Player | `{game_id}.p.{player_id}` | `423.p.8261` |
+| Resource | Key Format                            | Example           |
+| -------- | ------------------------------------- | ----------------- |
+| Game     | `{game_id}` or `{game_code}`          | `423` or `nfl`    |
+| League   | `{game_id}.l.{league_id}`             | `423.l.12345`     |
+| Team     | `{game_id}.l.{league_id}.t.{team_id}` | `423.l.12345.t.1` |
+| Player   | `{game_id}.p.{player_id}`             | `423.p.8261`      |
 
 ### Global vs. Scoped Keys
 
 **Global Keys** - Can be used as base resources:
+
 ```
 /player/423.p.8261
 /team/423.l.12345.t.1
 ```
 
 **Scoped Keys** - Used within a parent context:
+
 ```
 /league/423.l.12345/players;player_keys=423.p.8261,423.p.9527
 ```
@@ -218,36 +249,43 @@ The same resource can appear in different contexts with different meanings:
 ## Advanced Examples
 
 ### Example 1: User's All Teams Across All Games
+
 ```
 /users;use_login=1/games/teams
 ```
 
 ### Example 2: Specific League with Settings and Specific Teams
+
 ```
 /league/423.l.12345;out=settings/teams;team_keys=423.l.12345.t.1,423.l.12345.t.2
 ```
 
 ### Example 3: Player Stats for Specific Week
+
 ```
 /league/423.l.12345/players;player_keys=423.p.8261/stats;type=week;week=10
 ```
 
 ### Example 4: Available Players Sorted by Rank
+
 ```
 /league/423.l.12345/players;status=A;position=QB;sort=AR;count=25
 ```
 
 ### Example 5: Team Matchups for Multiple Weeks
+
 ```
 /team/423.l.12345.t.1/matchups;weeks=1,5,10
 ```
 
 ### Example 6: League Transactions Filtered by Type
+
 ```
 /league/423.l.12345/transactions;type=trade
 ```
 
 ### Example 7: Game with Multiple Sub-resources
+
 ```
 /game/nfl;out=stat_categories,position_types,game_weeks
 ```
@@ -265,13 +303,14 @@ The same resource can appear in different contexts with different meanings:
 The query builder in this library follows these patterns:
 
 ```typescript
-client.advanced()
-  .resource('league', '423.l.12345')  // /league/423.l.12345
-  .param('out', 'settings')            // ;out=settings
-  .collection('teams')                 // /teams
-  .param('team_keys', 't.1,t.2')      // ;team_keys=t.1,t.2
-  .build()
-  
+client
+  .q()
+  .league("423.l.12345") // /league/423.l.12345
+  .out("settings") // ;out=settings
+  .teams() // /teams
+  .teamKeys(["t.1", "t.2"]) // ;team_keys=t.1,t.2
+  .buildPath();
+
 // Result: /league/423.l.12345;out=settings/teams;team_keys=t.1,t.2
 ```
 
@@ -279,4 +318,3 @@ client.advanced()
 
 - [Yahoo Fantasy API Official Guide](https://developer.yahoo.com/fantasysports/guide/)
 - [API Resource Diagrams](../diagrams/) - Visual reference
-- [Query Builder Documentation](../../examples/advanced-query/README.md)

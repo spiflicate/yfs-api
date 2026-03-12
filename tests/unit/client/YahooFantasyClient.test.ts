@@ -2,14 +2,14 @@
  * Unit tests for YahooFantasyClient
  */
 
-import { describe, test, expect, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, mock, test } from 'bun:test';
+import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
 import {
-   YahooFantasyClient,
    type TokenStorage,
+   YahooFantasyClient,
 } from '../../../src/client/YahooFantasyClient.js';
 import type { Config } from '../../../src/types/index.js';
 import { ConfigError } from '../../../src/types/index.js';
-import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
 
 describe('YahooFantasyClient', () => {
    const config: Config = {
@@ -132,35 +132,10 @@ describe('YahooFantasyClient', () => {
       });
    });
 
-   describe('resource clients', () => {
-      test('should have user resource', () => {
+   describe('query builder', () => {
+      test('should expose the composable query builder', () => {
          const client = new YahooFantasyClient(config);
-         expect(client.user).toBeDefined();
-      });
-
-      test('should have league resource', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client.league).toBeDefined();
-      });
-
-      test('should have team resource', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client.team).toBeDefined();
-      });
-
-      test('should have player resource', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client.player).toBeDefined();
-      });
-
-      test('should have transaction resource', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client.transaction).toBeDefined();
-      });
-
-      test('should have game resource', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client.game).toBeDefined();
+         expect(client.q()).toBeDefined();
       });
    });
 

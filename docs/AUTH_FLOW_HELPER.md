@@ -15,15 +15,21 @@ The `authFlow.ts` helper module provides utilities for handling OAuth authentica
 ### Basic Usage
 
 ```typescript
-import { getAuthenticatedClient } from '../helpers/authFlow.js';
+import { getAuthenticatedClient } from "../helpers/authFlow.js";
 
 // In your test
-test('should make authenticated API call', async () => {
+test("should make authenticated API call", async () => {
   // Get an authenticated client - handles everything automatically
   const client = await getAuthenticatedClient();
-  
+
   // Use the client
-  const leagues = await client.user.getLeagues();
+  const leagues = await client
+    .q()
+    .users()
+    .useLogin()
+    .games()
+    .leagues()
+    .execute();
   expect(leagues).toBeDefined();
 });
 ```
@@ -31,21 +37,25 @@ test('should make authenticated API call', async () => {
 ### With Test Suite
 
 ```typescript
-import { describe, test, expect } from 'bun:test';
-import { 
-  getAuthenticatedClient, 
-  canAuthenticate 
-} from '../helpers/authFlow.js';
-import { shouldSkipIntegrationTests } from '../helpers/testConfig.js';
+import { describe, test, expect } from "bun:test";
+import {
+  getAuthenticatedClient,
+  canAuthenticate,
+} from "../helpers/authFlow.js";
+import { shouldSkipIntegrationTests } from "../helpers/testConfig.js";
 
 describe.skipIf(shouldSkipIntegrationTests() || !canAuthenticate())(
-  'My Integration Tests',
+  "My Integration Tests",
   () => {
-    test('authenticated test', async () => {
-      const client = await getAuthenticatedClient();
-      // ... your test code
-    }, { timeout: 120000 }); // Allow time for interactive auth
-  }
+    test(
+      "authenticated test",
+      async () => {
+        const client = await getAuthenticatedClient();
+        // ... your test code
+      },
+      { timeout: 120000 },
+    ); // Allow time for interactive auth
+  },
 );
 ```
 
@@ -101,17 +111,19 @@ Get an authenticated client for integration tests.
 ```typescript
 async function getAuthenticatedClient(
   forceReauth?: boolean,
-  tokenStorage?: TokenStorage
-): Promise<YahooFantasyClient>
+  tokenStorage?: TokenStorage,
+): Promise<YahooFantasyClient>;
 ```
 
 **Parameters:**
+
 - `forceReauth` (optional): Force re-authentication even if valid tokens exist
 - `tokenStorage` (optional): Custom token storage implementation (defaults to file storage)
 
 **Returns:** Authenticated `YahooFantasyClient` instance
 
 **Example:**
+
 ```typescript
 // Use default behavior (load from storage or prompt)
 const client = await getAuthenticatedClient();
@@ -129,14 +141,15 @@ const client = await getAuthenticatedClient(false, storage);
 Check if authentication is available for tests.
 
 ```typescript
-function canAuthenticate(): boolean
+function canAuthenticate(): boolean;
 ```
 
 **Returns:** `true` if valid tokens are available or interactive auth is possible
 
 **Example:**
+
 ```typescript
-describe.skipIf(!canAuthenticate())('My Tests', () => {
+describe.skipIf(!canAuthenticate())("My Tests", () => {
   // Tests that require authentication
 });
 ```
@@ -146,12 +159,13 @@ describe.skipIf(!canAuthenticate())('My Tests', () => {
 Clear all stored authentication tokens.
 
 ```typescript
-function clearStoredTokens(): void
+function clearStoredTokens(): void;
 ```
 
 **Example:**
+
 ```typescript
-import { clearStoredTokens } from '../helpers/authFlow.js';
+import { clearStoredTokens } from "../helpers/authFlow.js";
 
 // In a cleanup or reset test
 afterAll(() => {
@@ -165,19 +179,20 @@ File-based token storage implementation.
 
 ```typescript
 class FileTokenStorage implements TokenStorage {
-  constructor(tokenPath?: string)
-  save(tokens: OAuth2Tokens): void
-  load(): OAuth2Tokens | null
-  clear(): void
-  loadAsync(): Promise<OAuth2Tokens | null>
+  constructor(tokenPath?: string);
+  save(tokens: OAuth2Tokens): void;
+  load(): OAuth2Tokens | null;
+  clear(): void;
+  loadAsync(): Promise<OAuth2Tokens | null>;
 }
 ```
 
 **Example:**
-```typescript
-import { FileTokenStorage } from '../helpers/authFlow.js';
 
-const storage = new FileTokenStorage('.my-tokens.json');
+```typescript
+import { FileTokenStorage } from "../helpers/authFlow.js";
+
+const storage = new FileTokenStorage(".my-tokens.json");
 const client = await getAuthenticatedClient(false, storage);
 ```
 
@@ -279,6 +294,7 @@ Authorization Code: _
 ```
 
 After entering the code:
+
 ```
 Exchanging authorization code for tokens...
 ✓ Authentication successful!
@@ -292,10 +308,14 @@ Exchanging authorization code for tokens...
 Interactive authentication may take time, so increase test timeouts:
 
 ```typescript
-test('my test', async () => {
-  const client = await getAuthenticatedClient();
-  // ...
-}, { timeout: 120000 }); // 2 minutes
+test(
+  "my test",
+  async () => {
+    const client = await getAuthenticatedClient();
+    // ...
+  },
+  { timeout: 120000 },
+); // 2 minutes
 ```
 
 ### 2. Skip Tests Appropriately
@@ -303,7 +323,7 @@ test('my test', async () => {
 Use `canAuthenticate()` to skip tests when auth isn't available:
 
 ```typescript
-describe.skipIf(!canAuthenticate())('Auth Tests', () => {
+describe.skipIf(!canAuthenticate())("Auth Tests", () => {
   // Tests
 });
 ```
@@ -313,18 +333,18 @@ describe.skipIf(!canAuthenticate())('Auth Tests', () => {
 For efficiency, create the client once per suite:
 
 ```typescript
-describe('My Tests', () => {
+describe("My Tests", () => {
   let client: YahooFantasyClient;
 
   beforeAll(async () => {
     client = await getAuthenticatedClient();
   });
 
-  test('test 1', async () => {
+  test("test 1", async () => {
     // Use client
   });
 
-  test('test 2', async () => {
+  test("test 2", async () => {
     // Use client
   });
 });
@@ -349,17 +369,20 @@ bun test
 ### "No authorization code provided"
 
 Make sure you're entering a valid authorization code when prompted. The code should be visible in:
+
 - The redirect URL (if using custom redirect URI)
 - The page content (if using `oob` redirect)
 
 ### "Token refresh failed"
 
 This can happen if:
+
 - The refresh token has expired (90 days for Yahoo)
 - The tokens were revoked
 - Network issues
 
 Solution: Force re-authentication:
+
 ```typescript
 const client = await getAuthenticatedClient(true);
 ```
@@ -378,10 +401,10 @@ The helper waits for stdin input. If running in non-interactive mode (CI/CD), en
 
 ```typescript
 // Old approach - manual setup required
-test('my test', async () => {
+test("my test", async () => {
   const tokens = getStoredTokens();
   if (!tokens) {
-    console.log('Skipping: No tokens available');
+    console.log("Skipping: No tokens available");
     return;
   }
 
@@ -402,10 +425,14 @@ test('my test', async () => {
 
 ```typescript
 // New approach - automatic handling
-test('my test', async () => {
-  const client = await getAuthenticatedClient();
-  // ... test code
-}, { timeout: 120000 });
+test(
+  "my test",
+  async () => {
+    const client = await getAuthenticatedClient();
+    // ... test code
+  },
+  { timeout: 120000 },
+);
 ```
 
 ## See Also

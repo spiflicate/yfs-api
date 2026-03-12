@@ -14,12 +14,12 @@ This document describes the OAuth 2.0 implementation for the Yahoo Fantasy Sport
 
 ### OAuth 1.0a vs OAuth 2.0
 
-| Feature | OAuth 1.0a | OAuth 2.0 |
-|---------|-----------|-----------|
-| **Complexity** | High (requires HMAC-SHA1 signatures) | Low (uses Bearer tokens over HTTPS) |
-| **Token Lifetime** | Long-lived (years) | Short-lived (1 hour) |
-| **Token Refresh** | Session handle (optional) | Refresh token (standard) |
-| **Yahoo Support** | Legacy apps | New apps (2024+) |
+| Feature            | OAuth 1.0a                           | OAuth 2.0                           |
+| ------------------ | ------------------------------------ | ----------------------------------- |
+| **Complexity**     | High (requires HMAC-SHA1 signatures) | Low (uses Bearer tokens over HTTPS) |
+| **Token Lifetime** | Long-lived (years)                   | Short-lived (1 hour)                |
+| **Token Refresh**  | Session handle (optional)            | Refresh token (standard)            |
+| **Yahoo Support**  | Legacy apps                          | New apps (2024+)                    |
 
 ### Testing Results
 
@@ -60,13 +60,9 @@ Response: 302 Found (redirects to Yahoo login)
 ### OAuth2Client API
 
 ```typescript
-import { OAuth2Client } from './src/client/OAuth2Client.js';
+import { OAuth2Client } from "./src/client/OAuth2Client.js";
 
-const client = new OAuth2Client(
-  clientId,
-  clientSecret,
-  redirectUri
-);
+const client = new OAuth2Client(clientId, clientSecret, redirectUri);
 
 // Step 1: Get authorization URL
 const authUrl = client.getAuthorizationUrl(state);
@@ -89,12 +85,12 @@ if (client.isTokenExpired(tokens)) {
 
 ```typescript
 interface OAuth2Tokens {
-  accessToken: string;      // Bearer token for API requests
-  tokenType: string;        // "bearer"
-  expiresIn: number;        // Lifetime in seconds (3600 = 1 hour)
-  refreshToken: string;     // For getting new access tokens
-  expiresAt: number;        // Calculated expiration timestamp
-  yahooGuid?: string;       // User GUID (optional)
+  accessToken: string; // Bearer token for API requests
+  tokenType: string; // "bearer"
+  expiresIn: number; // Lifetime in seconds (3600 = 1 hour)
+  refreshToken: string; // For getting new access tokens
+  expiresAt: number; // Calculated expiration timestamp
+  yahooGuid?: string; // User GUID (optional)
 }
 ```
 
@@ -108,6 +104,7 @@ interface OAuth2Tokens {
    - Get Client ID (Consumer Key) and Client Secret (Consumer Secret)
 
 2. **Set Environment Variables**
+
    ```bash
    export YAHOO_CONSUMER_KEY="your-client-id"
    export YAHOO_CONSUMER_SECRET="your-client-secret"
@@ -115,6 +112,7 @@ interface OAuth2Tokens {
    ```
 
 3. **Run the Example**
+
    ```bash
    bun run examples/hockey/02-authentication-oauth2.ts
    ```
@@ -159,12 +157,12 @@ The easiest way to authenticate is using the local server flow. This eliminates 
 ### Quick Start
 
 ```typescript
-import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+import { YahooFantasyClient } from "yahoo-fantasy-sports";
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-  redirectUri: 'http://localhost:3000/callback', // IMPORTANT: Must match Yahoo app config
+  redirectUri: "http://localhost:3000/callback", // IMPORTANT: Must match Yahoo app config
 });
 
 // This handles everything automatically:
@@ -175,7 +173,7 @@ const client = new YahooFantasyClient({
 await client.authenticateWithLocalServer({ port: 3000 });
 
 // Now make API calls!
-const user = await client.user.getCurrentUser();
+const user = await client.q().users().useLogin().execute();
 ```
 
 ### How It Works
@@ -190,36 +188,37 @@ const user = await client.user.getCurrentUser();
 ### Configuration Requirements
 
 **In Yahoo Developer Console:**
+
 - Set Redirect URI to: `http://localhost:3000/callback`
   - Port can be any available port (3000, 8080, etc.)
   - Path can be anything (/callback, /oauth, etc.)
   - **Must match exactly** what you use in the code
 
 **In Your Code:**
+
 ```typescript
 const client = new YahooFantasyClient({
-  redirectUri: 'http://localhost:3000/callback', // Must match Yahoo app
+  redirectUri: "http://localhost:3000/callback", // Must match Yahoo app
 });
 
 await client.authenticateWithLocalServer({
-  port: 3000,           // Must match redirectUri
-  path: '/callback',    // Must match redirectUri
-  timeout: 300000,      // Optional: 5 minutes (default)
-  openBrowser: true,    // Optional: auto-open browser (default: true)
+  port: 3000, // Must match redirectUri
+  path: "/callback", // Must match redirectUri
+  timeout: 300000, // Optional: 5 minutes (default)
+  openBrowser: true, // Optional: auto-open browser (default: true)
 });
 ```
 
 ### Complete Example
 
-See `examples/hockey/03-authentication-local-server.ts` or `examples/hockey/04-simple-auth.ts` for complete working examples.
-======================================================================
-Yahoo Fantasy Sports API - OAuth 2.0 Authentication Example
-======================================================================
+# See `examples/hockey/03-authentication-local-server.ts` or `examples/hockey/04-simple-auth.ts` for complete working examples.
+
+# Yahoo Fantasy Sports API - OAuth 2.0 Authentication Example
 
 Configuration:
-  Client ID: dj0yJmk9SmVPcUg5Wmps...
-  Client Secret: 8fe14fcb05...
-  Redirect URI: https://jbru.cloud/yfs-redirect
+Client ID: dj0yJmk9SmVPcUg5Wmps...
+Client Secret: 8fe14fcb05...
+Redirect URI: https://jbru.cloud/yfs-redirect
 
 Step 1: Checking for existing tokens...
 ✗ No existing tokens found.
@@ -230,11 +229,12 @@ Please visit this URL to authorize the application:
 https://api.login.yahoo.com/oauth2/request_auth?client_id=...&redirect_uri=...
 
 After authorizing, you will be redirected to:
-  https://jbru.cloud/yfs-redirect?code=AUTHORIZATION_CODE
+https://jbru.cloud/yfs-redirect?code=AUTHORIZATION_CODE
 
 Copy the AUTHORIZATION_CODE and run:
-  YAHOO_AUTH_CODE=<code> bun run examples/hockey/02-authentication-oauth2.ts
-```
+YAHOO_AUTH_CODE=<code> bun run examples/hockey/02-authentication-oauth2.ts
+
+````
 
 ### Making API Requests
 
@@ -249,7 +249,7 @@ const response = await fetch(
     }
   }
 );
-```
+````
 
 ## Features
 
@@ -272,7 +272,9 @@ const response = await fetch(
 ### 🎉 New Features (2024-11-16)
 
 #### Local OAuth Server
+
 No more manual code copy/pasting! The new `authenticateWithLocalServer()` method:
+
 - Starts a temporary local HTTP server
 - Automatically opens the browser to the authorization URL
 - Receives the OAuth callback automatically
@@ -280,7 +282,9 @@ No more manual code copy/pasting! The new `authenticateWithLocalServer()` method
 - Shuts down the server
 
 #### Automatic Token Refresh
+
 The `HttpClient` now automatically refreshes expired tokens before making API requests:
+
 - Checks token expiration before each request
 - Automatically calls refresh token endpoint if needed
 - Updates tokens in storage automatically
@@ -308,7 +312,8 @@ The `HttpClient` now automatically refreshes expired tokens before making API re
 await secureStorage.save(tokens.refreshToken);
 
 // ✅ DO: Check expiration before requests
-if (oauth2.isTokenExpired(tokens, 60)) { // 60s buffer
+if (oauth2.isTokenExpired(tokens, 60)) {
+  // 60s buffer
   tokens = await oauth2.refreshAccessToken(tokens.refreshToken);
 }
 
@@ -346,18 +351,22 @@ try {
 ### Common Issues
 
 **401 Unauthorized - "not found"**
+
 - Using OAuth 1.0a with OAuth 2.0 credentials
 - Solution: Use OAuth2Client instead of OAuthClient
 
 **Invalid redirect_uri**
+
 - Redirect URI doesn't match Yahoo Developer app configuration
 - Solution: Ensure exact match (including trailing slashes, protocol, etc.)
 
 **Invalid client credentials**
+
 - Wrong Client ID or Client Secret
 - Solution: Copy credentials exactly from Yahoo Developer Console
 
 **Token expired**
+
 - Access token lifetime is only 1 hour
 - Solution: Implement automatic refresh using refresh token
 

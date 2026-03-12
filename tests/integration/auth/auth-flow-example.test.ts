@@ -25,7 +25,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !canAuthenticate())(
             expect(client.isAuthenticated()).toBe(true);
 
             // Example: Make an API call
-            // const leagues = await client.user.getLeagues();
+            // const leagues = await client.q().users().useLogin().games().leagues().execute();
             // expect(leagues).toBeDefined();
 
             console.log('✓ Client authenticated successfully');

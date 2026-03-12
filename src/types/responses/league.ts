@@ -1,6 +1,7 @@
 import type { FeloTier, PositionType } from '../common.js';
 import type { Player } from './player.js';
 import type { BaseTeam } from './team.js';
+import type { Transaction } from './transaction.js';
 
 /**
  * API response wrapper for league data.
@@ -127,7 +128,33 @@ export interface League {
    teams?: StandingsTeam[];
 
    /** Array of recent transactions in the league (optional) */
-   transactions?: Record<string, unknown>[]; //Transaction[];
+   transactions?: Transaction[];
+
+   /** League draft results (optional) */
+   drafts?: LeagueDraft[];
+}
+
+/**
+ * Represents a single league draft.
+ */
+export interface LeagueDraft {
+   /** Unique draft key */
+   draftKey: string;
+
+   /** Numeric draft identifier */
+   draftId: number;
+
+   /** Draft status */
+   status: string;
+
+   /** Draft type */
+   draftType: string;
+
+   /** Draft start time as unix timestamp */
+   startTime: number;
+
+   /** Draft end time as unix timestamp */
+   endTime: number;
 }
 
 /**

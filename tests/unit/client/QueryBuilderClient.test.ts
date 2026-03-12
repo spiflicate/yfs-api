@@ -1,0 +1,159 @@
+import { describe, expect, mock, test } from 'bun:test';
+import type { HttpClient } from '../../../src/client/HttpClient.js';
+import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import type { QueryBuilder } from '../../../src/query/index.js';
+import { createQuery } from '../../../src/query/index.js';
+import type { Config } from '../../../src/types/index.js';
+import type { InferResponseType } from '../../../src/types/query/context.js';
+import type {
+   GamesCollectionResponse,
+   LeagueSettingsResponse,
+   TeamRosterPlayersResponse,
+   UserGameLeaguesResponse,
+   UserTeamsResponse,
+} from '../../../src/types/query/responses.js';
+
+type Assert<T extends true> = T;
+type IsEqual<A, B> =
+   (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
+      ? true
+      : false;
+type ExtractPath<TBuilder> =
+   TBuilder extends QueryBuilder<infer TPath> ? TPath : never;
+
+const typeOnlyHttpClient = null as unknown as HttpClient;
+
+const leagueSettingsQuery = createQuery(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .settings();
+type LeagueSettingsExecute = InferResponseType<
+   ExtractPath<typeof leagueSettingsQuery>
+>;
+type LeagueSettingsExecuteAssertion = Assert<
+   IsEqual<LeagueSettingsExecute, LeagueSettingsResponse>
+>;
+const leagueSettingsExecuteAssertion: LeagueSettingsExecuteAssertion = true;
+void leagueSettingsExecuteAssertion;
+
+const rootGamesQuery = createQuery(typeOnlyHttpClient).games();
+type RootGamesExecute = InferResponseType<
+   ExtractPath<typeof rootGamesQuery>
+>;
+type RootGamesExecuteAssertion = Assert<
+   IsEqual<RootGamesExecute, GamesCollectionResponse>
+>;
+const rootGamesExecuteAssertion: RootGamesExecuteAssertion = true;
+void rootGamesExecuteAssertion;
+
+const userTeamsQuery = createQuery(typeOnlyHttpClient)
+   .users()
+   .useLogin()
+   .games()
+   .teams();
+type UserTeamsExecute = InferResponseType<
+   ExtractPath<typeof userTeamsQuery>
+>;
+type UserTeamsExecuteAssertion = Assert<
+   IsEqual<UserTeamsExecute, UserTeamsResponse>
+>;
+const userTeamsExecuteAssertion: UserTeamsExecuteAssertion = true;
+void userTeamsExecuteAssertion;
+
+const userGameLeaguesQuery = createQuery(typeOnlyHttpClient)
+   .users()
+   .useLogin()
+   .games()
+   .leagues();
+type UserGameLeaguesExecute = InferResponseType<
+   ExtractPath<typeof userGameLeaguesQuery>
+>;
+type UserGameLeaguesExecuteAssertion = Assert<
+   IsEqual<UserGameLeaguesExecute, UserGameLeaguesResponse>
+>;
+const userGameLeaguesExecuteAssertion: UserGameLeaguesExecuteAssertion = true;
+void userGameLeaguesExecuteAssertion;
+
+const rosterPlayersQuery = createQuery(typeOnlyHttpClient)
+   .team('423.l.12345.t.1')
+   .roster({ week: 1 })
+   .players();
+type RosterPlayersExecute = InferResponseType<
+   ExtractPath<typeof rosterPlayersQuery>
+>;
+type RosterPlayersExecuteAssertion = Assert<
+   IsEqual<RosterPlayersExecute, TeamRosterPlayersResponse>
+>;
+const rosterPlayersExecuteAssertion: RosterPlayersExecuteAssertion = true;
+void rosterPlayersExecuteAssertion;
+
+// @ts-expect-error league() requires a Yahoo league key shape
+createQuery(typeOnlyHttpClient).league('nhl');
+
+describe('client.q()', () => {
+   const config: Config = {
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+      redirectUri: 'https://example.com/callback',
+   };
+
+   test('builds nested user collection paths', () => {
+      const client = new YahooFantasyClient(config);
+
+      const path = client
+         .q()
+         .users()
+         .useLogin()
+         .games()
+         .gameKeys('nhl')
+         .teams()
+         .buildPath();
+
+      expect(path).toBe('/users;use_login=1/games;game_keys=nhl/teams');
+   });
+
+   test('builds root games collection paths', () => {
+      const client = new YahooFantasyClient(config);
+
+      const path = client.q().games().gameKeys('nhl').buildPath();
+
+      expect(path).toBe('/games;game_keys=nhl');
+   });
+
+   test('executes through the client http client', async () => {
+      const client = new YahooFantasyClient(config);
+      const get = mock(async (_path: string) => ({ users: [] }));
+      const httpClient = {
+         get,
+         post: mock(async () => ({})),
+         put: mock(async () => ({})),
+         delete: mock(async () => ({})),
+      } as unknown as HttpClient;
+
+      (client as unknown as { httpClient: HttpClient }).httpClient =
+         httpClient;
+
+      const result = await client
+         .q()
+         .users()
+         .useLogin()
+         .games()
+         .teams()
+         .execute();
+
+      expect(get).toHaveBeenCalledWith('/users;use_login=1/games/teams');
+      expect(result).toEqual({ users: [] });
+   });
+
+   test('builds roster player paths from team queries', () => {
+      const client = new YahooFantasyClient(config);
+
+      const path = client
+         .q()
+         .team('423.l.12345.t.1')
+         .roster({ week: 10 })
+         .players()
+         .buildPath();
+
+      expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
+   });
+});

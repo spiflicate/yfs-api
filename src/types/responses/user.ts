@@ -21,6 +21,8 @@ export interface User extends BaseMetadata {
    guid: UserGUID;
    /** Games the user has participated in (optional) */
    games?: UserGame[];
+   /** Leagues directly associated with the user query (optional) */
+   leagues?: LeagueReference[];
 }
 
 /**
@@ -38,6 +40,8 @@ export interface UserGame {
    gameCode: GameCode;
    /** The season/year of the game */
    season: number;
+   /** Leagues in this game for the current user (optional) */
+   leagues?: LeagueReference[];
    /** User's teams in this game (optional) */
    teams?: UserTeam[];
 }

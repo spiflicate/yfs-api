@@ -23,41 +23,22 @@
  * // After user authorizes, exchange code for tokens
  * await client.authenticate(code);
  *
- * // Get your NHL teams
- * const teams = await client.user.getTeams({ gameCode: 'nhl' });
+ * // Query your NHL teams
+ * const teams = await client.q().users().useLogin().games().teams().execute();
  *
- * // Manage your roster
- * const roster = await client.team.getRoster(teams[0].teamKey);
+ * // Query a roster
+ * const roster = await client.q().team('423.l.12345.t.1').roster().execute();
  *
- * // Update roster positions
- * await client.team.updateRoster(teams[0].teamKey, {
- *   coverageType: 'date',
- *   date: '2024-11-20',
- *   players: [
- *     { playerKey: '423.p.8888', position: 'C' },
- *     { playerKey: '423.p.7777', position: 'LW' },
- *   ],
- * });
- *
- * // Make transactions
- * await client.transaction.addDropPlayer({
- *   teamKey: teams[0].teamKey,
- *   addPlayerKey: '423.p.9999',
- *   dropPlayerKey: '423.p.7777',
- *   faabBid: 15,
- * });
+ * // Query league settings
+ * const settings = await client.q().league('423.l.12345').settings().execute();
  * ```
  */
 
-export { AdvancedQuery } from './adv-query/AdvancedQuery.js';
-// Export old query builder (for backward compatibility)
-export { QueryBuilder, query } from './adv-query/QueryBuilder.js';
 export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
 export type { TokenStorage } from './client/YahooFantasyClient.js';
 // Export client
 export { YahooFantasyClient } from './client/YahooFantasyClient.js';
-// Export new composable query builder
-export { createQuery } from './query/index.js';
+export { createQuery, QueryBuilder } from './query/index.js';
 // Export all types
 // Resource types
 // NHL-specific types

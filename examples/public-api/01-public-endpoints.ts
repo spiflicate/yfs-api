@@ -23,6 +23,16 @@
 
 import { YahooFantasyClient } from '../../src/index.js';
 
+interface PublicGamesResponse {
+   games: Array<{
+      gameKey: string;
+      code: string;
+      name: string;
+      season: number;
+      isAvailable?: boolean;
+   }>;
+}
+
 // Get credentials from environment
 const clientId = process.env.YAHOO_CLIENT_ID;
 const clientSecret = process.env.YAHOO_CLIENT_SECRET;
@@ -62,7 +72,7 @@ try {
    console.log('Example 1: Get NHL game metadata');
    console.log('-'.repeat(70));
 
-   const nhlGame = await client.game.get('nhl');
+   const nhlGame = (await client.q().game('nhl').execute()).game;
    console.log(`Game: ${nhlGame.name} (${nhlGame.code})`);
    console.log(`Season: ${nhlGame.season}`);
    console.log(`Game Key: ${nhlGame.gameKey}`);
@@ -74,7 +84,13 @@ try {
    console.log('Example 2: Get all available games');
    console.log('-'.repeat(70));
 
-   const games = await client.game.getGames({ isAvailable: true });
+   const games = (
+      await client
+         .advanced<PublicGamesResponse>()
+         .resource('games')
+         .param('is_available', '1')
+         .execute()
+   ).games;
    console.log(`Found ${games.length} available game(s):\n`);
 
    for (const game of games) {
@@ -89,10 +105,16 @@ try {
    console.log('Example 3: Get multiple games by code');
    console.log('-'.repeat(70));
 
-   const multipleGames = await client.game.getGames({
-      gameCodes: ['nhl', 'nfl'],
-      seasons: [2024],
-   });
+   const multipleGames = (
+      await client
+         .advanced<PublicGamesResponse>()
+         .resource('games')
+         .params({
+            game_codes: 'nhl,nfl',
+            seasons: '2024',
+         })
+         .execute()
+   ).games;
 
    console.log(`Found ${multipleGames.length} game(s):\n`);
    for (const game of multipleGames) {
@@ -106,10 +128,15 @@ try {
    console.log('Example 4: Search for players');
    console.log('-'.repeat(70));
 
-   const playerResults = await client.game.searchPlayers('nhl', {
-      search: 'McDavid',
-      count: 5,
-   });
+   const playerResults = (
+      await client
+         .q()
+         .game('nhl')
+         .players()
+         .search('McDavid')
+         .count(5)
+         .execute()
+   ).game;
 
    const players = playerResults.players || [];
    console.log(`Found ${players.length} player(s) matching "McDavid":\n`);

@@ -17,19 +17,19 @@ import type {
    PlayerResponse,
    TeamResponse,
    TransactionResponse,
-   UserResponse,
+   UsersResponse,
 } from '../responses/wrappers.js';
 
 /**
  * Base resource key types
  */
-export type GameKey = `${number}` | string;
-export type LeagueKey = `${number}.l.${number}` | string;
-export type TeamKey = `${number}.l.${number}.t.${number}` | string;
-export type PlayerKey = `${number}.p.${number}` | string;
-export type TransactionKey = `${number}.l.${number}.tr.${number}` | string;
-export type WaiverClaimKey = `${number}.l.${number}.w.c.${number}` | string;
-export type PendingTradeKey = `${number}.l.${number}.pt.${number}` | string;
+export type GameKey = string;
+export type LeagueKey = `${number}.l.${number}`;
+export type TeamKey = `${number}.l.${number}.t.${number}`;
+export type PlayerKey = `${number}.p.${number}`;
+export type TransactionKey = `${number}.l.${number}.tr.${number}`;
+export type WaiverClaimKey = `${number}.l.${number}.w.c.${number}`;
+export type PendingTradeKey = `${number}.l.${number}.pt.${number}`;
 
 /**
  * Resource name literals
@@ -39,7 +39,7 @@ export type ResourceName =
    | 'league'
    | 'team'
    | 'player'
-   | 'user'
+   | 'users'
    | 'transaction';
 
 /**
@@ -113,11 +113,9 @@ export interface ResourceDefinition<
  */
 export interface GameResourceDef {
    key: GameKey;
-   collections: ['games'];
+   collections: ['leagues', 'players'];
    subResources: [
       'metadata',
-      'leagues',
-      'players',
       'stat_categories',
       'position_types',
       'game_weeks',
@@ -131,17 +129,8 @@ export interface GameResourceDef {
  */
 export interface LeagueResourceDef {
    key: LeagueKey;
-   collections: ['leagues'];
-   subResources: [
-      'metadata',
-      'settings',
-      'standings',
-      'scoreboard',
-      'teams',
-      'players',
-      'transactions',
-      'drafts',
-   ];
+   collections: ['teams', 'players', 'transactions', 'drafts'];
+   subResources: ['metadata', 'settings', 'standings', 'scoreboard'];
    params: ['league_keys', 'out'];
    responseType: LeagueResponse;
 }
@@ -151,7 +140,7 @@ export interface LeagueResourceDef {
  */
 export interface TeamResourceDef {
    key: TeamKey;
-   collections: ['teams'];
+   collections: [];
    subResources: ['metadata', 'roster', 'matchups', 'stats', 'standings'];
    params: ['team_keys', 'out'];
    responseType: TeamResponse;
@@ -162,7 +151,7 @@ export interface TeamResourceDef {
  */
 export interface PlayerResourceDef {
    key: PlayerKey;
-   collections: ['players'];
+   collections: [];
    subResources: [
       'metadata',
       'stats',
@@ -186,11 +175,11 @@ export interface PlayerResourceDef {
  * User resource definition
  */
 export interface UserResourceDef {
-   key: 'current';
-   collections: ['users'];
-   subResources: ['games', 'leagues', 'teams'];
+   key: never;
+   collections: ['games', 'leagues', 'teams'];
+   subResources: [];
    params: ['use_login'];
-   responseType: UserResponse;
+   responseType: UsersResponse;
 }
 
 /**
@@ -198,7 +187,7 @@ export interface UserResourceDef {
  */
 export interface TransactionResourceDef {
    key: TransactionKey;
-   collections: ['transactions'];
+   collections: [];
    subResources: [];
    params: ['types', 'team_key', 'count', 'start'];
    responseType: TransactionResponse;
@@ -212,7 +201,7 @@ export interface ResourceGraph {
    league: LeagueResourceDef;
    team: TeamResourceDef;
    player: PlayerResourceDef;
-   user: UserResourceDef;
+   users: UserResourceDef;
    transaction: TransactionResourceDef;
 }
 
