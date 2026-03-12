@@ -1,18 +1,30 @@
 # yfs-api
 
-A TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2.0 support.
+A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API, rebuilt around a composable request builder.
 
 [![npm version](https://img.shields.io/npm/v/yfs-api.svg)](https://www.npmjs.com/package/yfs-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+## What Changed In The Refactor
 
-- TypeScript client for Yahoo Fantasy Sports
-- OAuth 1.0 (public API) and OAuth 2.0 (user auth)
-- Token refresh support for OAuth 2.0
-- Composable request builder via `client.request()` for typed Yahoo API paths
-- Integration-tested against real Yahoo Fantasy leagues (primarily NHL)
-- Transaction APIs are implemented but still experimental
+This project has been fully refactored around a single core concept: build Yahoo Fantasy API paths compositionally, with strong TypeScript guidance.
+
+### Refactor Highlights
+
+- Unified request surface via `client.request()`
+- Type-aware chainable builder for resources, collections, and sub-resources
+- Cleaner OAuth split:
+  - OAuth 1.0 (2-legged) for public mode
+  - OAuth 2.0 for user-authenticated mode
+- First-class path composition support (`buildPath()`)
+- Improved response typing routed by query shape
+- Better internal separation of concerns (client, request graph, response routes, parsers)
+
+### Design Goals
+
+- Keep Yahoo URL semantics visible instead of hiding them behind opaque helpers
+- Make composition predictable and debuggable
+- Provide useful typing without fighting real-world Yahoo response variability
 
 ## Installation
 
@@ -28,24 +40,22 @@ bun add yfs-api
 
 ## Quick Start
 
-### Public API Access (OAuth 1.0 - No User Auth Required)
+### 1) Public Mode (OAuth 1.0, no user auth)
 
-Useful for public data like game info, player search, and league metadata:
+Use this for public data like game metadata and game-level player search.
 
-```typescript
+```ts
 import { YahooFantasyClient } from "yfs-api";
 
 const client = new YahooFantasyClient({
   clientId: process.env.YAHOO_CLIENT_ID!,
   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-  publicMode: true, // OAuth 1.0 for public endpoints
+  publicMode: true,
 });
 
-// Get a public game resource
-const nhl = await client.request().game("nhl").execute();
+const game = await client.request().game("nhl").execute();
 
-// Search public game-level players
-const playerSearch = await client
+const players = await client
   .request()
   .game("nhl")
   .players()
@@ -53,15 +63,15 @@ const playerSearch = await client
   .count(10)
   .execute();
 
-console.log(`Game: ${nhl.game.name}`);
-console.log(`Found ${playerSearch.game.players?.length ?? 0} players`);
+console.log(game.game.name);
+console.log(players.players?.length ?? 0);
 ```
 
-### User Authentication (OAuth 2.0)
+### 2) User Mode (OAuth 2.0)
 
-For accessing user-specific data (teams, leagues, rosters):
+Use this for user-specific data like your teams, rosters, standings, and league data.
 
-```typescript
+```ts
 import { YahooFantasyClient } from "yfs-api";
 
 const client = new YahooFantasyClient({
@@ -70,84 +80,42 @@ const client = new YahooFantasyClient({
   redirectUri: "oob", // or your callback URL
 });
 
-// Step 1: Get authorization URL
 const authUrl = client.getAuthUrl();
-console.log("Visit this URL to authorize:", authUrl);
+console.log("Authorize here:", authUrl);
 
-// Step 2: After user authorizes, exchange code for tokens
 await client.authenticate(authorizationCode);
 
-// Step 3: Use authenticated endpoints
-const teamsResponse = await client
+const myTeams = await client
   .request()
   .users()
   .useLogin()
   .games()
-  .gameKeys("nhl")
   .teams()
   .execute();
 
-const teams = teamsResponse.users.flatMap((user) =>
-  (user.games ?? []).flatMap((game) => game.teams ?? []),
-);
-
-console.log(`Found ${teams.length} teams`);
-
-// Get league details
-const league = await client
-  .request()
-  .league(teams[0].league.leagueKey)
-  .execute();
-console.log(`League: ${league.league.name} (${league.league.season})`);
-
-// Get team roster
-const roster = await client.request().team(teams[0].teamKey).roster().execute();
-console.log(`Roster has ${roster.team.roster?.players?.length ?? 0} players`);
-
-// Get league standings
-const standings = await client
-  .request()
-  .league(teams[0].league.leagueKey)
-  .standings()
-  .execute();
-console.log(
-  `${standings.league.standings?.teams?.length ?? 0} teams in standings`,
-);
-
-// Search for players in league
-const freeAgents = await client
-  .request()
-  .league(teams[0].league.leagueKey)
-  .players()
-  .status("FA")
-  .position("C")
-  .count(25)
-  .execute();
+console.log(myTeams.users.length);
 ```
 
-### Token Storage & Persistence
+### 3) Token Persistence
 
-Save and restore tokens between sessions:
-
-```typescript
+```ts
 import { YahooFantasyClient } from "yfs-api";
-import * as fs from "fs/promises";
+import * as fs from "node:fs/promises";
 
-// Create token storage
 const tokenStorage = {
   save: async (tokens) => {
-    await fs.writeFile(".tokens.json", JSON.stringify(tokens));
+    await fs.writeFile(".tokens.json", JSON.stringify(tokens, null, 2));
   },
   load: async () => {
     try {
-      const data = await fs.readFile(".tokens.json", "utf-8");
+      const data = await fs.readFile(".tokens.json", "utf8");
       return JSON.parse(data);
     } catch {
       return null;
     }
   },
   clear: async () => {
-    await fs.unlink(".tokens.json").catch(() => {});
+    await fs.rm(".tokens.json", { force: true });
   },
 };
 
@@ -160,91 +128,19 @@ const client = new YahooFantasyClient(
   tokenStorage,
 );
 
-// Try to load existing tokens
 await client.loadTokens();
-
-// If no tokens, authenticate
-if (!client.hasValidTokens()) {
+if (!client.isAuthenticated()) {
   const authUrl = client.getAuthUrl();
   console.log("Visit:", authUrl);
-  // ... get authorization code ...
   await client.authenticate(code);
 }
-
-// Tokens are automatically saved and refreshed
-const teams = await client
-  .request()
-  .users()
-  .useLogin()
-  .games()
-  .teams()
-  .execute();
 ```
 
-## Query Coverage
+## Composable Query Builder
 
-The main public surface is the composable request builder returned by `client.request()`.
+The request builder models Yahoo path composition directly:
 
-| Query Pattern | Example                                                    | Status |
-| ------------- | ---------------------------------------------------------- | ------ |
-| **Users**     | `client.request().users().useLogin().games().teams()`      | Tested |
-| **League**    | `client.request().league(key).settings()`                  | Tested |
-| **Team**      | `client.request().team(key).roster()`                      | Tested |
-| **Player**    | `client.request().player(key).stats()`                     | Tested |
-| **Game**      | `client.request().game('nhl').players().search('McDavid')` | Tested |
-| **Games**     | `client.request().games().gameKeys(['nhl', 'nfl'])`        | Tested |
-
-### Experimental (Not Fully Tested)
-
-| Query Pattern          | Example                                                 | Status          |
-| ---------------------- | ------------------------------------------------------- | --------------- |
-| **Transaction writes** | `client.request().league(key).transactions().post(...)` | ⚠️ Experimental |
-
-Transaction operations are implemented but have limited real-world testing so far. Use with caution and please report any issues.
-
-## Supported Sports
-
-| Sport      | Status        | Notes                                             |
-| ---------- | ------------- | ------------------------------------------------- |
-| 🏒 **NHL** | Primary focus | Actively tested with real leagues                 |
-| 🏀 **NBA** | Basic support | Core endpoints have some coverage, not exhaustive |
-| 🏈 **NFL** | Experimental  | Likely to work; types may need refinement         |
-| ⚾ **MLB** | Experimental  | Likely to work; types may need refinement         |
-
-Feedback and contributions to improve support for any sport are welcome.
-
-## Getting Yahoo API Credentials
-
-1. Go to [Yahoo Developer Network](https://developer.yahoo.com/apps/)
-2. Create a new app
-3. Get your **Client ID** (Consumer Key) and **Client Secret** (Consumer Secret)
-4. Set your **Redirect URI** (use `oob` for out-of-band if testing locally)
-
-## Examples
-
-Check out the `/examples` directory for complete working examples:
-
-- `examples/hockey/01-authentication.ts` - Traditional OAuth 2.0 flow
-- `examples/hockey/02-client-test.ts` - Testing API endpoints
-- `examples/public-api/01-public-endpoints.ts` - Public API without auth
-- `examples/token-storage/usage-example.ts` - Token persistence
-- `examples/request-builder/01-basic-usage.ts` - Request builder basics
-- `examples/request-builder/02-type-safety.ts` - Request builder typing examples
-
-### Request Builder Patterns
-
-The request builder covers both keyed resources and the root `/games` collection:
-
-```typescript
-import { YahooFantasyClient } from "yfs-api";
-
-const client = new YahooFantasyClient({
-  clientId: process.env.YAHOO_CLIENT_ID!,
-  clientSecret: process.env.YAHOO_CLIENT_SECRET!,
-  redirectUri: "oob",
-});
-
-// Complex chain: User's NFL leagues with settings and standings
+```ts
 const result = await client
   .request()
   .users()
@@ -252,131 +148,157 @@ const result = await client
   .games()
   .gameKeys("nfl")
   .leagues()
-  .out(["settings", "standings"])
   .execute();
+```
 
-// Root games collection
-const games = await client.request().games().gameKeys(["nhl", "nfl"]).execute();
+Generated path:
 
-// Team roster for specific week
-const roster = await client
-  .request()
-  .team("423.l.12345.t.1")
-  .roster({ week: 10 })
-  .players()
-  .execute();
+```text
+/users;use_login=1/games;game_keys=nfl/leagues
+```
 
-// Available players with filters
-const qbs = await client
+### Core Entry Points
+
+- `game(key)`
+- `league(key)`
+- `team(key)`
+- `player(key)`
+- `users()`
+- `games()`
+
+### Common Chain Methods
+
+- Collections: `leagues()`, `teams()`, `players()`, `transactions()`, `drafts()`, `games()`
+- Sub-resources: `settings()`, `standings()`, `scoreboard()`, `roster()`, `matchups()`, `stats()`, `ownership()`, `percentOwned()`, `draftAnalysis()`, `statCategories()`, `positionTypes()`, `gameWeeks()`
+- Params: `out()`, `position()`, `status()`, `sort()`, `count()`, `start()`, `search()`, `week()`, `date()`, `gameKeys()`, `leagueKeys()`, `teamKeys()`, `playerKeys()`, `param()`, `params()`
+- Execution: `execute()`, `post()`, `put()`, `delete()`, `buildPath()`
+
+### Path-Only Debugging
+
+```ts
+const path = client
   .request()
   .league("423.l.12345")
   .players()
-  .position("QB")
-  .status("A")
-  .sort("AR")
+  .position("C")
+  .status("FA")
   .count(25)
-  .execute();
+  .buildPath();
+
+console.log(path);
+// /league/423.l.12345/players;position=C;status=FA;count=25
 ```
+
+## Authentication Modes
+
+### Public Mode (OAuth 1.0)
+
+- Enable with `publicMode: true`
+- No `redirectUri` required
+- No user authorization step
+- Good for public resources and metadata
+
+### User Mode (OAuth 2.0)
+
+- Requires `redirectUri`
+- Use `getAuthUrl()` then `authenticate(code)`
+- Access token refresh supported automatically during requests
+- Optional token storage via `TokenStorage`
+
+## Supported Sports
+
+- NHL: most heavily exercised in integration tests
+- NFL: supported, fewer real-world validation cycles
+- NBA: supported, fewer real-world validation cycles
+- MLB: supported, fewer real-world validation cycles
 
 ## Documentation
 
-- **[Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)** - Running integration tests
-- **[OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)** - OAuth details
-- **[URL Pattern Guide](docs/URL_PATTERN_GUIDE.md)** - Query path patterns and composition
+- [Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)
+- [OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)
+- [URL Pattern Guide](docs/URL_PATTERN_GUIDE.md)
+- [Auth Flow Helper](docs/AUTH_FLOW_HELPER.md)
+- [Yahoo API Reference Notes](docs/yahoo-fantasy-api-guide/OVERVIEW.md)
+
+## Examples
+
+- [Public endpoints (OAuth 1.0)](examples/public-api/01-public-endpoints.ts)
+- [OAuth 2.0 auth flow](examples/hockey/01-authentication.ts)
+- [Client endpoint walk-through](examples/hockey/02-client-test.ts)
+- [Composable builder usage](examples/request-builder/01-basic-usage.ts)
+- [Token storage helper](examples/token-storage/file-storage.ts)
 
 ## Development
 
-### Prerequisites
+### Requirements
 
-- [Bun](https://bun.sh) v1.0.0 or later (for development)
-- Node.js >= 18.0.0 (for runtime)
-- Yahoo Developer Application credentials
+- Node.js >= 18
+- Bun >= 1.0.0
 
-### Setup
+### Scripts
 
 ```bash
-# Install dependencies
+# Install deps
 bun install
 
-# Run type checking
-bun run type-check
+# Type check
+npm run type-check
 
-# Run unit tests
-bun test tests/unit
+# Unit tests
+npm test
 
-# Run integration tests (requires .env.test)
-bun test tests/integration
+# Integration tests
+npm run test:integration
 
-# Lint and format
-bun run lint
-bun run format
+# Lint / format
+npm run lint
+npm run format
 
-# Build the project
-bun run build
-```
-
-### Running Integration Tests
-
-See [docs/INTEGRATION_TEST_SETUP.md](docs/INTEGRATION_TEST_SETUP.md) for detailed setup instructions.
-
-```bash
-# 1. Copy environment template
-cp .env.test.example .env.test
-
-# 2. Add your credentials to .env.test
-# 3. Discover your league and team keys
-bun run scripts/discover-test-resources.ts
-
-# 4. Run tests
-source .env.test && bun test tests/integration
+# Build
+npm run build
 ```
 
 ## Project Structure
 
-```
+```text
 yfs-api/
 ├── src/
-│   ├── client/              # OAuth clients and main client
-│   ├── request/             # Composable request builder
-│   ├── types/               # TypeScript type definitions
-│   │   ├── resources/       # Resource types (league, team, etc.)
-│   │   ├── sports/          # Sport-specific types (NHL, etc.)
-│   │   ├── common.ts        # Common types
-│   │   └── errors.ts        # Error types
-│   └── utils/               # Utilities (validators, formatters)
+│   ├── client/         # OAuth clients, HTTP transport, top-level client
+│   ├── request/        # Composable request builder
+│   ├── types/          # Resource, response, and query typing graph
+│   └── utils/          # Parsing and validation utilities
 ├── tests/
-│   ├── unit/                # Unit tests (301 passing)
-│   ├── integration/         # Integration tests (45 passing)
-│   └── fixtures/            # Test fixtures and mock data
-├── examples/                # Usage examples
-├── docs/                    # User documentation
-└── scripts/                 # Development and discovery scripts
+│   ├── unit/
+│   ├── integration/
+│   └── fixtures/
+├── examples/
+├── docs/
+└── scripts/
 ```
 
-## Philosophy
+## Migration Notes
 
-This library aims to be easy to understand and use while staying close to Yahoo's API. Over time the goal is to improve type safety, documentation, and examples as real-world usage surfaces gaps.
+If you used older, non-builder style helpers, migrate to the builder-first API:
 
-## Contributing
-
-Contributions welcome! Please:
-
-1. Follow existing code patterns and style
-2. Add comprehensive JSDoc comments
-3. Include tests for new functionality
-4. Update documentation
-5. Test against real Yahoo Fantasy API when possible
-
-If you have real-world usage that surfaces missing or incomplete types, contributions to improve type information are very welcome—please open an issue or pull request.
+- Prefer `client.request().<resource>()...` for all reads/writes
+- Use `buildPath()` to verify generated Yahoo paths during migration
+- Replace ad-hoc query string assembly with chain methods and `param()/params()`
+- Keep response handling aligned to normalized camelCase payload shapes
 
 ## Known Limitations
 
-1. **Transaction APIs** are experimental and untested
-2. **NFL/MLB** types may need refinement based on real usage
-3. **Stat Categories** are sport-specific and may vary
-4. **League Settings** support most options but some edge cases may exist
+- Transaction write flows are available but still less field-tested than read flows
+- Some sport-specific typing edges may still surface in less common endpoints
+- Yahoo response shape inconsistencies can still require occasional defensive checks
 
-Please report issues or contribute improvements where you see gaps or rough edges.
+## Contributing
+
+Contributions are welcome.
+
+1. Follow existing style and architecture patterns
+2. Add or update tests for behavioral changes
+3. Update docs/examples with API changes
+4. Validate against real Yahoo API behavior when possible
 
 ## License
 
@@ -390,8 +312,8 @@ Built by [jbru](https://github.com/spiflicate) for the fantasy sports community 
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release history.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
-_Last Updated: 2025-11-24_
+Last updated: 2026-03-12
