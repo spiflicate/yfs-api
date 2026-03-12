@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,7 +28,7 @@ function extractBooleanProps(
       }
 
       if (Array.isArray(obj)) {
-         obj.forEach((item) => traverse(item));
+         obj.forEach((item) => void traverse(item));
          return;
       }
 
@@ -46,7 +46,7 @@ function extractBooleanProps(
             }
             // Add the value to the set (prevents duplicates)
             if (value !== null && value !== undefined) {
-               propMap.get(key)!.add(String(value));
+               propMap.get(key)?.add(String(value));
             }
          }
 
@@ -85,7 +85,7 @@ function extractBinaryProps(data: unknown): string[] {
       }
 
       if (Array.isArray(obj)) {
-         obj.forEach((item) => traverse(item));
+         obj.forEach((item) => void traverse(item));
          return;
       }
 

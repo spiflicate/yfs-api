@@ -51,9 +51,7 @@ try {
    console.log('-'.repeat(70));
    console.log('RAW XML MODE (rawXml: true)');
    console.log('-'.repeat(70));
-   const rawXml = (await clientRaw.league.get(
-      leagueKey,
-   )) as unknown as string;
+   const rawXml = await clientRaw.q().league(leagueKey).execute();
    console.log('Type:', typeof rawXml);
    console.log('First 500 characters:');
    console.log(rawXml.substring(0, 500));
@@ -69,13 +67,13 @@ try {
    console.log('-'.repeat(70));
    console.log('PARSED MODE (rawXml: false, default)');
    console.log('-'.repeat(70));
-   const parsed = await clientParsed.league.get(leagueKey);
+   const parsed = await clientParsed.q().league(leagueKey).execute();
    console.log('Type:', typeof parsed);
-   console.log('League Key:', parsed.leagueKey);
-   console.log('League Name:', parsed.name);
-   console.log('Game Code:', parsed.gameCode);
-   console.log('Season:', parsed.season);
-   console.log('Number of Teams:', parsed.numberOfTeams);
+   console.log('League Key:', parsed.league.leagueKey);
+   console.log('League Name:', parsed.league.name);
+   console.log('Game Code:', parsed.league.gameCode);
+   console.log('Season:', parsed.league.season);
+   console.log('Number of Teams:', parsed.league.numTeams);
    console.log();
 
    // Save to file
