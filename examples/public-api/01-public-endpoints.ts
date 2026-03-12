@@ -21,17 +21,7 @@
  *   bun run examples/public-api/01-public-endpoints.ts
  */
 
-import { YahooFantasyClient } from '../../src/index.js';
-
-interface PublicGamesResponse {
-   games: Array<{
-      gameKey: string;
-      code: string;
-      name: string;
-      season: number;
-      isAvailable?: boolean;
-   }>;
-}
+import { YahooFantasyClient } from 'yfs-api';
 
 // Get credentials from environment
 const clientId = process.env.YAHOO_CLIENT_ID;
@@ -76,7 +66,7 @@ try {
    console.log(`Game: ${nhlGame.name} (${nhlGame.code})`);
    console.log(`Season: ${nhlGame.season}`);
    console.log(`Game Key: ${nhlGame.gameKey}`);
-   console.log(`Is Available: ${nhlGame.isAvailable}`);
+   console.log(`Is Game Over: ${nhlGame.isGameOver}`);
    console.log();
 
    // Example 2: Get all available games
@@ -85,11 +75,7 @@ try {
    console.log('-'.repeat(70));
 
    const games = (
-      await client
-         .advanced<PublicGamesResponse>()
-         .resource('games')
-         .param('is_available', '1')
-         .execute()
+      await client.q().games().param('is_available', '1').execute()
    ).games;
    console.log(`Found ${games.length} available game(s):\n`);
 
@@ -107,8 +93,8 @@ try {
 
    const multipleGames = (
       await client
-         .advanced<PublicGamesResponse>()
-         .resource('games')
+         .q()
+         .games()
          .params({
             game_codes: 'nhl,nfl',
             seasons: '2024',
@@ -128,15 +114,13 @@ try {
    console.log('Example 4: Search for players');
    console.log('-'.repeat(70));
 
-   const playerResults = (
-      await client
-         .q()
-         .game('nhl')
-         .players()
-         .search('McDavid')
-         .count(5)
-         .execute()
-   ).game;
+   const playerResults = await client
+      .q()
+      .game('nhl')
+      .players()
+      .search('McDavid')
+      .count(5)
+      .execute();
 
    const players = playerResults.players || [];
    console.log(`Found ${players.length} player(s) matching "McDavid":\n`);
