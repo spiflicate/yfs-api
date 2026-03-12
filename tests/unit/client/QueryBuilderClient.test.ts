@@ -1,3 +1,17 @@
+/**
+ * Unit tests for YahooFantasyClient query builder
+ * Tests focus on:
+ * - Correct path construction for various query chains
+ * - Proper execution through the client's HTTP client
+ * - Type safety of query responses (compile-time checks)
+ *
+ * Note: These tests use a mock HTTP client and do not make real API calls.
+ * The type safety assertions are done using TypeScript's type system and will
+ * cause compile errors if the inferred types do not match the expected response types.
+ */
+
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
 import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';

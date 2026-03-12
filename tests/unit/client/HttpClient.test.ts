@@ -2,6 +2,8 @@
  * Unit tests for HttpClient
  */
 
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
 import {
    afterEach,
    beforeEach,

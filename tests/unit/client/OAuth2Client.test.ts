@@ -2,15 +2,17 @@
  * Unit tests for OAuth2Client
  */
 
-import { describe, test, expect, beforeEach, mock } from 'bun:test';
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
+import { beforeEach, describe, expect, mock, test } from 'bun:test';
 import {
-   OAuth2Client,
    OAUTH2_ENDPOINTS,
+   OAuth2Client,
    type OAuth2Tokens,
 } from '../../../src/client/OAuth2Client.js';
 import {
-   ConfigError,
    AuthenticationError,
+   ConfigError,
 } from '../../../src/types/errors.js';
 
 describe('OAuth2Client', () => {
@@ -145,7 +147,7 @@ describe('OAuth2Client', () => {
          expect(options.headers['Content-Type']).toBe(
             'application/x-www-form-urlencoded',
          );
-         expect(options.headers['Authorization']).toContain('Basic ');
+         expect(options.headers.Authorization).toContain('Basic ');
       });
 
       test('should throw AuthenticationError on failed request', async () => {
