@@ -24,12 +24,18 @@ import type {
  * Base resource key types
  */
 export type GameKey = string;
-export type LeagueKey = `${number}.l.${number}`;
-export type TeamKey = `${number}.l.${number}.t.${number}`;
-export type PlayerKey = `${number}.p.${number}`;
-export type TransactionKey = `${number}.l.${number}.tr.${number}`;
-export type WaiverClaimKey = `${number}.l.${number}.w.c.${number}`;
-export type PendingTradeKey = `${number}.l.${number}.pt.${number}`;
+export type LeagueKey = `${number}.l.${number}` | (string & {});
+export type TeamKey = `${number}.l.${number}.t.${number}` | (string & {});
+export type PlayerKey = `${number}.p.${number}` | (string & {});
+export type TransactionKey =
+   | `${number}.l.${number}.tr.${number}`
+   | (string & {});
+export type WaiverClaimKey =
+   | `${number}.l.${number}.w.c.${number}`
+   | (string & {});
+export type PendingTradeKey =
+   | `${number}.l.${number}.pt.${number}`
+   | (string & {});
 
 /**
  * Resource name literals
