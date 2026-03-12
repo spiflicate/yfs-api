@@ -7,7 +7,7 @@
  * @module AdvancedQuery
  */
 
-import type { HttpClient } from './HttpClient.js';
+import type { HttpClient } from '../client/HttpClient.js';
 import { QueryBuilder } from './QueryBuilder.js';
 
 /**

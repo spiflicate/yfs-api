@@ -33,6 +33,7 @@
  * ```
  */
 
+import { AdvancedQuery } from '../adv-query/AdvancedQuery.js';
 import { QueryBuilder } from '../query/builder.js';
 import { GameResource } from '../resources/GameResource.js';
 import { LeagueResource } from '../resources/LeagueResource.js';
@@ -42,7 +43,6 @@ import { TransactionResource } from '../resources/TransactionResource.js';
 import { UserResource } from '../resources/UserResource.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
-import { AdvancedQuery } from './AdvancedQuery.js';
 import { HttpClient } from './HttpClient.js';
 import { OAuth1Client } from './OAuth1Client.js';
 import { OAuth2Client, type OAuth2Tokens } from './OAuth2Client.js';
