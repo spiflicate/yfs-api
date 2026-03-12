@@ -106,6 +106,11 @@ class RateLimiter {
 }
 
 /**
+ * Callback for reading the current OAuth 2.0 tokens
+ */
+export type TokenProvider = () => OAuth2Tokens | null | undefined;
+
+/**
  * Callback for refreshing expired tokens
  */
 export type TokenRefreshCallback = () => Promise<OAuth2Tokens>;
@@ -115,14 +120,18 @@ export type TokenRefreshCallback = () => Promise<OAuth2Tokens>;
  *
  * @example
  * ```typescript
- * const http = new HttpClient(oauth2Client, tokens, refreshCallback);
+ * const http = new HttpClient(
+ *   oauth2Client,
+ *   () => tokens,
+ *   refreshCallback,
+ * );
  * const data = await http.get('/users;use_login=1/games');
  * ```
  */
 export class HttpClient {
    private oauth2Client?: OAuth2Client;
    private oauth1Client?: OAuth1Client;
-   private tokens?: OAuth2Tokens;
+   private tokenProvider?: TokenProvider;
    private tokenRefreshCallback?: TokenRefreshCallback;
    private rateLimiter: RateLimiter;
    private timeout: number;
@@ -134,13 +143,13 @@ export class HttpClient {
     * Creates a new HTTP client
     *
     * @param oauth2Client - OAuth 2.0 client for token management (optional in public mode)
-    * @param tokens - OAuth 2.0 tokens (optional, can be set later)
+    * @param tokenProvider - Callback that returns the current OAuth 2.0 tokens
     * @param tokenRefreshCallback - Callback to refresh tokens when expired
     * @param options - Additional options
     */
    constructor(
       oauth2Client?: OAuth2Client,
-      tokens?: OAuth2Tokens,
+      tokenProvider?: TokenProvider,
       tokenRefreshCallback?: TokenRefreshCallback,
       options?: {
          timeout?: number;
@@ -152,7 +161,7 @@ export class HttpClient {
    ) {
       this.oauth2Client = oauth2Client;
       this.oauth1Client = options?.oauth1Client;
-      this.tokens = tokens;
+      this.tokenProvider = tokenProvider;
       this.tokenRefreshCallback = tokenRefreshCallback;
       this.rateLimiter = new RateLimiter();
       this.timeout = options?.timeout ?? DEFAULT_TIMEOUT;
@@ -162,12 +171,12 @@ export class HttpClient {
    }
 
    /**
-    * Sets the OAuth 2.0 tokens
+    * Sets the OAuth 2.0 token provider
     *
-    * @param tokens - OAuth 2.0 tokens
+    * @param provider - Callback returning the latest OAuth 2.0 tokens
     */
-   setTokens(tokens: OAuth2Tokens): void {
-      this.tokens = tokens;
+   setTokenProvider(provider: TokenProvider): void {
+      this.tokenProvider = provider;
    }
 
    /**
@@ -309,10 +318,12 @@ export class HttpClient {
                }
                // OAuth 2.0 (user auth mode)
                else if (this.oauth2Client) {
+                  let currentTokens = this.tokenProvider?.() ?? undefined;
+
                   // Check if tokens need refresh
                   if (
-                     this.tokens &&
-                     this.oauth2Client.isTokenExpired(this.tokens)
+                     currentTokens &&
+                     this.oauth2Client.isTokenExpired(currentTokens)
                   ) {
                      if (this.tokenRefreshCallback) {
                         if (this.debug) {
@@ -320,7 +331,7 @@ export class HttpClient {
                               '[HttpClient] Token expired, refreshing...',
                            );
                         }
-                        this.tokens = await this.tokenRefreshCallback();
+                        currentTokens = await this.tokenRefreshCallback();
                      } else {
                         throw new AuthenticationError(
                            'Access token expired and no refresh callback available.',
@@ -328,13 +339,13 @@ export class HttpClient {
                      }
                   }
 
-                  if (!this.tokens?.accessToken) {
+                  if (!currentTokens?.accessToken) {
                      throw new AuthenticationError(
                         'No access token available. Please authenticate first.',
                      );
                   }
 
-                  requestHeaders.Authorization = `Bearer ${this.tokens.accessToken}`;
+                  requestHeaders.Authorization = `Bearer ${currentTokens.accessToken}`;
                }
                // No auth client configured
                else {
@@ -403,7 +414,7 @@ export class HttpClient {
                      );
                   }
 
-                  this.tokens = await this.tokenRefreshCallback();
+                  await this.tokenRefreshCallback();
                   attempt--;
                   continue;
                }

@@ -222,7 +222,7 @@ export class YahooFantasyClient {
       // Initialize HTTP client with token refresh callback
       this.httpClient = new HttpClient(
          this.oauth2Client,
-         this.tokens,
+         () => this.tokens,
          async () => {
             if (!this.oauth2Client) {
                throw new ConfigError(
@@ -569,8 +569,6 @@ export class YahooFantasyClient {
       this.config.accessToken = tokens.accessToken;
       this.config.refreshToken = tokens.refreshToken;
       this.config.expiresAt = tokens.expiresAt;
-
-      this.httpClient.setTokens(tokens);
 
       // Save to storage if available
       if (this.tokenStorage) {
