@@ -52,7 +52,7 @@ export type GameKey = `${number}`;
 /**
  * League key format: `{game_id}.l.{league_id}`
  */
-export type LeagueKey = `${number}.l.${number}`;
+export type LeagueKey = `${number}.l.${number}` & (string | {});
 
 /**
  * Team key format: `{game_id}.l.{league_id}.t.{team_id}`
