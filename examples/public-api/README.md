@@ -48,7 +48,7 @@ const client = new YahooFantasyClient({
 
 // No authentication flow needed!
 // Start making API calls immediately
-const game = await client.q().game("nhl").execute();
+const game = await client.request().game("nhl").execute();
 ```
 
 ### Running the Examples

@@ -78,10 +78,10 @@ When adding or modifying types:
 If adding a new Yahoo API resource:
 
 1. Create type definitions in `src/types/resources/`
-2. Extend the query graph and builder surface in `src/query/` and `src/types/query/`
+2. Extend the query graph and builder surface in `src/request/` and `src/types/query/`
 3. Add or update response typing in `src/types/responses/` and `src/types/query/responses.ts`
 4. Export any new public types from `src/types/index.ts`
-5. Add unit tests covering the query builder path and inferred response type
+5. Add unit tests covering the request builder path and inferred response type
 6. Add integration tests for the new query path if applicable
 7. Add examples in `examples/`
 8. Update documentation

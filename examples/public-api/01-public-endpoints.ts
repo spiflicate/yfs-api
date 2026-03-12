@@ -62,7 +62,7 @@ try {
    console.log('Example 1: Get NHL game metadata');
    console.log('-'.repeat(70));
 
-   const nhlGame = (await client.q().game('nhl').execute()).game;
+   const nhlGame = (await client.request().game('nhl').execute()).game;
    console.log(`Game: ${nhlGame.name} (${nhlGame.code})`);
    console.log(`Season: ${nhlGame.season}`);
    console.log(`Game Key: ${nhlGame.gameKey}`);
@@ -75,7 +75,7 @@ try {
    console.log('-'.repeat(70));
 
    const games = (
-      await client.q().games().param('is_available', '1').execute()
+      await client.request().games().param('is_available', '1').execute()
    ).games;
    console.log(`Found ${games.length} available game(s):\n`);
 
@@ -93,7 +93,7 @@ try {
 
    const multipleGames = (
       await client
-         .q()
+         .request()
          .games()
          .params({
             game_codes: 'nhl,nfl',
@@ -115,7 +115,7 @@ try {
    console.log('-'.repeat(70));
 
    const playerResults = await client
-      .q()
+      .request()
       .game('nhl')
       .players()
       .search('McDavid')

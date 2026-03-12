@@ -28,12 +28,12 @@
  * await client.authenticate(code);
  *
  * // Make API calls
- * const league = await client.q().league('423.l.12345').execute();
- * const roster = await client.q().team('423.l.12345.t.1').roster().execute();
+ * const league = await client.request().league('423.l.12345').execute();
+ * const roster = await client.request().team('423.l.12345.t.1').roster().execute();
  * ```
  */
 
-import { QueryBuilder } from '../query/builder.js';
+import { RequestBuilder } from '../request/builder.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
 import { HttpClient } from './HttpClient.js';
@@ -64,7 +64,7 @@ export interface TokenStorage {
 /**
  * Main Yahoo Fantasy Sports API client
  *
- * Provides access to Yahoo Fantasy Sports through a fluent query-builder API.
+ * Provides access to Yahoo Fantasy Sports through a fluent request-builder API.
  *
  * @example
  * ```typescript
@@ -84,9 +84,9 @@ export interface TokenStorage {
  * // Step 3: Complete authentication
  * await client.authenticate(code);
  *
- * // Use the query builder
- * const league = await client.q().league('423.l.12345').execute();
- * const teams = await client.q().users().useLogin().games().teams().execute();
+ * // Use the request builder
+ * const league = await client.request().league('423.l.12345').execute();
+ * const teams = await client.request().users().useLogin().games().teams().execute();
  * ```
  */
 export class YahooFantasyClient {
@@ -249,16 +249,16 @@ export class YahooFantasyClient {
    }
 
    /**
-    * Create a new composable query builder
+    * Create a new composable request builder
     *
     * A type-safe, chainable API for building Yahoo Fantasy API queries.
     * Provides autocomplete and sensible defaults.
     *
-    * @returns A new QueryBuilder instance
+    * @returns A new RequestBuilder instance
     *
     * @example Query league settings
     * ```typescript
-    * const league = await client.q()
+    * const league = await client.request()
     *   .league('423.l.12345')
     *   .settings()
     *   .execute();
@@ -266,7 +266,7 @@ export class YahooFantasyClient {
     *
     * @example Query players with filters
     * ```typescript
-    * const players = await client.q()
+    * const players = await client.request()
     *   .league('423.l.12345')
     *   .players()
     *   .position('C')
@@ -277,7 +277,7 @@ export class YahooFantasyClient {
     *
     * @example Query team roster
     * ```typescript
-    * const roster = await client.q()
+    * const roster = await client.request()
     *   .team('423.l.12345.t.1')
     *   .roster({ week: 10 })
     *   .execute();
@@ -285,7 +285,7 @@ export class YahooFantasyClient {
     *
     * @example Query user's games
     * ```typescript
-    * const games = await client.q()
+    * const games = await client.request()
     *   .games()
     *   .gameKeys(['nhl', 'nfl'])
     *   .execute();
@@ -293,16 +293,16 @@ export class YahooFantasyClient {
     *
     * @example Query user's games
     * ```typescript
-    * const userGames = await client.q()
+    * const userGames = await client.request()
     *   .users()
     *   .useLogin()
     *   .games()
     *   .execute();
     * ```
     */
-   q(): QueryBuilder {
-      const builder = new QueryBuilder(this.httpClient);
-      return builder as QueryBuilder;
+   request(): RequestBuilder {
+      const builder = new RequestBuilder(this.httpClient);
+      return builder as RequestBuilder;
    }
 
    /**

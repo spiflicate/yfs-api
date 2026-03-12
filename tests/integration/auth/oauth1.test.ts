@@ -71,7 +71,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
       describe('Game Resource - Public Endpoints', () => {
          test('should fetch game metadata by code', async () => {
             const client = new YahooFantasyClient(config);
-            const game = (await client.q().game('nhl').execute()).game;
+            const game = (await client.request().game('nhl').execute()).game;
 
             expect(game).toBeDefined();
             expect(game.code).toBe('nhl');
@@ -83,9 +83,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          test('should fetch game metadata by game key', async () => {
             const client = new YahooFantasyClient(config);
             // NHL game key format: 427 (or similar)
-            const game = (await client.q().game('nhl').execute()).game;
+            const game = (await client.request().game('nhl').execute()).game;
             const gameByKey = (
-               await client.q().game(game.gameKey).execute()
+               await client.request().game(game.gameKey).execute()
             ).game;
 
             expect(gameByKey).toBeDefined();
@@ -142,7 +142,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
             const game = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .out(['position_types', 'stat_categories'])
                   .execute()
@@ -160,7 +160,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
             const result = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .search('McDavid')
@@ -183,7 +183,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
             const result = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .position('C')
@@ -199,7 +199,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
             const result = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .sort('NAME')
@@ -215,7 +215,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
             const firstPage = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .start(0)
@@ -225,7 +225,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
             const secondPage = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .start(10)
@@ -255,7 +255,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
 
             expect(async () => {
-               await client.q().game('invalid-game-code').execute();
+               await client.request().game('invalid-game-code').execute();
             }).toThrow();
          });
 
@@ -265,7 +265,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             // Empty search should still work but might return fewer results
             const result = (
                await client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .search('')
@@ -282,10 +282,10 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasyClient(config);
 
             const requests = [
-               client.q().game('nhl').execute(),
-               client.q().game('nfl').execute(),
+               client.request().game('nhl').execute(),
+               client.request().game('nfl').execute(),
                client
-                  .q()
+                  .request()
                   .game('nhl')
                   .players()
                   .search('McDavid')
@@ -304,12 +304,12 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          test('should handle sequential requests', async () => {
             const client = new YahooFantasyClient(config);
 
-            const nhlGame = (await client.q().game('nhl').execute()).game;
+            const nhlGame = (await client.request().game('nhl').execute()).game;
             expect(nhlGame).toBeDefined();
 
             const players = (
                await client
-                  .q()
+                  .request()
                   .game(nhlGame.gameKey)
                   .players()
                   .count(5)
@@ -317,7 +317,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             ).game;
             expect(players).toBeDefined();
 
-            const nflGame = (await client.q().game('nfl').execute()).game;
+            const nflGame = (await client.request().game('nfl').execute()).game;
             expect(nflGame).toBeDefined();
          });
       });

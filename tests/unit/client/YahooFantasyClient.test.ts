@@ -134,10 +134,10 @@ describe('YahooFantasyClient', () => {
       });
    });
 
-   describe('query builder', () => {
-      test('should expose the composable query builder', () => {
+   describe('request builder', () => {
+      test('should expose the composable request builder', () => {
          const client = new YahooFantasyClient(config);
-         expect(client.q()).toBeDefined();
+         expect(client.request()).toBeDefined();
       });
    });
 

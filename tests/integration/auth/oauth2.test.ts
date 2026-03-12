@@ -46,9 +46,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             expect(client).toBeInstanceOf(YahooFantasyClient);
          });
 
-         test('should expose query builders', () => {
+         test('should expose request builders', () => {
             const client = new YahooFantasyClient(config);
-            expect(client.q()).toBeDefined();
+            expect(client.request()).toBeDefined();
          });
 
          test('should not be authenticated without tokens', () => {

@@ -135,13 +135,13 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get current user
-            const user = await client.q().users().useLogin().execute();
+            const user = await client.request().users().useLogin().execute();
             expect(user).toBeDefined();
 
             // Get user's teams (if any)
             const teams = extractTeams(
                await client
-                  .q()
+                  .request()
                   .users()
                   .useLogin()
                   .games()
@@ -161,7 +161,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             // Get user's teams
             const teams = extractTeams(
                await client
-                  .q()
+                  .request()
                   .users()
                   .useLogin()
                   .games()
@@ -176,7 +176,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get team details
                const team = await client
-                  .q()
+                  .request()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
                   .execute();
                expect(team).toBeDefined();
@@ -184,7 +184,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get current roster
                const roster = await client
-                  .q()
+                  .request()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
                   .roster()
                   .execute();
@@ -196,7 +196,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get team stats
                const stats = await client
-                  .q()
+                  .request()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
                   .stats()
                   .execute();
@@ -208,13 +208,13 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       describe('Player Search and Analysis', () => {
          test('should search and analyze players', async () => {
             // Get NHL game
-            const game = (await client.q().game('nhl').execute()).game;
+            const game = (await client.request().game('nhl').execute()).game;
             expect(game).toBeDefined();
 
             // Search for a specific player
             const searchResult = (
                await client
-                  .q()
+                  .request()
                   .game(game.gameKey)
                   .players()
                   .search('McDavid')
@@ -231,7 +231,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get detailed player information
                const player = await client
-                  .q()
+                  .request()
                   .player(firstPlayer.playerKey as `${number}.p.${number}`)
                   .execute();
                expect(player).toBeDefined();
@@ -243,7 +243,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             // Get user's teams
             const teams = extractTeams(
                await client
-                  .q()
+                  .request()
                   .users()
                   .useLogin()
                   .games()
@@ -262,7 +262,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Search for free agents
                const freeAgents = await client
-                  .q()
+                  .request()
                   .league(leagueKey as `${number}.l.${number}`)
                   .players()
                   .status('FA')
@@ -283,7 +283,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             // Get user's teams first
             const teams = extractTeams(
                await client
-                  .q()
+                  .request()
                   .users()
                   .useLogin()
                   .games()
@@ -302,14 +302,14 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get league details
                const league = await client
-                  .q()
+                  .request()
                   .league(leagueKey as `${number}.l.${number}`)
                   .execute();
                expect(league).toBeDefined();
 
                // Get current standings
                const standings = await client
-                  .q()
+                  .request()
                   .league(leagueKey as `${number}.l.${number}`)
                   .standings()
                   .execute();
@@ -318,7 +318,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get current week scoreboard
                const scoreboard = await client
-                  .q()
+                  .request()
                   .league(leagueKey as `${number}.l.${number}`)
                   .scoreboard()
                   .execute();
@@ -327,7 +327,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get league settings
                const settings = await client
-                  .q()
+                  .request()
                   .league(leagueKey as `${number}.l.${number}`)
                   .settings()
                   .execute();
@@ -343,7 +343,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             // Get user's teams
             const teams = extractTeams(
                await client
-                  .q()
+                  .request()
                   .users()
                   .useLogin()
                   .games()
@@ -358,7 +358,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get the same team via team resource
                const teamDetails = await client
-                  .q()
+                  .request()
                   .team(
                      userTeam.teamKey as `${number}.l.${number}.t.${number}`,
                   )
@@ -376,17 +376,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // This should retry on network issues
-            const user = await client.q().users().useLogin().execute();
+            const user = await client.request().users().useLogin().execute();
             expect(user).toBeDefined();
          });
 
          test('should handle invalid resource keys gracefully', async () => {
             expect(async () => {
-               await client.q().league('999.l.99999').execute();
+               await client.request().league('999.l.99999').execute();
             }).toThrow();
 
             // Should still be able to make valid requests
-            const games = await client.q().game('nhl').execute();
+            const games = await client.request().game('nhl').execute();
             expect(games).toBeDefined();
          });
       });

@@ -298,13 +298,13 @@ The same resource can appear in different contexts with different meanings:
 4. **Use specific keys when possible** - More efficient than filtering collections
 5. **Leverage context** - Same resource, different paths = different data
 
-## URL Builder Implementation
+## Request Builder Implementation
 
-The query builder in this library follows these patterns:
+The request builder in this library follows these patterns:
 
 ```typescript
 client
-  .q()
+  .request()
   .league("423.l.12345") // /league/423.l.12345
   .out("settings") // ;out=settings
   .teams() // /teams
