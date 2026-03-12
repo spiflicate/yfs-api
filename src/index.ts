@@ -49,13 +49,15 @@
  * ```
  */
 
-export { AdvancedQuery } from './client/AdvancedQuery.js';
+export { AdvancedQuery } from './adv-query/AdvancedQuery.js';
+// Export old query builder (for backward compatibility)
+export { QueryBuilder, query } from './adv-query/QueryBuilder.js';
 export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
-// Export advanced query builder
-export { QueryBuilder, query } from './client/QueryBuilder.js';
 export type { TokenStorage } from './client/YahooFantasyClient.js';
 // Export client
 export { YahooFantasyClient } from './client/YahooFantasyClient.js';
+// Export new composable query builder
+export { createQuery } from './query/index.js';
 // Export all types
 // Resource types
 // NHL-specific types
@@ -115,7 +117,6 @@ export type {
    VoteAgainstTradeParams,
    WaiverClaimParams,
 } from './types/index.js';
-
 // Export error types and guards
 export {
    AuthenticationError,
@@ -133,5 +134,15 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './types/index.js';
+export type {
+   CoverageTypeParam,
+   GameSubResource,
+   LeagueSubResource,
+   PlayerStatusParam,
+   PlayerSubResource,
+   SortParam,
+   TeamSubResource,
+   TransactionTypeParam,
+} from './types/query/params.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';
