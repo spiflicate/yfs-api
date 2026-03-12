@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import type {
    MatchResponseType,
    SerializePath,
-} from '../../../src/types/query/response-routes.ts';
+} from '../../../src/types/request/response-routes.ts';
 import type {
    GamesCollectionResponse,
    LeagueSettingsResponse,
@@ -10,7 +10,7 @@ import type {
    UserGameLeaguesResponse,
    UsersCollectionResponse,
    UserTeamsResponse,
-} from '../../../src/types/query/responses.js';
+} from '../../../src/types/request/responses.js';
 
 type Assert<T extends true> = T;
 type IsEqual<A, B> =
