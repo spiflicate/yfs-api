@@ -73,7 +73,7 @@ When tokens expire, they're automatically refreshed AND re-saved:
 
 ```typescript
 // First request after token expires
-const teams = await client.q().users().useLogin().games().teams().execute();
+const teams = await client.request().users().useLogin().games().teams().execute();
 // HttpClient detected expired token
 // Automatically refreshed it
 // Automatically saved new tokens via storage.save()

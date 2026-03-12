@@ -14,6 +14,7 @@ First stable release of yfs-api, a TypeScript wrapper for the Yahoo Fantasy Spor
 ### Added
 
 #### Core Features
+
 - **OAuth 1.0 Support** - Public API access without user authentication
 - **OAuth 2.0 Support** - User authentication with token refresh support
 - **Token Storage Interface** - Save and restore authentication tokens between sessions
@@ -22,6 +23,7 @@ First stable release of yfs-api, a TypeScript wrapper for the Yahoo Fantasy Spor
 - **JSDoc** - Inline documentation on public APIs
 
 #### Resources
+
 - **UserResource** - Get current user, games, leagues, and teams
 - **LeagueResource** - Fetch league details, settings, standings, scoreboard, and teams
 - **TeamResource** - Get team info, roster, matchups, and stats
@@ -30,15 +32,18 @@ First stable release of yfs-api, a TypeScript wrapper for the Yahoo Fantasy Spor
 - **TransactionResource** - Add/drop players, propose trades (⚠️ experimental, not integration tested)
 
 #### Sports Support
+
 All major Yahoo Fantasy sports (NHL, NBA, NFL, MLB) are intended to work with this release, but initial testing has focused on NHL leagues.
 
 #### Testing
+
 - **301 Unit Tests** - 96.83% line coverage, 98.19% function coverage
 - **45 Integration Tests** - Tested against live Yahoo Fantasy API
 - **Test Infrastructure** - Comprehensive test helpers and fixtures
 - **Auto-Discovery Script** - Automatically find league/team keys for testing
 
 #### Documentation
+
 - Complete README with quickstart examples
 - OAuth 1.0 and 2.0 authentication guides
 - Integration test setup guide
@@ -48,6 +53,7 @@ All major Yahoo Fantasy sports (NHL, NBA, NFL, MLB) are intended to work with th
 - MIT License
 
 #### Developer Experience
+
 - **Type Safety** - Compile-time checking via TypeScript
 - **Token Refresh** - OAuth 2.0 token refresh support
 - **Error Handling** - Specific error types with descriptive messages
@@ -58,6 +64,7 @@ All major Yahoo Fantasy sports (NHL, NBA, NFL, MLB) are intended to work with th
 ### Fixed
 
 #### Critical Parsing Bugs
+
 - **Nested Array Handling** - Yahoo API returns data as `[[{...}], null]` instead of flat arrays
 - **Team Parsing** - Fixed team data extraction from nested structures in UserResource
 - **Game Parsing** - Fixed game and player parsing in GameResource
@@ -77,11 +84,13 @@ All parsing methods now safely handle nested arrays, null values, and non-array 
 ### Technical Details
 
 #### Dependencies
+
 - `fast-xml-parser` - XML to JSON conversion for Yahoo API responses
 - TypeScript 5.6.3+ (peer dependency)
 - Node.js 18.0.0+ or Bun 1.0.0+
 
 #### Package Configuration
+
 - ESM module format
 - Source maps included
 - Tree-shakeable exports
@@ -100,6 +109,7 @@ This is the first release, so there's no migration needed. See the README for ge
 ## Future Releases
 
 Future updates may include:
+
 - Enhanced NFL/MLB/NBA support based on community feedback
 - Integration tests for Transaction APIs
 - Performance optimizations
@@ -120,29 +130,34 @@ Major refactor addressing significant implementation flaws in v1.0.0. This relea
 ### Added
 
 #### Advanced Query Builder (⚠️ Experimental)
+
 - **Advanced Query Builder** - New `client.advanced()` method for constructing complex API requests with fluent API
 - Support for resource chaining, parameter passing, and output selection
 - Enables queries not covered by standard resource methods
 - ⚠️ API and behavior may change; use with caution in production
 
 #### Testing & Fixtures
+
 - **Data Collection Script** - `multi-league-collector.ts` for gathering comprehensive fixture data from real Yahoo Fantasy API
 - Enhanced fixture data covering multiple sports and league configurations
 - Script-based discovery of league and team keys for integration testing
 
 #### Developer Tools
+
 - **Auto-Discovery Script** - Automatically find and configure test resources from user's Yahoo Fantasy account
 - Comprehensive fixture management and data collection infrastructure
 
 ### Changed
 
 #### Core Improvements
+
 - **Response Property Names** - Updated game, player, and team response property names for consistency
 - **Array Normalization** - Enhanced XML parser array normalization with mappings for users and leagues
 - **Transaction Interfaces** - Streamlined transaction API interfaces and documentation
 - **Response Handling** - Updated response handling in resource classes for better data extraction
 
 #### Documentation
+
 - **Restructured Docs** - Reorganized documentation files for the Yahoo API guide
 - **Removed Outdated Docs** - Cleaned up CI/CD and OAuth improvement documentation
 - **API Documentation** - Added comprehensive documentation for players, teams, transactions, and users
@@ -150,16 +165,19 @@ Major refactor addressing significant implementation flaws in v1.0.0. This relea
 - **README Updates** - Updated README to remove design folder references and reflect current capabilities
 
 #### Type System
+
 - **Type Organization** - Restored and reorganized TypeScript response types into dedicated folder structure
 - **Type Consistency** - Improved type consistency across resource clients
 
 ### Fixed
 
 #### Parser & XML Handling
+
 - **Array Normalization** - Fixed nested array handling for Yahoo API responses (`[[{...}], null]` format)
 - **XML Parser Mappings** - Added proper mappings for users and leagues in array normalization
 
 #### Type & Build Issues
+
 - **TypeScript Diagnostics** - Resolved TypeScript warnings and diagnostic errors in tests
 - **Import Cleanup** - Cleaned up imports to enable proper building
 
@@ -172,6 +190,7 @@ Major refactor addressing significant implementation flaws in v1.0.0. This relea
 ### Upgrade Guide from 1.0.0
 
 If upgrading from v1.0.0, be aware of:
+
 - **Response property names** have been updated for consistency - review your usage of resource responses
 - **Array normalization** has been improved - nested arrays should now parse correctly
 - **Advanced query builder** is experimental - prefer standard resource methods for stable APIs
@@ -204,7 +223,6 @@ Patch release with bug fixes, parser improvements, and type/refactor cleanups.
 - **LeagueResource:** `getScoreboard` updated to return a `League`-typed response.
 
 No breaking changes; safe to upgrade for fixes and refactors.
-
 
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0

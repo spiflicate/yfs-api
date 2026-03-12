@@ -78,7 +78,7 @@ function normalizeYahooJson(
    }
 
    const scoreboard = scoreboardObj.scoreboard as Record<string, unknown>;
-   const week = Number.parseInt(scoreboard.week as string);
+   const week = Number.parseInt(scoreboard.week as string, 10);
 
    const normalized: NormalizedScoreboard = {
       week,
@@ -103,7 +103,7 @@ function normalizeYahooJson(
             .matchup as Record<string, unknown>;
 
          const matchup: NormalizedMatchup = {
-            week: Number.parseInt(matchupData.week as string),
+            week: Number.parseInt(matchupData.week as string, 10),
             weekStart: matchupData.week_start as string,
             weekEnd: matchupData.week_end as string,
             status: matchupData.status as string,
@@ -180,7 +180,7 @@ function normalizeXmlJson(
    const league = (data.fantasy_content as Record<string, unknown>)
       .league as Record<string, unknown>;
    const scoreboard = league.scoreboard as Record<string, unknown>;
-   const week = Number.parseInt(scoreboard.week as string);
+   const week = Number.parseInt(scoreboard.week as string, 10);
 
    const normalized: NormalizedScoreboard = {
       week,
@@ -195,7 +195,7 @@ function normalizeXmlJson(
    for (const matchupData of matchupsArray) {
       const matchupObj = matchupData as Record<string, unknown>;
       const matchup: NormalizedMatchup = {
-         week: Number.parseInt(matchupObj.week as string),
+         week: Number.parseInt(matchupObj.week as string, 10),
          weekStart: matchupObj.week_start as string,
          weekEnd: matchupObj.week_end as string,
          status: matchupObj.status as string,
@@ -483,7 +483,7 @@ function printComparison(
    xmlResults: BenchmarkResults,
    jsonResults: BenchmarkResults,
 ) {
-   console.log('\n' + '='.repeat(80));
+   console.log(`\n${'='.repeat(80)}`);
    console.log('BENCHMARK RESULTS COMPARISON');
    console.log('='.repeat(80));
 
@@ -607,7 +607,7 @@ function printComparison(
       `  Normalize:  ${fmt(jsonNormalizePct)}% (${fmt(jsonResults.avg.normalizeTime)}ms)`,
    );
 
-   console.log('\n' + '='.repeat(80));
+   console.log(`\n${'='.repeat(80)}`);
 }
 
 /**

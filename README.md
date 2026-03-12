@@ -10,7 +10,7 @@ A TypeScript wrapper for the Yahoo Fantasy Sports API with OAuth 1.0 and OAuth 2
 - TypeScript client for Yahoo Fantasy Sports
 - OAuth 1.0 (public API) and OAuth 2.0 (user auth)
 - Token refresh support for OAuth 2.0
-- Composable query builder via `client.q()` for typed Yahoo API paths
+- Composable request builder via `client.request()` for typed Yahoo API paths
 - Integration-tested against real Yahoo Fantasy leagues (primarily NHL)
 - Transaction APIs are implemented but still experimental
 
@@ -42,11 +42,11 @@ const client = new YahooFantasyClient({
 });
 
 // Get a public game resource
-const nhl = await client.q().game("nhl").execute();
+const nhl = await client.request().game("nhl").execute();
 
 // Search public game-level players
 const playerSearch = await client
-  .q()
+  .request()
   .game("nhl")
   .players()
   .search("mcdavid")
@@ -79,7 +79,7 @@ await client.authenticate(authorizationCode);
 
 // Step 3: Use authenticated endpoints
 const teamsResponse = await client
-  .q()
+  .request()
   .users()
   .useLogin()
   .games()
@@ -94,16 +94,19 @@ const teams = teamsResponse.users.flatMap((user) =>
 console.log(`Found ${teams.length} teams`);
 
 // Get league details
-const league = await client.q().league(teams[0].league.leagueKey).execute();
+const league = await client
+  .request()
+  .league(teams[0].league.leagueKey)
+  .execute();
 console.log(`League: ${league.league.name} (${league.league.season})`);
 
 // Get team roster
-const roster = await client.q().team(teams[0].teamKey).roster().execute();
+const roster = await client.request().team(teams[0].teamKey).roster().execute();
 console.log(`Roster has ${roster.team.roster?.players?.length ?? 0} players`);
 
 // Get league standings
 const standings = await client
-  .q()
+  .request()
   .league(teams[0].league.leagueKey)
   .standings()
   .execute();
@@ -113,7 +116,7 @@ console.log(
 
 // Search for players in league
 const freeAgents = await client
-  .q()
+  .request()
   .league(teams[0].league.leagueKey)
   .players()
   .status("FA")
@@ -169,27 +172,33 @@ if (!client.hasValidTokens()) {
 }
 
 // Tokens are automatically saved and refreshed
-const teams = await client.q().users().useLogin().games().teams().execute();
+const teams = await client
+  .request()
+  .users()
+  .useLogin()
+  .games()
+  .teams()
+  .execute();
 ```
 
 ## Query Coverage
 
-The main public surface is the composable query builder returned by `client.q()`.
+The main public surface is the composable request builder returned by `client.request()`.
 
-| Query Pattern | Example                                              | Status |
-| ------------- | ---------------------------------------------------- | ------ |
-| **Users**     | `client.q().users().useLogin().games().teams()`      | Tested |
-| **League**    | `client.q().league(key).settings()`                  | Tested |
-| **Team**      | `client.q().team(key).roster()`                      | Tested |
-| **Player**    | `client.q().player(key).stats()`                     | Tested |
-| **Game**      | `client.q().game('nhl').players().search('McDavid')` | Tested |
-| **Games**     | `client.q().games().gameKeys(['nhl', 'nfl'])`        | Tested |
+| Query Pattern | Example                                                    | Status |
+| ------------- | ---------------------------------------------------------- | ------ |
+| **Users**     | `client.request().users().useLogin().games().teams()`      | Tested |
+| **League**    | `client.request().league(key).settings()`                  | Tested |
+| **Team**      | `client.request().team(key).roster()`                      | Tested |
+| **Player**    | `client.request().player(key).stats()`                     | Tested |
+| **Game**      | `client.request().game('nhl').players().search('McDavid')` | Tested |
+| **Games**     | `client.request().games().gameKeys(['nhl', 'nfl'])`        | Tested |
 
 ### Experimental (Not Fully Tested)
 
-| Query Pattern          | Example                                           | Status          |
-| ---------------------- | ------------------------------------------------- | --------------- |
-| **Transaction writes** | `client.q().league(key).transactions().post(...)` | ⚠️ Experimental |
+| Query Pattern          | Example                                                 | Status          |
+| ---------------------- | ------------------------------------------------------- | --------------- |
+| **Transaction writes** | `client.request().league(key).transactions().post(...)` | ⚠️ Experimental |
 
 Transaction operations are implemented but have limited real-world testing so far. Use with caution and please report any issues.
 
@@ -219,12 +228,12 @@ Check out the `/examples` directory for complete working examples:
 - `examples/hockey/02-client-test.ts` - Testing API endpoints
 - `examples/public-api/01-public-endpoints.ts` - Public API without auth
 - `examples/token-storage/usage-example.ts` - Token persistence
-- `examples/query-builder/01-basic-usage.ts` - Query builder basics
-- `examples/query-builder/02-type-safety.ts` - Query builder typing examples
+- `examples/request-builder/01-basic-usage.ts` - Request builder basics
+- `examples/request-builder/02-type-safety.ts` - Request builder typing examples
 
-### Query Builder Patterns
+### Request Builder Patterns
 
-The query builder covers both keyed resources and the root `/games` collection:
+The request builder covers both keyed resources and the root `/games` collection:
 
 ```typescript
 import { YahooFantasyClient } from "yfs-api";
@@ -237,7 +246,7 @@ const client = new YahooFantasyClient({
 
 // Complex chain: User's NFL leagues with settings and standings
 const result = await client
-  .q()
+  .request()
   .users()
   .useLogin()
   .games()
@@ -247,11 +256,11 @@ const result = await client
   .execute();
 
 // Root games collection
-const games = await client.q().games().gameKeys(["nhl", "nfl"]).execute();
+const games = await client.request().games().gameKeys(["nhl", "nfl"]).execute();
 
 // Team roster for specific week
 const roster = await client
-  .q()
+  .request()
   .team("423.l.12345.t.1")
   .roster({ week: 10 })
   .players()
@@ -259,7 +268,7 @@ const roster = await client
 
 // Available players with filters
 const qbs = await client
-  .q()
+  .request()
   .league("423.l.12345")
   .players()
   .position("QB")
@@ -328,7 +337,7 @@ source .env.test && bun test tests/integration
 yfs-api/
 ├── src/
 │   ├── client/              # OAuth clients and main client
-│   ├── query/               # Composable query builder
+│   ├── request/             # Composable request builder
 │   ├── types/               # TypeScript type definitions
 │   │   ├── resources/       # Resource types (league, team, etc.)
 │   │   ├── sports/          # Sport-specific types (NHL, etc.)

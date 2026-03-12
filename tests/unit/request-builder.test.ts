@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from 'bun:test';
 import type { HttpClient } from '../../src/client/HttpClient.js';
-import { createQuery, QueryBuilder } from '../../src/query/index.js';
+import { createRequest, RequestBuilder } from '../../src/request/index.js';
 import type { InferResponseType } from '../../src/types/query/context.js';
 import type { Game } from '../../src/types/responses/game.js';
 import type { League } from '../../src/types/responses/league.js';
@@ -97,10 +97,10 @@ const createMockHttpClient = (): HttpClient =>
       delete: mock(async () => ({})),
    }) as unknown as HttpClient;
 
-describe('QueryBuilder', () => {
+describe('RequestBuilder', () => {
    describe('root resources', () => {
       it('builds a game resource path', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .game('nfl')
             .buildPath();
 
@@ -108,7 +108,7 @@ describe('QueryBuilder', () => {
       });
 
       it('builds a users resource path', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .users()
             .buildPath();
 
@@ -116,7 +116,7 @@ describe('QueryBuilder', () => {
       });
 
       it('builds a root games collection path', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .games()
             .gameKeys(['nhl', 'nfl'])
             .buildPath();
@@ -127,7 +127,7 @@ describe('QueryBuilder', () => {
 
    describe('collections and sub-resources', () => {
       it('builds a league teams collection path', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .teams()
             .buildPath();
@@ -136,7 +136,7 @@ describe('QueryBuilder', () => {
       });
 
       it('builds a user games leagues chain', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .users()
             .useLogin()
             .games()
@@ -150,7 +150,7 @@ describe('QueryBuilder', () => {
       });
 
       it('builds a team roster players chain', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .team('423.l.12345.t.1')
             .roster({ week: 10 })
             .players()
@@ -160,7 +160,7 @@ describe('QueryBuilder', () => {
       });
 
       it('builds league settings via sub-resource method', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .settings()
             .buildPath();
@@ -171,7 +171,7 @@ describe('QueryBuilder', () => {
 
    describe('parameters', () => {
       it('adds generic params to the current segment', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .players()
             .params({
@@ -188,7 +188,7 @@ describe('QueryBuilder', () => {
       });
 
       it('adds out params to a league resource', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .out(['settings', 'standings', 'scoreboard'])
             .buildPath();
@@ -199,7 +199,7 @@ describe('QueryBuilder', () => {
       });
 
       it('supports convenience parameter helpers', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .players()
             .position('QB')
@@ -216,7 +216,7 @@ describe('QueryBuilder', () => {
       });
 
       it('supports array values for key filters', () => {
-         const path = createQuery(createMockHttpClient())
+         const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .teams()
             .teamKeys(['t.1', 't.2'])
@@ -233,7 +233,7 @@ describe('QueryBuilder', () => {
             users: [],
          });
 
-         const result = await createQuery(httpClient)
+         const result = await createRequest(httpClient)
             .users()
             .useLogin()
             .games()
@@ -250,7 +250,7 @@ describe('QueryBuilder', () => {
          const httpClient = createMockHttpClient();
          const payload = { transaction: { type: 'add' } };
 
-         await createQuery(httpClient)
+         await createRequest(httpClient)
             .league('423.l.12345')
             .transactions()
             .post(payload);
@@ -264,7 +264,7 @@ describe('QueryBuilder', () => {
 
    describe('stringification and errors', () => {
       it('returns the built path from toString()', () => {
-         const builder = createQuery(createMockHttpClient())
+         const builder = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .scoreboard();
 
@@ -272,25 +272,25 @@ describe('QueryBuilder', () => {
       });
 
       it('returns a placeholder for an incomplete query', () => {
-         const builder = new QueryBuilder(createMockHttpClient());
+         const builder = new RequestBuilder(createMockHttpClient());
 
          expect(builder.toString()).toBe('<incomplete query>');
       });
 
       it('throws when building without segments', () => {
-         const builder = new QueryBuilder(createMockHttpClient());
+         const builder = new RequestBuilder(createMockHttpClient());
 
          expect(() => builder.buildPath()).toThrow(
-            'Cannot build empty query',
+            'Cannot build empty request',
          );
       });
    });
 
-   describe('createQuery()', () => {
-      it('creates a QueryBuilder instance', () => {
-         const builder = createQuery(createMockHttpClient());
+   describe('createRequest()', () => {
+      it('creates a RequestBuilder instance', () => {
+         const builder = createRequest(createMockHttpClient());
 
-         expect(builder).toBeInstanceOf(QueryBuilder);
+         expect(builder).toBeInstanceOf(RequestBuilder);
       });
    });
 });

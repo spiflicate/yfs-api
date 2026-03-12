@@ -24,13 +24,13 @@
  * await client.authenticate(code);
  *
  * // Query your NHL teams
- * const teams = await client.q().users().useLogin().games().teams().execute();
+ * const teams = await client.request().users().useLogin().games().teams().execute();
  *
  * // Query a roster
- * const roster = await client.q().team('423.l.12345.t.1').roster().execute();
+ * const roster = await client.request().team('423.l.12345.t.1').roster().execute();
  *
  * // Query league settings
- * const settings = await client.q().league('423.l.12345').settings().execute();
+ * const settings = await client.request().league('423.l.12345').settings().execute();
  * ```
  */
 
@@ -38,7 +38,7 @@ export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
 export type { TokenStorage } from './client/YahooFantasyClient.js';
 // Export client
 export { YahooFantasyClient } from './client/YahooFantasyClient.js';
-export { createQuery, QueryBuilder } from './query/index.js';
+export { createRequest, RequestBuilder } from './request/index.js';
 // Export all types
 // Resource types
 // NHL-specific types

@@ -1,7 +1,7 @@
 /**
- * Composable Query Builder
+ * Composable Request Builder
  *
- * A type-safe, chainable query builder for the Yahoo Fantasy API.
+ * A type-safe, chainable request builder for the Yahoo Fantasy API.
  *
  * @module
  */
@@ -28,7 +28,7 @@ interface PathSegment {
    params: Record<string, string | string[] | number>;
 }
 
-interface QueryState {
+interface RequestState {
    segments: PathSegment[];
    params: Record<string, string | string[] | number>;
    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -59,10 +59,10 @@ type PlayerOutValue = Extract<
 >;
 
 /**
- * Composable Query Builder
+ * Composable Request Builder
  */
-export class QueryBuilder<TPath extends string[] = RootPath> {
-   protected state: QueryState;
+export class RequestBuilder<TPath extends string[] = RootPath> {
+   protected state: RequestState;
    protected httpClient: HttpClient;
 
    constructor(httpClient: HttpClient) {
@@ -86,45 +86,45 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
       return this.state.segments[this.state.segments.length - 1];
    }
 
-   private as<TNextPath extends string[]>(): QueryBuilder<TNextPath> {
-      return this as unknown as QueryBuilder<TNextPath>;
+   private as<TNextPath extends string[]>(): RequestBuilder<TNextPath> {
+      return this as unknown as RequestBuilder<TNextPath>;
    }
 
    // ===== Resource Entry Points =====
 
    game(
-      this: QueryBuilder<RootPath>,
+      this: RequestBuilder<RootPath>,
       key: GameKey,
-   ): QueryBuilder<GamePath> {
+   ): RequestBuilder<GamePath> {
       this.addSegment('resource', 'game', key);
       return this.as<GamePath>();
    }
 
    league(
-      this: QueryBuilder<RootPath>,
+      this: RequestBuilder<RootPath>,
       key: LeagueKey,
-   ): QueryBuilder<LeaguePath> {
+   ): RequestBuilder<LeaguePath> {
       this.addSegment('resource', 'league', key);
       return this.as<LeaguePath>();
    }
 
    team(
-      this: QueryBuilder<RootPath>,
+      this: RequestBuilder<RootPath>,
       key: TeamKey,
-   ): QueryBuilder<TeamPath> {
+   ): RequestBuilder<TeamPath> {
       this.addSegment('resource', 'team', key);
       return this.as<TeamPath>();
    }
 
    player(
-      this: QueryBuilder<RootPath>,
+      this: RequestBuilder<RootPath>,
       key: PlayerKey,
-   ): QueryBuilder<PlayerPath> {
+   ): RequestBuilder<PlayerPath> {
       this.addSegment('resource', 'player', key);
       return this.as<PlayerPath>();
    }
 
-   users(this: QueryBuilder<RootPath>): QueryBuilder<UsersPath> {
+   users(this: RequestBuilder<RootPath>): RequestBuilder<UsersPath> {
       this.addSegment('resource', 'users');
       return this.as<UsersPath>();
    }
@@ -132,30 +132,30 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    // ===== Sub-Resources =====
 
    settings(
-      this: QueryBuilder<LeaguePath>,
-   ): QueryBuilder<[...LeaguePath, 'settings']> {
+      this: RequestBuilder<LeaguePath>,
+   ): RequestBuilder<[...LeaguePath, 'settings']> {
       this.addSegment('subResource', 'settings');
       return this.as<[...LeaguePath, 'settings']>();
    }
 
    standings<TPath extends LeaguePath | TeamPath>(
-      this: QueryBuilder<TPath>,
-   ): QueryBuilder<[...TPath, 'standings']> {
+      this: RequestBuilder<TPath>,
+   ): RequestBuilder<[...TPath, 'standings']> {
       this.addSegment('subResource', 'standings');
       return this.as<[...TPath, 'standings']>();
    }
 
    scoreboard(
-      this: QueryBuilder<LeaguePath>,
-   ): QueryBuilder<[...LeaguePath, 'scoreboard']> {
+      this: RequestBuilder<LeaguePath>,
+   ): RequestBuilder<[...LeaguePath, 'scoreboard']> {
       this.addSegment('subResource', 'scoreboard');
       return this.as<[...LeaguePath, 'scoreboard']>();
    }
 
    roster(
-      this: QueryBuilder<TeamPath>,
+      this: RequestBuilder<TeamPath>,
       params?: { week?: string | number; date?: string },
-   ): QueryBuilder<[...TeamPath, 'roster']> {
+   ): RequestBuilder<[...TeamPath, 'roster']> {
       this.addSegment('subResource', 'roster');
       if (params?.week) this.param('week', String(params.week));
       if (params?.date) this.param('date', params.date);
@@ -163,18 +163,18 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    }
 
    matchups(
-      this: QueryBuilder<TeamPath>,
+      this: RequestBuilder<TeamPath>,
       params?: { weeks?: string },
-   ): QueryBuilder<[...TeamPath, 'matchups']> {
+   ): RequestBuilder<[...TeamPath, 'matchups']> {
       this.addSegment('subResource', 'matchups');
       if (params?.weeks) this.param('weeks', params.weeks);
       return this.as<[...TeamPath, 'matchups']>();
    }
 
    stats<TPath extends TeamPath | PlayerPath>(
-      this: QueryBuilder<TPath>,
+      this: RequestBuilder<TPath>,
       params?: { type?: string; week?: string | number; date?: string },
-   ): QueryBuilder<[...TPath, 'stats']> {
+   ): RequestBuilder<[...TPath, 'stats']> {
       this.addSegment('subResource', 'stats');
       if (params?.type) this.param('type', params.type);
       if (params?.week) this.param('week', String(params.week));
@@ -183,43 +183,43 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    }
 
    ownership(
-      this: QueryBuilder<PlayerPath>,
-   ): QueryBuilder<[...PlayerPath, 'ownership']> {
+      this: RequestBuilder<PlayerPath>,
+   ): RequestBuilder<[...PlayerPath, 'ownership']> {
       this.addSegment('subResource', 'ownership');
       return this.as<[...PlayerPath, 'ownership']>();
    }
 
    percentOwned(
-      this: QueryBuilder<PlayerPath>,
-   ): QueryBuilder<[...PlayerPath, 'percent_owned']> {
+      this: RequestBuilder<PlayerPath>,
+   ): RequestBuilder<[...PlayerPath, 'percent_owned']> {
       this.addSegment('subResource', 'percent_owned');
       return this.as<[...PlayerPath, 'percent_owned']>();
    }
 
    draftAnalysis(
-      this: QueryBuilder<PlayerPath>,
-   ): QueryBuilder<[...PlayerPath, 'draft_analysis']> {
+      this: RequestBuilder<PlayerPath>,
+   ): RequestBuilder<[...PlayerPath, 'draft_analysis']> {
       this.addSegment('subResource', 'draft_analysis');
       return this.as<[...PlayerPath, 'draft_analysis']>();
    }
 
    statCategories(
-      this: QueryBuilder<GamePath>,
-   ): QueryBuilder<[...GamePath, 'stat_categories']> {
+      this: RequestBuilder<GamePath>,
+   ): RequestBuilder<[...GamePath, 'stat_categories']> {
       this.addSegment('subResource', 'stat_categories');
       return this.as<[...GamePath, 'stat_categories']>();
    }
 
    positionTypes(
-      this: QueryBuilder<GamePath>,
-   ): QueryBuilder<[...GamePath, 'position_types']> {
+      this: RequestBuilder<GamePath>,
+   ): RequestBuilder<[...GamePath, 'position_types']> {
       this.addSegment('subResource', 'position_types');
       return this.as<[...GamePath, 'position_types']>();
    }
 
    gameWeeks(
-      this: QueryBuilder<GamePath>,
-   ): QueryBuilder<[...GamePath, 'game_weeks']> {
+      this: RequestBuilder<GamePath>,
+   ): RequestBuilder<[...GamePath, 'game_weeks']> {
       this.addSegment('subResource', 'game_weeks');
       return this.as<[...GamePath, 'game_weeks']>();
    }
@@ -227,43 +227,43 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    // ===== Collections =====
 
    leagues<TPath extends GamePath | UsersPath | [...UsersPath, 'games']>(
-      this: QueryBuilder<TPath>,
-   ): QueryBuilder<[...TPath, 'leagues']> {
+      this: RequestBuilder<TPath>,
+   ): RequestBuilder<[...TPath, 'leagues']> {
       this.addSegment('collection', 'leagues');
       return this.as<[...TPath, 'leagues']>();
    }
 
    teams<TPath extends LeaguePath | UsersPath | [...UsersPath, 'games']>(
-      this: QueryBuilder<TPath>,
-   ): QueryBuilder<[...TPath, 'teams']> {
+      this: RequestBuilder<TPath>,
+   ): RequestBuilder<[...TPath, 'teams']> {
       this.addSegment('collection', 'teams');
       return this.as<[...TPath, 'teams']>();
    }
 
    players<TPath extends GamePath | LeaguePath | [...TeamPath, 'roster']>(
-      this: QueryBuilder<TPath>,
-   ): QueryBuilder<[...TPath, 'players']> {
+      this: RequestBuilder<TPath>,
+   ): RequestBuilder<[...TPath, 'players']> {
       this.addSegment('collection', 'players');
       return this.as<[...TPath, 'players']>();
    }
 
    transactions(
-      this: QueryBuilder<LeaguePath>,
-   ): QueryBuilder<[...LeaguePath, 'transactions']> {
+      this: RequestBuilder<LeaguePath>,
+   ): RequestBuilder<[...LeaguePath, 'transactions']> {
       this.addSegment('collection', 'transactions');
       return this.as<[...LeaguePath, 'transactions']>();
    }
 
    drafts(
-      this: QueryBuilder<LeaguePath>,
-   ): QueryBuilder<[...LeaguePath, 'drafts']> {
+      this: RequestBuilder<LeaguePath>,
+   ): RequestBuilder<[...LeaguePath, 'drafts']> {
       this.addSegment('collection', 'drafts');
       return this.as<[...LeaguePath, 'drafts']>();
    }
 
    games<TThisPath extends RootPath | UsersPath>(
-      this: QueryBuilder<TThisPath>,
-   ): QueryBuilder<
+      this: RequestBuilder<TThisPath>,
+   ): RequestBuilder<
       TThisPath extends RootPath ? GamesPath : [...UsersPath, 'games']
    > {
       this.addSegment('collection', 'games');
@@ -291,7 +291,7 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    }
 
    out<TPath extends GamePath | LeaguePath | TeamPath | PlayerPath>(
-      this: QueryBuilder<TPath>,
+      this: RequestBuilder<TPath>,
       subResources:
          | (TPath extends GamePath
               ? GameOutValue
@@ -358,7 +358,7 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    buildPath(): string {
       if (this.state.segments.length === 0) {
          throw new Error(
-            'Cannot build empty query. Add at least one resource.',
+            'Cannot build empty request. Add at least one resource.',
          );
       }
 
@@ -435,6 +435,6 @@ export class QueryBuilder<TPath extends string[] = RootPath> {
    }
 }
 
-export function createQuery(httpClient: HttpClient): QueryBuilder {
-   return new QueryBuilder(httpClient);
+export function createRequest(httpClient: HttpClient): RequestBuilder {
+   return new RequestBuilder(httpClient);
 }

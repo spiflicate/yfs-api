@@ -24,7 +24,7 @@ test("should make authenticated API call", async () => {
 
   // Use the client
   const leagues = await client
-    .q()
+    .request()
     .users()
     .useLogin()
     .games()

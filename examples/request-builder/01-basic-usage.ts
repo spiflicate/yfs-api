@@ -1,7 +1,7 @@
 /**
- * Composable Query Builder Examples
+ * Composable Request Builder Examples
  *
- * Demonstrates the new type-safe, chainable query builder API.
+ * Demonstrates the new type-safe, chainable request builder API.
  */
 
 import { YahooFantasyClient } from '../../src/client/YahooFantasyClient.js';
@@ -58,7 +58,7 @@ async function runExamples() {
    }
 
    console.log('\n=== Example 1: League with Settings ===');
-   const leagueQuery = client.q().league(TEST_LEAGUE_KEY).settings();
+   const leagueQuery = client.request().league(TEST_LEAGUE_KEY).settings();
    const league = pathOnly
       ? leagueQuery.buildPath()
       : await leagueQuery.execute();
@@ -66,7 +66,7 @@ async function runExamples() {
 
    console.log('\n=== Example 2: League with Multiple Sub-resources ===');
    const leagueFullQuery = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .out(['settings', 'standings', 'scoreboard']);
    const leagueFull = pathOnly
@@ -76,7 +76,7 @@ async function runExamples() {
 
    console.log('\n=== Example 3: Available Players (Free Agents) ===');
    const freeAgentsQuery = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .players()
       .position('C')
@@ -93,7 +93,7 @@ async function runExamples() {
 
    console.log('\n=== Example 4: Team Roster ===');
    const rosterQuery = client
-      .q()
+      .request()
       .team(TEST_TEAM_KEY)
       .roster({ week: '10' });
    const roster = pathOnly
@@ -103,7 +103,7 @@ async function runExamples() {
 
    console.log('\n=== Example 5: Team Stats ===');
    const statsQuery = client
-      .q()
+      .request()
       .team(TEST_TEAM_KEY)
       .stats({ type: 'season' });
    const stats = pathOnly
@@ -113,7 +113,7 @@ async function runExamples() {
 
    console.log('\n=== Example 6: Player Stats ===');
    const playerStatsQuery = client
-      .q()
+      .request()
       .player(TEST_PLAYER_KEY)
       .stats({ type: 'week', week: '10' });
    const playerStats = pathOnly
@@ -125,7 +125,7 @@ async function runExamples() {
    );
 
    console.log('\n=== Example 7: Player Ownership ===');
-   const ownershipQuery = client.q().player(TEST_PLAYER_KEY).ownership();
+   const ownershipQuery = client.request().player(TEST_PLAYER_KEY).ownership();
    const ownership = pathOnly
       ? ownershipQuery.buildPath()
       : await ownershipQuery.execute();
@@ -133,7 +133,7 @@ async function runExamples() {
 
    console.log('\n=== Example 8: Game Info ===');
    const gameQuery = client
-      .q()
+      .request()
       .game('nhl')
       .out(['stat_categories', 'position_types']);
    const game = pathOnly
@@ -142,7 +142,7 @@ async function runExamples() {
    console.log(`Game${pathOnly ? ' (path only)' : ''}:`, game);
 
    console.log('\n=== Example 9: User Games ===');
-   const userGamesQuery = client.q().users().useLogin().games();
+   const userGamesQuery = client.request().users().useLogin().games();
    const userGames = pathOnly
       ? userGamesQuery.buildPath()
       : await userGamesQuery.execute();
@@ -150,7 +150,7 @@ async function runExamples() {
 
    console.log('\n=== Example 10: User Teams ===');
    const userTeamsQuery = client
-      .q()
+      .request()
       .users()
       .useLogin()
       .games()
@@ -162,7 +162,7 @@ async function runExamples() {
    console.log(`User teams${pathOnly ? ' (path only)' : ''}:`, userTeams);
 
    console.log('\n=== Example 11: League Teams ===');
-   const teamsQuery = client.q().league(TEST_LEAGUE_KEY).teams();
+   const teamsQuery = client.request().league(TEST_LEAGUE_KEY).teams();
    const teams = pathOnly
       ? teamsQuery.buildPath()
       : await teamsQuery.execute();
@@ -170,7 +170,7 @@ async function runExamples() {
 
    console.log('\n=== Example 12: League Transactions ===');
    const transactionsQuery = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .transactions()
       .param('type', 'trade')
@@ -185,7 +185,7 @@ async function runExamples() {
 
    console.log('\n=== Example 13: Scoreboard ===');
    const scoreboardQuery = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .scoreboard()
       .week(10);
@@ -196,7 +196,7 @@ async function runExamples() {
 
    console.log('\n=== Example 14: Build Path Only ===');
    const path = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .players()
       .position('C')
@@ -208,7 +208,7 @@ async function runExamples() {
 
    console.log('\n=== Example 15: Multiple Player Keys ===');
    const playersQuery = client
-      .q()
+      .request()
       .league(TEST_LEAGUE_KEY)
       .players()
       .playerKeys(TEST_PLAYER_KEYS);
@@ -222,7 +222,7 @@ async function runExamples() {
 
    console.log('\n=== Example 16: Team Matchups ===');
    const matchupsQuery = client
-      .q()
+      .request()
       .team(TEST_TEAM_KEY)
       .matchups({ weeks: '1,5,10' });
    const matchups = pathOnly
@@ -231,21 +231,21 @@ async function runExamples() {
    console.log(`Matchups${pathOnly ? ' (path only)' : ''}:`, matchups);
 
    console.log('\n=== Example 17: League Standings ===');
-   const standingsQuery = client.q().league(TEST_LEAGUE_KEY).standings();
+   const standingsQuery = client.request().league(TEST_LEAGUE_KEY).standings();
    const standings = pathOnly
       ? standingsQuery.buildPath()
       : await standingsQuery.execute();
    console.log(`Standings${pathOnly ? ' (path only)' : ''}:`, standings);
 
    console.log('\n=== Example 18: Game Weeks ===');
-   const weeksQuery = client.q().game('nhl').gameWeeks();
+   const weeksQuery = client.request().game('nhl').gameWeeks();
    const weeks = pathOnly
       ? weeksQuery.buildPath()
       : await weeksQuery.execute();
    console.log(`Game weeks${pathOnly ? ' (path only)' : ''}:`, weeks);
 
    console.log('\n=== Example 19: Draft Analysis ===');
-   const analysisQuery = client.q().player(TEST_PLAYER_KEY).draftAnalysis();
+   const analysisQuery = client.request().player(TEST_PLAYER_KEY).draftAnalysis();
    const analysis = pathOnly
       ? analysisQuery.buildPath()
       : await analysisQuery.execute();
@@ -256,7 +256,7 @@ async function runExamples() {
 
    console.log('\n=== Example 20: Percent Owned ===');
    const percentOwnedQuery = client
-      .q()
+      .request()
       .player(TEST_PLAYER_KEY)
       .percentOwned();
    const percentOwned = pathOnly

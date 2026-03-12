@@ -52,7 +52,7 @@ try {
    console.log('RAW XML MODE (rawXml: true)');
    console.log('-'.repeat(70));
    const rawXml = (await clientRaw
-      .q()
+      .request()
       .league(leagueKey)
       .execute()) as string;
    console.log('Type:', typeof rawXml);
@@ -70,7 +70,7 @@ try {
    console.log('-'.repeat(70));
    console.log('PARSED MODE (rawXml: false, default)');
    console.log('-'.repeat(70));
-   const parsed = await clientParsed.q().league(leagueKey).execute();
+   const parsed = await clientParsed.request().league(leagueKey).execute();
    console.log('Type:', typeof parsed);
    console.log('League Key:', parsed.league.leagueKey);
    console.log('League Name:', parsed.league.name);

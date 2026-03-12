@@ -1,5 +1,5 @@
 /**
- * Unit tests for YahooFantasyClient query builder
+ * Unit tests for YahooFantasyClient request builder
  * Tests focus on:
  * - Correct path construction for various query chains
  * - Proper execution through the client's HTTP client
@@ -15,8 +15,8 @@
 import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
-import type { QueryBuilder } from '../../../src/query/index.js';
-import { createQuery } from '../../../src/query/index.js';
+import type { RequestBuilder } from '../../../src/request/index.js';
+import { createRequest } from '../../../src/request/index.js';
 import type { Config } from '../../../src/types/index.js';
 import type { InferResponseType } from '../../../src/types/query/context.js';
 import type {
@@ -33,11 +33,11 @@ type IsEqual<A, B> =
       ? true
       : false;
 type ExtractPath<TBuilder> =
-   TBuilder extends QueryBuilder<infer TPath> ? TPath : never;
+   TBuilder extends RequestBuilder<infer TPath> ? TPath : never;
 
 const typeOnlyHttpClient = null as unknown as HttpClient;
 
-const leagueSettingsQuery = createQuery(typeOnlyHttpClient)
+const leagueSettingsQuery = createRequest(typeOnlyHttpClient)
    .league('423.l.12345')
    .settings();
 type LeagueSettingsExecute = InferResponseType<
@@ -49,7 +49,7 @@ type LeagueSettingsExecuteAssertion = Assert<
 const leagueSettingsExecuteAssertion: LeagueSettingsExecuteAssertion = true;
 void leagueSettingsExecuteAssertion;
 
-const rootGamesQuery = createQuery(typeOnlyHttpClient).games();
+const rootGamesQuery = createRequest(typeOnlyHttpClient).games();
 type RootGamesExecute = InferResponseType<
    ExtractPath<typeof rootGamesQuery>
 >;
@@ -59,7 +59,7 @@ type RootGamesExecuteAssertion = Assert<
 const rootGamesExecuteAssertion: RootGamesExecuteAssertion = true;
 void rootGamesExecuteAssertion;
 
-const userTeamsQuery = createQuery(typeOnlyHttpClient)
+const userTeamsQuery = createRequest(typeOnlyHttpClient)
    .users()
    .useLogin()
    .games()
@@ -73,7 +73,7 @@ type UserTeamsExecuteAssertion = Assert<
 const userTeamsExecuteAssertion: UserTeamsExecuteAssertion = true;
 void userTeamsExecuteAssertion;
 
-const userGameLeaguesQuery = createQuery(typeOnlyHttpClient)
+const userGameLeaguesQuery = createRequest(typeOnlyHttpClient)
    .users()
    .useLogin()
    .games()
@@ -87,7 +87,7 @@ type UserGameLeaguesExecuteAssertion = Assert<
 const userGameLeaguesExecuteAssertion: UserGameLeaguesExecuteAssertion = true;
 void userGameLeaguesExecuteAssertion;
 
-const rosterPlayersQuery = createQuery(typeOnlyHttpClient)
+const rosterPlayersQuery = createRequest(typeOnlyHttpClient)
    .team('423.l.12345.t.1')
    .roster({ week: 1 })
    .players();
@@ -101,9 +101,9 @@ const rosterPlayersExecuteAssertion: RosterPlayersExecuteAssertion = true;
 void rosterPlayersExecuteAssertion;
 
 // @ts-expect-error league() requires a Yahoo league key shape
-createQuery(typeOnlyHttpClient).league('nhl');
+createRequest(typeOnlyHttpClient).league('nhl');
 
-describe('client.q()', () => {
+describe('client.request()', () => {
    const config: Config = {
       clientId: 'test-client-id',
       clientSecret: 'test-client-secret',
@@ -114,7 +114,7 @@ describe('client.q()', () => {
       const client = new YahooFantasyClient(config);
 
       const path = client
-         .q()
+         .request()
          .users()
          .useLogin()
          .games()
@@ -128,7 +128,7 @@ describe('client.q()', () => {
    test('builds root games collection paths', () => {
       const client = new YahooFantasyClient(config);
 
-      const path = client.q().games().gameKeys('nhl').buildPath();
+      const path = client.request().games().gameKeys('nhl').buildPath();
 
       expect(path).toBe('/games;game_keys=nhl');
    });
@@ -147,7 +147,7 @@ describe('client.q()', () => {
          httpClient;
 
       const result = await client
-         .q()
+         .request()
          .users()
          .useLogin()
          .games()
@@ -162,7 +162,7 @@ describe('client.q()', () => {
       const client = new YahooFantasyClient(config);
 
       const path = client
-         .q()
+         .request()
          .team('423.l.12345.t.1')
          .roster({ week: 10 })
          .players()

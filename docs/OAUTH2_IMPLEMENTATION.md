@@ -173,7 +173,7 @@ const client = new YahooFantasyClient({
 await client.authenticateWithLocalServer({ port: 3000 });
 
 // Now make API calls!
-const user = await client.q().users().useLogin().execute();
+const user = await client.request().users().useLogin().execute();
 ```
 
 ### How It Works
