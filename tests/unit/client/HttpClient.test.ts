@@ -508,6 +508,115 @@ describe('HttpClient', () => {
             AuthenticationError,
          );
       });
+
+      test('should refresh and retry once on 401 even when maxRetries is zero', async () => {
+         const newTokens: OAuth2Tokens = {
+            ...tokens,
+            accessToken: 'new-access-token',
+            expiresAt: Date.now() + 3600 * 1000,
+         };
+
+         let refreshCalled = false;
+         const refreshCallback = async () => {
+            refreshCalled = true;
+            return newTokens;
+         };
+
+         let attempts = 0;
+         const fetchMock = mock(() => {
+            attempts++;
+            if (attempts === 1) {
+               return Promise.resolve({
+                  ok: false,
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  text: () =>
+                     Promise.resolve(
+                        '<?xml version="1.0"?><error><description>Invalid cookie, please log in again.</description></error>',
+                     ),
+               });
+            }
+
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
+            });
+         });
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            tokens,
+            refreshCallback,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         const result = await client.get('/test/path');
+
+         expect(result).toHaveProperty('success');
+         expect(refreshCalled).toBe(true);
+         expect(fetchMock).toHaveBeenCalledTimes(2);
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length < 2) {
+            throw new Error('Expected fetch to be called twice');
+         }
+
+         const [, firstOptions] = calls[0] as any[];
+         const [, secondOptions] = calls[1] as any[];
+         expect(firstOptions.headers.Authorization).toBe(
+            `Bearer ${tokens.accessToken}`,
+         );
+         expect(secondOptions.headers.Authorization).toBe(
+            `Bearer ${newTokens.accessToken}`,
+         );
+      });
+
+      test('should only refresh once when 401 persists after retry', async () => {
+         const newTokens: OAuth2Tokens = {
+            ...tokens,
+            accessToken: 'new-access-token',
+            expiresAt: Date.now() + 3600 * 1000,
+         };
+
+         let refreshCalls = 0;
+         const refreshCallback = async () => {
+            refreshCalls++;
+            return newTokens;
+         };
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.UNAUTHORIZED,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><error><description>Invalid cookie, please log in again.</description></error>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            tokens,
+            refreshCallback,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            AuthenticationError,
+         );
+         expect(refreshCalls).toBe(1);
+         expect(fetchMock).toHaveBeenCalledTimes(2);
+      });
    });
 
    describe('retry logic', () => {

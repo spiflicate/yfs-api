@@ -9,6 +9,7 @@ import {
    NotFoundError,
    RateLimitError,
    YahooApiError,
+   YahooFantasyError,
 } from '../types/errors.js';
 import {
    API_BASE_URL,
@@ -280,6 +281,7 @@ export class HttpClient {
       } = options;
 
       let lastError: Error | undefined;
+      let unauthorizedRefreshAttempted = false;
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
          try {
@@ -385,14 +387,27 @@ export class HttpClient {
                );
             }
 
-            //TODO: Handle automatic token refresh when refresh token is available, otherwise user may recieve AuthenticationError while tokens expire during a single script execution.
-            /* AuthenticationError: Authentication failed. Token may be expired.: Invalid cookie, please log in again.
-               statusCode: 401,
-               response: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<error xml:lang=\"en-us\" yahoo:uri=\"http://fantasysports.yahooapis.com/fantasy/v2/league/465.l.50894/players;statuses=A;position=C,D;count=25;start=275/ownership?format=xml\" xmlns:yahoo=\"http://www.yahooapis.com/v1/base.rng\" xmlns=\"http://www.yahooapis.com/v1/base.rng\">\n <description>Invalid cookie, please log in again.</description>\n <detail/>\n</error>",
-               errorCode: "AUTH_ERROR",
-               errorDescription: "Invalid cookie, please log in again.", */
             // Handle authentication errors
             if (response.status === HTTP_STATUS.UNAUTHORIZED) {
+               if (
+                  !skipAuth &&
+                  this.oauth2Client &&
+                  this.tokenRefreshCallback &&
+                  !unauthorizedRefreshAttempted
+               ) {
+                  unauthorizedRefreshAttempted = true;
+
+                  if (this.debug) {
+                     console.log(
+                        '[HttpClient] Request returned 401, refreshing token and retrying once...',
+                     );
+                  }
+
+                  this.tokens = await this.tokenRefreshCallback();
+                  attempt--;
+                  continue;
+               }
+
                throw new AuthenticationError(
                   'Authentication failed. Token may be expired.',
                   await response.text(),
@@ -458,7 +473,7 @@ export class HttpClient {
 
             return data;
          } catch (error) {
-            if (error instanceof YahooApiError) {
+            if (error instanceof YahooFantasyError) {
                // Don't retry on non-retryable errors
                throw error;
             }

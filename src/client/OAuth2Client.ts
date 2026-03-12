@@ -253,7 +253,7 @@ export class OAuth2Client {
 
          if (!response.ok) {
             const errorText = await response.text();
-            let errorData: any;
+            let errorData: Record<string, unknown>;
             try {
                errorData = JSON.parse(errorText);
             } catch {

@@ -2,19 +2,10 @@
  * Test the refactored YahooFantasyClient with OAuth 2.0
  */
 
-import { YahooFantasyClient } from '../../src/index.js';
-import type { TokenStorage } from '../../src/index.js';
-import type { OAuth2Tokens } from '../../src/index.js';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-
-// Configuration from environment variables
-const config = {
-   clientId: process.env.YAHOO_CONSUMER_KEY!,
-   clientSecret: process.env.YAHOO_CONSUMER_SECRET!,
-   redirectUri: process.env.YAHOO_REDIRECT_URI || 'oob',
-   debug: true,
-};
+import type { OAuth2Tokens, TokenStorage } from '../../src/index.js';
+import { YahooFantasyClient } from '../../src/index.js';
 
 // Token storage implementation
 const tokenFile = path.join(process.cwd(), '.test-tokens.json');
@@ -52,6 +43,21 @@ async function main() {
       '======================================================================\n',
    );
 
+   // Configuration from environment variables
+   const config = {
+      clientId: process.env.YAHOO_CONSUMER_KEY || '',
+      clientSecret: process.env.YAHOO_CONSUMER_SECRET || '',
+      redirectUri: process.env.YAHOO_REDIRECT_URI || 'oob',
+      debug: true,
+   };
+
+   if (!config.clientId || !config.clientSecret) {
+      console.error('Error: Missing required environment variables');
+      console.error(
+         'Please set YAHOO_CONSUMER_KEY and YAHOO_CONSUMER_SECRET',
+      );
+      process.exit(1);
+   }
    // Create client
    const client = new YahooFantasyClient(config, storage);
 
