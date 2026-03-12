@@ -33,7 +33,10 @@
  * ```
  */
 
-import { RequestBuilder } from '../request/builder.js';
+import {
+   createRequest,
+   type RootRequestBuilder,
+} from '../request/builder.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
 import { HttpClient } from './HttpClient.js';
@@ -300,9 +303,8 @@ export class YahooFantasyClient {
     *   .execute();
     * ```
     */
-   request(): RequestBuilder {
-      const builder = new RequestBuilder(this.httpClient);
-      return builder as RequestBuilder;
+   request(): RootRequestBuilder {
+      return createRequest(this.httpClient);
    }
 
    /**

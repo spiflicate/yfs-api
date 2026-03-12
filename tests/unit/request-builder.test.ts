@@ -1,7 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test';
 import type { HttpClient } from '../../src/client/HttpClient.js';
 import { createRequest, RequestBuilder } from '../../src/request/index.js';
-import type { InferResponseType } from '../../src/types/query/context.js';
+import type { InferResponseType } from '../../src/types/request/context.js';
 import type { Game } from '../../src/types/responses/game.js';
 import type { League } from '../../src/types/responses/league.js';
 import type { Player } from '../../src/types/responses/player.js';

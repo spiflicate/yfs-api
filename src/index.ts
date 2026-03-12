@@ -124,6 +124,6 @@ export type {
    SortParam,
    TeamSubResource,
    TransactionTypeParam,
-} from './types/query/params.js';
+} from './types/request/params.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';

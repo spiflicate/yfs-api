@@ -15,25 +15,27 @@
 import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
-import type { RequestBuilder } from '../../../src/request/index.js';
 import { createRequest } from '../../../src/request/index.js';
 import type { Config } from '../../../src/types/index.js';
-import type { InferResponseType } from '../../../src/types/query/context.js';
+import type { InferResponseType } from '../../../src/types/request/context.js';
 import type {
    GamesCollectionResponse,
    LeagueSettingsResponse,
    TeamRosterPlayersResponse,
    UserGameLeaguesResponse,
    UserTeamsResponse,
-} from '../../../src/types/query/responses.js';
+} from '../../../src/types/request/responses.js';
 
 type Assert<T extends true> = T;
 type IsEqual<A, B> =
    (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2
       ? true
       : false;
-type ExtractPath<TBuilder> =
-   TBuilder extends RequestBuilder<infer TPath> ? TPath : never;
+type ExtractPath<TBuilder> = TBuilder extends {
+   __pathType: infer TPath extends string[];
+}
+   ? TPath
+   : never;
 
 const typeOnlyHttpClient = null as unknown as HttpClient;
 
@@ -102,6 +104,44 @@ void rosterPlayersExecuteAssertion;
 
 // @ts-expect-error league() requires a Yahoo league key shape
 createRequest(typeOnlyHttpClient).league('nhl');
+
+// @ts-expect-error players() is not a valid next chain after users().games()
+createRequest(typeOnlyHttpClient).users().games().players();
+
+// @ts-expect-error teams() is not a valid next chain after root games()
+createRequest(typeOnlyHttpClient).games().teams();
+
+// @ts-expect-error useLogin() is only valid on users() stage
+createRequest(typeOnlyHttpClient).games().useLogin();
+
+// @ts-expect-error gameKeys() is not valid on users() stage before games()
+createRequest(typeOnlyHttpClient).users().gameKeys('nhl');
+
+// @ts-expect-error out() is not valid on users() stage
+createRequest(typeOnlyHttpClient).users().out('settings');
+
+// @ts-expect-error game_keys is not valid on users() stage
+createRequest(typeOnlyHttpClient).users().param('game_keys', 'nhl');
+
+// @ts-expect-error use_login is not valid on games() stage
+createRequest(typeOnlyHttpClient).games().param('use_login', '1');
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .players()
+   // @ts-expect-error team_keys is not valid on league players() stage
+   .param('team_keys', '423.l.12345.t.1');
+
+createRequest(typeOnlyHttpClient).league('423.l.12345').players().params({
+   status: 'FA',
+   count: 10,
+});
+
+createRequest(typeOnlyHttpClient)
+   .team('423.l.12345.t.1')
+   .roster({ week: 1 })
+   // @ts-expect-error standings() is not a valid next chain after team roster()
+   .standings();
 
 describe('client.request()', () => {
    const config: Config = {

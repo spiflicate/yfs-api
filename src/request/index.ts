@@ -6,4 +6,8 @@
  * @module
  */
 
-export { createRequest, RequestBuilder } from './builder.js';
+export {
+   createRequest,
+   RequestBuilder,
+   type RootRequestBuilder,
+} from './builder.js';
