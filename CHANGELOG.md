@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-beta.1] - 2026-03-12
+
+### Overview
+
+Incremental beta release focused on strengthening the v2 request typing model and aligning key-type behavior across core types and tests.
+
+### Added
+
+- **Request Type Definitions:** Expanded request-context and response-type definitions to improve type-safe request construction across the v2 request flow.
+
+### Changed
+
+- **Key Type Flexibility:** Updated league, team, player, transaction, waiver-claim, and pending-trade key types to support broader string-based key unions.
+
+### Fixed
+
+- **Test Type Alignment:** Updated `RequestBuilderClient` league-key test typing to match the current key-type model.
+
+### Notes
+
+- This release is focused on type-system quality and developer experience; no runtime behavior changes are expected.
+
+---
+
 ## [2.0.0-beta.0] - 2026-03-12
 
 ### Overview
@@ -268,4 +292,5 @@ Breaking changes will be clearly documented in major version releases.
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
 [1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
-[2.0.0-beta1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
+[2.0.0-beta.0]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta0
+[2.0.0-beta.1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
