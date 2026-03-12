@@ -2,7 +2,9 @@
  * Unit tests for OAuth1Client
  */
 
-import { describe, test, expect, beforeEach } from 'bun:test';
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
+import { beforeEach, describe, expect, test } from 'bun:test';
 import { OAuth1Client } from '../../../src/client/OAuth1Client.js';
 import { ConfigError } from '../../../src/types/errors.js';
 
@@ -110,7 +112,10 @@ describe('OAuth1Client', () => {
 
          expect(nonce1Match).toBeTruthy();
          expect(nonce2Match).toBeTruthy();
-         expect(nonce1Match![1]).not.toBe(nonce2Match![1]);
+         if (!nonce1Match || !nonce2Match) {
+            throw new Error('Expected nonces to be present');
+         }
+         expect(nonce1Match[1]).not.toBe(nonce2Match[1]);
       });
 
       test('should use PLAINTEXT signature method when specified', () => {

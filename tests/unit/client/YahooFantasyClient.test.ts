@@ -2,7 +2,9 @@
  * Unit tests for YahooFantasyClient
  */
 
-import { beforeEach, describe, expect, mock, test } from 'bun:test';
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
+import { describe, expect, mock, test } from 'bun:test';
 import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
 import {
    type TokenStorage,
