@@ -311,9 +311,7 @@ describe('HttpClient', () => {
          const [, options] = callArgs;
          expect(options.method).toBe('POST');
          expect(options.body).toBe(JSON.stringify(requestBody));
-         expect(options.headers['Content-Type']).toBe(
-            'application/json',
-         );
+         expect(options.headers['Content-Type']).toBe('application/json');
       });
 
       test('should default string POST bodies to XML content type', async () => {
@@ -344,9 +342,7 @@ describe('HttpClient', () => {
          const callArgs = calls[0] as any[];
          const [, options] = callArgs;
          expect(options.body).toBe(xmlBody);
-         expect(options.headers['Content-Type']).toBe(
-            'application/xml',
-         );
+         expect(options.headers['Content-Type']).toBe('application/xml');
       });
    });
 
@@ -933,9 +929,7 @@ describe('HttpClient', () => {
          const callArgs = calls[0] as any[];
          const [, options] = callArgs;
          expect(typeof options.body).toBe('string');
-         expect(options.headers['Content-Type']).toBe(
-            'application/xml',
-         );
+         expect(options.headers['Content-Type']).toBe('application/xml');
       });
 
       test('should respect explicit content type for string bodies', async () => {
