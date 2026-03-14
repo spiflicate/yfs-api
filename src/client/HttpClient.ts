@@ -310,10 +310,13 @@ export class HttpClient {
             );
 
             if (
-               body &&
+               body !== undefined &&
+               body !== null &&
                (method === 'POST' || method === 'PUT') &&
                !hasExplicitContentType
             ) {
+               // String bodies are assumed to be XML (Yahoo Fantasy API write operations
+               // use XML payloads). Pass an explicit Content-Type header to override.
                requestHeaders['Content-Type'] =
                   typeof body === 'string'
                      ? 'application/xml'
