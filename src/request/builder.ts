@@ -12,9 +12,11 @@ import type {
    GameKey,
    GetSubResources,
    LeagueKey,
+   PendingTradeKey,
    PlayerKey,
    TeamKey,
    TransactionKey,
+   WaiverClaimKey,
 } from '../types/request/graph.js';
 import type {
    PlayerStatusParam,
@@ -43,7 +45,10 @@ type GamePath = ['game', GameKey];
 type LeaguePath = ['league', LeagueKey];
 type TeamPath = ['team', TeamKey];
 type PlayerPath = ['player', PlayerKey];
-type TransactionPath = ['transaction', TransactionKey];
+type TransactionPath = [
+   'transaction',
+   TransactionKey | WaiverClaimKey | PendingTradeKey,
+];
 type UsersPath = ['users'];
 type UsersGamesPath = [...UsersPath, 'games'];
 type TeamRosterPath = [...TeamPath, 'roster'];
@@ -84,12 +89,7 @@ type PlayerScopedParamMethodNames =
    | 'status'
    | 'sort'
    | 'search';
-type TransactionsCollectionParamMethodNames =
-   | 'type'
-   | 'types'
-   | 'teamKey'
-   | 'count'
-   | 'start';
+type TransactionsCollectionParamMethodNames = 'type' | 'types' | 'teamKey';
 type DateScopedParamMethodNames = 'week' | 'date';
 type UserScopedParamMethodNames = 'useLogin';
 type RootNavigationMethodNames =
@@ -163,6 +163,7 @@ type TeamRosterStageMethodNames =
    | DateScopedParamMethodNames;
 type TransactionsCollectionStageMethodNames =
    | SharedMethodNames
+   | PaginationParamMethodNames
    | TransactionsCollectionParamMethodNames;
 type PlayersCollectionStageMethodNames =
    | SharedMethodNames
@@ -318,7 +319,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    }
 
    transaction(
-      key: TransactionKey,
+      key: TransactionKey | WaiverClaimKey | PendingTradeKey,
    ): Pick<RequestBuilder<TransactionPath>, SharedMethodNames> {
       this.addSegment('resource', 'transaction', key);
       return this.asStage<TransactionPath>();
