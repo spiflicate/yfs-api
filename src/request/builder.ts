@@ -6,8 +6,7 @@
  * @module
  */
 
-import type { HttpClient } from '../client/HttpClient.js';
-import type { RequestOptions } from '../client/HttpClient.js';
+import type { HttpClient, RequestOptions } from '../client/HttpClient.js';
 import type { InferResponseType } from '../types/request/context.js';
 import type {
    GameKey,
@@ -590,13 +589,13 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    status(status: PlayerStatusParam | string): this {
       return this.setParam('status', status);
    }
-   type(transactionType: string): this {
-      return this.setParam('type', transactionType);
+   type(value: string): this {
+      return this.setParam('type', value);
    }
-   types(transactionTypes: string | string[]): this {
-      return this.setParam('types', transactionTypes);
+   types(values: string | string[]): this {
+      return this.setParam('types', values);
    }
-   teamKey(key: string): this {
+   teamKey(key: TeamKey): this {
       return this.setParam('team_key', key);
    }
    sort(sort: SortParam | string): this {

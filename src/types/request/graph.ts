@@ -27,14 +27,16 @@ export type GameKey = string;
 export type LeagueKey = `${number}.l.${number}` | (string & {});
 export type TeamKey = `${number}.l.${number}.t.${number}` | (string & {});
 export type PlayerKey = `${number}.p.${number}` | (string & {});
-export type TransactionKey =
-   | `${number}.l.${number}.tr.${number}`
-   | (string & {});
 export type WaiverClaimKey =
    | `${number}.l.${number}.w.c.${number}`
    | (string & {});
 export type PendingTradeKey =
    | `${number}.l.${number}.pt.${number}`
+   | (string & {});
+export type TransactionKey =
+   | `${number}.l.${number}.tr.${number}`
+   | WaiverClaimKey
+   | PendingTradeKey
    | (string & {});
 
 /**
