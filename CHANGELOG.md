@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-beta.2] - 2026-03-14
+
+### Overview
+
+Incremental beta release focused on transaction write workflows, request-builder coverage for transaction paths, and safer HTTP body handling for Yahoo write operations.
+
+### Added
+
+- **Transaction Fluent Writes:** Added fluent request-builder support for direct transaction resource paths plus `POST`, `PUT`, and `DELETE` execution against transaction endpoints.
+- **Transaction Collection Filters:** Added transaction collection helpers for `type`, `types`, and `team_key` parameters when querying league transactions.
+
+### Changed
+
+- **Transaction Key Modeling:** Updated transaction key typing so standard transactions, waiver claims, and pending trades can be addressed through a single transaction resource path model.
+- **Write Request Options:** Expanded request-builder write helpers to accept raw string payloads and request options for transaction-oriented write calls.
+
+### Fixed
+
+- **XML Content Type Handling:** Updated `HttpClient` to default string `POST`/`PUT` bodies to `application/xml` while preserving explicit `Content-Type` overrides.
+- **Regression Coverage:** Added unit coverage for transaction path construction, transaction write execution helpers, and content-type behavior for JSON, XML, and delete requests.
+
+### Notes
+
+- This release is focused on transaction API ergonomics and correctness; no additional breaking changes are expected beyond the existing v2 beta surface.
+
 ## [2.0.0-beta.1] - 2026-03-12
 
 ### Overview
@@ -294,3 +319,4 @@ Breaking changes will be clearly documented in major version releases.
 [1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
 [2.0.0-beta.0]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta0
 [2.0.0-beta.1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
+[2.0.0-beta.2]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta2
