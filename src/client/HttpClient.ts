@@ -224,7 +224,7 @@ export class HttpClient {
     */
    async post<T = unknown>(
       path: string,
-      body?: Record<string, unknown>,
+      body?: Record<string, unknown> | string,
       options?: RequestOptions,
    ): Promise<T> {
       return this.request<T>(path, { ...options, method: 'POST', body });
@@ -247,7 +247,7 @@ export class HttpClient {
     */
    async put<T = unknown>(
       path: string,
-      body?: Record<string, unknown>,
+      body?: Record<string, unknown> | string,
       options?: RequestOptions,
    ): Promise<T> {
       return this.request<T>(path, { ...options, method: 'PUT', body });

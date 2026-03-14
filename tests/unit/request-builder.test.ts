@@ -115,6 +115,14 @@ describe('RequestBuilder', () => {
          expect(path).toBe('/users');
       });
 
+      it('builds a transaction resource path', () => {
+         const path = createRequest(createMockHttpClient())
+            .transaction('257.l.193.pt.1')
+            .buildPath();
+
+         expect(path).toBe('/transaction/257.l.193.pt.1');
+      });
+
       it('builds a root games collection path', () => {
          const path = createRequest(createMockHttpClient())
             .games()
@@ -224,6 +232,22 @@ describe('RequestBuilder', () => {
 
          expect(path).toBe('/league/423.l.12345/teams;team_keys=t.1,t.2');
       });
+
+      it('supports transaction collection filter helpers', () => {
+         const path = createRequest(createMockHttpClient())
+            .league('423.l.12345')
+            .transactions()
+            .teamKey('423.l.12345.t.1')
+            .type('waiver')
+            .types(['add', 'trade'])
+            .count(5)
+            .start(10)
+            .buildPath();
+
+         expect(path).toBe(
+            '/league/423.l.12345/transactions;team_key=423.l.12345.t.1;type=waiver;types=add,trade;count=5;start=10',
+         );
+      });
    });
 
    describe('execution helpers', () => {
@@ -258,6 +282,54 @@ describe('RequestBuilder', () => {
          expect(httpClient.post).toHaveBeenCalledWith(
             '/league/423.l.12345/transactions',
             payload,
+            undefined,
+         );
+      });
+
+      it('executes POST requests with XML body and options', async () => {
+         const httpClient = createMockHttpClient();
+         const payload =
+            "<?xml version='1.0'?><fantasy_content><transaction><type>pending_trade</type></transaction></fantasy_content>";
+         const options = {
+            headers: { 'Content-Type': 'application/xml' },
+         };
+
+         await createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .post(payload, options);
+
+         expect(httpClient.post).toHaveBeenCalledWith(
+            '/league/423.l.12345/transactions',
+            payload,
+            options,
+         );
+      });
+
+      it('executes PUT requests against a transaction resource', async () => {
+         const httpClient = createMockHttpClient();
+         const payload = { transaction: { action: 'accept' } };
+
+         await createRequest(httpClient)
+            .transaction('257.l.193.pt.1')
+            .put(payload);
+
+         expect(httpClient.put).toHaveBeenCalledWith(
+            '/transaction/257.l.193.pt.1',
+            payload,
+            undefined,
+         );
+      });
+
+      it('executes DELETE requests against a transaction resource', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .transaction('257.l.193.w.c.2_6390')
+            .delete();
+
+         expect(httpClient.delete).toHaveBeenCalledWith(
+            '/transaction/257.l.193.w.c.2_6390',
          );
       });
    });

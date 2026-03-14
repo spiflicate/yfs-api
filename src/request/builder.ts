@@ -7,6 +7,7 @@
  */
 
 import type { HttpClient } from '../client/HttpClient.js';
+import type { RequestOptions } from '../client/HttpClient.js';
 import type { InferResponseType } from '../types/request/context.js';
 import type {
    GameKey,
@@ -14,6 +15,7 @@ import type {
    LeagueKey,
    PlayerKey,
    TeamKey,
+   TransactionKey,
 } from '../types/request/graph.js';
 import type {
    PlayerStatusParam,
@@ -42,6 +44,7 @@ type GamePath = ['game', GameKey];
 type LeaguePath = ['league', LeagueKey];
 type TeamPath = ['team', TeamKey];
 type PlayerPath = ['player', PlayerKey];
+type TransactionPath = ['transaction', TransactionKey];
 type UsersPath = ['users'];
 type UsersGamesPath = [...UsersPath, 'games'];
 type TeamRosterPath = [...TeamPath, 'roster'];
@@ -82,6 +85,12 @@ type PlayerScopedParamMethodNames =
    | 'status'
    | 'sort'
    | 'search';
+type TransactionsCollectionParamMethodNames =
+   | 'type'
+   | 'types'
+   | 'teamKey'
+   | 'count'
+   | 'start';
 type DateScopedParamMethodNames = 'week' | 'date';
 type UserScopedParamMethodNames = 'useLogin';
 type RootNavigationMethodNames =
@@ -89,6 +98,7 @@ type RootNavigationMethodNames =
    | 'league'
    | 'team'
    | 'player'
+   | 'transaction'
    | 'users'
    | 'games';
 type GameNavigationMethodNames =
@@ -152,6 +162,9 @@ type TeamRosterStageMethodNames =
    | SharedMethodNames
    | TeamRosterNavigationMethodNames
    | DateScopedParamMethodNames;
+type TransactionsCollectionStageMethodNames =
+   | SharedMethodNames
+   | TransactionsCollectionParamMethodNames;
 type PlayersCollectionStageMethodNames =
    | SharedMethodNames
    | PlayerScopedParamMethodNames
@@ -163,6 +176,7 @@ type TeamsCollectionStageMethodNames =
 type LeaguesCollectionStageMethodNames =
    | SharedMethodNames
    | LeagueScopedParamMethodNames;
+type WriteRequestOptions = Omit<RequestOptions, 'method' | 'body'>;
 
 type PlayerCollectionParamKey =
    | 'player_keys'
@@ -302,6 +316,13 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    ): Pick<RequestBuilder<PlayerPath>, PlayerStageMethodNames> {
       this.addSegment('resource', 'player', key);
       return this.asStage<PlayerPath, PlayerStageMethodNames>();
+   }
+
+   transaction(
+      key: TransactionKey,
+   ): Pick<RequestBuilder<TransactionPath>, SharedMethodNames> {
+      this.addSegment('resource', 'transaction', key);
+      return this.asStage<TransactionPath>();
    }
 
    users(): Pick<RequestBuilder<UsersPath>, UsersStageMethodNames> {
@@ -503,10 +524,13 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
 
    transactions(): Pick<
       RequestBuilder<[...LeaguePath, 'transactions']>,
-      SharedMethodNames
+      TransactionsCollectionStageMethodNames
    > {
       this.addSegment('collection', 'transactions');
-      return this.asStage<[...LeaguePath, 'transactions']>();
+      return this.asStage<
+         [...LeaguePath, 'transactions'],
+         TransactionsCollectionStageMethodNames
+      >();
    }
 
    drafts(): Pick<
@@ -565,6 +589,15 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    }
    status(status: PlayerStatusParam | string): this {
       return this.setParam('status', status);
+   }
+   type(transactionType: string): this {
+      return this.setParam('type', transactionType);
+   }
+   types(transactionTypes: string | string[]): this {
+      return this.setParam('types', transactionTypes);
+   }
+   teamKey(key: string): this {
+      return this.setParam('team_key', key);
    }
    sort(sort: SortParam | string): this {
       return this.setParam('sort', sort);
@@ -643,18 +676,24 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       T = InferResponseType<TPath> extends never
          ? AllResponseTypes
          : InferResponseType<TPath>,
-   >(data?: Record<string, unknown>): Promise<T> {
+   >(
+      data?: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+   ): Promise<T> {
       const path = this.buildPath();
-      return this.httpClient.post<T>(path, data);
+      return this.httpClient.post<T>(path, data, options);
    }
 
    async put<
       T = InferResponseType<TPath> extends never
          ? AllResponseTypes
          : InferResponseType<TPath>,
-   >(data?: Record<string, unknown>): Promise<T> {
+   >(
+      data?: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+   ): Promise<T> {
       const path = this.buildPath();
-      return this.httpClient.put<T>(path, data);
+      return this.httpClient.put<T>(path, data, options);
    }
 
    async delete<
