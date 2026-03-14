@@ -224,7 +224,7 @@ export class HttpClient {
     */
    async post<T = unknown>(
       path: string,
-      body?: Record<string, unknown>,
+      body?: Record<string, unknown> | string,
       options?: RequestOptions,
    ): Promise<T> {
       return this.request<T>(path, { ...options, method: 'POST', body });
@@ -247,7 +247,7 @@ export class HttpClient {
     */
    async put<T = unknown>(
       path: string,
-      body?: Record<string, unknown>,
+      body?: Record<string, unknown> | string,
       options?: RequestOptions,
    ): Promise<T> {
       return this.request<T>(path, { ...options, method: 'PUT', body });
@@ -302,9 +302,26 @@ export class HttpClient {
 
             // Build headers
             const requestHeaders: Record<string, string> = {
-               'Content-Type': 'application/json',
                ...headers,
             };
+
+            const hasExplicitContentType = Object.keys(headers).some(
+               (key) => key.toLowerCase() === 'content-type',
+            );
+
+            if (
+               body !== undefined &&
+               body !== null &&
+               (method === 'POST' || method === 'PUT') &&
+               !hasExplicitContentType
+            ) {
+               // String bodies are assumed to be XML (Yahoo Fantasy API write operations
+               // use XML payloads). Pass an explicit Content-Type header to override.
+               requestHeaders['Content-Type'] =
+                  typeof body === 'string'
+                     ? 'application/xml'
+                     : 'application/json';
+            }
 
             // Add OAuth authorization if not skipped
             if (!skipAuth) {
