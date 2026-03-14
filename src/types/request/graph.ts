@@ -197,7 +197,7 @@ export interface TransactionResourceDef {
    key: TransactionKey;
    collections: [];
    subResources: [];
-   params: ['types', 'team_key', 'count', 'start'];
+   params: [];
    responseType: TransactionResponse;
 }
 
