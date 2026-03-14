@@ -311,6 +311,42 @@ describe('HttpClient', () => {
          const [, options] = callArgs;
          expect(options.method).toBe('POST');
          expect(options.body).toBe(JSON.stringify(requestBody));
+         expect(options.headers['Content-Type']).toBe(
+            'application/json',
+         );
+      });
+
+      test('should default string POST bodies to XML content type', async () => {
+         const xmlBody =
+            '<?xml version="1.0"?><fantasy_content><transaction /></fantasy_content>';
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.post('/test/path', xmlBody);
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.body).toBe(xmlBody);
+         expect(options.headers['Content-Type']).toBe(
+            'application/xml',
+         );
       });
    });
 
@@ -376,6 +412,7 @@ describe('HttpClient', () => {
          const callArgs = calls[0] as any[];
          const [, options] = callArgs;
          expect(options.method).toBe('DELETE');
+         expect(options.headers['Content-Type']).toBeUndefined();
       });
    });
 
@@ -887,9 +924,7 @@ describe('HttpClient', () => {
             oauth2Client,
             createTokenProvider(tokens),
          );
-         await client.post('/test/path', {
-            body: 'raw-string-body',
-         } as any);
+         await client.post('/test/path', 'raw-string-body');
 
          const calls = fetchMock.mock.calls;
          if (!calls || calls.length === 0) {
@@ -898,6 +933,39 @@ describe('HttpClient', () => {
          const callArgs = calls[0] as any[];
          const [, options] = callArgs;
          expect(typeof options.body).toBe('string');
+         expect(options.headers['Content-Type']).toBe(
+            'application/xml',
+         );
+      });
+
+      test('should respect explicit content type for string bodies', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.post('/test/path', '<xml />', {
+            headers: { 'Content-Type': 'text/plain' },
+         });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers['Content-Type']).toBe('text/plain');
       });
    });
 

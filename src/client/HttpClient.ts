@@ -302,9 +302,23 @@ export class HttpClient {
 
             // Build headers
             const requestHeaders: Record<string, string> = {
-               'Content-Type': 'application/json',
                ...headers,
             };
+
+            const hasExplicitContentType = Object.keys(headers).some(
+               (key) => key.toLowerCase() === 'content-type',
+            );
+
+            if (
+               body &&
+               (method === 'POST' || method === 'PUT') &&
+               !hasExplicitContentType
+            ) {
+               requestHeaders['Content-Type'] =
+                  typeof body === 'string'
+                     ? 'application/xml'
+                     : 'application/json';
+            }
 
             // Add OAuth authorization if not skipped
             if (!skipAuth) {
