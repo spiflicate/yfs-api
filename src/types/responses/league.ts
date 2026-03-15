@@ -61,7 +61,7 @@ export interface League {
    /** A string with gameId and leagueId (as "{gameId}_{leagueId}") of the source this league was renewed from*/
    renew: string;
 
-   /** Whether the league was renewed from a previous season */
+   /** Whether the league was renewed in the following season */
    renewed: string;
 
    /** Elo rating tier for competitive leagues */
