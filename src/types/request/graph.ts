@@ -128,7 +128,7 @@ export interface GameResourceDef {
       'position_types',
       'game_weeks',
    ];
-   params: ['game_keys', 'is_available', 'season'];
+   params: ['game_keys', 'is_available', 'seasons'];
    responseType: GameResponse;
 }
 

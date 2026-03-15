@@ -218,7 +218,6 @@ type ParamKeyForPath<TPath extends string[]> = TPath extends UsersPath
           | 'game_types'
           | 'game_codes'
           | 'seasons'
-          | 'season'
      : TPath extends GamePath
        ? 'game_keys' | 'out'
        : TPath extends [...GamePath, 'leagues']

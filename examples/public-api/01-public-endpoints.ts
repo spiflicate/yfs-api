@@ -74,9 +74,8 @@ try {
    console.log('Example 2: Get all available games');
    console.log('-'.repeat(70));
 
-   const games = (
-      await client.request().games().param('is_available', '1').execute()
-   ).games;
+   const games = (await client.request().games().isAvailable().execute())
+      .games;
    console.log(`Found ${games.length} available game(s):\n`);
 
    for (const game of games) {
