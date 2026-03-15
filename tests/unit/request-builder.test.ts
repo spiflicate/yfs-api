@@ -393,6 +393,51 @@ describe('RequestBuilder', () => {
          expect(body).toContain('<player_key>423.p.4444</player_key>');
       });
 
+      it('throws when execute() is called again after a staged write request is consumed', async () => {
+         const httpClient = createMockHttpClient();
+         const txBuilder = createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .dropPlayer('423.p.4444'),
+            );
+
+         await txBuilder.execute();
+
+         await expect(txBuilder.execute()).rejects.toThrow(
+            'Cannot call execute() again after a staged write request has already been sent.',
+         );
+
+         expect(httpClient.post).toHaveBeenCalledTimes(1);
+         expect(httpClient.get).toHaveBeenCalledTimes(0);
+      });
+
+      it('allows execute() after staging a new write request', async () => {
+         const httpClient = createMockHttpClient();
+         const txBuilder = createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .dropPlayer('423.p.4444'),
+            );
+
+         await txBuilder.execute();
+
+         txBuilder.create(
+            new TransactionBuilder()
+               .forTeam('423.l.12345.t.1')
+               .dropPlayer('423.p.5555'),
+         );
+
+         await txBuilder.execute();
+
+         expect(httpClient.post).toHaveBeenCalledTimes(2);
+      });
+
       it('serializes add/drop transaction create() payload to expected Yahoo XML', async () => {
          const httpClient = createMockHttpClient();
 
