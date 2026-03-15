@@ -3,6 +3,7 @@
 This document summarizes the **Transaction resource** and **Transactions collection** from the official Yahoo Fantasy Sports API guide.
 
 ## Contents
+
 - [Transaction Resource](#transaction-resource)
   - [Description](#description)
   - [Transaction Keys](#transaction-keys)
@@ -26,6 +27,7 @@ This document summarizes the **Transaction resource** and **Transactions collect
 ### Description
 
 A **transaction** represents a change affecting players or league settings within a league. Types include:
+
 - **Add** – adding a player from free agents or waivers to a team.
 - **Drop** – dropping a player from a team to waivers or free agents.
 - **Add/Drop** – atomic replacement of one player with another on a team.
@@ -34,11 +36,13 @@ A **transaction** represents a change affecting players or league settings withi
 - **Commish** – commissioner changes to league settings or rosters.
 
 The Transaction API lets you:
+
 - `GET` transaction details.
 - `PUT` to edit waiver priorities or FAAB bids, and to accept/reject/vote on trades.
 - `DELETE` to cancel pending waivers and trades.
 
 Access is scoped to a league, and visibility of pending transactions can be limited:
+
 - Pending waivers/trades may only be visible to teams they involve or commissioners.
 
 ### Transaction Keys
@@ -149,6 +153,7 @@ Example: `GET /fantasy/v2/transaction/257.l.193.tr.2` (simplified):
 #### Waiver claim transaction
 
 Example: `GET /fantasy/v2/transaction/257.l.193.w.c.2_6390` returns:
+
 - `type` = `waiver`.
 - `status` = `pending`.
 - `waiver_player_key`, `waiver_team_key`.
@@ -158,11 +163,14 @@ Example: `GET /fantasy/v2/transaction/257.l.193.w.c.2_6390` returns:
 #### Pending trade transaction
 
 Example: `GET /fantasy/v2/transaction/257.l.193.pt.1` returns:
+
 - `type` = `pending_trade`.
 - `status` = e.g. `proposed`.
 - `trader_team_key`, `tradee_team_key`.
 - `trade_proposed_time` and optional `trade_note`.
 - `<players>` with each side of the trade indicated via `transaction_data` elements.
+
+> Implementation note: behavior for players dropped as part of a pending trade is not fully verified in all leagues. Some flows appear to require `transaction_data.type = pending_trade`, while others may require `transaction_data.type = drop`.
 
 ### PUT – Editing Waivers & Trades
 
@@ -177,6 +185,7 @@ PUT https://fantasysports.yahooapis.com/fantasy/v2/transaction/{transaction_key}
 #### Editing Waiver Priority / FAAB Bid
 
 Once you have the waiver transaction key (e.g. from the league transactions collection filtered by `type=waiver` and `team_key`), you can modify:
+
 - `waiver_priority`
 - `faab_bid` (for FAAB leagues)
 
@@ -279,6 +288,7 @@ DELETE https://fantasysports.yahooapis.com/fantasy/v2/transaction/{transaction_k
 ```
 
 Constraints:
+
 - Only applies to `waiver` or `pending_trade` transactions.
 - Pending trades must **not yet be accepted** to be cancellable.
 
@@ -291,6 +301,7 @@ Constraints:
 The **Transactions** collection exposes multiple transactions in a league.
 
 You can:
+
 - `GET` to list transactions, optionally filtered by type, team, or count.
 - `POST` to create new transactions:
   - Add a player.
@@ -331,13 +342,13 @@ Adding `out` for expansions:
 
 Supported filters from the guide:
 
-| Filter      | Description                           | Example                                           |
-|-------------|---------------------------------------|---------------------------------------------------|
-| `type`      | Single type: `add`, `drop`, `commish`, `trade` | `/transactions;type=add`                          |
-| `types`     | Multiple types                        | `/transactions;types=add,trade`                   |
-| `team_key`  | Restrict to a specific team           | `/transactions;team_key=257.l.193.t.1`            |
+| Filter                 | Description                                                                      | Example                                            |
+| ---------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `type`                 | Single type: `add`, `drop`, `commish`, `trade`                                   | `/transactions;type=add`                           |
+| `types`                | Multiple types                                                                   | `/transactions;types=add,trade`                    |
+| `team_key`             | Restrict to a specific team                                                      | `/transactions;team_key=257.l.193.t.1`             |
 | `type` with `team_key` | Special types `waiver`, `pending_trade` only valid when combined with `team_key` | `/transactions;team_key=257.l.193.t.1;type=waiver` |
-| `count`     | Limit number of results (>0)          | `/transactions;count=5`                           |
+| `count`                | Limit number of results (>0)                                                     | `/transactions;count=5`                            |
 
 Filters can be combined, e.g.:
 
@@ -448,6 +459,7 @@ For FAAB leagues, you can specify a `faab_bid`:
 ```
 
 Once such a waiver claim exists, you can:
+
 - `PUT` to adjust `faab_bid` or `waiver_priority`.
 - `DELETE` to cancel the claim.
 
