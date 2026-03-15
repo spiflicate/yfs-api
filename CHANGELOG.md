@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-beta.3] - 2026-03-15
+
+### Overview
+
+Incremental beta release focused on transaction write ergonomics, new transaction payload builders, games collection query filters, and expanded test/documentation coverage for transaction workflows.
+
+### Added
+
+- **Transaction Payload Builder:** Added `TransactionBuilder` for fluent construction of add/drop and pending-trade payloads, including FAAB bids and optional trade notes.
+- **Staged Transaction Write Helpers:** Added request-builder `create`, `edit`, and `cancel` helpers for transaction endpoints, designed for staged write execution via `execute()`.
+- **Games Collection Filters:** Added request-builder helpers for root games collection filters: `isAvailable`, `gameTypes`, `gameCodes`, and `seasons`.
+- **Trade/Drop Semantics Probe:** Added an opt-in live integration scaffold to validate pending-trade drop-player payload behavior across leagues.
+- **Transaction Builder Coverage:** Added dedicated unit coverage for `TransactionBuilder` mode inference, payload shape validation, and error paths.
+
+### Changed
+
+- **Write Dispatch Flow:** Updated request-builder write execution to support staged write state, including explicit dispatch paths for collection-scoped edit/cancel operations.
+- **Automatic XML Serialization:** Updated transaction write requests so object payloads are normalized to Yahoo XML at dispatch time for `POST`/`PUT` transaction paths.
+- **Public Exports:** Exported `TransactionBuilder` from package entrypoints for direct consumer use.
+- **Examples and Guides:** Added a new request-builder transaction example and expanded transactions guide coverage for edit/cancel semantics and pending-trade notes.
+
+### Fixed
+
+- **Execute Reuse Guard:** Prevented accidental duplicate `execute()` calls after a staged write has already been successfully sent unless a new write is explicitly staged.
+- **Write Retry Semantics:** Preserved staged write state after failed write attempts so callers can retry `POST`/`PUT`/`DELETE` execution without rebuilding the request chain.
+- **Game Parameter Naming:** Aligned game filter parameter naming toward pluralized `seasons` usage in request parameter definitions.
+
+### Notes
+
+- This release further stabilizes v2 transaction write flows and test scaffolding while keeping the broader beta API surface incremental.
+
 ## [2.0.0-beta.2] - 2026-03-14
 
 ### Overview
@@ -317,6 +348,7 @@ Breaking changes will be clearly documented in major version releases.
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
 [1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
+[2.0.0-beta.3]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta3
 [2.0.0-beta.0]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta0
 [2.0.0-beta.1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
 [2.0.0-beta.2]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta2
