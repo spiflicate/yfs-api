@@ -16,6 +16,7 @@ import { describe, expect, mock, test } from 'bun:test';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import { createRequest } from '../../../src/request/index.js';
+import { TransactionBuilder } from '../../../src/request/transaction.js';
 import type { Config } from '../../../src/types/index.js';
 import type { InferResponseType } from '../../../src/types/request/context.js';
 import type {
@@ -143,6 +144,66 @@ createRequest(typeOnlyHttpClient)
    // @ts-expect-error standings() is not a valid next chain after team roster()
    .standings();
 
+createRequest(typeOnlyHttpClient)
+   .games()
+   .isAvailable()
+   .gameTypes(['full', 'pickem-team'])
+   .gameCodes(['nfl', 'mlb'])
+   .seasons([2011, 2012]);
+
+createRequest(typeOnlyHttpClient).games().param('game_types', 'full');
+createRequest(typeOnlyHttpClient).games().param('game_codes', 'nfl');
+createRequest(typeOnlyHttpClient).games().param('seasons', '2011');
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .transactions()
+   .create(
+      new TransactionBuilder()
+         .forTeam('423.l.12345.t.1')
+         .addPlayer('423.p.1111')
+         .dropPlayer('423.p.2222'),
+   );
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .transactions()
+   .create(
+      new TransactionBuilder()
+         .forTeam('423.l.12345.t.1')
+         .dropPlayer('423.p.1111'),
+   );
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .transactions()
+   .edit('423.l.12345.w.c.2_11', {
+      transaction: {
+         transaction_key: '423.l.12345.w.c.2_11',
+         type: 'waiver',
+         waiver_priority: 1,
+      },
+   });
+
+createRequest(typeOnlyHttpClient)
+   .transaction('423.l.12345.pt.7')
+   .edit({
+      transaction: {
+         transaction_key: '423.l.12345.pt.7',
+         type: 'pending_trade',
+         action: 'accept',
+      },
+   });
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .transactions()
+   .cancel('423.l.12345.w.c.2_11');
+
+createRequest(typeOnlyHttpClient)
+   .transaction('423.l.12345.w.c.2_11')
+   .cancel();
+
 describe('client.request()', () => {
    const config: Config = {
       clientId: 'test-client-id',
@@ -171,6 +232,23 @@ describe('client.request()', () => {
       const path = client.request().games().gameKeys('nhl').buildPath();
 
       expect(path).toBe('/games;game_keys=nhl');
+   });
+
+   test('builds root games collection filter paths', () => {
+      const client = new YahooFantasyClient(config);
+
+      const path = client
+         .request()
+         .games()
+         .isAvailable()
+         .gameTypes(['full', 'pickem-team'])
+         .gameCodes(['nfl', 'mlb'])
+         .seasons([2011, 2012])
+         .buildPath();
+
+      expect(path).toBe(
+         '/games;is_available=1;game_types=full,pickem-team;game_codes=nfl,mlb;seasons=2011,2012',
+      );
    });
 
    test('executes through the client http client', async () => {
@@ -209,5 +287,42 @@ describe('client.request()', () => {
          .buildPath();
 
       expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
+   });
+
+   test('throws when create() is called outside transactions() stage', () => {
+      expect(() =>
+         createRequest(typeOnlyHttpClient)
+            .team('423.l.12345.t.1')
+            // @ts-expect-error create() is not valid on team transactions() stage
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .addPlayer('423.p.1111'),
+            ),
+      ).toThrow(
+         'create can only be used on a league transactions collection request.',
+      );
+   });
+
+   test('throws when edit() is called outside transaction write stages', () => {
+      expect(() =>
+         createRequest(typeOnlyHttpClient)
+            .team('423.l.12345.t.1')
+            // @ts-expect-error edit() is not valid on team stage
+            .edit({ transaction: { type: 'waiver' } }),
+      ).toThrow(
+         'edit can only be used on a transaction resource or league transactions collection request.',
+      );
+   });
+
+   test('throws when cancel() is called outside transaction write stages', () => {
+      expect(() =>
+         createRequest(typeOnlyHttpClient)
+            .team('423.l.12345.t.1')
+            // @ts-expect-error cancel() is not valid on team stage
+            .cancel(),
+      ).toThrow(
+         'cancel can only be used on a transaction resource or league transactions collection request.',
+      );
    });
 });

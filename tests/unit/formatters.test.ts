@@ -2,24 +2,24 @@
  * Unit tests for formatter utilities
  */
 
-import { describe, test, expect } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import {
-   formatDate,
-   parseDate,
-   getToday,
-   extractGameId,
-   extractResourceType,
-   extractResourceId,
-   extractLeagueKey,
    buildLeagueKey,
-   buildTeamKey,
    buildPlayerKey,
-   urlEncode,
    buildQueryString,
-   snakeToCamel,
+   buildTeamKey,
    camelToSnake,
+   extractGameId,
+   extractLeagueKey,
+   extractResourceId,
+   extractResourceType,
+   formatDate,
+   getToday,
    keysToCamel,
    keysToSnake,
+   parseDate,
+   snakeToCamel,
+   urlEncode,
 } from '../../src/utils/formatters.js';
 
 describe('formatters', () => {

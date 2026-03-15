@@ -39,6 +39,7 @@ export type { TokenStorage } from './client/YahooFantasyClient.js';
 // Export client
 export { YahooFantasyClient } from './client/YahooFantasyClient.js';
 export { createRequest, RequestBuilder } from './request/index.js';
+export { TransactionBuilder } from './request/transaction.js';
 // Export all types
 // Resource types
 // NHL-specific types
