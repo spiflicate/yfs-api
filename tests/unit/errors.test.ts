@@ -2,22 +2,22 @@
  * Unit tests for error types
  */
 
-import { describe, test, expect } from 'bun:test';
+import { describe, expect, test } from 'bun:test';
 import {
-   YahooFantasyError,
-   YahooApiError,
    AuthenticationError,
-   RateLimitError,
-   NotFoundError,
-   ValidationError,
-   NetworkError,
-   ParseError,
    ConfigError,
-   isYahooFantasyError,
-   isYahooApiError,
    isAuthenticationError,
    isRateLimitError,
    isValidationError,
+   isYahooApiError,
+   isYahooFantasyError,
+   NetworkError,
+   NotFoundError,
+   ParseError,
+   RateLimitError,
+   ValidationError,
+   YahooApiError,
+   YahooFantasyError,
 } from '../../src/types/errors.js';
 
 describe('Error Types', () => {

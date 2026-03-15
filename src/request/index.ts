@@ -11,3 +11,4 @@ export {
    RequestBuilder,
    type RootRequestBuilder,
 } from './builder.js';
+export { TransactionBuilder } from './transaction.js';

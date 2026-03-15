@@ -6,6 +6,7 @@
  * @module
  */
 
+import { XMLBuilder } from 'fast-xml-parser';
 import type { HttpClient, RequestOptions } from '../client/HttpClient.js';
 import type { InferResponseType } from '../types/request/context.js';
 import type {
@@ -23,6 +24,7 @@ import type {
    SortParam,
 } from '../types/request/params.js';
 import type { AllResponseTypes } from '../types/request/responses.js';
+import type { TransactionBuilder } from './transaction.js';
 
 interface PathSegment {
    type: 'resource' | 'collection' | 'subResource';
@@ -35,6 +37,9 @@ interface RequestState {
    segments: PathSegment[];
    params: Record<string, string | string[] | number>;
    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+   body?: Record<string, unknown> | string;
+   options?: WriteRequestOptions;
+   dispatchPath?: string;
 }
 
 type ParamValue = string | string[] | number;
@@ -80,7 +85,14 @@ type TerminalMethodNames =
 type BaseParameterMethodNames = 'param' | 'params';
 type SharedMethodNames = TerminalMethodNames | BaseParameterMethodNames;
 type PaginationParamMethodNames = 'count' | 'start';
-type GameScopedParamMethodNames = 'gameKeys' | 'out';
+type GameResourceParamMethodNames = 'gameKeys' | 'out';
+type GamesCollectionParamMethodNames =
+   | 'gameKeys'
+   | 'out'
+   | 'isAvailable'
+   | 'gameTypes'
+   | 'gameCodes'
+   | 'seasons';
 type LeagueScopedParamMethodNames = 'leagueKeys' | 'out';
 type TeamScopedParamMethodNames = 'teamKeys' | 'out';
 type PlayerScopedParamMethodNames =
@@ -90,6 +102,8 @@ type PlayerScopedParamMethodNames =
    | 'sort'
    | 'search';
 type TransactionsCollectionParamMethodNames = 'type' | 'types' | 'teamKey';
+type TransactionsWriteMethodNames = 'create' | 'edit' | 'cancel';
+type TransactionWriteMethodNames = 'edit' | 'cancel';
 type DateScopedParamMethodNames = 'week' | 'date';
 type UserScopedParamMethodNames = 'useLogin';
 type RootNavigationMethodNames =
@@ -132,7 +146,7 @@ type RootStageMethodNames = SharedMethodNames | RootNavigationMethodNames;
 type GameStageMethodNames =
    | SharedMethodNames
    | GameNavigationMethodNames
-   | GameScopedParamMethodNames;
+   | GameResourceParamMethodNames;
 type LeagueStageMethodNames =
    | SharedMethodNames
    | LeagueNavigationMethodNames
@@ -153,10 +167,10 @@ type UsersStageMethodNames =
 type UsersGamesStageMethodNames =
    | SharedMethodNames
    | UsersGamesNavigationMethodNames
-   | GameScopedParamMethodNames;
+   | GamesCollectionParamMethodNames;
 type GamesCollectionStageMethodNames =
    | SharedMethodNames
-   | GameScopedParamMethodNames;
+   | GamesCollectionParamMethodNames;
 type TeamRosterStageMethodNames =
    | SharedMethodNames
    | TeamRosterNavigationMethodNames
@@ -164,7 +178,11 @@ type TeamRosterStageMethodNames =
 type TransactionsCollectionStageMethodNames =
    | SharedMethodNames
    | PaginationParamMethodNames
-   | TransactionsCollectionParamMethodNames;
+   | TransactionsCollectionParamMethodNames
+   | TransactionsWriteMethodNames;
+type TransactionStageMethodNames =
+   | SharedMethodNames
+   | TransactionWriteMethodNames;
 type PlayersCollectionStageMethodNames =
    | SharedMethodNames
    | PlayerScopedParamMethodNames
@@ -192,7 +210,14 @@ type PlayerCollectionParamKey =
 type ParamKeyForPath<TPath extends string[]> = TPath extends UsersPath
    ? 'use_login'
    : TPath extends GamesPath | UsersGamesPath
-     ? 'game_keys'
+     ?
+          | 'game_keys'
+          | 'out'
+          | 'is_available'
+          | 'game_types'
+          | 'game_codes'
+          | 'seasons'
+          | 'season'
      : TPath extends GamePath
        ? 'game_keys' | 'out'
        : TPath extends [...GamePath, 'leagues']
@@ -278,6 +303,102 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       return this;
    }
 
+   private isTransactionWritePath(path: string): boolean {
+      return /\/transaction(?:\/|$)|\/transactions(?:[/;]|$)/.test(path);
+   }
+
+   private serializeToYahooXml(data: Record<string, unknown>): string {
+      const xmlBuilder = new XMLBuilder({
+         ignoreAttributes: false,
+         format: false,
+      });
+
+      const wrappedBody =
+         'fantasy_content' in data ? data : { fantasy_content: data };
+
+      return `<?xml version="1.0" encoding="UTF-8"?>${xmlBuilder.build(wrappedBody)}`;
+   }
+
+   private normalizeWriteBody(
+      path: string,
+      data?: Record<string, unknown> | string,
+   ): Record<string, unknown> | string | undefined {
+      if (
+         data &&
+         typeof data === 'object' &&
+         !Array.isArray(data) &&
+         this.isTransactionWritePath(path)
+      ) {
+         return this.serializeToYahooXml(data);
+      }
+
+      return data;
+   }
+
+   private assertTransactionsCollectionPath(methodName: string): void {
+      const segment = this.getCurrentSegment();
+      if (
+         !segment ||
+         segment.type !== 'collection' ||
+         segment.name !== 'transactions'
+      ) {
+         throw new Error(
+            `${methodName} can only be used on a league transactions collection request.`,
+         );
+      }
+   }
+
+   private isTransactionsCollectionPath(): boolean {
+      const segment = this.getCurrentSegment();
+      return (
+         !!segment &&
+         segment.type === 'collection' &&
+         segment.name === 'transactions'
+      );
+   }
+
+   private isTransactionResourcePath(): boolean {
+      const segment = this.getCurrentSegment();
+      return (
+         !!segment &&
+         segment.type === 'resource' &&
+         segment.name === 'transaction'
+      );
+   }
+
+   private assertTransactionWritePath(methodName: string): void {
+      if (
+         this.isTransactionResourcePath() ||
+         this.isTransactionsCollectionPath()
+      ) {
+         return;
+      }
+
+      throw new Error(
+         `${methodName} can only be used on a transaction resource or league transactions collection request.`,
+      );
+   }
+
+   private setPendingWriteRequest(
+      method: 'POST' | 'PUT' | 'DELETE',
+      body?: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+      dispatchPath?: string,
+   ): this {
+      this.state.method = method;
+      this.state.body = body;
+      this.state.options = options;
+      this.state.dispatchPath = dispatchPath;
+      return this;
+   }
+
+   private clearPendingWriteRequest(): void {
+      this.state.method = 'GET';
+      this.state.body = undefined;
+      this.state.options = undefined;
+      this.state.dispatchPath = undefined;
+   }
+
    private asStage<
       TNextPath extends string[],
       TNextMethods extends keyof RequestBuilder<TNextPath> = never,
@@ -320,9 +441,9 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
 
    transaction(
       key: TransactionKey | WaiverClaimKey | PendingTradeKey,
-   ): Pick<RequestBuilder<TransactionPath>, SharedMethodNames> {
+   ): Pick<RequestBuilder<TransactionPath>, TransactionStageMethodNames> {
       this.addSegment('resource', 'transaction', key);
-      return this.asStage<TransactionPath>();
+      return this.asStage<TransactionPath, TransactionStageMethodNames>();
    }
 
    users(): Pick<RequestBuilder<UsersPath>, UsersStageMethodNames> {
@@ -533,6 +654,110 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       >();
    }
 
+   create(
+      transaction: TransactionBuilder,
+      options?: WriteRequestOptions,
+   ): this {
+      this.assertTransactionsCollectionPath('create');
+      return this.setPendingWriteRequest(
+         'POST',
+         transaction.toPayload(),
+         options,
+      );
+   }
+
+   edit(
+      transactionKey: TransactionKey | WaiverClaimKey | PendingTradeKey,
+      payload: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+   ): this;
+   edit(
+      payload: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+   ): this;
+   edit(
+      transactionKeyOrPayload:
+         | TransactionKey
+         | WaiverClaimKey
+         | PendingTradeKey
+         | Record<string, unknown>
+         | string,
+      payloadOrOptions?:
+         | Record<string, unknown>
+         | string
+         | WriteRequestOptions,
+      options?: WriteRequestOptions,
+   ): this {
+      this.assertTransactionWritePath('edit');
+
+      if (this.isTransactionResourcePath()) {
+         return this.setPendingWriteRequest(
+            'PUT',
+            transactionKeyOrPayload as Record<string, unknown> | string,
+            payloadOrOptions as WriteRequestOptions | undefined,
+         );
+      }
+
+      const transactionKey = transactionKeyOrPayload as
+         | TransactionKey
+         | WaiverClaimKey
+         | PendingTradeKey;
+      const payload = payloadOrOptions as Record<string, unknown> | string;
+
+      if (!payload) {
+         throw new Error(
+            'edit requires a payload when used on a league transactions collection request.',
+         );
+      }
+
+      return this.setPendingWriteRequest(
+         'PUT',
+         payload,
+         options,
+         `/transaction/${transactionKey}`,
+      );
+   }
+
+   cancel(
+      transactionKey: TransactionKey | WaiverClaimKey | PendingTradeKey,
+      options?: WriteRequestOptions,
+   ): this;
+   cancel(options?: WriteRequestOptions): this;
+   cancel(
+      transactionKeyOrOptions?:
+         | TransactionKey
+         | WaiverClaimKey
+         | PendingTradeKey
+         | WriteRequestOptions,
+      options?: WriteRequestOptions,
+   ): this {
+      this.assertTransactionWritePath('cancel');
+
+      if (this.isTransactionResourcePath()) {
+         return this.setPendingWriteRequest(
+            'DELETE',
+            undefined,
+            transactionKeyOrOptions as WriteRequestOptions | undefined,
+         );
+      }
+
+      if (
+         !transactionKeyOrOptions ||
+         typeof transactionKeyOrOptions !== 'string'
+      ) {
+         throw new Error(
+            'cancel requires a transaction key when used on a league transactions collection request.',
+         );
+      }
+
+      return this.setPendingWriteRequest(
+         'DELETE',
+         undefined,
+         options,
+         `/transaction/${transactionKeyOrOptions}`,
+      );
+   }
+
    drafts(): Pick<
       RequestBuilder<[...LeaguePath, 'drafts']>,
       SharedMethodNames
@@ -620,6 +845,27 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    gameKeys(keys: string | string[]): this {
       return this.setParam('game_keys', keys);
    }
+   isAvailable(value: boolean | 0 | 1 | '0' | '1' = true): this {
+      const normalized =
+         typeof value === 'boolean' ? (value ? '1' : '0') : String(value);
+      return this.setParam('is_available', normalized);
+   }
+   gameTypes(types: string | string[]): this {
+      return this.setParam('game_types', types);
+   }
+   gameCodes(codes: string | string[]): this {
+      return this.setParam('game_codes', codes);
+   }
+   seasons(values: number | string | Array<number | string>): this {
+      if (Array.isArray(values)) {
+         return this.setParam(
+            'seasons',
+            values.map((value) => String(value)),
+         );
+      }
+
+      return this.setParam('seasons', String(values));
+   }
    leagueKeys(keys: string | string[]): this {
       return this.setParam('league_keys', keys);
    }
@@ -668,6 +914,30 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          ? AllResponseTypes
          : InferResponseType<TPath>,
    >(): Promise<T> {
+      if (this.state.method === 'POST') {
+         try {
+            return await this.post<T>(this.state.body, this.state.options);
+         } finally {
+            this.clearPendingWriteRequest();
+         }
+      }
+
+      if (this.state.method === 'PUT') {
+         try {
+            return await this.put<T>(this.state.body, this.state.options);
+         } finally {
+            this.clearPendingWriteRequest();
+         }
+      }
+
+      if (this.state.method === 'DELETE') {
+         try {
+            return await this.delete<T>(this.state.options);
+         } finally {
+            this.clearPendingWriteRequest();
+         }
+      }
+
       const path = this.buildPath();
       return this.httpClient.get<T>(path);
    }
@@ -680,8 +950,9 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       data?: Record<string, unknown> | string,
       options?: WriteRequestOptions,
    ): Promise<T> {
-      const path = this.buildPath();
-      return this.httpClient.post<T>(path, data, options);
+      const path = this.state.dispatchPath ?? this.buildPath();
+      const normalizedBody = this.normalizeWriteBody(path, data);
+      return this.httpClient.post<T>(path, normalizedBody, options);
    }
 
    async put<
@@ -692,17 +963,18 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       data?: Record<string, unknown> | string,
       options?: WriteRequestOptions,
    ): Promise<T> {
-      const path = this.buildPath();
-      return this.httpClient.put<T>(path, data, options);
+      const path = this.state.dispatchPath ?? this.buildPath();
+      const normalizedBody = this.normalizeWriteBody(path, data);
+      return this.httpClient.put<T>(path, normalizedBody, options);
    }
 
    async delete<
       T = InferResponseType<TPath> extends never
          ? AllResponseTypes
          : InferResponseType<TPath>,
-   >(): Promise<T> {
-      const path = this.buildPath();
-      return this.httpClient.delete<T>(path);
+   >(options?: WriteRequestOptions): Promise<T> {
+      const path = this.state.dispatchPath ?? this.buildPath();
+      return this.httpClient.delete<T>(path, options);
    }
 
    toString(): string {
