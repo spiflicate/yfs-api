@@ -1,6 +1,7 @@
 import { describe, expect, it, mock } from 'bun:test';
 import type { HttpClient } from '../../src/client/HttpClient.js';
 import { createRequest, RequestBuilder } from '../../src/request/index.js';
+import { TransactionBuilder } from '../../src/request/transaction.js';
 import type { InferResponseType } from '../../src/types/request/context.js';
 import type { Game } from '../../src/types/responses/game.js';
 import type { League } from '../../src/types/responses/league.js';
@@ -178,6 +179,34 @@ describe('RequestBuilder', () => {
    });
 
    describe('parameters', () => {
+      it('supports games collection filter helpers', () => {
+         const path = createRequest(createMockHttpClient())
+            .games()
+            .isAvailable()
+            .gameTypes(['full', 'pickem-team'])
+            .gameCodes(['nfl', 'mlb'])
+            .seasons([2011, 2012])
+            .buildPath();
+
+         expect(path).toBe(
+            '/games;is_available=1;game_types=full,pickem-team;game_codes=nfl,mlb;seasons=2011,2012',
+         );
+      });
+
+      it('supports games collection filters through param()', () => {
+         const path = createRequest(createMockHttpClient())
+            .games()
+            .param('is_available', '1')
+            .param('game_types', 'full,pickem-team')
+            .param('game_codes', 'nfl,mlb')
+            .param('seasons', '2011,2012')
+            .buildPath();
+
+         expect(path).toBe(
+            '/games;is_available=1;game_types=full,pickem-team;game_codes=nfl,mlb;seasons=2011,2012',
+         );
+      });
+
       it('adds generic params to the current segment', () => {
          const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
@@ -279,11 +308,19 @@ describe('RequestBuilder', () => {
             .transactions()
             .post(payload);
 
-         expect(httpClient.post).toHaveBeenCalledWith(
-            '/league/423.l.12345/transactions',
-            payload,
-            undefined,
+         expect(httpClient.post).toHaveBeenCalledTimes(1);
+         const [path, body, options] = (
+            httpClient.post as ReturnType<typeof mock>
+         ).mock.calls[0] as [string, string, unknown];
+
+         expect(path).toBe('/league/423.l.12345/transactions');
+         expect(typeof body).toBe('string');
+         expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+         expect(body).toContain('<fantasy_content>');
+         expect(body).toContain(
+            '<transaction><type>add</type></transaction>',
          );
+         expect(options).toBeUndefined();
       });
 
       it('executes POST requests with XML body and options', async () => {
@@ -314,9 +351,232 @@ describe('RequestBuilder', () => {
             .transaction('257.l.193.pt.1')
             .put(payload);
 
+         expect(httpClient.put).toHaveBeenCalledTimes(1);
+         const [path, body, options] = (
+            httpClient.put as ReturnType<typeof mock>
+         ).mock.calls[0] as [string, string, unknown];
+
+         expect(path).toBe('/transaction/257.l.193.pt.1');
+         expect(typeof body).toBe('string');
+         expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+         expect(body).toContain('<fantasy_content>');
+         expect(body).toContain(
+            '<transaction><action>accept</action></transaction>',
+         );
+         expect(options).toBeUndefined();
+      });
+
+      it('supports transactions create(transactionBuilder).execute() flow', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .dropPlayer('423.p.4444')
+                  .addPlayer('423.p.3333')
+                  .bid(24),
+            )
+            .execute();
+
+         expect(httpClient.post).toHaveBeenCalledTimes(1);
+         const [path, body] = (httpClient.post as ReturnType<typeof mock>)
+            .mock.calls[0] as [string, string];
+
+         expect(path).toBe('/league/423.l.12345/transactions');
+         expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+         expect(body).toContain('<type>add/drop</type>');
+         expect(body).toContain('<faab_bid>24</faab_bid>');
+         expect(body).toContain('<player_key>423.p.3333</player_key>');
+         expect(body).toContain('<player_key>423.p.4444</player_key>');
+      });
+
+      it('serializes add/drop transaction create() payload to expected Yahoo XML', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('238.l.627060')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('238.l.627060.t.6')
+                  .addPlayer('238.p.5484')
+                  .dropPlayer('238.p.6327')
+                  .bid(25),
+            )
+            .execute();
+
+         const [, body] = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0] as [string, string];
+
+         expect(body).toBe(
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><transaction><type>add/drop</type><faab_bid>25</faab_bid><players><player><player_key>238.p.5484</player_key><transaction_data><type>add</type><destination_team_key>238.l.627060.t.6</destination_team_key></transaction_data></player><player><player_key>238.p.6327</player_key><transaction_data><type>drop</type><source_team_key>238.l.627060.t.6</source_team_key></transaction_data></player></players></transaction></fantasy_content>',
+         );
+      });
+
+      it('serializes pending trade POST payload to expected Yahoo XML', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('248.l.55438')
+            .transactions()
+            .post({
+               transaction: {
+                  type: 'pending_trade',
+                  trader_team_key: '248.l.55438.t.11',
+                  tradee_team_key: '248.l.55438.t.4',
+                  trade_note: 'Yo yo yo yo yo!!!',
+                  players: {
+                     player: [
+                        {
+                           player_key: '248.p.4130',
+                           transaction_data: {
+                              type: 'pending_trade',
+                              source_team_key: '248.l.55438.t.11',
+                              destination_team_key: '248.l.55438.t.4',
+                           },
+                        },
+                        {
+                           player_key: '248.p.2415',
+                           transaction_data: {
+                              type: 'pending_trade',
+                              source_team_key: '248.l.55438.t.4',
+                              destination_team_key: '248.l.55438.t.11',
+                           },
+                        },
+                     ],
+                  },
+               },
+            });
+
+         const [, body] = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0] as [string, string];
+
+         expect(body).toBe(
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><transaction><type>pending_trade</type><trader_team_key>248.l.55438.t.11</trader_team_key><tradee_team_key>248.l.55438.t.4</tradee_team_key><trade_note>Yo yo yo yo yo!!!</trade_note><players><player><player_key>248.p.4130</player_key><transaction_data><type>pending_trade</type><source_team_key>248.l.55438.t.11</source_team_key><destination_team_key>248.l.55438.t.4</destination_team_key></transaction_data></player><player><player_key>248.p.2415</player_key><transaction_data><type>pending_trade</type><source_team_key>248.l.55438.t.4</source_team_key><destination_team_key>248.l.55438.t.11</destination_team_key></transaction_data></player></players></transaction></fantasy_content>',
+         );
+      });
+
+      it('serializes pending trade PUT action payload to expected Yahoo XML', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .transaction('248.l.55438.pt.11')
+            .put({
+               transaction: {
+                  transaction_key: '248.l.55438.pt.11',
+                  type: 'pending_trade',
+                  action: 'accept',
+                  trade_note: 'Dude, that is a totally fair trade.',
+               },
+            });
+
+         const [, body] = (httpClient.put as ReturnType<typeof mock>).mock
+            .calls[0] as [string, string];
+
+         expect(body).toBe(
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><transaction><transaction_key>248.l.55438.pt.11</transaction_key><type>pending_trade</type><action>accept</action><trade_note>Dude, that is a totally fair trade.</trade_note></transaction></fantasy_content>',
+         );
+      });
+
+      it('supports transactions create() for drop-only flow', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .dropPlayer('423.p.4444'),
+            )
+            .execute();
+
+         expect(httpClient.post).toHaveBeenCalledTimes(1);
+         const [, body] = (httpClient.post as ReturnType<typeof mock>).mock
+            .calls[0] as [string, string];
+
+         expect(body).toContain('<type>drop</type>');
+         expect(body).toContain(
+            '<source_team_key>423.l.12345.t.1</source_team_key>',
+         );
+      });
+
+      it('supports transactions().edit(...).execute() dispatch to transaction resource path', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('248.l.55438')
+            .transactions()
+            .edit('248.l.55438.w.c.2_6093', {
+               transaction: {
+                  transaction_key: '248.l.55438.w.c.2_6093',
+                  type: 'waiver',
+                  waiver_priority: 1,
+                  faab_bid: 20,
+               },
+            })
+            .execute();
+
+         expect(httpClient.put).toHaveBeenCalledTimes(1);
+         const [path, body] = (httpClient.put as ReturnType<typeof mock>)
+            .mock.calls[0] as [string, string];
+
+         expect(path).toBe('/transaction/248.l.55438.w.c.2_6093');
+         expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+         expect(body).toContain('<type>waiver</type>');
+         expect(body).toContain('<waiver_priority>1</waiver_priority>');
+         expect(body).toContain('<faab_bid>20</faab_bid>');
+      });
+
+      it('supports transaction().edit(...).execute() helper dispatch', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .transaction('248.l.55438.pt.11')
+            .edit({
+               transaction: {
+                  transaction_key: '248.l.55438.pt.11',
+                  type: 'pending_trade',
+                  action: 'accept',
+               },
+            })
+            .execute();
+
          expect(httpClient.put).toHaveBeenCalledWith(
-            '/transaction/257.l.193.pt.1',
-            payload,
+            '/transaction/248.l.55438.pt.11',
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><transaction><transaction_key>248.l.55438.pt.11</transaction_key><type>pending_trade</type><action>accept</action></transaction></fantasy_content>',
+            undefined,
+         );
+      });
+
+      it('supports transactions().cancel(...).execute() dispatch to transaction resource path', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .league('257.l.193')
+            .transactions()
+            .cancel('257.l.193.w.c.2_6390')
+            .execute();
+
+         expect(httpClient.delete).toHaveBeenCalledWith(
+            '/transaction/257.l.193.w.c.2_6390',
+            undefined,
+         );
+      });
+
+      it('supports transaction().cancel().execute() helper dispatch', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .transaction('257.l.193.w.c.2_6390')
+            .cancel()
+            .execute();
+
+         expect(httpClient.delete).toHaveBeenCalledWith(
+            '/transaction/257.l.193.w.c.2_6390',
             undefined,
          );
       });
@@ -330,6 +590,7 @@ describe('RequestBuilder', () => {
 
          expect(httpClient.delete).toHaveBeenCalledWith(
             '/transaction/257.l.193.w.c.2_6390',
+            undefined,
          );
       });
    });

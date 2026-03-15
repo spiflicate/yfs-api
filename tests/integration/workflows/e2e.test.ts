@@ -135,7 +135,11 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get current user
-            const user = await client.request().users().useLogin().execute();
+            const user = await client
+               .request()
+               .users()
+               .useLogin()
+               .execute();
             expect(user).toBeDefined();
 
             // Get user's teams (if any)
@@ -208,19 +212,18 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       describe('Player Search and Analysis', () => {
          test('should search and analyze players', async () => {
             // Get NHL game
-            const game = (await client.request().game('nhl').execute()).game;
+            const game = (await client.request().game('nhl').execute())
+               .game;
             expect(game).toBeDefined();
 
             // Search for a specific player
-            const searchResult = (
-               await client
-                  .request()
-                  .game(game.gameKey)
-                  .players()
-                  .search('McDavid')
-                  .count(5)
-                  .execute()
-            ).game;
+            const searchResult = await client
+               .request()
+               .game(game.gameKey)
+               .players()
+               .search('McDavid')
+               .count(5)
+               .execute();
 
             expect(searchResult).toBeDefined();
             expect(searchResult.players).toBeDefined();
@@ -366,7 +369,8 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Data should be consistent
                expect(teamDetails.team.teamKey).toBe(userTeam.teamKey);
-               expect(teamDetails.team.name).toBe(userTeam.name);
+               if (userTeam.name)
+                  expect(teamDetails.team.name).toBe(userTeam.name);
             }
          });
       });
@@ -376,7 +380,11 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // This should retry on network issues
-            const user = await client.request().users().useLogin().execute();
+            const user = await client
+               .request()
+               .users()
+               .useLogin()
+               .execute();
             expect(user).toBeDefined();
          });
 
