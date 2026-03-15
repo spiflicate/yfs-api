@@ -15,6 +15,7 @@ export class TransactionBuilder {
    private receivedPlayers: PlayerKey[] = [];
    private droppedPlayers: PlayerKey[] = [];
    private faabBid?: number;
+   private tradeNote?: string;
 
    forTeam(teamKey: TeamKey): this {
       this.forTeamKey = teamKey;
@@ -61,6 +62,11 @@ export class TransactionBuilder {
       return this;
    }
 
+   note(text: string): this {
+      this.tradeNote = text;
+      return this;
+   }
+
    toPayload(): Record<string, unknown> {
       const mode = this.getMode();
       if (mode === 'addDrop') {
@@ -81,7 +87,8 @@ export class TransactionBuilder {
          !!this.toTeamKeyValue ||
          this.sentPlayers.length > 0 ||
          this.receivedPlayers.length > 0 ||
-         this.droppedPlayers.length > 0;
+         this.droppedPlayers.length > 0 ||
+         this.tradeNote !== undefined;
       const hasAddDropShape =
          !!this.forTeamKey ||
          !!this.addPlayerKey ||
@@ -209,7 +216,10 @@ export class TransactionBuilder {
          players.push({
             player_key: playerKey,
             transaction_data: {
-               type: 'drop',
+               // Yahoo docs/examples are ambiguous for trade-related drops.
+               // We currently send pending_trade (without destination_team_key)
+               // but this may need to be type: 'drop' for some leagues.
+               type: 'pending_trade',
                source_team_key: this.fromTeamKey,
             },
          });
@@ -219,6 +229,7 @@ export class TransactionBuilder {
          type: 'pending_trade',
          trader_team_key: this.fromTeamKey,
          tradee_team_key: this.toTeamKeyValue,
+         ...(this.tradeNote ? { trade_note: this.tradeNote } : {}),
          players: {
             player: players,
          },
