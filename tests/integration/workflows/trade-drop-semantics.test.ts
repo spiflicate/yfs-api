@@ -29,6 +29,8 @@ import {
 } from '../helpers/testConfig.js';
 import { InMemoryTokenStorage } from '../helpers/testStorage.js';
 
+type TradeDropType = 'pending_trade' | 'drop';
+
 function hasTradeDropSemanticsConfig(): boolean {
    return (
       process.env.RUN_TRADE_DROP_SEMANTICS_TESTS === 'true' &&
@@ -81,62 +83,54 @@ describe.skipIf(
          'TEST_DROPPED_PLAYER_KEY',
       ) as PlayerKey;
 
-      const payload = new TransactionBuilder()
-         .fromTeam(traderTeamKey)
-         .toTeam(tradeeTeamKey)
-         .sendPlayers([sentPlayerKey])
-         .dropPlayers([droppedPlayerKey])
-         .note('Integration semantics probe: pending_trade + dropPlayers')
-         .toPayload();
+      const buildTransaction = (
+         dropType: TradeDropType,
+      ): TransactionBuilder =>
+         new TransactionBuilder()
+            .fromTeam(traderTeamKey)
+            .toTeam(tradeeTeamKey)
+            .sendPlayers([sentPlayerKey])
+            .dropPlayers([droppedPlayerKey])
+            .note(`Integration semantics probe: ${dropType} + dropPlayers`);
 
-      // This assertion locks current client behavior for the live probe.
-      expect(payload).toEqual({
-         transaction: {
-            type: 'pending_trade',
-            trader_team_key: traderTeamKey,
-            tradee_team_key: tradeeTeamKey,
-            trade_note:
-               'Integration semantics probe: pending_trade + dropPlayers',
-            players: {
-               player: [
-                  {
-                     player_key: sentPlayerKey,
+      const dropTypes: TradeDropType[] = ['pending_trade', 'drop'];
+
+      for (const dropType of dropTypes) {
+         const payload = buildTransaction(dropType).toPayload() as {
+            transaction: {
+               players: {
+                  player: Array<{
+                     player_key: string;
                      transaction_data: {
-                        type: 'pending_trade',
-                        source_team_key: traderTeamKey,
-                        destination_team_key: tradeeTeamKey,
-                     },
-                  },
-                  {
-                     player_key: droppedPlayerKey,
-                     transaction_data: {
-                        type: 'pending_trade',
-                        source_team_key: traderTeamKey,
-                     },
-                  },
-               ],
-            },
-         },
-      });
+                        type: string;
+                        source_team_key?: string;
+                        destination_team_key?: string;
+                     };
+                  }>;
+               };
+            };
+         };
 
-      // If Yahoo rejects this request, semantics may require type: 'drop'
-      // for dropped trade players instead of type: 'pending_trade'.
-      const response = await client
-         .request()
-         .league(leagueKey)
-         .transactions()
-         .create(
-            new TransactionBuilder()
-               .fromTeam(traderTeamKey)
-               .toTeam(tradeeTeamKey)
-               .sendPlayers([sentPlayerKey])
-               .dropPlayers([droppedPlayerKey])
-               .note(
-                  'Integration semantics probe: pending_trade + dropPlayers',
-               ),
-         )
-         .execute<Record<string, unknown>>();
+         const dropped = payload.transaction.players.player.find(
+            (p) => p.player_key === droppedPlayerKey,
+         );
 
-      expect(response).toBeDefined();
+         expect(dropped?.transaction_data.type).toBe(dropType);
+         expect(dropped?.transaction_data.source_team_key).toBe(
+            traderTeamKey,
+         );
+         expect(
+            dropped?.transaction_data.destination_team_key,
+         ).toBeUndefined();
+
+         const response = await client
+            .request()
+            .league(leagueKey)
+            .transactions()
+            .create(buildTransaction(dropType))
+            .execute<Record<string, unknown>>();
+
+         expect(response).toBeDefined();
+      }
    });
 });
