@@ -669,6 +669,22 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       );
    }
 
+   /**
+    * Stages a PUT request to edit a transaction.
+    *
+    * When called on a transaction resource (via `.transaction(key)`):
+    * `@example`
+    * request.transaction('248.l.55438.pt.11').edit({ transaction: { action: 'accept' } })
+    *
+    * When called on a transactions collection (via `.league(key).transactions()`):
+    * `@example`
+    * request.league('248.l.55438').transactions().edit('248.l.55438.w.c.2_6093', { transaction: { ... } })
+    */
+   edit(
+      transactionKey: TransactionKey | WaiverClaimKey | PendingTradeKey,
+      payload: Record<string, unknown> | string,
+      options?: WriteRequestOptions,
+   ): this;
    edit(
       transactionKey: TransactionKey | WaiverClaimKey | PendingTradeKey,
       payload: Record<string, unknown> | string,
