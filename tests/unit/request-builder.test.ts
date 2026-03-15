@@ -438,6 +438,74 @@ describe('RequestBuilder', () => {
          expect(httpClient.post).toHaveBeenCalledTimes(2);
       });
 
+      it('allows retrying a staged POST request after execute() failure', async () => {
+         const httpClient = createMockHttpClient();
+         const postMock = httpClient.post as ReturnType<typeof mock>;
+         postMock
+            .mockImplementationOnce(async () => {
+               throw new Error('transient post error');
+            })
+            .mockImplementationOnce(async () => ({ ok: true }));
+
+         const txBuilder = createRequest(httpClient)
+            .league('423.l.12345')
+            .transactions()
+            .create(
+               new TransactionBuilder()
+                  .forTeam('423.l.12345.t.1')
+                  .dropPlayer('423.p.4444'),
+            );
+
+         await expect(txBuilder.execute()).rejects.toThrow(
+            'transient post error',
+         );
+
+         await expect(txBuilder.execute()).resolves.toBeDefined();
+         expect(httpClient.post).toHaveBeenCalledTimes(2);
+      });
+
+      it('allows retrying a staged PUT request after execute() failure', async () => {
+         const httpClient = createMockHttpClient();
+         const putMock = httpClient.put as ReturnType<typeof mock>;
+         putMock
+            .mockImplementationOnce(async () => {
+               throw new Error('transient put error');
+            })
+            .mockImplementationOnce(async () => ({ ok: true }));
+
+         const txBuilder = createRequest(httpClient)
+            .transaction('257.l.193.pt.1')
+            .edit({ transaction: { action: 'accept' } });
+
+         await expect(txBuilder.execute()).rejects.toThrow(
+            'transient put error',
+         );
+
+         await expect(txBuilder.execute()).resolves.toBeDefined();
+         expect(httpClient.put).toHaveBeenCalledTimes(2);
+      });
+
+      it('allows retrying a staged DELETE request after execute() failure', async () => {
+         const httpClient = createMockHttpClient();
+         const deleteMock = httpClient.delete as ReturnType<typeof mock>;
+         deleteMock
+            .mockImplementationOnce(async () => {
+               throw new Error('transient delete error');
+            })
+            .mockImplementationOnce(async () => ({ ok: true }));
+
+         const txBuilder = createRequest(httpClient)
+            .transaction('257.l.193.pt.1')
+            .cancel();
+
+         await expect(txBuilder.execute()).rejects.toThrow(
+            'transient delete error',
+         );
+
+         await expect(txBuilder.execute()).resolves.toBeDefined();
+         expect(httpClient.delete).toHaveBeenCalledTimes(2);
+      });
+
       it('serializes add/drop transaction create() payload to expected Yahoo XML', async () => {
          const httpClient = createMockHttpClient();
 
