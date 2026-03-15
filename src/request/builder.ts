@@ -40,6 +40,7 @@ interface RequestState {
    body?: Record<string, unknown> | string;
    options?: WriteRequestOptions;
    dispatchPath?: string;
+   hasExecutedWriteRequest: boolean;
 }
 
 type ParamValue = string | string[] | number;
@@ -272,6 +273,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          segments: [],
          params: {},
          method: 'GET',
+         hasExecutedWriteRequest: false,
       };
    }
 
@@ -389,6 +391,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       this.state.body = body;
       this.state.options = options;
       this.state.dispatchPath = dispatchPath;
+      this.state.hasExecutedWriteRequest = false;
       return this;
    }
 
@@ -397,6 +400,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       this.state.body = undefined;
       this.state.options = undefined;
       this.state.dispatchPath = undefined;
+      this.state.hasExecutedWriteRequest = true;
    }
 
    private asStage<
@@ -914,6 +918,15 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          ? AllResponseTypes
          : InferResponseType<TPath>,
    >(): Promise<T> {
+      if (
+         this.state.method === 'GET' &&
+         this.state.hasExecutedWriteRequest
+      ) {
+         throw new Error(
+            'Cannot call execute() again after a staged write request has already been sent. Stage a new write request with create(), edit(), or cancel() before re-executing.',
+         );
+      }
+
       if (this.state.method === 'POST') {
          try {
             return await this.post<T>(this.state.body, this.state.options);
