@@ -928,27 +928,27 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       }
 
       if (this.state.method === 'POST') {
-         try {
-            return await this.post<T>(this.state.body, this.state.options);
-         } finally {
-            this.clearPendingWriteRequest();
-         }
+         const response = await this.post<T>(
+            this.state.body,
+            this.state.options,
+         );
+         this.clearPendingWriteRequest();
+         return response;
       }
 
       if (this.state.method === 'PUT') {
-         try {
-            return await this.put<T>(this.state.body, this.state.options);
-         } finally {
-            this.clearPendingWriteRequest();
-         }
+         const response = await this.put<T>(
+            this.state.body,
+            this.state.options,
+         );
+         this.clearPendingWriteRequest();
+         return response;
       }
 
       if (this.state.method === 'DELETE') {
-         try {
-            return await this.delete<T>(this.state.options);
-         } finally {
-            this.clearPendingWriteRequest();
-         }
+         const response = await this.delete<T>(this.state.options);
+         this.clearPendingWriteRequest();
+         return response;
       }
 
       const path = this.buildPath();
