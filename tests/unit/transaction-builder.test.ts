@@ -138,8 +138,71 @@ describe('TransactionBuilder', () => {
                      {
                         player_key: '423.p.3333',
                         transaction_data: {
-                           type: 'drop',
+                           type: 'pending_trade',
                            source_team_key: '423.l.12345.t.1',
+                        },
+                     },
+                  ],
+               },
+            },
+         });
+      });
+
+      it('omits destination_team_key for dropped players in pending trades', () => {
+         const payload = new TransactionBuilder()
+            .fromTeam(team('423.l.12345.t.1'))
+            .toTeam(team('423.l.12345.t.2'))
+            .sendPlayers([player('423.p.1111')])
+            .dropPlayers([player('423.p.3333')])
+            .toPayload() as {
+            transaction: {
+               players: {
+                  player: Array<{
+                     player_key: string;
+                     transaction_data: Record<string, unknown>;
+                  }>;
+               };
+            };
+         };
+
+         const dropped = payload.transaction.players.player.find(
+            (p) => p.player_key === '423.p.3333',
+         );
+
+         expect(dropped?.transaction_data.type).toBe('pending_trade');
+         expect(dropped?.transaction_data.source_team_key).toBe(
+            '423.l.12345.t.1',
+         );
+         expect(
+            Object.hasOwn(
+               dropped?.transaction_data ?? {},
+               'destination_team_key',
+            ),
+         ).toBe(false);
+      });
+
+      it('includes trade_note for pending trade payloads when provided', () => {
+         const payload = new TransactionBuilder()
+            .fromTeam(team('423.l.12345.t.1'))
+            .toTeam(team('423.l.12345.t.2'))
+            .sendPlayers([player('423.p.1111')])
+            .note('Fair offer')
+            .toPayload();
+
+         expect(payload).toEqual({
+            transaction: {
+               type: 'pending_trade',
+               trader_team_key: '423.l.12345.t.1',
+               tradee_team_key: '423.l.12345.t.2',
+               trade_note: 'Fair offer',
+               players: {
+                  player: [
+                     {
+                        player_key: '423.p.1111',
+                        transaction_data: {
+                           type: 'pending_trade',
+                           source_team_key: '423.l.12345.t.1',
+                           destination_team_key: '423.l.12345.t.2',
                         },
                      },
                   ],
@@ -212,6 +275,18 @@ describe('TransactionBuilder', () => {
                .forTeam(team('423.l.12345.t.1'))
                .fromTeam(team('423.l.12345.t.2'))
                .addPlayer(player('423.p.3333'))
+               .toPayload(),
+         ).toThrow(
+            'Cannot mix add/drop and trade fields in the same transaction.',
+         );
+      });
+
+      it('throws when add/drop fields are mixed with trade note', () => {
+         expect(() =>
+            new TransactionBuilder()
+               .forTeam(team('423.l.12345.t.1'))
+               .addPlayer(player('423.p.3333'))
+               .note('Please accept')
                .toPayload(),
          ).toThrow(
             'Cannot mix add/drop and trade fields in the same transaction.',
