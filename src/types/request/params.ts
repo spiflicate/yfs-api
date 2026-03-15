@@ -188,7 +188,7 @@ export type CommonParamKey =
    | 'week'
    | 'date'
    | 'is_available'
-   | 'season'
+   | 'seasons'
    | 'use_login'
    | 'types'
    | 'team_key';
@@ -196,7 +196,7 @@ export type CommonParamKey =
 /**
  * Game-specific parameter keys
  */
-export type GameParamKey = 'game_keys' | 'is_available' | 'season';
+export type GameParamKey = 'game_keys' | 'is_available' | 'seasonss';
 
 /**
  * League-specific parameter keys
