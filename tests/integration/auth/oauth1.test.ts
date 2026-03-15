@@ -116,24 +116,19 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          test('should fetch available games', async () => {
             const client = new YahooFantasyClient(config);
             const games = (
-               await client
-                  .request()
-                  .games()
-                  // FIXME: verify what params should be available for the games collection
-                  .param('is_available', 'true')
-                  .execute()
+               await client.request().games().isAvailable(true).execute()
             ).games;
 
             expect(games).toBeDefined();
             expect(Array.isArray(games)).toBe(true);
             expect(games.length).toBeGreaterThan(0);
 
-            // All games should be available (or isAvailable may be undefined if API doesn't include it)
+            // All games should be available (or isGameOver may be undefined if API doesn't include it)
             for (const game of games) {
-               // Yahoo API may not include isAvailable field in filtered results
+               // Yahoo API may not include isGameOver field in filtered results
                expect(
-                  game.isAvailable === true ||
-                     game.isAvailable === undefined,
+                  game.isGameOver === false ||
+                     game.isGameOver === undefined,
                ).toBe(true);
             }
          });
