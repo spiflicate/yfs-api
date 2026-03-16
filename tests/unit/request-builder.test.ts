@@ -2,6 +2,7 @@ import { describe, expect, it, mock } from 'bun:test';
 import type { HttpClient } from '../../src/client/HttpClient.js';
 import { createRequest, RequestBuilder } from '../../src/request/index.js';
 import { TransactionBuilder } from '../../src/request/transaction.js';
+import { ValidationError } from '../../src/types/errors.js';
 import type { InferResponseType } from '../../src/types/request/context.js';
 import type { Game } from '../../src/types/responses/game.js';
 import type { League } from '../../src/types/responses/league.js';
@@ -250,6 +251,35 @@ describe('RequestBuilder', () => {
          expect(path).toBe(
             '/league/423.l.12345/players;position=QB;status=A;sort=AR;count=25;start=50;search=Mahomes',
          );
+      });
+
+      it('normalizes Date values passed to date()', () => {
+         const path = createRequest(createMockHttpClient())
+            .team('423.l.12345.t.1')
+            .roster()
+            .date(new Date(2024, 10, 15))
+            .buildPath();
+
+         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
+      });
+
+      it('validates date() string format', () => {
+         expect(() =>
+            createRequest(createMockHttpClient())
+               .team('423.l.12345.t.1')
+               .roster()
+               .date('Sun Mar 15 2026')
+               .buildPath(),
+         ).toThrow(ValidationError);
+      });
+
+      it('normalizes Date values passed via roster params', () => {
+         const path = createRequest(createMockHttpClient())
+            .team('423.l.12345.t.1')
+            .roster({ date: new Date(2024, 10, 15) })
+            .buildPath();
+
+         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
       });
 
       it('supports array values for key filters', () => {
