@@ -24,6 +24,8 @@ import type {
    SortParam,
 } from '../types/request/params.js';
 import type { AllResponseTypes } from '../types/request/responses.js';
+import { formatDate } from '../utils/formatters.js';
+import { validateDate } from '../utils/validators.js';
 import type { TransactionBuilder } from './transaction.js';
 
 interface PathSegment {
@@ -196,6 +198,7 @@ type LeaguesCollectionStageMethodNames =
    | SharedMethodNames
    | LeagueScopedParamMethodNames;
 type WriteRequestOptions = Omit<RequestOptions, 'method' | 'body'>;
+type DateParamInput = string | Date;
 
 type PlayerCollectionParamKey =
    | 'player_keys'
@@ -302,6 +305,12 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          Object.assign(segment.params, params);
       }
       return this;
+   }
+
+   private normalizeDateParam(date: DateParamInput): string {
+      const normalized = date instanceof Date ? formatDate(date) : date;
+      validateDate(normalized);
+      return normalized;
    }
 
    private isTransactionWritePath(path: string): boolean {
@@ -492,14 +501,16 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
 
    roster(params?: {
       week?: string | number;
-      date?: string;
+      date?: DateParamInput;
    }): Pick<
       RequestBuilder<[...TeamPath, 'roster']>,
       TeamRosterStageMethodNames
    > {
       this.addSegment('subResource', 'roster');
       if (params?.week) this.setParam('week', String(params.week));
-      if (params?.date) this.setParam('date', params.date);
+      if (params?.date) {
+         this.setParam('date', this.normalizeDateParam(params.date));
+      }
       return this.asStage<
          [...TeamPath, 'roster'],
          TeamRosterStageMethodNames
@@ -517,7 +528,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    stats(params?: {
       type?: string;
       week?: string | number;
-      date?: string;
+      date?: DateParamInput;
    }): TPath extends TeamPath
       ? Pick<
            RequestBuilder<[...TeamPath, 'stats']>,
@@ -532,7 +543,9 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       this.addSegment('subResource', 'stats');
       if (params?.type) this.setParam('type', params.type);
       if (params?.week) this.setParam('week', String(params.week));
-      if (params?.date) this.setParam('date', params.date);
+      if (params?.date) {
+         this.setParam('date', this.normalizeDateParam(params.date));
+      }
       return this.asStage<string[]>() as never;
    }
 
@@ -858,8 +871,8 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
    week(w: number | string): this {
       return this.setParam('week', String(w));
    }
-   date(d: string): this {
-      return this.setParam('date', d);
+   date(d: DateParamInput): this {
+      return this.setParam('date', this.normalizeDateParam(d));
    }
    gameKeys(keys: string | string[]): this {
       return this.setParam('game_keys', keys);
