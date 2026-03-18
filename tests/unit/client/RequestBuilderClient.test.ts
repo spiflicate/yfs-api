@@ -141,8 +141,36 @@ createRequest(typeOnlyHttpClient).league('423.l.12345').players().params({
 createRequest(typeOnlyHttpClient)
    .team('423.l.12345.t.1')
    .roster({ week: 1 })
+   .updateLineup({
+      coverageType: 'week',
+      week: 1,
+      players: [
+         {
+            playerKey: '423.p.1111',
+            position: 'WR',
+         },
+      ],
+   });
+
+createRequest(typeOnlyHttpClient)
+   .team('423.l.12345.t.1')
+   .roster({ week: 1 })
    // @ts-expect-error standings() is not a valid next chain after team roster()
    .standings();
+
+createRequest(typeOnlyHttpClient)
+   .team('423.l.12345.t.1')
+   // @ts-expect-error updateLineup() is only valid on the team roster() stage
+   .updateLineup({
+      coverageType: 'week',
+      week: 1,
+      players: [
+         {
+            playerKey: '423.p.1111',
+            position: 'WR',
+         },
+      ],
+   });
 
 createRequest(typeOnlyHttpClient)
    .games()
@@ -324,5 +352,23 @@ describe('client.request()', () => {
       ).toThrow(
          'cancel can only be used on a transaction resource or league transactions collection request.',
       );
+   });
+
+   test('throws when updateLineup() is called outside the team roster stage', () => {
+      expect(() =>
+         createRequest(typeOnlyHttpClient)
+            .team('423.l.12345.t.1')
+            // @ts-expect-error updateLineup() is not valid on team stage
+            .updateLineup({
+               coverageType: 'week',
+               week: 1,
+               players: [
+                  {
+                     playerKey: '423.p.1111',
+                     position: 'WR',
+                  },
+               ],
+            }),
+      ).toThrow('updateLineup can only be used on a team roster request.');
    });
 });

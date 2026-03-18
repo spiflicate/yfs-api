@@ -396,6 +396,108 @@ describe('RequestBuilder', () => {
          expect(options).toBeUndefined();
       });
 
+      it('executes PUT requests against a team roster resource with Yahoo roster XML payloads', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .team('423.l.12345.t.1')
+            .roster({ week: 13 })
+            .put({
+               roster: {
+                  coverage_type: 'week',
+                  week: 13,
+                  players: {
+                     player: [
+                        {
+                           player_key: '423.p.8332',
+                           position: 'WR',
+                        },
+                        {
+                           player_key: '423.p.1423',
+                           position: 'BN',
+                        },
+                     ],
+                  },
+               },
+            });
+
+         expect(httpClient.put).toHaveBeenCalledTimes(1);
+         const [path, body, options] = (
+            httpClient.put as ReturnType<typeof mock>
+         ).mock.calls[0] as [string, string, unknown];
+
+         expect(path).toBe('/team/423.l.12345.t.1/roster;week=13');
+         expect(typeof body).toBe('string');
+         expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
+         expect(body).toContain('<fantasy_content>');
+         expect(body).toContain(
+            '<roster><coverage_type>week</coverage_type><week>13</week>',
+         );
+         expect(body).toContain(
+            '<player_key>423.p.8332</player_key><position>WR</position>',
+         );
+         expect(body).toContain(
+            '<player_key>423.p.1423</player_key><position>BN</position>',
+         );
+         expect(options).toBeUndefined();
+      });
+
+      it('supports roster().updateLineup(...).execute() helper for weekly lineups', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .team('423.l.12345.t.1')
+            .roster()
+            .updateLineup({
+               coverageType: 'week',
+               week: 13,
+               players: [
+                  {
+                     playerKey: '423.p.8332',
+                     position: 'WR',
+                  },
+                  {
+                     playerKey: '423.p.1423',
+                     position: 'BN',
+                  },
+               ],
+            })
+            .execute();
+
+         expect(httpClient.put).toHaveBeenCalledTimes(1);
+         expect(httpClient.put).toHaveBeenCalledWith(
+            '/team/423.l.12345.t.1/roster',
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>week</coverage_type><players><player><player_key>423.p.8332</player_key><position>WR</position></player><player><player_key>423.p.1423</player_key><position>BN</position></player></players><week>13</week></roster></fantasy_content>',
+            undefined,
+         );
+      });
+
+      it('supports roster().updateLineup(...).execute() helper for daily lineups', async () => {
+         const httpClient = createMockHttpClient();
+
+         await createRequest(httpClient)
+            .team('423.l.12345.t.1')
+            .roster()
+            .updateLineup({
+               coverageType: 'date',
+               date: '2026-03-15',
+               players: [
+                  {
+                     playerKey: '423.p.9988',
+                     position: '1B',
+                  },
+               ],
+            })
+            .execute();
+
+         expect(httpClient.put).toHaveBeenCalledTimes(1);
+         expect(httpClient.put).toHaveBeenCalledWith(
+            '/team/423.l.12345.t.1/roster',
+            '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>date</coverage_type><players><player><player_key>423.p.9988</player_key><position>1B</position></player></players><date>2026-03-15</date></roster></fantasy_content>',
+            undefined,
+         );
+      });
+
       it('supports transactions create(transactionBuilder).execute() flow', async () => {
          const httpClient = createMockHttpClient();
 
@@ -693,6 +795,23 @@ describe('RequestBuilder', () => {
             '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><transaction><transaction_key>248.l.55438.pt.11</transaction_key><type>pending_trade</type><action>accept</action></transaction></fantasy_content>',
             undefined,
          );
+      });
+
+      it('throws when updateLineup() is used without the required coverage value', () => {
+         expect(() =>
+            createRequest(createMockHttpClient())
+               .team('423.l.12345.t.1')
+               .roster()
+               .updateLineup({
+                  coverageType: 'week',
+                  players: [
+                     {
+                        playerKey: '423.p.8332',
+                        position: 'WR',
+                     },
+                  ],
+               }),
+         ).toThrow('updateLineup requires week when coverageType is week.');
       });
 
       it('supports transactions().cancel(...).execute() dispatch to transaction resource path', async () => {
