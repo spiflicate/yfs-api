@@ -24,6 +24,7 @@ import type {
    SortParam,
 } from '../types/request/params.js';
 import type { AllResponseTypes } from '../types/request/responses.js';
+import type { RosterChangeRequest } from '../types/resources/team.js';
 import { formatDate } from '../utils/formatters.js';
 import { validateDate } from '../utils/validators.js';
 import type { TransactionBuilder } from './transaction.js';
@@ -107,6 +108,7 @@ type PlayerScopedParamMethodNames =
 type TransactionsCollectionParamMethodNames = 'type' | 'types' | 'teamKey';
 type TransactionsWriteMethodNames = 'create' | 'edit' | 'cancel';
 type TransactionWriteMethodNames = 'edit' | 'cancel';
+type TeamRosterWriteMethodNames = 'updateLineup';
 type DateScopedParamMethodNames = 'week' | 'date';
 type UserScopedParamMethodNames = 'useLogin';
 type RootNavigationMethodNames =
@@ -177,6 +179,7 @@ type GamesCollectionStageMethodNames =
 type TeamRosterStageMethodNames =
    | SharedMethodNames
    | TeamRosterNavigationMethodNames
+   | TeamRosterWriteMethodNames
    | DateScopedParamMethodNames;
 type TransactionsCollectionStageMethodNames =
    | SharedMethodNames
@@ -313,8 +316,11 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       return normalized;
    }
 
-   private isTransactionWritePath(path: string): boolean {
-      return /\/transaction(?:\/|$)|\/transactions(?:[/;]|$)/.test(path);
+   private isYahooXmlWritePath(path: string): boolean {
+      return (
+         /\/transaction(?:\/|$)|\/transactions(?:[/;]|$)/.test(path) ||
+         /\/team\/[^/]+\/roster(?:[;/]|$)/.test(path)
+      );
    }
 
    private serializeToYahooXml(data: Record<string, unknown>): string {
@@ -337,7 +343,7 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          data &&
          typeof data === 'object' &&
          !Array.isArray(data) &&
-         this.isTransactionWritePath(path)
+         this.isYahooXmlWritePath(path)
       ) {
          return this.serializeToYahooXml(data);
       }
@@ -387,6 +393,57 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
       throw new Error(
          `${methodName} can only be used on a transaction resource or league transactions collection request.`,
       );
+   }
+
+   private assertTeamRosterPath(methodName: string): void {
+      const segment = this.getCurrentSegment();
+      if (
+         segment &&
+         segment.type === 'subResource' &&
+         segment.name === 'roster'
+      ) {
+         return;
+      }
+
+      throw new Error(
+         `${methodName} can only be used on a team roster request.`,
+      );
+   }
+
+   private buildRosterChangePayload(
+      payload: RosterChangeRequest,
+   ): Record<string, unknown> {
+      const roster: Record<string, unknown> = {
+         coverage_type: payload.coverageType,
+         players: {
+            player: payload.players.map((player) => ({
+               player_key: player.playerKey,
+               position: player.position,
+            })),
+         },
+      };
+
+      if (payload.coverageType === 'week') {
+         if (payload.week === undefined) {
+            throw new Error(
+               'updateLineup requires week when coverageType is week.',
+            );
+         }
+
+         roster.week = payload.week;
+      }
+
+      if (payload.coverageType === 'date') {
+         if (!payload.date) {
+            throw new Error(
+               'updateLineup requires date when coverageType is date.',
+            );
+         }
+
+         roster.date = this.normalizeDateParam(payload.date);
+      }
+
+      return { roster };
    }
 
    private setPendingWriteRequest(
@@ -787,6 +844,18 @@ export class RequestBuilder<TPath extends string[] = RootPath> {
          undefined,
          options,
          `/transaction/${transactionKeyOrOptions}`,
+      );
+   }
+
+   updateLineup(
+      payload: RosterChangeRequest,
+      options?: WriteRequestOptions,
+   ): this {
+      this.assertTeamRosterPath('updateLineup');
+      return this.setPendingWriteRequest(
+         'PUT',
+         this.buildRosterChangePayload(payload),
+         options,
       );
    }
 
