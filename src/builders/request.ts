@@ -22,6 +22,7 @@ import type {
 } from '../types/request/graph.js';
 import type {
    PlayerStatusParam,
+   RosterChangeRequest,
    SortParam,
 } from '../types/request/params.js';
 import type { InferResponseType } from '../types/request/response-routes.js';
@@ -38,7 +39,6 @@ import type {
    WriteMethodNamesForStage,
 } from '../types/request/schema.js';
 import { routeStageRuntime } from '../types/request/schema.js';
-import type { RosterChangeRequest } from '../types/resources/team.js';
 import { formatDate } from '../utils/formatters.js';
 import { validateDate } from '../utils/validators.js';
 import type { TransactionBuilder } from './transaction.js';

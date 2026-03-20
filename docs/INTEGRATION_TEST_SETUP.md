@@ -35,26 +35,35 @@ This guide helps you configure test league and team keys for integration testing
    The team key format is: `{sport_code}.l.{league_id}.t.{team_id}`
    Example: `nhl.l.12345.t.1`
 
-### Method 2: Using the API (Once User Resource is Fixed)
+### Method 2: Using the Current Auth Helpers
 
-Run the discovery script:
+Use the existing auth flow and integration helpers instead:
+
 ```bash
-YAHOO_CLIENT_ID=your_id YAHOO_CLIENT_SECRET=your_secret \
-bun run scripts/discover-test-resources.ts
+# 1. Copy the committed template
+cp .env.test.example .env.test
+
+# 2. Fill in your Yahoo app credentials in .env.test
+# 3. Run the integration tests
+bun test tests/integration
 ```
 
-This will automatically find all your leagues and teams and create a `.env.test` file.
+If you do not preconfigure `YAHOO_ACCESS_TOKEN`, `YAHOO_REFRESH_TOKEN`, and
+`YAHOO_TOKEN_EXPIRES_AT`, the integration auth helper will prompt for OAuth
+authentication and save reusable test tokens to `.test-tokens.json`.
 
 ## Manual .env.test Setup
 
-Create a file named `.env.test` in the project root:
+Start from `.env.test.example` and update it with your local values:
 
 ```bash
 # Yahoo API Credentials
-YAHOO_CLIENT_ID=dj0yJmk9SmVPcUg5WmpsRnlpJmQ9WVdrOVkxQlRjakJYUWs0bWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PTJj
-YAHOO_CLIENT_SECRET=8fe14fcb05dc55da1c9b3b714cdf9a1e9cdf6897
+YAHOO_CLIENT_ID=your_client_id_here
+YAHOO_CLIENT_SECRET=your_client_secret_here
+YAHOO_REDIRECT_URI=oob
 
-# OAuth Tokens (from .oauth2-tokens.json)
+# Optional OAuth Tokens
+# Leave these unset to use the interactive integration-test auth flow.
 YAHOO_ACCESS_TOKEN=your_access_token_here
 YAHOO_REFRESH_TOKEN=your_refresh_token_here
 YAHOO_TOKEN_EXPIRES_AT=your_expiration_timestamp_here
@@ -101,10 +110,7 @@ TEST_GAME_KEY=nhl    # or nfl, nba, mlb
 Once configured:
 
 ```bash
-# Load environment variables
-source .env.test
-
-# Run all integration tests
+# Bun will load .env.test automatically for test runs.
 bun test tests/integration
 
 # Run specific tests
@@ -121,8 +127,8 @@ bun test tests/integration/resources/team.test.ts
 
 ### Token expired errors  
 - Run an authentication script to get fresh tokens
-- Update `.oauth2-tokens.json` with new tokens
-- Update `.env.test` with new token values
+- Delete `.test-tokens.json` to force a fresh interactive login for tests
+- Or update `.env.test` with fresh token values
 
 ### Permission errors
 - Ensure your Yahoo app has the correct permissions
@@ -148,5 +154,5 @@ TEST_TEAM_KEY=nhl.l.123456.t.1     # Your team in that league
 
 1. Get your league and team keys from Yahoo Fantasy website
 2. Update `.env.test` with your keys
-3. Load the environment: `source .env.test`
-4. Run integration tests: `bun test tests/integration`
+3. Run integration tests: `bun test tests/integration`
+4. Complete the interactive OAuth prompt if you did not preconfigure tokens

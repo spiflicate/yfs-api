@@ -10,3 +10,19 @@ Use the following format for each entry:
 - [ ] (TODO, human) Add a regression test for invalid `out` values, so both transition rules and expansion rules are covered. [builder.ts](src/request/builder.ts)
 - [ ] (TODO, human) Extend the same exact out-aware inference to any remaining public helper types that still only expose stage-only inference. [builder.ts](src/request/builder.ts)
 - [ ] (TODO, human) Add one more compile-time test for param('out', 'settings,standings') specifically, since comma-separated string parsing is now part of the type flow. [request-builder.test.ts](tests/unit/request-builder.test.ts)
+- [ ] (TODO, human) Review request and response typing for roster editing endpoints, potentially require following type:
+```ts
+/**
+ * Roster change response
+ */
+export interface RosterChangeResponse {
+   /** Success status */
+   success: boolean;
+   /** Team key */
+   teamKey: ResourceKey;
+   /** Updated roster */
+   roster?: TeamRoster;
+   /** Error message (if failed) */
+   error?: string;
+}
+```

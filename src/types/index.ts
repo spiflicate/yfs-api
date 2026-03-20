@@ -40,83 +40,9 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './errors.js';
+export type { RosterChangeRequest } from './request/params.js';
 export type { InferResponseType } from './request/response-routes.js';
 export type { RouteStage } from './request/schema.js';
-export type {
-   GamePositionType,
-   GameStatCategory,
-   GameWeek,
-   GetGameParams,
-   GetGamesParams,
-   SearchGamePlayersParams,
-} from './resources/game.js';
-export type {
-   GetLeagueParams,
-   GetLeagueScoreboardParams,
-   GetLeagueStandingsParams,
-   GetLeagueTeamsParams,
-   League,
-   LeagueScoreboard,
-   LeagueSettings,
-   LeagueStandings,
-   Matchup,
-   MatchupStat,
-   MatchupTeam,
-   RosterPosition,
-   StandingsTeam,
-   StatCategory,
-   StatModifier,
-} from './resources/league.js';
-export type {
-   GetPlayerParams,
-   GetPlayerStatsParams,
-   Player,
-   PlayerCollectionResponse,
-   PlayerOwnership,
-   PlayerPercentOwned,
-   PlayerStats,
-   SearchPlayersParams,
-} from './resources/player.js';
-export type {
-   GetTeamMatchupsParams,
-   GetTeamParams,
-   GetTeamRosterParams,
-   GetTeamStatsParams,
-   RosterChangeRequest,
-   RosterChangeResponse,
-   RosterPlayer,
-   Team,
-   TeamManager,
-   TeamRoster,
-   TeamStandings,
-   TeamStats,
-} from './resources/team.js';
-export type {
-   AcceptTradeParams,
-   AddDropPlayerParams,
-   AllowTradeParams,
-   CancelTradeParams,
-   DisallowTradeParams,
-   EditWaiverClaimParams,
-   GetTransactionsParams,
-   ProposeTradeParams,
-   RejectTradeParams,
-   TradeDetails,
-   Transaction,
-   TransactionPlayer,
-   TransactionResponse,
-   VoteAgainstTradeParams,
-   WaiverClaimParams,
-   WaiverDetails,
-} from './resources/transaction.js';
-// Resource types
-export type {
-   GetUserGamesParams,
-   GetUserTeamsParams,
-   User,
-   UserGame,
-   UserTeam,
-} from './resources/user.js';
 
 // Sport-specific types
 

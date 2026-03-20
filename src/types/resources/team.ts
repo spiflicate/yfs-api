@@ -247,25 +247,6 @@ export interface GetTeamMatchupsParams {
 }
 
 /**
- * Roster change request
- */
-export interface RosterChangeRequest {
-   /** Coverage type */
-   coverageType: 'date' | 'week';
-   /** Date (YYYY-MM-DD) for date-based */
-   date?: string;
-   /** Week number for week-based */
-   week?: number;
-   /** Player position changes */
-   players: Array<{
-      /** Player key */
-      playerKey: ResourceKey;
-      /** New position */
-      position: string;
-   }>;
-}
-
-/**
  * Roster change response
  */
 export interface RosterChangeResponse {
