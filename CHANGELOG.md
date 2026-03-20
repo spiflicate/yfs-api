@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0-beta.4] - 2026-03-20
+
+### Overview
+
+Incremental beta release focused on team roster editing support, request typing/schema cleanup, and stronger validation around request-builder filters and write flows.
+
+### Added
+
+- **Roster Editing Helper:** Added `team(...).roster(...).updateLineup(...)` for staged roster `PUT` requests, with exported `RosterChangeRequest` typing for week-based and date-based lineup updates.
+- **Roster Editing Example:** Added a dedicated request-builder example covering weekly and daily lineup updates, preview XML generation, and live-authenticated execution paths.
+- **Roster Edit Coverage:** Added request-builder and client typing coverage for roster edit flows, including compile-time checks for valid chaining and stage-restricted helpers.
+
+### Changed
+
+- **Request Typing Schema:** Consolidated request stage metadata and response inference around a central `RouteSchema`, replacing older scattered request typing definitions with a single source of truth.
+- **Request Type Organization:** Renamed query-context terminology to request-context terminology and moved request parameter/filter definitions into `filters.ts` for clearer type exports.
+- **Date Normalization:** Updated request-builder date handling so date-based filters and roster edit payloads consistently normalize and validate `YYYY-MM-DD` values, including `Date` inputs.
+- **Examples and Docs:** Expanded request-builder documentation for roster editing and refreshed example naming and integration guidance to match the current v2 beta surface.
+
+### Fixed
+
+- **Roster Coverage Validation:** Added explicit runtime validation for roster update payloads so missing required `week` or `date` values fail fast before dispatch.
+- **Request Builder Typing:** Tightened response inference and stage constraints for root games, nested user chains, roster player paths, and invalid runtime transitions.
+- **Parameter Surface Cleanup:** Removed unused request parameter exports and aligned helper naming toward clearer, more consistent request-builder terminology.
+
+### Notes
+
+- This release extends the v2 beta write workflow beyond transactions into team roster updates while continuing the request typing cleanup introduced in earlier beta releases.
+
 ## [2.0.0-beta.3] - 2026-03-15
 
 ### Overview
@@ -348,6 +377,7 @@ Breaking changes will be clearly documented in major version releases.
 [1.0.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.0.0
 [1.1.0]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.0
 [1.1.1]: https://github.com/spiflicate/yfs-api/releases/tag/v1.1.1
+[2.0.0-beta.4]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta4
 [2.0.0-beta.3]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta3
 [2.0.0-beta.0]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta0
 [2.0.0-beta.1]: https://github.com/spiflicate/yfs-api/releases/tag/v2.0.0-beta1
