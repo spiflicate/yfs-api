@@ -9,9 +9,6 @@ integration/
 ├── auth/           # Authentication tests
 │   ├── oauth1.test.ts   # OAuth 1.0 (Public Mode) tests
 │   └── oauth2.test.ts   # OAuth 2.0 (User Auth) tests
-├── resources/      # Resource-specific tests
-│   ├── league.test.ts   # League resource tests
-│   └── team.test.ts     # Team resource tests
 ├── workflows/      # End-to-end workflow tests
 │   └── e2e.test.ts      # Complete user workflows
 │   └── trade-drop-semantics.test.ts # Opt-in write semantics probe
@@ -36,10 +33,6 @@ Integration tests require valid Yahoo API credentials and (for user auth tests) 
 - `YAHOO_REFRESH_TOKEN` - Valid refresh token
 - `YAHOO_TOKEN_EXPIRES_AT` - Token expiration timestamp (milliseconds)
 
-#### For Resource Tests
-- `TEST_LEAGUE_KEY` - A valid league key (e.g., "423.l.12345")
-- `TEST_TEAM_KEY` - A valid team key (e.g., "423.l.12345.t.1")
-
 ### Optional Environment Variables
 - `DEBUG=true` - Enable debug logging
 - `SKIP_INTEGRATION_TESTS=true` - Skip all integration tests
@@ -62,12 +55,6 @@ bun test tests/integration
 ```bash
 bun test tests/integration/auth/oauth1.test.ts  # Public mode
 bun test tests/integration/auth/oauth2.test.ts  # User auth mode
-```
-
-#### Resource Tests
-```bash
-bun test tests/integration/resources/league.test.ts
-bun test tests/integration/resources/team.test.ts
 ```
 
 #### Workflow Tests
@@ -99,28 +86,7 @@ Tests user authentication flow:
 
 **Requirements:** Valid OAuth tokens
 
-### 2. Resource Tests (`resources/`)
-
-#### League Resource - `league.test.ts`
-Tests league-related operations:
-- ✓ League metadata fetching
-- ✓ League settings
-- ✓ Standings retrieval
-- ✓ Scoreboard access
-- ✓ Team listings
-
-**Requirements:** `TEST_LEAGUE_KEY`, valid tokens
-
-#### Team Resource - `team.test.ts`
-Tests team-related operations:
-- ✓ Team metadata fetching
-- ✓ Roster management
-- ✓ Team statistics
-- ✓ Matchup information
-
-**Requirements:** `TEST_TEAM_KEY`, valid tokens
-
-### 3. Workflow Tests (`workflows/`)
+### 2. Workflow Tests (`workflows/`)
 
 #### End-to-End - `e2e.test.ts`
 Tests complete user workflows:
@@ -176,10 +142,6 @@ YAHOO_CLIENT_SECRET=your_client_secret
 YAHOO_ACCESS_TOKEN=your_access_token
 YAHOO_REFRESH_TOKEN=your_refresh_token
 YAHOO_TOKEN_EXPIRES_AT=1234567890123
-
-# Optional for resource tests
-TEST_LEAGUE_KEY=423.l.12345
-TEST_TEAM_KEY=423.l.12345.t.1
 
 # Optional
 DEBUG=false

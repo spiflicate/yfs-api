@@ -6,8 +6,8 @@
  * @module
  */
 
+import type { RequestFilters } from './filters.js';
 import type { CollectionName } from './graph.js';
-import type { RequestFilters } from './params.js';
 import type { InferResponseType } from './response-routes.js';
 import type {
    FilterKeyForStage,
