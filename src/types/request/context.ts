@@ -1,5 +1,5 @@
 /**
- * Query Context Types
+ * Request Context Types
  *
  * Stage-based context metadata for request typing.
  *
@@ -7,7 +7,7 @@
  */
 
 import type { CollectionName } from './graph.js';
-import type { QueryParams } from './params.js';
+import type { RequestFilters } from './params.js';
 import type { InferResponseType } from './response-routes.js';
 import type {
    FilterKeyForStage,
@@ -37,49 +37,49 @@ type StageLastSegment<TStage extends RouteStage> = TStage extends 'root'
        ? 'collection'
        : 'subResource';
 
-export interface BaseQueryContext<
+export interface BaseRequestContext<
    TStage extends RouteStage = RouteStage,
    TSelectedOut extends OutValueForStage<TStage> = never,
 > {
    stage: TStage;
    selectedOut: TSelectedOut[];
    pathSegments: string[];
-   filters: QueryParams;
+   filters: RequestFilters;
    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
 }
 
-export type RootQueryContext = BaseQueryContext<'root'> & {
+export type RootRequestContext = BaseRequestContext<'root'> & {
    hasResource: false;
    lastSegment: 'none';
 };
 
-export type StageQueryContext<
+export type StageRequestContext<
    TStage extends Exclude<RouteStage, 'root'> = Exclude<RouteStage, 'root'>,
    TSelectedOut extends OutValueForStage<TStage> = never,
-> = BaseQueryContext<TStage, TSelectedOut> & {
+> = BaseRequestContext<TStage, TSelectedOut> & {
    hasResource: true;
    lastSegment: StageLastSegment<TStage>;
 };
 
-export type QueryContext<
+export type RequestContext<
    TStage extends RouteStage = RouteStage,
    TSelectedOut extends OutValueForStage<TStage> = never,
 > = TStage extends 'root'
-   ? RootQueryContext
-   : StageQueryContext<Exclude<TStage, 'root'>, TSelectedOut>;
+   ? RootRequestContext
+   : StageRequestContext<Exclude<TStage, 'root'>, TSelectedOut>;
 
-export type FilterKeysForContext<T extends QueryContext> =
+export type FilterKeysForContext<T extends RequestContext> =
    FilterKeyForStage<T['stage']>;
 
-type SelectedOutForContext<T extends QueryContext> =
-   T extends QueryContext<infer TStage, infer TSelectedOut>
+type SelectedOutForContext<T extends RequestContext> =
+   T extends RequestContext<infer TStage, infer TSelectedOut>
       ? Extract<TSelectedOut, OutValueForStage<TStage>>
       : never;
 
-export type ResponseTypeForContext<T extends QueryContext> =
+export type ResponseTypeForContext<T extends RequestContext> =
    InferResponseType<T['stage'], SelectedOutForContext<T>>;
 
-export type CanAddCollection<T extends QueryContext> =
+export type CanAddCollection<T extends RequestContext> =
    Extract<
       NavigationMethodNamesForStage<T['stage']>,
       CollectionName
@@ -87,11 +87,11 @@ export type CanAddCollection<T extends QueryContext> =
       ? false
       : true;
 
-export type CanAddSubResource<T extends QueryContext> =
+export type CanAddSubResource<T extends RequestContext> =
    OutValueForStage<T['stage']> extends never ? false : true;
 
-export type CanExecute<T extends QueryContext> = T['stage'] extends 'root'
+export type CanExecute<T extends RequestContext> = T['stage'] extends 'root'
    ? false
    : true;
 
-export type LastSegmentType<T extends QueryContext> = T['lastSegment'];
+export type LastSegmentType<T extends RequestContext> = T['lastSegment'];

@@ -1,8 +1,8 @@
 /**
- * Parameter Types and Enums
+ * Filter and Out Types
  *
- * Defines typed parameters for Yahoo Fantasy API queries.
- * Provides enums for autocomplete while allowing string fallback for ease of use.
+ * Defines typed filters and out selections for Yahoo Fantasy API requests.
+ * Provides const-object value sets for autocomplete while allowing string fallback for ease of use.
  *
  * @module
  */
@@ -12,166 +12,174 @@ import type { ResourceKey } from '../common.js';
 /**
  * Player status in league context
  */
-export enum PlayerStatusParam {
-   /** Available */
-   Available = 'A',
-   /** Free Agent */
-   FreeAgent = 'FA',
-   /** Waivers */
-   Waivers = 'W',
-   /** Taken (on a team) */
-   Taken = 'T',
-   /** Keep - protected from drops */
-   Keep = 'K',
-}
+export const PlayerStatusFilter = {
+   Available: 'A',
+   FreeAgent: 'FA',
+   Waivers: 'W',
+   Taken: 'T',
+   Keep: 'K',
+} as const;
+
+export type PlayerStatusFilter =
+   (typeof PlayerStatusFilter)[keyof typeof PlayerStatusFilter];
+
+export const PlayerStatusParam = PlayerStatusFilter;
+export type PlayerStatusParam = PlayerStatusFilter;
 
 /**
  * Coverage type for stats
  */
-export enum CoverageTypeParam {
-   Season = 'season',
-   Week = 'week',
-   Date = 'date',
-   LastWeek = 'lastweek',
-   LastMonth = 'lastmonth',
-}
+export const CoverageTypeFilter = {
+   Season: 'season',
+   Week: 'week',
+   Date: 'date',
+   LastWeek: 'lastweek',
+   LastMonth: 'lastmonth',
+} as const;
+
+export type CoverageTypeFilter =
+   (typeof CoverageTypeFilter)[keyof typeof CoverageTypeFilter];
+
+export const CoverageTypeParam = CoverageTypeFilter;
+export type CoverageTypeParam = CoverageTypeFilter;
 
 /**
  * Sort options for player queries
  * Common stat IDs and special values
  */
-export enum SortParam {
-   /** Actual Rank */
-   ActualRank = 'AR',
-   /** Projected Rank */
-   ProjectedRank = 'PR',
-   /** Points */
-   Points = 'PTS',
-   /** Percent Owned */
-   PercentOwned = 'PO',
-   /** Percent Started */
-   PercentStarted = 'PS',
-   /** Plus/Minus (NHL) */
-   PlusMinus = '3',
-   /** Goals (NHL/NBA) */
-   Goals = '4',
-   /** Assists (NHL/NBA) */
-   Assists = '5',
-   /** Penalty Minutes (NHL) */
-   PenaltyMinutes = '7',
-   /** Power Play Points (NHL) */
-   PowerPlayPoints = '18',
-   /** Shots on Goal (NHL) */
-   ShotsOnGoal = '2',
-   /** Faceoff Wins (NHL) */
-   FaceoffWins = '74',
-   /** Hits (NHL) */
-   Hits = '12',
-   /** Blocks (NHL) */
-   Blocks = '16',
-   /** Passing Yards (NFL) */
-   PassingYards = '4',
-   /** Passing TDs (NFL) */
-   PassingTDs = '5',
-   /** Rush Yards (NFL) */
-   RushYards = '8',
-   /** Rush TDs (NFL) */
-   RushTDs = '9',
-   /** Receptions (NFL) */
-   Receptions = '11',
-   /** Receiving Yards (NFL) */
-   ReceivingYards = '12',
-   /** Receiving TDs (NFL) */
-   ReceivingTDs = '13',
-   /** QBR (NFL) */
-   QBR = '65',
-   /** Fantasy Points (NFL) */
-   FantasyPoints = '60',
-}
+export const SortFilter = {
+   ActualRank: 'AR',
+   ProjectedRank: 'PR',
+   Points: 'PTS',
+   PercentOwned: 'PO',
+   PercentStarted: 'PS',
+   PlusMinus: '3',
+   Goals: '4',
+   Assists: '5',
+   PenaltyMinutes: '7',
+   PowerPlayPoints: '18',
+   ShotsOnGoal: '2',
+   FaceoffWins: '74',
+   Hits: '12',
+   Blocks: '16',
+   PassingYards: '4',
+   PassingTDs: '5',
+   RushYards: '8',
+   RushTDs: '9',
+   Receptions: '11',
+   ReceivingYards: '12',
+   ReceivingTDs: '13',
+   QBR: '65',
+   FantasyPoints: '60',
+} as const;
+
+export type SortFilter = (typeof SortFilter)[keyof typeof SortFilter];
+
+export const SortParam = SortFilter;
+export type SortParam = SortFilter;
 
 /**
  * Transaction type filter
  */
-export enum TransactionTypeParam {
-   /** Add */
-   Add = 'add',
-   /** Drop */
-   Drop = 'drop',
-   /** Add/Drop */
-   AddDrop = 'add/drop',
-   /** Trade */
-   Trade = 'trade',
-   /** Pending Trade */
-   PendingTrade = 'pending_trade',
-   /** Waiver */
-   Waiver = 'waiver',
-   /** Commissioner */
-   Commish = 'commish',
-}
+export const TransactionTypeFilter = {
+   Add: 'add',
+   Drop: 'drop',
+   AddDrop: 'add/drop',
+   Trade: 'trade',
+   PendingTrade: 'pending_trade',
+   Waiver: 'waiver',
+   Commish: 'commish',
+} as const;
+
+export type TransactionTypeFilter =
+   (typeof TransactionTypeFilter)[keyof typeof TransactionTypeFilter];
+
+export const TransactionTypeParam = TransactionTypeFilter;
+export type TransactionTypeParam = TransactionTypeFilter;
 
 /**
  * League sub-resources that can be requested via 'out' parameter
  */
-export enum LeagueSubResource {
-   Settings = 'settings',
-   Standings = 'standings',
-   Scoreboard = 'scoreboard',
-   Teams = 'teams',
-   Players = 'players',
-   Transactions = 'transactions',
-   Drafts = 'drafts',
-}
+export const LeagueSubResource = {
+   Settings: 'settings',
+   Standings: 'standings',
+   Scoreboard: 'scoreboard',
+   Teams: 'teams',
+   Players: 'players',
+   Transactions: 'transactions',
+   Drafts: 'drafts',
+} as const;
+
+export type LeagueSubResource =
+   (typeof LeagueSubResource)[keyof typeof LeagueSubResource];
 
 /**
  * Team sub-resources that can be requested via 'out' parameter
  */
-export enum TeamSubResource {
-   Roster = 'roster',
-   Matchups = 'matchups',
-   Stats = 'stats',
-   Standings = 'standings',
-}
+export const TeamSubResource = {
+   Roster: 'roster',
+   Matchups: 'matchups',
+   Stats: 'stats',
+   Standings: 'standings',
+} as const;
+
+export type TeamSubResource =
+   (typeof TeamSubResource)[keyof typeof TeamSubResource];
 
 /**
  * Game sub-resources that can be requested via 'out' parameter
  */
-export enum GameSubResource {
-   Leagues = 'leagues',
-   Players = 'players',
-   StatCategories = 'stat_categories',
-   PositionTypes = 'position_types',
-   GameWeeks = 'game_weeks',
-}
+export const GameSubResource = {
+   Leagues: 'leagues',
+   Players: 'players',
+   StatCategories: 'stat_categories',
+   PositionTypes: 'position_types',
+   GameWeeks: 'game_weeks',
+} as const;
+
+export type GameSubResource =
+   (typeof GameSubResource)[keyof typeof GameSubResource];
 
 /**
  * Player sub-resources that can be requested via 'out' parameter
  */
-export enum PlayerSubResource {
-   Stats = 'stats',
-   Ownership = 'ownership',
-   PercentOwned = 'percent_owned',
-   DraftAnalysis = 'draft_analysis',
-}
+export const PlayerSubResource = {
+   Stats: 'stats',
+   Ownership: 'ownership',
+   PercentOwned: 'percent_owned',
+   DraftAnalysis: 'draft_analysis',
+} as const;
+
+export type PlayerSubResource =
+   (typeof PlayerSubResource)[keyof typeof PlayerSubResource];
 
 /**
- * Parameter value that can be either an enum value or a raw string
+ * Filter value that can be either an enum value or a raw string
  * Provides autocomplete from enum while allowing arbitrary strings
  */
-export type ParamValue<T extends string> = T | string;
+export type FilterValue<T extends string = string> = T | string;
+
+export type ParamValue<T extends string = string> = FilterValue<T>;
 
 /**
- * Record of parameters for a query
- * Keys are parameter names, values can be strings or arrays
+ * Record of filters for a request.
+ * Keys are filter names, values can be strings or arrays.
  */
-export interface QueryParams {
+export interface RequestFilters {
    [key: string]: string | string[] | number | boolean | undefined;
 }
 
+export interface RequestParams extends RequestFilters {}
+
 /**
- * Common query parameter keys
+ * The explicit out key used for sub-resource selection.
  */
-export type CommonParamKey =
-   | 'out'
+export type OutKey = 'out';
+
+/**
+ * Common request filter keys
+ */
+export type CommonFilterKey =
    | 'sort'
    | 'sort_type'
    | 'sort_season'
@@ -179,6 +187,8 @@ export type CommonParamKey =
    | 'sort_week'
    | 'league_keys'
    | 'game_keys'
+   | 'game_types'
+   | 'game_codes'
    | 'team_keys'
    | 'player_keys'
    | 'search'
@@ -195,48 +205,74 @@ export type CommonParamKey =
    | 'types'
    | 'team_key';
 
-/**
- * Game-specific parameter keys
- */
-export type GameParamKey = 'game_keys' | 'is_available' | 'seasonss';
+export type CommonParamKey = CommonFilterKey | OutKey;
 
 /**
- * League-specific parameter keys
+ * Game-specific filter keys
  */
-export type LeagueParamKey = 'league_keys' | 'out';
+export type GameFilterKey =
+   | 'game_keys'
+   | 'is_available'
+   | 'game_types'
+   | 'game_codes'
+   | 'seasons';
+
+export type GameParamKey = GameFilterKey | OutKey;
 
 /**
- * Team-specific parameter keys
+ * League-specific filter keys
  */
-export type TeamParamKey = 'team_keys' | 'out';
+export type LeagueFilterKey = 'league_keys';
+
+export type LeagueParamKey = LeagueFilterKey | OutKey;
 
 /**
- * Player-specific parameter keys
+ * Team-specific filter keys
  */
-export type PlayerParamKey =
+export type TeamFilterKey = 'team_keys';
+
+export type TeamParamKey = TeamFilterKey | OutKey;
+
+/**
+ * Player-specific filter keys
+ */
+export type PlayerFilterKey =
    | 'player_keys'
    | 'position'
    | 'status'
    | 'sort'
    | 'count'
    | 'start'
-   | 'search';
+   | 'search'
+   | 'week'
+   | 'date';
+
+export type PlayerParamKey = PlayerFilterKey;
 
 /**
- * Transaction-specific parameter keys
+ * Transaction-specific filter keys
  */
-export type TransactionParamKey = 'types' | 'team_key' | 'count' | 'start';
+export type TransactionFilterKey =
+   | 'type'
+   | 'types'
+   | 'team_key'
+   | 'count'
+   | 'start';
+
+export type TransactionParamKey = TransactionFilterKey;
 
 /**
- * All valid parameter keys
+ * All valid filter keys
  */
-export type AllParamKey =
-   | CommonParamKey
-   | GameParamKey
-   | LeagueParamKey
-   | TeamParamKey
-   | PlayerParamKey
-   | TransactionParamKey;
+export type AllFilterKey =
+   | CommonFilterKey
+   | GameFilterKey
+   | LeagueFilterKey
+   | TeamFilterKey
+   | PlayerFilterKey
+   | TransactionFilterKey;
+
+export type AllParamKey = AllFilterKey | OutKey;
 
 /**
  * Request payload for updating a team roster/lineup.
