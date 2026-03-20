@@ -99,6 +99,6 @@ export {
    TeamSubResource,
    TransactionTypeFilter,
    TransactionTypeParam,
-} from './types/request/params.js';
+} from './types/request/filters.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';

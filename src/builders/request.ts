@@ -9,6 +9,11 @@
 import { XMLBuilder } from 'fast-xml-parser';
 import type { HttpClient, RequestOptions } from '../client/HttpClient.js';
 import type {
+   PlayerStatusParam,
+   RosterChangeRequest,
+   SortParam,
+} from '../types/request/filters.js';
+import type {
    CollectionName,
    GameKeyLike,
    LeagueKeyLike,
@@ -20,11 +25,6 @@ import type {
    TransactionKeyLike,
    WaiverClaimKeyLike,
 } from '../types/request/graph.js';
-import type {
-   PlayerStatusParam,
-   RosterChangeRequest,
-   SortParam,
-} from '../types/request/params.js';
 import type { InferResponseType } from '../types/request/response-routes.js';
 import type { AllResponseTypes } from '../types/request/responses.js';
 import type {

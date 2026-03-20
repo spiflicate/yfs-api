@@ -40,7 +40,7 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './errors.js';
-export type { RosterChangeRequest } from './request/params.js';
+export type { RosterChangeRequest } from './request/filters.js';
 export type { InferResponseType } from './request/response-routes.js';
 export type { RouteStage } from './request/schema.js';
 

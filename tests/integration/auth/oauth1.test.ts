@@ -16,7 +16,6 @@
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
 import { ConfigError } from '../../../src/types/errors.js';
-import type { GamesResponse } from '../../../src/types/responses/wrappers.js';
 import {
    getOAuth1Config,
    hasValidCredentials,
