@@ -86,14 +86,18 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './types/index.js';
-export type {
+export {
+   CoverageTypeFilter,
    CoverageTypeParam,
    GameSubResource,
    LeagueSubResource,
+   PlayerStatusFilter,
    PlayerStatusParam,
    PlayerSubResource,
+   SortFilter,
    SortParam,
    TeamSubResource,
+   TransactionTypeFilter,
    TransactionTypeParam,
 } from './types/request/params.js';
 // Export XML parsing utilities (only the still-useful ones)
