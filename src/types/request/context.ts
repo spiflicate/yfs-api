@@ -16,24 +16,19 @@ import type {
    RouteStage,
 } from './schema.js';
 
+type ResourceStage = Extract<
+   RouteStage,
+   'game' | 'league' | 'team' | 'player' | 'transaction'
+>;
+
+type StageTerminalSegment<TStage extends RouteStage> =
+   TStage extends `${string}.${infer TLast}` ? TLast : TStage;
+
 type StageLastSegment<TStage extends RouteStage> = TStage extends 'root'
    ? 'none'
-   : TStage extends 'game' | 'league' | 'team' | 'player' | 'transaction'
+   : TStage extends ResourceStage
      ? 'resource'
-     : TStage extends
-            | 'games'
-            | 'users'
-            | 'game.leagues'
-            | 'game.players'
-            | 'league.teams'
-            | 'league.players'
-            | 'league.transactions'
-            | 'team.roster.players'
-            | 'users.games'
-            | 'users.leagues'
-            | 'users.teams'
-            | 'users.games.leagues'
-            | 'users.games.teams'
+     : StageTerminalSegment<TStage> extends CollectionName
        ? 'collection'
        : 'subResource';
 

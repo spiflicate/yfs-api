@@ -8,6 +8,15 @@
  */
 
 import type { ResourceKey } from '../common.js';
+import type {
+   FilterKeyForStage,
+   GameOutValue,
+   LeagueOutValue,
+   ParamKeyForStage,
+   PlayerOutValue,
+   RouteStage,
+   TeamOutValue,
+} from './schema.js';
 
 /**
  * Player status in league context
@@ -36,6 +45,8 @@ export const CoverageTypeFilter = {
 
 export type CoverageTypeFilter =
    (typeof CoverageTypeFilter)[keyof typeof CoverageTypeFilter];
+
+export type CoverageTypeParam = FilterValue<CoverageTypeFilter>;
 
 /**
  * Sort options for player queries
@@ -69,6 +80,8 @@ export const SortFilter = {
 
 export type SortFilter = (typeof SortFilter)[keyof typeof SortFilter];
 
+export type SortParam = FilterValue<SortFilter>;
+
 /**
  * Transaction type filter
  */
@@ -85,6 +98,8 @@ export const TransactionTypeFilter = {
 export type TransactionTypeFilter =
    (typeof TransactionTypeFilter)[keyof typeof TransactionTypeFilter];
 
+export type TransactionTypeParam = FilterValue<TransactionTypeFilter>;
+
 /**
  * League sub-resources that can be requested via 'out' parameter
  */
@@ -92,14 +107,10 @@ export const LeagueSubResource = {
    Settings: 'settings',
    Standings: 'standings',
    Scoreboard: 'scoreboard',
-   Teams: 'teams',
-   Players: 'players',
-   Transactions: 'transactions',
    Drafts: 'drafts',
-} as const;
+} as const satisfies Record<string, LeagueOutValue>;
 
-export type LeagueSubResource =
-   (typeof LeagueSubResource)[keyof typeof LeagueSubResource];
+export type LeagueSubResource = LeagueOutValue;
 
 /**
  * Team sub-resources that can be requested via 'out' parameter
@@ -109,24 +120,20 @@ export const TeamSubResource = {
    Matchups: 'matchups',
    Stats: 'stats',
    Standings: 'standings',
-} as const;
+} as const satisfies Record<string, TeamOutValue>;
 
-export type TeamSubResource =
-   (typeof TeamSubResource)[keyof typeof TeamSubResource];
+export type TeamSubResource = TeamOutValue;
 
 /**
  * Game sub-resources that can be requested via 'out' parameter
  */
 export const GameSubResource = {
-   Leagues: 'leagues',
-   Players: 'players',
    StatCategories: 'stat_categories',
    PositionTypes: 'position_types',
    GameWeeks: 'game_weeks',
-} as const;
+} as const satisfies Record<string, GameOutValue>;
 
-export type GameSubResource =
-   (typeof GameSubResource)[keyof typeof GameSubResource];
+export type GameSubResource = GameOutValue;
 
 /**
  * Player sub-resources that can be requested via 'out' parameter
@@ -136,16 +143,17 @@ export const PlayerSubResource = {
    Ownership: 'ownership',
    PercentOwned: 'percent_owned',
    DraftAnalysis: 'draft_analysis',
-} as const;
+} as const satisfies Record<string, PlayerOutValue>;
 
-export type PlayerSubResource =
-   (typeof PlayerSubResource)[keyof typeof PlayerSubResource];
+export type PlayerSubResource = PlayerOutValue;
 
 /**
  * Filter value that can be either an enum value or a raw string
  * Provides autocomplete from enum while allowing arbitrary strings
  */
 export type FilterValue<T extends string = string> = T | string;
+
+export type PlayerStatusParam = FilterValue<PlayerStatusFilter>;
 
 /**
  * Record of filters for a request.
@@ -164,99 +172,51 @@ export type OutKey = 'out';
  * Common request filter keys
  */
 export type CommonFilterKey =
-   | 'sort'
-   | 'sort_type'
-   | 'sort_season'
-   | 'sort_date'
-   | 'sort_week'
-   | 'league_keys'
-   | 'game_keys'
-   | 'game_types'
-   | 'game_codes'
-   | 'team_keys'
-   | 'player_keys'
-   | 'search'
-   | 'start'
-   | 'count'
-   | 'status'
-   | 'position'
-   | 'type'
-   | 'week'
-   | 'date'
-   | 'is_available'
-   | 'seasons'
-   | 'use_login'
-   | 'types'
-   | 'team_key';
+   FilterKeyForStage<RouteStage>;
 
-export type CommonParamKey = CommonFilterKey | OutKey;
+export type CommonParamKey = ParamKeyForStage<RouteStage>;
 
 /**
  * Game-specific filter keys
  */
-export type GameFilterKey =
-   | 'game_keys'
-   | 'is_available'
-   | 'game_types'
-   | 'game_codes'
-   | 'seasons';
+export type GameFilterKey = FilterKeyForStage<'games'>;
 
-export type GameParamKey = GameFilterKey | OutKey;
+export type GameParamKey = ParamKeyForStage<'games'>;
 
 /**
  * League-specific filter keys
  */
-export type LeagueFilterKey = 'league_keys';
+export type LeagueFilterKey = FilterKeyForStage<'league'>;
 
-export type LeagueParamKey = LeagueFilterKey | OutKey;
+export type LeagueParamKey = ParamKeyForStage<'league'>;
 
 /**
  * Team-specific filter keys
  */
-export type TeamFilterKey = 'team_keys';
+export type TeamFilterKey = FilterKeyForStage<'team'>;
 
-export type TeamParamKey = TeamFilterKey | OutKey;
+export type TeamParamKey = ParamKeyForStage<'team'>;
 
 /**
  * Player-specific filter keys
  */
-export type PlayerFilterKey =
-   | 'player_keys'
-   | 'position'
-   | 'status'
-   | 'sort'
-   | 'count'
-   | 'start'
-   | 'search'
-   | 'week'
-   | 'date';
+export type PlayerFilterKey = FilterKeyForStage<'player'>;
 
-export type PlayerParamKey = PlayerFilterKey;
+export type PlayerParamKey = ParamKeyForStage<'player'>;
 
 /**
  * Transaction-specific filter keys
  */
-export type TransactionFilterKey =
-   | 'type'
-   | 'types'
-   | 'team_key'
-   | 'count'
-   | 'start';
+export type TransactionFilterKey = FilterKeyForStage<'league.transactions'>;
 
-export type TransactionParamKey = TransactionFilterKey;
+export type TransactionParamKey = ParamKeyForStage<'league.transactions'>;
 
 /**
  * All valid filter keys
  */
-export type AllFilterKey =
-   | CommonFilterKey
-   | GameFilterKey
-   | LeagueFilterKey
-   | TeamFilterKey
-   | PlayerFilterKey
-   | TransactionFilterKey;
+export type AllFilterKey = FilterKeyForStage<RouteStage>;
 
-export type AllParamKey = AllFilterKey | OutKey;
+export type AllParamKey = ParamKeyForStage<RouteStage>;
 
 /**
  * Request payload for updating a team roster/lineup.
