@@ -27,15 +27,16 @@ Bun automatically loads `.env` files in this priority order:
 
 **For Local Development:**
 ```bash
-# .env - committed example, safe defaults
+# .env - optional local defaults if you want Bun to auto-load them
 YAHOO_CLIENT_ID=your-client-id-here
 YAHOO_CLIENT_SECRET=your-client-secret-here
 YAHOO_REDIRECT_URI=oob
 
-# .env.test - gitignored, your actual values
-YAHOO_CLIENT_ID=dj0yJmk9...
-YAHOO_CLIENT_SECRET=8fe14fcb...
-# Optional: Pre-configure tokens
+# .env.test - gitignored, test-specific values
+# Start from .env.test.example and fill in your real credentials
+YAHOO_CLIENT_ID=your-client-id-here
+YAHOO_CLIENT_SECRET=your-client-secret-here
+# Optional: Pre-configure tokens for non-interactive test runs
 YAHOO_ACCESS_TOKEN=...
 YAHOO_REFRESH_TOKEN=...
 YAHOO_TOKEN_EXPIRES_AT=1234567890000
@@ -98,7 +99,7 @@ clearStoredTokens();
 - When you run authentication examples
 - Manually for script usage
 
-**Note:** Independent from `.test-tokens.json` - different tokens, different purposes
+**Note:** Independent from `.test-tokens.json` - integration tests do not read `.oauth2-tokens.json` automatically.
 
 ## Token Priority in Integration Tests
 
@@ -143,19 +144,22 @@ Prompts user to authenticate if no valid tokens found
 ### Scenario 1: First Time Running Integration Tests
 
 ```bash
-# 1. Set up credentials in .env.test
+# 1. Copy the committed template and add your credentials
+cp .env.test.example .env.test
+
+# 2. Set up credentials in .env.test
 YAHOO_CLIENT_ID=your-client-id
 YAHOO_CLIENT_SECRET=your-client-secret
 
-# 2. Run tests
+# 3. Run tests
 bun test tests/integration
 
-# 3. You'll see:
+# 4. You'll see:
 # 🔐 Interactive OAuth authentication required
 # (Follow prompts to authenticate)
 
-# 4. Tokens saved to .test-tokens.json
-# 5. Future test runs use saved tokens automatically
+# 5. Tokens saved to .test-tokens.json
+# 6. Future test runs use saved tokens automatically
 ```
 
 ### Scenario 2: CI/CD Pipeline

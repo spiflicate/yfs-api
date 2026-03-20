@@ -21,7 +21,11 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import type { OAuth2Tokens, TokenStorage } from '../../src/index.js';
+import type {
+   OAuth2Tokens,
+   RosterChangeRequest,
+   TokenStorage,
+} from '../../src/index.js';
 import { YahooFantasyClient } from '../../src/index.js';
 
 const TEAM_KEY = process.env.TEAM_KEY ?? '423.l.12345.t.1';
@@ -31,24 +35,38 @@ const ROSTER_DATE = process.env.ROSTER_DATE ?? '2026-03-15';
 const ROSTER_COVERAGE_TYPE =
    process.env.ROSTER_COVERAGE_TYPE === 'date' ? 'date' : 'week';
 
-const WEEKLY_PLAYERS = [
+type RosterPlayerKey = RosterChangeRequest['players'][number]['playerKey'];
+
+function asRosterPlayerKey(value: string): RosterPlayerKey {
+   return value as RosterPlayerKey;
+}
+
+const WEEKLY_PLAYERS: RosterChangeRequest['players'] = [
    {
-      playerKey: process.env.ROSTER_WEEK_PLAYER_ONE ?? '423.p.8332',
+      playerKey: asRosterPlayerKey(
+         process.env.ROSTER_WEEK_PLAYER_ONE ?? '423.p.8332',
+      ),
       position: 'WR',
    },
    {
-      playerKey: process.env.ROSTER_WEEK_PLAYER_TWO ?? '423.p.1423',
+      playerKey: asRosterPlayerKey(
+         process.env.ROSTER_WEEK_PLAYER_TWO ?? '423.p.1423',
+      ),
       position: 'BN',
    },
 ];
 
-const DAILY_PLAYERS = [
+const DAILY_PLAYERS: RosterChangeRequest['players'] = [
    {
-      playerKey: process.env.ROSTER_DATE_PLAYER_ONE ?? '423.p.9988',
+      playerKey: asRosterPlayerKey(
+         process.env.ROSTER_DATE_PLAYER_ONE ?? '423.p.9988',
+      ),
       position: '1B',
    },
    {
-      playerKey: process.env.ROSTER_DATE_PLAYER_TWO ?? '423.p.1423',
+      playerKey: asRosterPlayerKey(
+         process.env.ROSTER_DATE_PLAYER_TWO ?? '423.p.1423',
+      ),
       position: 'BN',
    },
 ];

@@ -170,7 +170,7 @@ Generated path:
 
 - Collections: `leagues()`, `teams()`, `players()`, `transactions()`, `drafts()`, `games()`
 - Sub-resources: `settings()`, `standings()`, `scoreboard()`, `roster()`, `matchups()`, `stats()`, `ownership()`, `percentOwned()`, `draftAnalysis()`, `statCategories()`, `positionTypes()`, `gameWeeks()`
-- Params: `out()`, `position()`, `status()`, `sort()`, `count()`, `start()`, `search()`, `week()`, `date()`, `gameKeys()`, `leagueKeys()`, `teamKeys()`, `playerKeys()`, `param()`, `params()`
+- Filters and selectors: `filters()`, `out()`, `position()`, `status()`, `sort()`, `count()`, `start()`, `search()`, `week()`, `date()`, `gameKeys()`, `leagueKeys()`, `teamKeys()`, `playerKeys()`
 - Execution: `execute()`, `post()`, `put()`, `delete()`, `buildPath()`
 
 ### Path-Only Debugging
@@ -216,7 +216,6 @@ console.log(path);
 
 - [Integration Test Setup](docs/INTEGRATION_TEST_SETUP.md)
 - [OAuth 2.0 Implementation](docs/OAUTH2_IMPLEMENTATION.md)
-- [URL Pattern Guide](docs/URL_PATTERN_GUIDE.md)
 - [Auth Flow Helper](docs/AUTH_FLOW_HELPER.md)
 - [Yahoo API Reference Notes](docs/yahoo-fantasy-api-guide/OVERVIEW.md)
 
@@ -282,7 +281,7 @@ If you used older, non-builder style helpers, migrate to the builder-first API:
 
 - Prefer `client.request().<resource>()...` for all reads/writes
 - Use `buildPath()` to verify generated Yahoo paths during migration
-- Replace ad-hoc query string assembly with chain methods and `param()/params()`
+- Replace ad-hoc query string assembly with chain methods, `filters()`, and `out()`
 - Keep response handling aligned to normalized camelCase payload shapes
 
 ## Known Limitations

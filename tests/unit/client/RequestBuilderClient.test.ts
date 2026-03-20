@@ -126,51 +126,79 @@ type ExpandedLeagueExecuteAssertion = Assert<
 const expandedLeagueExecuteAssertion: ExpandedLeagueExecuteAssertion = true;
 void expandedLeagueExecuteAssertion;
 
-// @ts-expect-error collection names are not valid out values on game()
-createRequest(typeOnlyHttpClient).game('nfl').out('leagues');
+function assertCompileTimeRequestBuilderErrors(): void {
+   // @ts-expect-error collection names are not valid out values on game()
+   createRequest(typeOnlyHttpClient).game('nfl').out('leagues');
 
-// @ts-expect-error collection names are not valid out values on users().games()
-createRequest(typeOnlyHttpClient).users().useLogin().games().out('teams');
+   createRequest(typeOnlyHttpClient)
+      .users()
+      .useLogin()
+      .games()
+      // @ts-expect-error collection names are not valid out values on users().games()
+      .out('teams');
 
-// @ts-expect-error league() requires a Yahoo league key shape
-createRequest(typeOnlyHttpClient).league(12345);
+   // @ts-expect-error league() requires a Yahoo league key shape
+   createRequest(typeOnlyHttpClient).league(12345);
 
-// @ts-expect-error players() is not a valid next chain after users().games()
-createRequest(typeOnlyHttpClient).users().games().players();
+   // @ts-expect-error players() is not a valid next chain after users().games()
+   createRequest(typeOnlyHttpClient).users().games().players();
 
-// @ts-expect-error teams() is not a valid next chain after root games()
-createRequest(typeOnlyHttpClient).games().teams();
+   // @ts-expect-error teams() is not a valid next chain after root games()
+   createRequest(typeOnlyHttpClient).games().teams();
 
-// @ts-expect-error useLogin() is only valid on users() stage
-createRequest(typeOnlyHttpClient).games().useLogin();
+   // @ts-expect-error useLogin() is only valid on users() stage
+   createRequest(typeOnlyHttpClient).games().useLogin();
 
-// @ts-expect-error gameKeys() is not valid on users() stage before games()
-createRequest(typeOnlyHttpClient).users().gameKeys('nhl');
+   // @ts-expect-error gameKeys() is not valid on users() stage before games()
+   createRequest(typeOnlyHttpClient).users().gameKeys('nhl');
 
-// @ts-expect-error out() is not valid on users() stage
-createRequest(typeOnlyHttpClient).users().out('settings');
+   // @ts-expect-error out() is not valid on users() stage
+   createRequest(typeOnlyHttpClient).users().out('settings');
 
-createRequest(typeOnlyHttpClient)
-   .league('423.l.12345')
-   // @ts-expect-error filters() only accepts a single filter object, never key/value pairs
-   .filters('out', ['settings', 'standings']);
+   createRequest(typeOnlyHttpClient)
+      .league('423.l.12345')
+      // @ts-expect-error filters() only accepts a single filter object, never key/value pairs
+      .filters('out', ['settings', 'standings']);
 
-createRequest(typeOnlyHttpClient)
-   .league('423.l.12345')
-   // @ts-expect-error out must be set with out(), not filters()
-   .filters({ out: ['settings', 'standings'] });
+   createRequest(typeOnlyHttpClient)
+      .league('423.l.12345')
+      // @ts-expect-error out must be set with out(), not filters()
+      .filters({ out: ['settings', 'standings'] });
 
-// @ts-expect-error game_keys is not valid on users() stage
-createRequest(typeOnlyHttpClient).users().filters({ game_keys: 'nhl' });
+   // @ts-expect-error game_keys is not valid on users() stage
+   createRequest(typeOnlyHttpClient).users().filters({ game_keys: 'nhl' });
 
-// @ts-expect-error use_login is not valid on games() stage
-createRequest(typeOnlyHttpClient).games().filters({ use_login: '1' });
+   // @ts-expect-error use_login is not valid on games() stage
+   createRequest(typeOnlyHttpClient).games().filters({ use_login: '1' });
 
-createRequest(typeOnlyHttpClient)
-   .league('423.l.12345')
-   .players()
-   // @ts-expect-error team_keys is not valid on league players() stage
-   .filters({ team_keys: '423.l.12345.t.1' });
+   createRequest(typeOnlyHttpClient)
+      .league('423.l.12345')
+      .players()
+      // @ts-expect-error team_keys is not valid on league players() stage
+      .filters({ team_keys: '423.l.12345.t.1' });
+
+   createRequest(typeOnlyHttpClient)
+      .team('423.l.12345.t.1')
+      .roster({ week: 1 })
+      // @ts-expect-error standings() is not a valid next chain after team roster()
+      .standings();
+
+   createRequest(typeOnlyHttpClient)
+      .team('423.l.12345.t.1')
+      // @ts-expect-error updateLineup() is only valid on the team roster() stage
+      .updateLineup({
+         coverageType: 'week',
+         week: 1,
+         players: [
+            {
+               playerKey: '423.p.1111',
+               position: 'WR',
+            },
+         ],
+      });
+}
+
+void assertCompileTimeRequestBuilderErrors;
 
 createRequest(typeOnlyHttpClient).league('423.l.12345').players().filters({
    status: 'FA',
@@ -180,26 +208,6 @@ createRequest(typeOnlyHttpClient).league('423.l.12345').players().filters({
 createRequest(typeOnlyHttpClient)
    .team('423.l.12345.t.1')
    .roster({ week: 1 })
-   .updateLineup({
-      coverageType: 'week',
-      week: 1,
-      players: [
-         {
-            playerKey: '423.p.1111',
-            position: 'WR',
-         },
-      ],
-   });
-
-createRequest(typeOnlyHttpClient)
-   .team('423.l.12345.t.1')
-   .roster({ week: 1 })
-   // @ts-expect-error standings() is not a valid next chain after team roster()
-   .standings();
-
-createRequest(typeOnlyHttpClient)
-   .team('423.l.12345.t.1')
-   // @ts-expect-error updateLineup() is only valid on the team roster() stage
    .updateLineup({
       coverageType: 'week',
       week: 1,

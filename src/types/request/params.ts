@@ -7,6 +7,8 @@
  * @module
  */
 
+import type { ResourceKey } from '../common.js';
+
 /**
  * Player status in league context
  */
@@ -235,3 +237,22 @@ export type AllParamKey =
    | TeamParamKey
    | PlayerParamKey
    | TransactionParamKey;
+
+/**
+ * Request payload for updating a team roster/lineup.
+ */
+export interface RosterChangeRequest {
+   /** Coverage type */
+   coverageType: 'date' | 'week';
+   /** Date (YYYY-MM-DD) for date-based */
+   date?: string;
+   /** Week number for week-based */
+   week?: number;
+   /** Player position changes */
+   players: Array<{
+      /** Player key */
+      playerKey: ResourceKey;
+      /** New position */
+      position: string;
+   }>;
+}
