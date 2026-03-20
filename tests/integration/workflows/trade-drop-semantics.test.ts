@@ -15,8 +15,8 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
+import { TransactionBuilder } from '../../../src/builders/transaction.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
-import { TransactionBuilder } from '../../../src/request/transaction.js';
 import type {
    PlayerKey,
    TeamKey,

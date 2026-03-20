@@ -1,242 +1,146 @@
 /**
- * Resource Graph Type Definitions
+ * Request Graph Type Definitions
  *
- * This module defines the type-level graph of the Yahoo Fantasy API.
- * Each resource type defines:
- * - What key format it uses
- * - What collections are available from it
- * - What sub-resources are available
- * - What parameters are valid
+ * Shared request graph names and key-like types.
+ * Request metadata is derived from the central RouteSchema.
  *
  * @module
  */
 
 import type {
-   GameResponse,
-   LeagueResponse,
-   PlayerResponse,
-   TeamResponse,
-   TransactionResponse,
-   UsersResponse,
-} from '../responses/wrappers.js';
+   GameKey,
+   LeagueKey,
+   PendingTradeKey,
+   PlayerKey,
+   ResourceKey,
+   TeamKey,
+   TransactionKey,
+   WaiverClaimKey,
+} from '../common.js';
+import type { InferResponseType } from './response-routes.js';
+import type {
+   FilterKeyForStage,
+   NavigationMethodNamesForStage,
+   OutValueForStage,
+   RouteStage,
+} from './schema.js';
 
-/**
- * Base resource key types
- */
-export type GameKey = string;
-export type LeagueKey = `${number}.l.${number}` | (string & {});
-export type TeamKey = `${number}.l.${number}.t.${number}` | (string & {});
-export type PlayerKey = `${number}.p.${number}` | (string & {});
-export type WaiverClaimKey =
-   | `${number}.l.${number}.w.c.${number}`
-   | (string & {});
-export type PendingTradeKey =
-   | `${number}.l.${number}.pt.${number}`
-   | (string & {});
-export type TransactionKey =
-   | `${number}.l.${number}.tr.${number}`
-   | WaiverClaimKey
-   | PendingTradeKey
-   | (string & {});
+export type {
+   GameKey,
+   LeagueKey,
+   PendingTradeKey,
+   PlayerKey,
+   ResourceKey,
+   TeamKey,
+   TransactionKey,
+   WaiverClaimKey,
+} from '../common.js';
 
-/**
- * Resource name literals
- */
+type WithString<T> = T | (string & {});
+
+export type GameKeyLike = WithString<GameKey>;
+export type LeagueKeyLike = WithString<LeagueKey>;
+export type TeamKeyLike = WithString<TeamKey>;
+export type PlayerKeyLike = WithString<PlayerKey>;
+export type TransactionKeyLike = WithString<TransactionKey>;
+export type WaiverClaimKeyLike = WithString<WaiverClaimKey>;
+export type PendingTradeKeyLike = WithString<PendingTradeKey>;
+export type ResourceKeyLike = WithString<ResourceKey>;
+
 export type ResourceName =
    | 'game'
    | 'league'
    | 'team'
    | 'player'
-   | 'users'
+   | 'user'
    | 'transaction';
 
-/**
- * Collection name literals
- */
 export type CollectionName =
    | 'games'
    | 'leagues'
    | 'teams'
    | 'players'
-   | 'stats'
-   | 'transactions'
-   | 'drafts'
-   | 'matchups'
-   | 'roster'
-   | 'ownership'
-   | 'percent_owned'
+   | 'users'
+   | 'transactions';
+
+export type SubResourceName =
    | 'draft_analysis'
    | 'draftresults'
+   | 'drafts'
    | 'game_weeks'
-   | 'stat_categories'
-   | 'position_types';
-
-/**
- * Sub-resource name literals
- */
-export type SubResourceName =
+   | 'leagues'
+   | 'matchups'
    | 'metadata'
+   | 'ownership'
+   | 'percent_owned'
+   | 'players'
+   | 'position_types'
+   | 'roster'
+   | 'scoreboard'
    | 'settings'
    | 'standings'
-   | 'scoreboard'
-   | 'teams'
-   | 'players'
-   | 'transactions'
-   | 'drafts'
-   | 'roster'
-   | 'matchups'
-   | 'stats'
-   | 'ownership'
-   | 'percent_owned'
-   | 'draft_analysis'
-   | 'draftresults'
-   | 'game_weeks'
    | 'stat_categories'
-   | 'position_types';
+   | 'stats'
+   | 'teams'
+   | 'transactions';
 
-/**
- * Defines what can be accessed from a resource
- */
+type ResourceStageMap = {
+   game: 'game';
+   league: 'league';
+   team: 'team';
+   player: 'player';
+   user: 'users';
+   transaction: 'transaction';
+};
+
+type ResourceStage<T extends ResourceName> = ResourceStageMap[T];
+
 export interface ResourceDefinition<
    TKey extends string,
    TCollections extends CollectionName,
    TSubResources extends SubResourceName,
-   TParams extends string,
+   TFilters extends string,
    TResponse,
 > {
-   /** The resource name */
    resource: TKey;
-   /** Collections accessible from this resource */
    collections: TCollections[];
-   /** Sub-resources accessible from this resource */
    subResources: TSubResources[];
-   /** Valid parameters for this resource */
-   params: TParams[];
-   /** Response type for this resource */
+   filters: TFilters[];
    responseType: TResponse;
 }
 
-/**
- * Game resource definition
- */
-export interface GameResourceDef {
-   key: GameKey;
-   collections: ['leagues', 'players'];
-   subResources: [
-      'metadata',
-      'stat_categories',
-      'position_types',
-      'game_weeks',
-   ];
-   params: ['game_keys', 'is_available', 'seasons'];
-   responseType: GameResponse;
-}
+type ResourceCollections<TStage extends RouteStage> = Extract<
+   NavigationMethodNamesForStage<TStage>,
+   CollectionName
+>;
 
-/**
- * League resource definition
- */
-export interface LeagueResourceDef {
-   key: LeagueKey;
-   collections: ['teams', 'players', 'transactions', 'drafts'];
-   subResources: ['metadata', 'settings', 'standings', 'scoreboard'];
-   params: ['league_keys', 'out'];
-   responseType: LeagueResponse;
-}
+type DerivedResourceDefinition<
+   TName extends ResourceName,
+   TStage extends RouteStage,
+   TSelectedOut extends OutValueForStage<TStage> = never,
+> = ResourceDefinition<
+   TName,
+   ResourceCollections<TStage>,
+   OutValueForStage<TStage>,
+   FilterKeyForStage<TStage>,
+   InferResponseType<TStage, TSelectedOut>
+>;
 
-/**
- * Team resource definition
- */
-export interface TeamResourceDef {
-   key: TeamKey;
-   collections: [];
-   subResources: ['metadata', 'roster', 'matchups', 'stats', 'standings'];
-   params: ['team_keys', 'out'];
-   responseType: TeamResponse;
-}
+export type GetResourceDef<
+   T extends ResourceName,
+   TSelectedOut extends GetSubResources<T> = never,
+> = DerivedResourceDefinition<T, ResourceStage<T>, TSelectedOut>;
 
-/**
- * Player resource definition
- */
-export interface PlayerResourceDef {
-   key: PlayerKey;
-   collections: [];
-   subResources: [
-      'metadata',
-      'stats',
-      'ownership',
-      'percent_owned',
-      'draft_analysis',
-   ];
-   params: [
-      'player_keys',
-      'position',
-      'status',
-      'sort',
-      'count',
-      'start',
-      'search',
-   ];
-   responseType: PlayerResponse;
-}
-
-/**
- * User resource definition
- */
-export interface UserResourceDef {
-   key: never;
-   collections: ['games', 'leagues', 'teams'];
-   subResources: [];
-   params: ['use_login'];
-   responseType: UsersResponse;
-}
-
-/**
- * Transaction resource definition
- */
-export interface TransactionResourceDef {
-   key: TransactionKey;
-   collections: [];
-   subResources: [];
-   params: [];
-   responseType: TransactionResponse;
-}
-
-/**
- * Map of all resource definitions
- */
-export interface ResourceGraph {
-   game: GameResourceDef;
-   league: LeagueResourceDef;
-   team: TeamResourceDef;
-   player: PlayerResourceDef;
-   users: UserResourceDef;
-   transaction: TransactionResourceDef;
-}
-
-/**
- * Type to get a resource definition by name
- */
-export type GetResourceDef<T extends ResourceName> = ResourceGraph[T];
-
-/**
- * Type to get valid collections from a resource
- */
 export type GetCollections<T extends ResourceName> =
-   ResourceGraph[T]['collections'];
+   GetResourceDef<T>['collections'][number];
 
-/**
- * Type to get valid sub-resources from a resource
- */
 export type GetSubResources<T extends ResourceName> =
-   ResourceGraph[T]['subResources'];
+   GetResourceDef<T>['subResources'][number];
 
-/**
- * Type to get valid params from a resource
- */
-export type GetParams<T extends ResourceName> = ResourceGraph[T]['params'];
+export type GetFilters<T extends ResourceName> =
+   GetResourceDef<T>['filters'][number];
 
-/**
- * Type to get response type from a resource
- */
-export type GetResponseType<T extends ResourceName> =
-   ResourceGraph[T]['responseType'];
+export type GetResponseType<
+   T extends ResourceName,
+   TSelectedOut extends GetSubResources<T> = never,
+> = GetResourceDef<T, TSelectedOut>['responseType'];

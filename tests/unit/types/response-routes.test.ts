@@ -1,14 +1,12 @@
 import { describe, expect, test } from 'bun:test';
+import type { InferResponseType } from '../../../src/types/request/response-routes.ts';
 import type {
-   MatchResponseType,
-   SerializePath,
-} from '../../../src/types/request/response-routes.ts';
-import type {
+   AllResponseTypes,
    GamesCollectionResponse,
    LeagueSettingsResponse,
+   ResourceResponse,
    TeamRosterPlayersResponse,
    UserGameLeaguesResponse,
-   UsersCollectionResponse,
    UserTeamsResponse,
 } from '../../../src/types/request/responses.js';
 
@@ -18,146 +16,63 @@ type IsEqual<A, B> =
       ? true
       : false;
 
-type LeagueSettingsPath = SerializePath<
-   ['league', '423.l.12345', 'settings']
+type LeagueSettingsInference = InferResponseType<'league.settings'>;
+type LeagueSettingsInferenceAssertion = Assert<
+   IsEqual<LeagueSettingsInference, LeagueSettingsResponse>
 >;
-type LeagueSettingsPathAssertion = Assert<
-   IsEqual<LeagueSettingsPath, 'league/:key/settings'>
->;
-const leagueSettingsPathAssertion: LeagueSettingsPathAssertion = true;
-void leagueSettingsPathAssertion;
+const leagueSettingsInferenceAssertion: LeagueSettingsInferenceAssertion = true;
+void leagueSettingsInferenceAssertion;
 
-type TeamRosterPlayersPath = SerializePath<
-   ['team', '423.l.12345.t.1', 'roster', 'players']
+type TeamRosterPlayersInference = InferResponseType<'team.roster.players'>;
+type TeamRosterPlayersInferenceAssertion = Assert<
+   IsEqual<TeamRosterPlayersInference, TeamRosterPlayersResponse>
 >;
-type TeamRosterPlayersPathAssertion = Assert<
-   IsEqual<TeamRosterPlayersPath, 'team/:key/roster/players'>
->;
-const teamRosterPlayersPathAssertion: TeamRosterPlayersPathAssertion = true;
-void teamRosterPlayersPathAssertion;
+const teamRosterPlayersInferenceAssertion: TeamRosterPlayersInferenceAssertion = true;
+void teamRosterPlayersInferenceAssertion;
 
-type UserGamesTeamsPath = SerializePath<['users', 'games', 'teams']>;
-type UserGamesTeamsPathAssertion = Assert<
-   IsEqual<UserGamesTeamsPath, 'users/games/teams'>
+type UserTeamsInference = InferResponseType<'users.games.teams'>;
+type UserTeamsInferenceAssertion = Assert<
+   IsEqual<UserTeamsInference, UserTeamsResponse>
 >;
-const userGamesTeamsPathAssertion: UserGamesTeamsPathAssertion = true;
-void userGamesTeamsPathAssertion;
+const userTeamsInferenceAssertion: UserTeamsInferenceAssertion = true;
+void userTeamsInferenceAssertion;
 
-type GamesPath = SerializePath<['games']>;
-type GamesPathAssertion = Assert<IsEqual<GamesPath, 'games'>>;
-const gamesPathAssertion: GamesPathAssertion = true;
-void gamesPathAssertion;
-
-type UsersPath = SerializePath<['users']>;
-type UsersPathAssertion = Assert<IsEqual<UsersPath, 'users'>>;
-const usersPathAssertion: UsersPathAssertion = true;
-void usersPathAssertion;
-
-type UserGamesLeaguesPath = SerializePath<['users', 'games', 'leagues']>;
-type UserGamesLeaguesPathAssertion = Assert<
-   IsEqual<UserGamesLeaguesPath, 'users/games/leagues'>
+type GamesInference = InferResponseType<'games'>;
+type GamesInferenceAssertion = Assert<
+   IsEqual<GamesInference, GamesCollectionResponse>
 >;
-const userGamesLeaguesPathAssertion: UserGamesLeaguesPathAssertion = true;
-void userGamesLeaguesPathAssertion;
+const gamesInferenceAssertion: GamesInferenceAssertion = true;
+void gamesInferenceAssertion;
 
-type LeagueSettingsMatch = MatchResponseType<
-   ['league', '423.l.12345', 'settings']
+type UserGameLeaguesInference = InferResponseType<'users.games.leagues'>;
+type UserGameLeaguesInferenceAssertion = Assert<
+   IsEqual<UserGameLeaguesInference, UserGameLeaguesResponse>
 >;
-type LeagueSettingsMatchAssertion = Assert<
-   IsEqual<LeagueSettingsMatch, LeagueSettingsResponse>
->;
-const leagueSettingsMatchAssertion: LeagueSettingsMatchAssertion = true;
-void leagueSettingsMatchAssertion;
+const userGameLeaguesInferenceAssertion: UserGameLeaguesInferenceAssertion = true;
+void userGameLeaguesInferenceAssertion;
 
-type TeamRosterPlayersMatch = MatchResponseType<
-   ['team', '423.l.12345.t.1', 'roster', 'players']
+type RootInference = InferResponseType<'root'>;
+type RootInferenceAssertion = Assert<
+   IsEqual<RootInference, AllResponseTypes>
 >;
-type TeamRosterPlayersMatchAssertion = Assert<
-   IsEqual<TeamRosterPlayersMatch, TeamRosterPlayersResponse>
->;
-const teamRosterPlayersMatchAssertion: TeamRosterPlayersMatchAssertion = true;
-void teamRosterPlayersMatchAssertion;
+const rootInferenceAssertion: RootInferenceAssertion = true;
+void rootInferenceAssertion;
 
-type UserTeamsMatch = MatchResponseType<['users', 'games', 'teams']>;
-type UserTeamsMatchAssertion = Assert<
-   IsEqual<UserTeamsMatch, UserTeamsResponse>
->;
-const userTeamsMatchAssertion: UserTeamsMatchAssertion = true;
-void userTeamsMatchAssertion;
-
-type GamesMatch = MatchResponseType<['games']>;
-type GamesMatchAssertion = Assert<
-   IsEqual<GamesMatch, GamesCollectionResponse>
->;
-const gamesMatchAssertion: GamesMatchAssertion = true;
-void gamesMatchAssertion;
-
-type UsersMatch = MatchResponseType<['users']>;
-type UsersMatchAssertion = Assert<
-   IsEqual<UsersMatch, UsersCollectionResponse>
->;
-const usersMatchAssertion: UsersMatchAssertion = true;
-void usersMatchAssertion;
-
-type UserGameLeaguesMatch = MatchResponseType<
-   ['users', 'games', 'leagues']
->;
-type UserGameLeaguesMatchAssertion = Assert<
-   IsEqual<UserGameLeaguesMatch, UserGameLeaguesResponse>
->;
-const userGameLeaguesMatchAssertion: UserGameLeaguesMatchAssertion = true;
-void userGameLeaguesMatchAssertion;
-
-type UnknownMatch = MatchResponseType<['users', 'not-a-real-route']>;
-type UnknownMatchAssertion = Assert<IsEqual<UnknownMatch, never>>;
-const unknownMatchAssertion: UnknownMatchAssertion = true;
-void unknownMatchAssertion;
-
-const keyedResources = new Set([
-   'game',
+type ExpandedLeagueInference = InferResponseType<
    'league',
-   'team',
-   'player',
-   'transaction',
-]);
-
-function serializePathRuntime(path: string[]): string {
-   if (path.length === 0) {
-      return '';
-   }
-
-   const [resource, , ...tail] = path;
-
-   if (resource && path.length >= 2 && keyedResources.has(resource)) {
-      return tail.length === 0
-         ? `${resource}/:key`
-         : `${resource}/:key/${tail.join('/')}`;
-   }
-
-   return path.join('/');
-}
+   'settings' | 'standings'
+>;
+type ExpandedLeagueInferenceAssertion = Assert<
+   IsEqual<
+      ExpandedLeagueInference,
+      ResourceResponse<'league', 'settings' | 'standings'>
+   >
+>;
+const expandedLeagueInferenceAssertion: ExpandedLeagueInferenceAssertion = true;
+void expandedLeagueInferenceAssertion;
 
 describe('response route type helpers', () => {
-   test('normalizes keyed resource paths at runtime', () => {
-      expect(
-         serializePathRuntime([
-            'team',
-            '423.l.12345.t.1',
-            'roster',
-            'players',
-         ]),
-      ).toBe('team/:key/roster/players');
-      expect(
-         serializePathRuntime(['transaction', '423.l.12345.tr.7']),
-      ).toBe('transaction/:key');
-   });
-
-   test('preserves literal collection paths at runtime', () => {
-      expect(serializePathRuntime(['games'])).toBe('games');
-      expect(serializePathRuntime(['users', 'games', 'teams'])).toBe(
-         'users/games/teams',
-      );
-      expect(serializePathRuntime(['users'])).toBe('users');
-      expect(serializePathRuntime([])).toBe('');
+   test('keeps schema-based stage inference aligned with expected responses', () => {
+      expect(true).toBe(true);
    });
 });

@@ -10,5 +10,5 @@ export {
    createRequest,
    RequestBuilder,
    type RootRequestBuilder,
-} from './builder.js';
+} from './request.js';
 export { TransactionBuilder } from './transaction.js';

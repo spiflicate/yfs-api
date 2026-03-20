@@ -40,6 +40,8 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './errors.js';
+export type { InferResponseType } from './request/response-routes.js';
+export type { RouteStage } from './request/schema.js';
 export type {
    GamePositionType,
    GameStatCategory,
@@ -48,7 +50,6 @@ export type {
    GetGamesParams,
    SearchGamePlayersParams,
 } from './resources/game.js';
-
 export type {
    GetLeagueParams,
    GetLeagueScoreboardParams,
@@ -90,7 +91,6 @@ export type {
    TeamStandings,
    TeamStats,
 } from './resources/team.js';
-
 export type {
    AcceptTradeParams,
    AddDropPlayerParams,

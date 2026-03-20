@@ -36,7 +36,7 @@
 import {
    createRequest,
    type RootRequestBuilder,
-} from '../request/builder.js';
+} from '../builders/request.js';
 import type { Config } from '../types/index.js';
 import { ConfigError } from '../types/index.js';
 import { HttpClient } from './HttpClient.js';
