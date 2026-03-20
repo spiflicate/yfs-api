@@ -27,15 +27,15 @@ describe('validators', () => {
 
       test('should reject empty or non-string keys', () => {
          expect(() => validateResourceKey('')).toThrow(ValidationError);
-         expect(() => validateResourceKey(null as any)).toThrow(
-            ValidationError,
-         );
-         expect(() => validateResourceKey(undefined as any)).toThrow(
-            ValidationError,
-         );
-         expect(() => validateResourceKey(123 as any)).toThrow(
-            ValidationError,
-         );
+         expect(() =>
+            validateResourceKey(null as unknown as string),
+         ).toThrow(ValidationError);
+         expect(() =>
+            validateResourceKey(undefined as unknown as string),
+         ).toThrow(ValidationError);
+         expect(() =>
+            validateResourceKey(123 as unknown as string),
+         ).toThrow(ValidationError);
       });
 
       test('should reject keys with insufficient parts', () => {
@@ -88,12 +88,12 @@ describe('validators', () => {
 
       test('should reject empty or non-string keys', () => {
          expect(() => validateTeamKey('')).toThrow(ValidationError);
-         expect(() => validateTeamKey(null as any)).toThrow(
+         expect(() => validateTeamKey(null as unknown as string)).toThrow(
             ValidationError,
          );
-         expect(() => validateTeamKey(undefined as any)).toThrow(
-            ValidationError,
-         );
+         expect(() =>
+            validateTeamKey(undefined as unknown as string),
+         ).toThrow(ValidationError);
       });
 
       test('should reject keys with insufficient parts', () => {
@@ -168,8 +168,10 @@ describe('validators', () => {
 
       test('should reject empty or non-string dates', () => {
          expect(() => validateDate('')).toThrow(ValidationError);
-         expect(() => validateDate(null as any)).toThrow(ValidationError);
-         expect(() => validateDate(undefined as any)).toThrow(
+         expect(() => validateDate(null as unknown as string)).toThrow(
+            ValidationError,
+         );
+         expect(() => validateDate(undefined as unknown as string)).toThrow(
             ValidationError,
          );
       });

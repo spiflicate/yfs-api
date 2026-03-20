@@ -214,11 +214,7 @@ export class ParseError extends YahooFantasyError {
 /**
  * Error thrown when a configuration is invalid
  */
-export class ConfigError extends YahooFantasyError {
-   constructor(message: string) {
-      super(message);
-   }
-}
+export class ConfigError extends YahooFantasyError {}
 
 /**
  * Type guard to check if an error is a YahooFantasyError

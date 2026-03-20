@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { TransactionBuilder } from '../../src/request/transaction.js';
+import { TransactionBuilder } from '../../src/builders/transaction.js';
 import type { PlayerKey, TeamKey } from '../../src/types/request/graph.js';
 
 const team = (value: string): TeamKey => value as TeamKey;

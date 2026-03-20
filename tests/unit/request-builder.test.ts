@@ -1,9 +1,9 @@
 import { describe, expect, it, mock } from 'bun:test';
+import { createRequest, RequestBuilder } from '../../src/builders/index.js';
+import { TransactionBuilder } from '../../src/builders/transaction.js';
 import type { HttpClient } from '../../src/client/HttpClient.js';
-import { createRequest, RequestBuilder } from '../../src/request/index.js';
-import { TransactionBuilder } from '../../src/request/transaction.js';
 import { ValidationError } from '../../src/types/errors.js';
-import type { InferResponseType } from '../../src/types/request/context.js';
+import type { InferResponseType } from '../../src/types/request/response-routes.js';
 import type { Game } from '../../src/types/responses/game.js';
 import type { League } from '../../src/types/responses/league.js';
 import type { Player } from '../../src/types/responses/player.js';
@@ -19,17 +19,15 @@ type Equal<TLeft, TRight> =
 
 type Expect<T extends true> = T;
 
-type LeaguePlayersResult = InferResponseType<['league', string, 'players']>;
-type TeamStandingsResult = InferResponseType<['team', string, 'standings']>;
-type PlayerStatsResult = InferResponseType<['player', string, 'stats']>;
-type GameWeeksResult = InferResponseType<['game', string, 'game_weeks']>;
-type GamesCollectionResult = InferResponseType<['games']>;
-type UserGamesResult = InferResponseType<['users', 'games']>;
-type UserTeamsResult = InferResponseType<['users', 'games', 'teams']>;
-type UserLeaguesResult = InferResponseType<['users', 'leagues']>;
-type UserGameLeaguesResult = InferResponseType<
-   ['users', 'games', 'leagues']
->;
+type LeaguePlayersResult = InferResponseType<'league.players'>;
+type TeamStandingsResult = InferResponseType<'team.standings'>;
+type PlayerStatsResult = InferResponseType<'player.stats'>;
+type GameWeeksResult = InferResponseType<'game.game_weeks'>;
+type GamesCollectionResult = InferResponseType<'games'>;
+type UserGamesResult = InferResponseType<'users.games'>;
+type UserTeamsResult = InferResponseType<'users.games.teams'>;
+type UserLeaguesResult = InferResponseType<'users.leagues'>;
+type UserGameLeaguesResult = InferResponseType<'users.games.leagues'>;
 
 type _LeaguePlayersIncludesPlayers = Expect<
    Equal<
@@ -166,7 +164,9 @@ describe('RequestBuilder', () => {
             .players()
             .buildPath();
 
-         expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
+         expect(path).toBe(
+            '/team/423.l.12345.t.1;out=roster;week=10/players',
+         );
       });
 
       it('builds league settings via sub-resource method', () => {
@@ -175,11 +175,206 @@ describe('RequestBuilder', () => {
             .settings()
             .buildPath();
 
-         expect(path).toBe('/league/423.l.12345/settings');
+         expect(path).toBe('/league/423.l.12345;out=settings');
+      });
+
+      it('builds league drafts via sub-resource method', () => {
+         const path = createRequest(createMockHttpClient())
+            .league('423.l.12345')
+            .drafts()
+            .buildPath();
+
+         expect(path).toBe('/league/423.l.12345;out=drafts');
+      });
+
+      it('rejects invalid runtime stage transitions without mutating the builder', () => {
+         const builder = createRequest(createMockHttpClient()).league(
+            '423.l.12345',
+         ) as RequestBuilder<'league'> & {
+            games(): unknown;
+         };
+
+         expect(() => builder.games()).toThrow(
+            'games is not valid for the current request stage league.',
+         );
+         expect(builder.buildPath()).toBe('/league/423.l.12345');
       });
    });
 
-   describe('parameters', () => {
+   describe('documented path examples', () => {
+      const cases = [
+         {
+            name: 'builds the current user games path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .users()
+                  .useLogin()
+                  .games()
+                  .buildPath(),
+            expected: '/users;use_login=1/games',
+         },
+         {
+            name: 'builds the current user game leagues path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nfl')
+                  .leagues()
+                  .buildPath(),
+            expected: '/users;use_login=1/games;game_keys=nfl/leagues',
+         },
+         {
+            name: 'builds the current user filtered teams path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .users()
+                  .useLogin()
+                  .games()
+                  .gameKeys('nfl')
+                  .teams()
+                  .buildPath(),
+            expected: '/users;use_login=1/games;game_keys=nfl/teams',
+         },
+         {
+            name: 'builds a games collection filtered by codes and seasons',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .games()
+                  .gameCodes(['nfl', 'mlb'])
+                  .seasons(2011)
+                  .buildPath(),
+            expected: '/games;game_codes=nfl,mlb;seasons=2011',
+         },
+         {
+            name: 'builds a game leagues collection path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .game('nfl')
+                  .leagues()
+                  .buildPath(),
+            expected: '/game/nfl/leagues',
+         },
+         {
+            name: 'builds a game stat categories expansion path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .game('nfl')
+                  .out(['stat_categories', 'position_types'])
+                  .buildPath(),
+            expected: '/game/nfl;out=stat_categories,position_types',
+         },
+         {
+            name: 'builds a game players collection path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .game('257')
+                  .players()
+                  .buildPath(),
+            expected: '/game/257/players',
+         },
+         {
+            name: 'builds a game stat categories path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .game('257')
+                  .statCategories()
+                  .buildPath(),
+            expected: '/game/257;out=stat_categories',
+         },
+         {
+            name: 'builds a league players path filtered by player keys',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .league('223.l.431')
+                  .players()
+                  .playerKeys('223.p.5479')
+                  .buildPath(),
+            expected: '/league/223.l.431/players;player_keys=223.p.5479',
+         },
+         {
+            name: 'builds a league players path with availability filters',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .league('223.l.431')
+                  .players()
+                  .status('A')
+                  .position('QB')
+                  .sort('PTS')
+                  .count(25)
+                  .buildPath(),
+            expected:
+               '/league/223.l.431/players;status=A;position=QB;sort=PTS;count=25',
+         },
+         {
+            name: 'builds a league transactions path filtered by team and type',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .league('223.l.431')
+                  .transactions()
+                  .teamKey('257.l.193.t.1')
+                  .type('waiver')
+                  .buildPath(),
+            expected:
+               '/league/223.l.431/transactions;team_key=257.l.193.t.1;type=waiver',
+         },
+         {
+            name: 'builds a team path with roster and stats expansions',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .team('223.l.431.t.1')
+                  .out(['roster', 'stats'])
+                  .buildPath(),
+            expected: '/team/223.l.431.t.1;out=roster,stats',
+         },
+         {
+            name: 'builds a team matchups path for multiple weeks',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .team('223.l.431.t.1')
+                  .matchups({ weeks: '1,5' })
+                  .buildPath(),
+            expected: '/team/223.l.431.t.1;out=matchups;weeks=1,5',
+         },
+         {
+            name: 'builds a team stats path for season coverage',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .team('223.l.431.t.1')
+                  .stats({ type: 'season' })
+                  .buildPath(),
+            expected: '/team/223.l.431.t.1;out=stats;type=season',
+         },
+         {
+            name: 'builds a team stats path for date coverage',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .team('253.l.102614.t.10')
+                  .stats({ type: 'date', date: '2011-07-06' })
+                  .buildPath(),
+            expected:
+               '/team/253.l.102614.t.10;out=stats;type=date;date=2011-07-06',
+         },
+         {
+            name: 'builds a player ownership path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .player('223.p.5479')
+                  .ownership()
+                  .buildPath(),
+            expected: '/player/223.p.5479;out=ownership',
+         },
+      ];
+
+      for (const testCase of cases) {
+         it(testCase.name, () => {
+            expect(testCase.actual()).toBe(testCase.expected);
+         });
+      }
+   });
+
+   describe('filters and out selections', () => {
       it('supports games collection filter helpers', () => {
          const path = createRequest(createMockHttpClient())
             .games()
@@ -194,13 +389,15 @@ describe('RequestBuilder', () => {
          );
       });
 
-      it('supports games collection filters through param()', () => {
+      it('supports games collection filters through filters()', () => {
          const path = createRequest(createMockHttpClient())
             .games()
-            .param('is_available', '1')
-            .param('game_types', 'full,pickem-team')
-            .param('game_codes', 'nfl,mlb')
-            .param('seasons', '2011,2012')
+            .filters({
+               is_available: '1',
+               game_types: 'full,pickem-team',
+               game_codes: 'nfl,mlb',
+               seasons: '2011,2012',
+            })
             .buildPath();
 
          expect(path).toBe(
@@ -208,11 +405,11 @@ describe('RequestBuilder', () => {
          );
       });
 
-      it('adds generic params to the current segment', () => {
+      it('adds filters to the current segment', () => {
          const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .players()
-            .params({
+            .filters({
                position: 'QB',
                status: 'A',
                sort: 'AR',
@@ -225,7 +422,7 @@ describe('RequestBuilder', () => {
          );
       });
 
-      it('adds out params to a league resource', () => {
+      it('adds out selections to a league resource', () => {
          const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .out(['settings', 'standings', 'scoreboard'])
@@ -236,7 +433,22 @@ describe('RequestBuilder', () => {
          );
       });
 
-      it('supports convenience parameter helpers', () => {
+      it('rejects out passed through filters() at runtime', () => {
+         const builder = createRequest(createMockHttpClient()).league(
+            '423.l.12345',
+         ) as RequestBuilder<'league'> & {
+            filters(
+               filters: Record<string, string | string[] | number>,
+            ): unknown;
+         };
+
+         expect(() =>
+            builder.filters({ out: ['settings', 'standings'] }),
+         ).toThrow('out must be set with out(), not filters().');
+         expect(builder.buildPath()).toBe('/league/423.l.12345');
+      });
+
+      it('supports convenience filter helpers', () => {
          const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .players()
@@ -260,7 +472,9 @@ describe('RequestBuilder', () => {
             .date(new Date(2024, 10, 15))
             .buildPath();
 
-         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
+         expect(path).toBe(
+            '/team/423.l.12345.t.1;out=roster;date=2024-11-15',
+         );
       });
 
       it('validates date() string format', () => {
@@ -273,23 +487,27 @@ describe('RequestBuilder', () => {
          ).toThrow(ValidationError);
       });
 
-      it('normalizes Date values passed via roster params', () => {
+      it('normalizes Date values passed via roster sub-resource filters', () => {
          const path = createRequest(createMockHttpClient())
             .team('423.l.12345.t.1')
             .roster({ date: new Date(2024, 10, 15) })
             .buildPath();
 
-         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
+         expect(path).toBe(
+            '/team/423.l.12345.t.1;out=roster;date=2024-11-15',
+         );
       });
 
       it('supports array values for key filters', () => {
          const path = createRequest(createMockHttpClient())
             .league('423.l.12345')
             .teams()
-            .teamKeys(['t.1', 't.2'])
+            .teamKeys(['423.l.12345.t.1', '423.l.12345.t.2'])
             .buildPath();
 
-         expect(path).toBe('/league/423.l.12345/teams;team_keys=t.1,t.2');
+         expect(path).toBe(
+            '/league/423.l.12345/teams;team_keys=423.l.12345.t.1,423.l.12345.t.2',
+         );
       });
 
       it('supports transaction collection filter helpers', () => {
@@ -426,7 +644,7 @@ describe('RequestBuilder', () => {
             httpClient.put as ReturnType<typeof mock>
          ).mock.calls[0] as [string, string, unknown];
 
-         expect(path).toBe('/team/423.l.12345.t.1/roster;week=13');
+         expect(path).toBe('/team/423.l.12345.t.1;out=roster;week=13');
          expect(typeof body).toBe('string');
          expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
          expect(body).toContain('<fantasy_content>');
@@ -466,7 +684,7 @@ describe('RequestBuilder', () => {
 
          expect(httpClient.put).toHaveBeenCalledTimes(1);
          expect(httpClient.put).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/roster',
+            '/team/423.l.12345.t.1;out=roster',
             '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>week</coverage_type><players><player><player_key>423.p.8332</player_key><position>WR</position></player><player><player_key>423.p.1423</player_key><position>BN</position></player></players><week>13</week></roster></fantasy_content>',
             undefined,
          );
@@ -492,7 +710,7 @@ describe('RequestBuilder', () => {
 
          expect(httpClient.put).toHaveBeenCalledTimes(1);
          expect(httpClient.put).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1/roster',
+            '/team/423.l.12345.t.1;out=roster',
             '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>date</coverage_type><players><player><player_key>423.p.9988</player_key><position>1B</position></player></players><date>2026-03-15</date></roster></fantasy_content>',
             undefined,
          );
@@ -863,7 +1081,9 @@ describe('RequestBuilder', () => {
             .league('423.l.12345')
             .scoreboard();
 
-         expect(builder.toString()).toBe('/league/423.l.12345/scoreboard');
+         expect(builder.toString()).toBe(
+            '/league/423.l.12345;out=scoreboard',
+         );
       });
 
       it('returns a placeholder for an incomplete request', () => {

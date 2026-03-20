@@ -13,19 +13,21 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
 
 import { describe, expect, mock, test } from 'bun:test';
+import { createRequest } from '../../../src/builders/index.js';
+import { TransactionBuilder } from '../../../src/builders/transaction.js';
 import type { HttpClient } from '../../../src/client/HttpClient.js';
 import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
-import { createRequest } from '../../../src/request/index.js';
-import { TransactionBuilder } from '../../../src/request/transaction.js';
 import type { Config } from '../../../src/types/index.js';
-import type { InferResponseType } from '../../../src/types/request/context.js';
+import type { InferResponseType } from '../../../src/types/request/response-routes.js';
 import type {
    GamesCollectionResponse,
    LeagueSettingsResponse,
+   ResourceResponse,
    TeamRosterPlayersResponse,
    UserGameLeaguesResponse,
    UserTeamsResponse,
 } from '../../../src/types/request/responses.js';
+import type { RouteStage } from '../../../src/types/request/schema.js';
 
 type Assert<T extends true> = T;
 type IsEqual<A, B> =
@@ -33,9 +35,14 @@ type IsEqual<A, B> =
       ? true
       : false;
 type ExtractPath<TBuilder> = TBuilder extends {
-   __pathType: infer TPath extends string[];
+   __pathType: infer TPath extends RouteStage;
 }
    ? TPath
+   : never;
+type ExtractOut<TBuilder> = TBuilder extends {
+   __outType: infer TOut;
+}
+   ? Extract<TOut, string>
    : never;
 
 const typeOnlyHttpClient = null as unknown as HttpClient;
@@ -103,6 +110,28 @@ type RosterPlayersExecuteAssertion = Assert<
 const rosterPlayersExecuteAssertion: RosterPlayersExecuteAssertion = true;
 void rosterPlayersExecuteAssertion;
 
+const expandedLeagueQuery = createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   .out(['settings', 'standings']);
+type ExpandedLeagueExecute = InferResponseType<
+   ExtractPath<typeof expandedLeagueQuery>,
+   ExtractOut<typeof expandedLeagueQuery>
+>;
+type ExpandedLeagueExecuteAssertion = Assert<
+   IsEqual<
+      ExpandedLeagueExecute,
+      ResourceResponse<'league', 'settings' | 'standings'>
+   >
+>;
+const expandedLeagueExecuteAssertion: ExpandedLeagueExecuteAssertion = true;
+void expandedLeagueExecuteAssertion;
+
+// @ts-expect-error collection names are not valid out values on game()
+createRequest(typeOnlyHttpClient).game('nfl').out('leagues');
+
+// @ts-expect-error collection names are not valid out values on users().games()
+createRequest(typeOnlyHttpClient).users().useLogin().games().out('teams');
+
 // @ts-expect-error league() requires a Yahoo league key shape
 createRequest(typeOnlyHttpClient).league(12345);
 
@@ -121,19 +150,29 @@ createRequest(typeOnlyHttpClient).users().gameKeys('nhl');
 // @ts-expect-error out() is not valid on users() stage
 createRequest(typeOnlyHttpClient).users().out('settings');
 
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   // @ts-expect-error filters() only accepts a single filter object, never key/value pairs
+   .filters('out', ['settings', 'standings']);
+
+createRequest(typeOnlyHttpClient)
+   .league('423.l.12345')
+   // @ts-expect-error out must be set with out(), not filters()
+   .filters({ out: ['settings', 'standings'] });
+
 // @ts-expect-error game_keys is not valid on users() stage
-createRequest(typeOnlyHttpClient).users().param('game_keys', 'nhl');
+createRequest(typeOnlyHttpClient).users().filters({ game_keys: 'nhl' });
 
 // @ts-expect-error use_login is not valid on games() stage
-createRequest(typeOnlyHttpClient).games().param('use_login', '1');
+createRequest(typeOnlyHttpClient).games().filters({ use_login: '1' });
 
 createRequest(typeOnlyHttpClient)
    .league('423.l.12345')
    .players()
    // @ts-expect-error team_keys is not valid on league players() stage
-   .param('team_keys', '423.l.12345.t.1');
+   .filters({ team_keys: '423.l.12345.t.1' });
 
-createRequest(typeOnlyHttpClient).league('423.l.12345').players().params({
+createRequest(typeOnlyHttpClient).league('423.l.12345').players().filters({
    status: 'FA',
    count: 10,
 });
@@ -179,9 +218,9 @@ createRequest(typeOnlyHttpClient)
    .gameCodes(['nfl', 'mlb'])
    .seasons([2011, 2012]);
 
-createRequest(typeOnlyHttpClient).games().param('game_types', 'full');
-createRequest(typeOnlyHttpClient).games().param('game_codes', 'nfl');
-createRequest(typeOnlyHttpClient).games().param('seasons', '2011');
+createRequest(typeOnlyHttpClient).games().filters({ game_types: 'full' });
+createRequest(typeOnlyHttpClient).games().filters({ game_codes: 'nfl' });
+createRequest(typeOnlyHttpClient).games().filters({ seasons: '2011' });
 
 createRequest(typeOnlyHttpClient)
    .league('423.l.12345')
@@ -314,7 +353,7 @@ describe('client.request()', () => {
          .players()
          .buildPath();
 
-      expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
+      expect(path).toBe('/team/423.l.12345.t.1;out=roster;week=10/players');
    });
 
    test('throws when create() is called outside transactions() stage', () => {

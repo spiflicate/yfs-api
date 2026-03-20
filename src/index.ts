@@ -34,12 +34,16 @@
  * ```
  */
 
+export {
+   createRequest,
+   RequestBuilder,
+   type RootRequestBuilder,
+} from './builders/index.js';
+export { TransactionBuilder } from './builders/transaction.js';
 export { OAuth2Client, type OAuth2Tokens } from './client/OAuth2Client.js';
 export type { TokenStorage } from './client/YahooFantasyClient.js';
 // Export client
 export { YahooFantasyClient } from './client/YahooFantasyClient.js';
-export { createRequest, RequestBuilder } from './request/index.js';
-export { TransactionBuilder } from './request/transaction.js';
 // Export all types
 // Resource types
 // NHL-specific types
@@ -69,6 +73,7 @@ export type {
    GetTransactionsParams,
    GetUserGamesParams,
    GetUserTeamsParams,
+   InferResponseType,
    League,
    LeagueSettings,
    NHLPositionType,
@@ -81,6 +86,7 @@ export type {
    RejectTradeParams,
    ResourceKey,
    RosterPlayer,
+   RouteStage,
    ScoringType,
    SearchGamePlayersParams,
    SearchPlayersParams,

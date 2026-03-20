@@ -190,7 +190,7 @@ Each `<player>` under `<players>` is a **Player resource**.
 Patterns for players collections (relative to `/fantasy/v2`):
 
 ```text
-/players/{sub_resource}
+/players/{sub_resource} // (Not allowed??)
 /players;player_keys={player_key1},{player_key2}/{sub_resource}
 ```
 

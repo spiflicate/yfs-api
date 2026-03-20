@@ -94,7 +94,7 @@ try {
       await client
          .request()
          .games()
-         .params({
+         .filters({
             game_codes: 'nhl,nfl',
             seasons: '2024',
          })

@@ -30,7 +30,6 @@ export type GameType =
  * @example "423.p.8888" - Player key
  */
 export type ResourceKey =
-   | string
    | GameKey
    | LeagueKey
    | TeamKey
@@ -45,39 +44,39 @@ export type PlayerPosition = NHL.PlayerPosition;
 // | MLB.PlayerPosition;
 
 /**
- * Game key format: `{game_id}`
+ * Game key format: `{game_code | game_id}`
  */
-export type GameKey = `${number}`;
+export type GameKey = GameCode | `${number}`;
 
 /**
- * League key format: `{game_id}.l.{league_id}`
+ * League key format: `{game_code | game_id}.l.{league_id}`
  */
-export type LeagueKey = `${number}.l.${number}` & (string | {});
+export type LeagueKey = `${GameKey}.l.${number}`;
 
 /**
- * Team key format: `{game_id}.l.{league_id}.t.{team_id}`
+ * Team key format: `{game_code | game_id}.l.{league_id}.t.{team_id}`
  */
-export type TeamKey = `${number}.l.${number}.t.${number}`;
+export type TeamKey = `${GameKey}.l.${number}.t.${number}`;
 
 /**
- * Player key format: `{game_id}.p.{player_id}`
+ * Player key format: `{game_code | game_id}.p.{player_id}`
  */
-export type PlayerKey = `${number}.p.${number}`;
+export type PlayerKey = `${GameKey}.p.${number}`;
 
 /**
- * Transaction key format: `{game_id}.l.{league_id}.tr.{transaction_id}`
+ * Transaction key format: `{game_code | game_id}.l.{league_id}.tr.{transaction_id}`
  */
-export type TransactionKey = `${number}.l.${number}.tr.${number}`;
+export type TransactionKey = `${GameKey}.l.${number}.tr.${number}`;
 
 /**
- * Waiver claim key format: `{game_id}.l.{league_id}.w.c.{claim_id}`
+ * Waiver claim key format: `{game_code | game_id}.l.{league_id}.w.c.{claim_id}`
  */
-export type WaiverClaimKey = `${number}.l.${number}.w.c.${number}`;
+export type WaiverClaimKey = `${GameKey}.l.${number}.w.c.${number}`;
 
 /**
- * Pending trade key format: `{game_id}.l.{league_id}.pt.{pending_trade_id}`
+ * Pending trade key format: `{game_code | game_id}.l.{league_id}.pt.{pending_trade_id}`
  */
-export type PendingTradeKey = `${number}.l.${number}.pt.${number}`;
+export type PendingTradeKey = `${GameKey}.l.${number}.pt.${number}`;
 
 /**
  * League scoring types
