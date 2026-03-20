@@ -88,17 +88,13 @@ export {
 } from './types/index.js';
 export {
    CoverageTypeFilter,
-   CoverageTypeParam,
    GameSubResource,
    LeagueSubResource,
    PlayerStatusFilter,
-   PlayerStatusParam,
    PlayerSubResource,
    SortFilter,
-   SortParam,
    TeamSubResource,
    TransactionTypeFilter,
-   TransactionTypeParam,
 } from './types/request/filters.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';
