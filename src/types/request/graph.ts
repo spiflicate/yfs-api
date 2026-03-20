@@ -20,9 +20,13 @@ import type {
 import type { InferResponseType } from './response-routes.js';
 import type {
    FilterKeyForStage,
+   GameOutValue,
+   LeagueOutValue,
    NavigationMethodNamesForStage,
    OutValueForStage,
+   PlayerOutValue,
    RouteStage,
+   TeamOutValue,
 } from './schema.js';
 
 export type {
@@ -64,25 +68,18 @@ export type CollectionName =
    | 'transactions';
 
 export type SubResourceName =
-   | 'draft_analysis'
+   | GameOutValue
+   | LeagueOutValue
+   | TeamOutValue
+   | PlayerOutValue
+   | Extract<
+        NavigationMethodNamesForStage<
+           'game' | 'league' | 'team' | 'users' | 'users.games'
+        >,
+        CollectionName
+     >
    | 'draftresults'
-   | 'drafts'
-   | 'game_weeks'
-   | 'leagues'
-   | 'matchups'
-   | 'metadata'
-   | 'ownership'
-   | 'percent_owned'
-   | 'players'
-   | 'position_types'
-   | 'roster'
-   | 'scoreboard'
-   | 'settings'
-   | 'standings'
-   | 'stat_categories'
-   | 'stats'
-   | 'teams'
-   | 'transactions';
+   | 'metadata';
 
 type ResourceStageMap = {
    game: 'game';

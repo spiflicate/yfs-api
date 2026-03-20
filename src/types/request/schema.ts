@@ -44,17 +44,29 @@ export type PlayerCollectionParamKey =
    | 'week'
    | 'date';
 
-type GameOutValue = 'stat_categories' | 'position_types' | 'game_weeks';
+const gameOutValues = [
+   'stat_categories',
+   'position_types',
+   'game_weeks',
+] as const;
+const leagueOutValues = [
+   'settings',
+   'standings',
+   'scoreboard',
+   'drafts',
+] as const;
+const teamOutValues = ['roster', 'matchups', 'stats', 'standings'] as const;
+const playerOutValues = [
+   'stats',
+   'ownership',
+   'percent_owned',
+   'draft_analysis',
+] as const;
 
-type LeagueOutValue = 'settings' | 'standings' | 'scoreboard' | 'drafts';
-
-type TeamOutValue = 'roster' | 'matchups' | 'stats' | 'standings';
-
-type PlayerOutValue =
-   | 'stats'
-   | 'ownership'
-   | 'percent_owned'
-   | 'draft_analysis';
+export type GameOutValue = (typeof gameOutValues)[number];
+export type LeagueOutValue = (typeof leagueOutValues)[number];
+export type TeamOutValue = (typeof teamOutValues)[number];
+export type PlayerOutValue = (typeof playerOutValues)[number];
 
 type NoNext = Record<never, never>;
 
@@ -328,7 +340,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
             positionTypes: 'game.position_types',
             gameWeeks: 'game.game_weeks',
          },
-         outValues: ['stat_categories', 'position_types', 'game_weeks'],
+         outValues: gameOutValues,
       },
       league: {
          next: {
@@ -340,7 +352,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
             transactions: 'league.transactions',
             drafts: 'league.drafts',
          },
-         outValues: ['settings', 'standings', 'scoreboard', 'drafts'],
+         outValues: leagueOutValues,
       },
       team: {
          next: {
@@ -349,7 +361,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
             stats: 'team.stats',
             standings: 'team.standings',
          },
-         outValues: ['roster', 'matchups', 'stats', 'standings'],
+         outValues: teamOutValues,
       },
       player: {
          next: {
@@ -358,12 +370,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
             percentOwned: 'player.percent_owned',
             draftAnalysis: 'player.draft_analysis',
          },
-         outValues: [
-            'stats',
-            'ownership',
-            'percent_owned',
-            'draft_analysis',
-         ],
+         outValues: playerOutValues,
       },
       transaction: {
          writeMethods: ['edit', 'cancel'],
@@ -377,10 +384,10 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
          },
       },
       games: {
-         outValues: ['stat_categories', 'position_types', 'game_weeks'],
+         outValues: gameOutValues,
       },
       'game.leagues': {
-         outValues: ['settings', 'standings', 'scoreboard', 'drafts'],
+         outValues: leagueOutValues,
       },
       'game.players': {},
       'game.stat_categories': {},
@@ -390,7 +397,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
       'league.standings': {},
       'league.scoreboard': {},
       'league.teams': {
-         outValues: ['roster', 'matchups', 'stats', 'standings'],
+         outValues: teamOutValues,
       },
       'league.players': {},
       'league.transactions': {
@@ -420,16 +427,16 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
          },
       },
       'users.leagues': {
-         outValues: ['settings', 'standings', 'scoreboard', 'drafts'],
+         outValues: leagueOutValues,
       },
       'users.teams': {
-         outValues: ['roster', 'matchups', 'stats', 'standings'],
+         outValues: teamOutValues,
       },
       'users.games.leagues': {
-         outValues: ['settings', 'standings', 'scoreboard', 'drafts'],
+         outValues: leagueOutValues,
       },
       'users.games.teams': {
-         outValues: ['roster', 'matchups', 'stats', 'standings'],
+         outValues: teamOutValues,
       },
    };
 
