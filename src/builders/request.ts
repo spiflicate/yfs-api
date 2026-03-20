@@ -9,9 +9,9 @@
 import { XMLBuilder } from 'fast-xml-parser';
 import type { HttpClient, RequestOptions } from '../client/HttpClient.js';
 import type {
-   PlayerStatusParam,
+   PlayerStatusFilter,
    RosterChangeRequest,
-   SortParam,
+   SortFilter,
 } from '../types/request/filters.js';
 import type {
    CollectionName,
@@ -74,7 +74,7 @@ interface RequestState {
    hasExecutedWriteRequest: boolean;
 }
 
-type ParamValue = string | string[] | number;
+type FilterValue = string | string[] | number;
 
 type TerminalMethodNames =
    | 'buildPath'
@@ -88,7 +88,7 @@ type TerminalMethodNames =
 type BaseFilterMethodNames = 'filters';
 type SharedMethodNames = TerminalMethodNames | BaseFilterMethodNames;
 type WriteRequestOptions = Omit<RequestOptions, 'method' | 'body'>;
-type DateParamInput = string | Date;
+type DateFilterInput = string | Date;
 
 type SplitCommaSeparated<TValue extends string> =
    TValue extends `${infer THead},${infer TTail}`
@@ -240,7 +240,7 @@ export class RequestBuilder<
       return this;
    }
 
-   private normalizeOutParam(value: ParamValue): SubResourceName[] {
+   private normalizeOutValue(value: FilterValue): SubResourceName[] {
       if (Array.isArray(value)) {
          return value.map((entry) => entry as SubResourceName);
       }
@@ -251,11 +251,11 @@ export class RequestBuilder<
          .filter(Boolean) as SubResourceName[];
    }
 
-   private setFilter(key: string, value: ParamValue): this {
+   private setFilter(key: string, value: FilterValue): this {
       const segment = this.getCurrentSegment();
       if (segment) {
          if (key === 'out') {
-            segment.out = this.normalizeOutParam(value);
+            segment.out = this.normalizeOutValue(value);
          } else {
             segment.filters ??= {};
             segment.filters[key] = value;
@@ -264,7 +264,7 @@ export class RequestBuilder<
       return this;
    }
 
-   private setFilters(filters: Record<string, ParamValue>): this {
+   private setFilters(filters: Record<string, FilterValue>): this {
       const segment = this.getCurrentSegment();
       if (segment) {
          if ('out' in filters) {
@@ -277,7 +277,7 @@ export class RequestBuilder<
       return this;
    }
 
-   private normalizeDateParam(date: DateParamInput): string {
+   private normalizeDateValue(date: DateFilterInput): string {
       const normalized = date instanceof Date ? formatDate(date) : date;
       validateDate(normalized);
       return normalized;
@@ -366,7 +366,7 @@ export class RequestBuilder<
             );
          }
 
-         roster.date = this.normalizeDateParam(payload.date);
+         roster.date = this.normalizeDateValue(payload.date);
       }
 
       return { roster };
@@ -476,9 +476,9 @@ export class RequestBuilder<
       ) as never;
    }
 
-   roster(params?: {
+   roster(filters?: {
       week?: string | number;
-      date?: DateParamInput;
+      date?: DateFilterInput;
    }): TStage extends StagesWithNext<'roster'>
       ? StageView<NextStage<TStage, 'roster'>>
       : never {
@@ -487,14 +487,14 @@ export class RequestBuilder<
          'roster'
       >;
       this.setOutValue('roster');
-      if (params?.week) this.setFilter('week', String(params.week));
-      if (params?.date) {
-         this.setFilter('date', this.normalizeDateParam(params.date));
+      if (filters?.week) this.setFilter('week', String(filters.week));
+      if (filters?.date) {
+         this.setFilter('date', this.normalizeDateValue(filters.date));
       }
       return this.asStage<NextStage<TStage, 'roster'>>(nextStage) as never;
    }
 
-   matchups(params?: {
+   matchups(filters?: {
       weeks?: string;
    }): TStage extends StagesWithNext<'matchups'>
       ? StageView<NextStage<TStage, 'matchups'>>
@@ -504,16 +504,16 @@ export class RequestBuilder<
          'matchups'
       >;
       this.setOutValue('matchups');
-      if (params?.weeks) this.setFilter('weeks', params.weeks);
+      if (filters?.weeks) this.setFilter('weeks', filters.weeks);
       return this.asStage<NextStage<TStage, 'matchups'>>(
          nextStage,
       ) as never;
    }
 
-   stats(params?: {
+   stats(filters?: {
       type?: string;
       week?: string | number;
-      date?: DateParamInput;
+      date?: DateFilterInput;
    }): TStage extends StagesWithNext<'stats'>
       ? StageView<NextStage<TStage, 'stats'>>
       : never {
@@ -522,10 +522,10 @@ export class RequestBuilder<
          'stats'
       >;
       this.setOutValue('stats');
-      if (params?.type) this.setFilter('type', params.type);
-      if (params?.week) this.setFilter('week', String(params.week));
-      if (params?.date) {
-         this.setFilter('date', this.normalizeDateParam(params.date));
+      if (filters?.type) this.setFilter('type', filters.type);
+      if (filters?.week) this.setFilter('week', String(filters.week));
+      if (filters?.date) {
+         this.setFilter('date', this.normalizeDateValue(filters.date));
       }
       return this.asStage<NextStage<TStage, 'stats'>>(nextStage) as never;
    }
@@ -814,14 +814,14 @@ export class RequestBuilder<
       return this.asStage<NextStage<TStage, 'games'>>(nextStage) as never;
    }
 
-   // ===== Parameters =====
+   // ===== Filters =====
 
    filters<
       TFilters extends Partial<
-         Record<FilterKeyForStage<TStage>, ParamValue>
+         Record<FilterKeyForStage<TStage>, FilterValue>
       >,
    >(filters: TFilters): this {
-      this.setFilters(filters as Record<string, ParamValue>);
+      this.setFilters(filters as Record<string, FilterValue>);
       return this;
    }
 
@@ -832,14 +832,14 @@ export class RequestBuilder<
    >(
       subResources: TValue,
    ): StageView<TStage, MergeSelectedOut<TStage, TSelectedOut, TValue>> {
-      this.setFilter('out', subResources as ParamValue);
+      this.setFilter('out', subResources as FilterValue);
       return this as never;
    }
 
    position(pos: string): this {
       return this.setFilter('position', pos);
    }
-   status(status: PlayerStatusParam | string): this {
+   status(status: PlayerStatusFilter | string): this {
       return this.setFilter('status', status);
    }
    type(value: string): this {
@@ -851,7 +851,7 @@ export class RequestBuilder<
    teamKey(key: TeamKeyLike): this {
       return this.setFilter('team_key', key);
    }
-   sort(sort: SortParam | string): this {
+   sort(sort: SortFilter | string): this {
       return this.setFilter('sort', sort);
    }
    count(n: number): this {
@@ -866,8 +866,8 @@ export class RequestBuilder<
    week(w: number | string): this {
       return this.setFilter('week', String(w));
    }
-   date(d: DateParamInput): this {
-      return this.setFilter('date', this.normalizeDateParam(d));
+   date(d: DateFilterInput): this {
+      return this.setFilter('date', this.normalizeDateValue(d));
    }
    gameKeys(keys: string | string[]): this {
       return this.setFilter('game_keys', keys);
