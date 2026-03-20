@@ -23,9 +23,6 @@ export const PlayerStatusFilter = {
 export type PlayerStatusFilter =
    (typeof PlayerStatusFilter)[keyof typeof PlayerStatusFilter];
 
-export const PlayerStatusParam = PlayerStatusFilter;
-export type PlayerStatusParam = PlayerStatusFilter;
-
 /**
  * Coverage type for stats
  */
@@ -39,9 +36,6 @@ export const CoverageTypeFilter = {
 
 export type CoverageTypeFilter =
    (typeof CoverageTypeFilter)[keyof typeof CoverageTypeFilter];
-
-export const CoverageTypeParam = CoverageTypeFilter;
-export type CoverageTypeParam = CoverageTypeFilter;
 
 /**
  * Sort options for player queries
@@ -75,9 +69,6 @@ export const SortFilter = {
 
 export type SortFilter = (typeof SortFilter)[keyof typeof SortFilter];
 
-export const SortParam = SortFilter;
-export type SortParam = SortFilter;
-
 /**
  * Transaction type filter
  */
@@ -93,9 +84,6 @@ export const TransactionTypeFilter = {
 
 export type TransactionTypeFilter =
    (typeof TransactionTypeFilter)[keyof typeof TransactionTypeFilter];
-
-export const TransactionTypeParam = TransactionTypeFilter;
-export type TransactionTypeParam = TransactionTypeFilter;
 
 /**
  * League sub-resources that can be requested via 'out' parameter
@@ -159,8 +147,6 @@ export type PlayerSubResource =
  */
 export type FilterValue<T extends string = string> = T | string;
 
-export type ParamValue<T extends string = string> = FilterValue<T>;
-
 /**
  * Record of filters for a request.
  * Keys are filter names, values can be strings or arrays.
@@ -168,8 +154,6 @@ export type ParamValue<T extends string = string> = FilterValue<T>;
 export interface RequestFilters {
    [key: string]: string | string[] | number | boolean | undefined;
 }
-
-export interface RequestParams extends RequestFilters {}
 
 /**
  * The explicit out key used for sub-resource selection.
