@@ -606,7 +606,9 @@ export class RequestBuilder<
 
    // ===== Collections =====
 
-   leagues(): TStage extends StagesWithNext<'leagues'>
+   leagues(
+      keys?: LeagueKeyLike | LeagueKeyLike[],
+   ): TStage extends StagesWithNext<'leagues'>
       ? StageView<NextStage<TStage, 'leagues'>>
       : never {
       const nextStage = this.getNextRuntimeStage('leagues') as NextStage<
@@ -614,6 +616,9 @@ export class RequestBuilder<
          'leagues'
       >;
       this.addSegment('collection', 'leagues');
+      if (keys !== undefined) {
+         this.setFilter('league_keys', keys);
+      }
       return this.asStage<NextStage<TStage, 'leagues'>>(nextStage) as never;
    }
 

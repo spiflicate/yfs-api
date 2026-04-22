@@ -439,72 +439,74 @@ export type ExpandedStageResponse<
              ? UsersCollectionResponse
              : TStage extends 'games'
                ? CollectionResponse<'games', TOut>
-               : TStage extends 'game.leagues'
+               : TStage extends 'leagues'
                  ? CollectionResponse<'leagues', TOut>
-                 : TStage extends 'game.players'
-                   ? CollectionResponse<'players'>
-                   : TStage extends 'game.stat_categories'
-                     ? GameStatCategoriesResponse
-                     : TStage extends 'game.position_types'
-                       ? GamePositionTypesResponse
-                       : TStage extends 'game.game_weeks'
-                         ? GameGameWeeksResponse
-                         : TStage extends 'league.settings'
-                           ? LeagueSettingsResponse
-                           : TStage extends 'league.standings'
-                             ? LeagueStandingsResponse
-                             : TStage extends 'league.scoreboard'
-                               ? LeagueScoreboardResponse
-                               : TStage extends 'league.teams'
-                                 ? NestedResourceCollectionResponse<
-                                      'league',
-                                      'teams',
-                                      'team',
-                                      TOut
-                                   >
-                                 : TStage extends 'league.players'
+                 : TStage extends 'game.leagues'
+                   ? CollectionResponse<'leagues', TOut>
+                   : TStage extends 'game.players'
+                     ? CollectionResponse<'players'>
+                     : TStage extends 'game.stat_categories'
+                       ? GameStatCategoriesResponse
+                       : TStage extends 'game.position_types'
+                         ? GamePositionTypesResponse
+                         : TStage extends 'game.game_weeks'
+                           ? GameGameWeeksResponse
+                           : TStage extends 'league.settings'
+                             ? LeagueSettingsResponse
+                             : TStage extends 'league.standings'
+                               ? LeagueStandingsResponse
+                               : TStage extends 'league.scoreboard'
+                                 ? LeagueScoreboardResponse
+                                 : TStage extends 'league.teams'
                                    ? NestedResourceCollectionResponse<
                                         'league',
-                                        'players',
-                                        'player'
+                                        'teams',
+                                        'team',
+                                        TOut
                                      >
-                                   : TStage extends 'league.transactions'
+                                   : TStage extends 'league.players'
                                      ? NestedResourceCollectionResponse<
                                           'league',
-                                          'transactions',
-                                          'transaction'
+                                          'players',
+                                          'player'
                                        >
-                                     : TStage extends 'league.drafts'
-                                       ? LeagueDraftsResponse
-                                       : TStage extends 'team.roster'
-                                         ? TeamRosterResponse
-                                         : TStage extends 'team.roster.players'
-                                           ? TeamRosterPlayersResponse
-                                           : TStage extends 'team.matchups'
-                                             ? TeamMatchupsResponse
-                                             : TStage extends 'team.stats'
-                                               ? TeamStatsResponse
-                                               : TStage extends 'team.standings'
-                                                 ? TeamStandingsResponse
-                                                 : TStage extends 'player.stats'
-                                                   ? PlayerStatsResponse
-                                                   : TStage extends 'player.ownership'
-                                                     ? PlayerOwnershipResponse
-                                                     : TStage extends 'player.percent_owned'
-                                                       ? PlayerPercentOwnedResponse
-                                                       : TStage extends 'player.draft_analysis'
-                                                         ? PlayerDraftAnalysisResponse
-                                                         : TStage extends 'users.games'
-                                                           ? UserGamesResponse
-                                                           : TStage extends 'users.leagues'
-                                                             ? UserLeaguesResponse<TOut>
-                                                             : TStage extends 'users.teams'
-                                                               ? UserTeamsResponse<TOut>
-                                                               : TStage extends 'users.games.leagues'
-                                                                 ? UserGameLeaguesResponse<TOut>
-                                                                 : TStage extends 'users.games.teams'
-                                                                   ? UserTeamsResponse<TOut>
-                                                                   : never;
+                                     : TStage extends 'league.transactions'
+                                       ? NestedResourceCollectionResponse<
+                                            'league',
+                                            'transactions',
+                                            'transaction'
+                                         >
+                                       : TStage extends 'league.drafts'
+                                         ? LeagueDraftsResponse
+                                         : TStage extends 'team.roster'
+                                           ? TeamRosterResponse
+                                           : TStage extends 'team.roster.players'
+                                             ? TeamRosterPlayersResponse
+                                             : TStage extends 'team.matchups'
+                                               ? TeamMatchupsResponse
+                                               : TStage extends 'team.stats'
+                                                 ? TeamStatsResponse
+                                                 : TStage extends 'team.standings'
+                                                   ? TeamStandingsResponse
+                                                   : TStage extends 'player.stats'
+                                                     ? PlayerStatsResponse
+                                                     : TStage extends 'player.ownership'
+                                                       ? PlayerOwnershipResponse
+                                                       : TStage extends 'player.percent_owned'
+                                                         ? PlayerPercentOwnedResponse
+                                                         : TStage extends 'player.draft_analysis'
+                                                           ? PlayerDraftAnalysisResponse
+                                                           : TStage extends 'users.games'
+                                                             ? UserGamesResponse
+                                                             : TStage extends 'users.leagues'
+                                                               ? UserLeaguesResponse<TOut>
+                                                               : TStage extends 'users.teams'
+                                                                 ? UserTeamsResponse<TOut>
+                                                                 : TStage extends 'users.games.leagues'
+                                                                   ? UserGameLeaguesResponse<TOut>
+                                                                   : TStage extends 'users.games.teams'
+                                                                     ? UserTeamsResponse<TOut>
+                                                                     : never;
 
 /**
  * All response types for type inference

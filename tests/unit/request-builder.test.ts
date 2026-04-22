@@ -1119,4 +1119,26 @@ describe('RequestBuilder', () => {
          expect(builder).toBeInstanceOf(RequestBuilder);
       });
    });
+
+   describe('known available api paths that are currently failing or unsupported', () => {
+      const cases = [
+         {
+            name: 'builds a league teams roster path',
+            actual: () =>
+               createRequest(createMockHttpClient())
+                  .leagues(['nhl.l.12345', 'nhl.l.67890'])
+                  .teams()
+                  .out('roster')
+                  .buildPath(),
+            expected:
+               '/leagues;league_keys=nhl.l.12345,nhl.l.67890/teams;out=roster',
+         },
+      ];
+
+      for (const testCase of cases) {
+         it(testCase.name, () => {
+            expect(testCase.actual()).toBe(testCase.expected);
+         });
+      }
+   });
 });
