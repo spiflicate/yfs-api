@@ -12,6 +12,7 @@ import type {
    LeagueScoreboardResponse,
    LeagueSettingsResponse,
    LeagueStandingsResponse,
+   LeaguesCollectionResponse,
    LeagueTeamsResponse,
    LeagueTransactionsResponse,
    PlayerDraftAnalysisResponse,
@@ -93,6 +94,7 @@ export type RouteStage =
    | 'transaction'
    | 'users'
    | 'games'
+   | 'leagues'
    | 'game.leagues'
    | 'game.players'
    | 'game.stat_categories'
@@ -133,6 +135,7 @@ export interface RouteSchema {
          transaction: 'transaction';
          users: 'users';
          games: 'games';
+         leagues: 'leagues';
       }
    >;
    game: StageDefinition<
@@ -209,6 +212,14 @@ export interface RouteSchema {
       | 'game_codes'
       | 'seasons',
       GameOutValue
+   >;
+   leagues: StageDefinition<
+      LeaguesCollectionResponse,
+      'league_keys' | 'out',
+      LeagueOutValue,
+      {
+         teams: 'league.teams';
+      }
    >;
    'game.leagues': StageDefinition<
       GameLeaguesResponse,
@@ -330,6 +341,7 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
             transaction: 'transaction',
             users: 'users',
             games: 'games',
+            leagues: 'leagues',
          },
       },
       game: {
@@ -385,6 +397,12 @@ export const routeStageRuntime: Record<RouteStage, RuntimeStageDefinition> =
       },
       games: {
          outValues: gameOutValues,
+      },
+      leagues: {
+         next: {
+            teams: 'league.teams',
+         },
+         outValues: leagueOutValues,
       },
       'game.leagues': {
          outValues: leagueOutValues,
