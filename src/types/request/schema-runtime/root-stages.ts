@@ -1,0 +1,145 @@
+import type { StageSpec } from './shared.js';
+import {
+   gameOutValues,
+   gameRootParams,
+   gamesCollectionParams,
+   leagueOutValues,
+   leagueRootParams,
+   playerCollectionParams,
+   playerOutValues,
+   playerRootParams,
+   teamOutValues,
+   teamRootParams,
+   transactionOutValues,
+   usersRootParams,
+} from './shared.js';
+
+export const rootStages = {
+   root: {
+      next: {
+         game: 'game',
+         league: 'league',
+         team: 'team',
+         player: 'player',
+         transaction: 'transaction',
+         users: 'users',
+         games: 'games',
+         leagues: 'leagues',
+         teams: 'teams',
+         players: 'players',
+      },
+      confidence: 'explicit',
+   },
+   game: {
+      params: gameRootParams,
+      next: {
+         leagues: 'game.leagues',
+         players: 'game.players',
+         statCategories: 'game.stat_categories',
+         positionTypes: 'game.position_types',
+         gameWeeks: 'game.game_weeks',
+      },
+      outValues: gameOutValues,
+      confidence: 'explicit',
+   },
+   league: {
+      params: leagueRootParams,
+      next: {
+         settings: 'league.settings',
+         standings: 'league.standings',
+         scoreboard: 'league.scoreboard',
+         teams: 'league.teams',
+         players: 'league.players',
+         transactions: 'league.transactions',
+         drafts: 'league.drafts',
+      },
+      outValues: leagueOutValues,
+      confidence: 'explicit',
+   },
+   team: {
+      params: teamRootParams,
+      next: {
+         roster: 'team.roster',
+         matchups: 'team.matchups',
+         stats: 'team.stats',
+         standings: 'team.standings',
+      },
+      outValues: teamOutValues,
+      confidence: 'explicit',
+   },
+   player: {
+      params: playerRootParams,
+      next: {
+         stats: 'player.stats',
+         ownership: 'player.ownership',
+         percentOwned: 'player.percent_owned',
+         draftAnalysis: 'player.draft_analysis',
+      },
+      outValues: playerOutValues,
+      confidence: 'explicit',
+   },
+   transaction: {
+      next: {
+         players: 'transaction.players',
+      },
+      outValues: transactionOutValues,
+      writeMethods: ['edit', 'cancel'],
+      serializeObjectBodyAsYahooXml: true,
+      confidence: 'explicit',
+   },
+   users: {
+      params: usersRootParams,
+      next: {
+         games: 'users.games',
+         leagues: 'users.leagues',
+         teams: 'users.teams',
+      },
+      confidence: 'explicit',
+   },
+   games: {
+      params: gamesCollectionParams,
+      next: {
+         leagues: 'games.leagues',
+         players: 'games.players',
+         gameWeeks: 'games.game_weeks',
+      },
+      outValues: gameOutValues,
+      confidence: 'explicit',
+   },
+   leagues: {
+      params: leagueRootParams,
+      next: {
+         settings: 'leagues.settings',
+         standings: 'leagues.standings',
+         scoreboard: 'leagues.scoreboard',
+         teams: 'leagues.teams',
+         players: 'leagues.players',
+         transactions: 'leagues.transactions',
+         drafts: 'leagues.drafts',
+      },
+      outValues: leagueOutValues,
+      confidence: 'explicit',
+   },
+   teams: {
+      params: teamRootParams,
+      next: {
+         roster: 'teams.roster',
+         matchups: 'teams.matchups',
+         stats: 'teams.stats',
+         standings: 'teams.standings',
+      },
+      outValues: teamOutValues,
+      confidence: 'explicit',
+   },
+   players: {
+      params: playerCollectionParams,
+      next: {
+         stats: 'players.stats',
+         ownership: 'players.ownership',
+         percentOwned: 'players.percent_owned',
+         draftAnalysis: 'players.draft_analysis',
+      },
+      outValues: playerOutValues,
+      confidence: 'explicit',
+   },
+} as const satisfies Record<string, StageSpec>;
