@@ -56,6 +56,8 @@ interface CollectionEntityMap {
 
 interface EntityOutPropertyMap {
    game: {
+      leagues: 'leagues';
+      players: 'players';
       stat_categories: 'statCategories';
       position_types: 'positionTypes';
       game_weeks: 'gameWeeks';
@@ -64,6 +66,9 @@ interface EntityOutPropertyMap {
       settings: 'settings';
       standings: 'standings';
       scoreboard: 'scoreboard';
+      teams: 'teams';
+      players: 'players';
+      transactions: 'transactions';
       drafts: 'drafts';
    };
    team: {
@@ -77,6 +82,9 @@ interface EntityOutPropertyMap {
       ownership: 'ownership';
       percent_owned: 'percentOwned';
       draft_analysis: 'draftAnalysis';
+   };
+   transaction: {
+      players: 'players';
    };
 }
 
@@ -205,6 +213,18 @@ type UsersCollectionWrapperResponse<
    >;
 };
 
+type UsersTeamsWrapperResponse<TOut extends string = never> = {
+   users: Array<
+      Simplify<
+         RequiredArrayProp<
+            User,
+            'teams',
+            ExpandedBaseWithOuts<UserTeam, 'team', TOut>
+         >
+      >
+   >;
+};
+
 /**
  * Response for game resource
  */
@@ -215,15 +235,23 @@ export type GameResourceResponse = ResourceResponse<'game'>;
  */
 export type GamesCollectionResponse = CollectionResponse<'games'>;
 
+export type GamesLeaguesResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'games', Extract<TLeagueOut | 'leagues', string>>;
+
+export type GamesPlayersResponse<TPlayerOut extends string = never> =
+   CollectionResponse<'games', Extract<TPlayerOut | 'players', string>>;
+
 /**
  * Response for game/leagues sub-resource
  */
-export type GameLeaguesResponse = CollectionResponse<'leagues'>;
+export type GameLeaguesResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', TLeagueOut>;
 
 /**
  * Response for game/players sub-resource
  */
-export type GamePlayersResponse = CollectionResponse<'players'>;
+export type GamePlayersResponse<TPlayerOut extends string = never> =
+   CollectionResponse<'players', TPlayerOut>;
 
 /**
  * Response for game/stat_categories sub-resource
@@ -256,6 +284,33 @@ export type LeagueResourceResponse = ResourceResponse<'league'>;
  */
 export type LeaguesCollectionResponse = CollectionResponse<'leagues'>;
 
+export type LeaguesSettingsResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', Extract<TLeagueOut | 'settings', string>>;
+
+export type LeaguesStandingsResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', Extract<TLeagueOut | 'standings', string>>;
+
+export type LeaguesScoreboardResponse<TLeagueOut extends string = never> =
+   CollectionResponse<
+      'leagues',
+      Extract<TLeagueOut | 'scoreboard', string>
+   >;
+
+export type LeaguesTeamsResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', Extract<TLeagueOut | 'teams', string>>;
+
+export type LeaguesPlayersResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', Extract<TLeagueOut | 'players', string>>;
+
+export type LeaguesTransactionsResponse<TLeagueOut extends string = never> =
+   CollectionResponse<
+      'leagues',
+      Extract<TLeagueOut | 'transactions', string>
+   >;
+
+export type LeaguesDraftsResponse<TLeagueOut extends string = never> =
+   CollectionResponse<'leagues', Extract<TLeagueOut | 'drafts', string>>;
+
 /**
  * Response for league/settings sub-resource
  */
@@ -280,29 +335,28 @@ export type LeagueScoreboardResponse = ResourceResponse<
 /**
  * Response for league/teams sub-resource
  */
-export type LeagueTeamsResponse = NestedResourceCollectionResponse<
-   'league',
-   'teams',
-   'team'
->;
+export type LeagueTeamsResponse = ResourceResponse<'league', 'teams'>;
 
 /**
  * Response for league/players sub-resource
  */
-export type LeaguePlayersResponse = NestedResourceCollectionResponse<
-   'league',
-   'players',
-   'player'
->;
+export type LeaguePlayersResponse = ResourceResponse<'league', 'players'>;
 
 /**
  * Response for league/transactions sub-resource
  */
-export type LeagueTransactionsResponse = NestedResourceCollectionResponse<
+export type LeagueTransactionsResponse = ResourceResponse<
    'league',
-   'transactions',
-   'transaction'
+   'transactions'
 >;
+
+export type LeagueTransactionPlayersResponse =
+   NestedResourceCollectionResponse<
+      'league',
+      'transactions',
+      'transaction',
+      'players'
+   >;
 
 /**
  * Response for league/drafts sub-resource
@@ -318,6 +372,19 @@ export type TeamResourceResponse = ResourceResponse<'team'>;
  * Response for teams collection
  */
 export type TeamsCollectionResponse = CollectionResponse<'teams'>;
+
+export type TeamsRosterResponse = CollectionResponse<'teams', 'roster'>;
+
+export type TeamsRosterPlayersResponse = TeamsRosterResponse;
+
+export type TeamsMatchupsResponse = CollectionResponse<'teams', 'matchups'>;
+
+export type TeamsStandingsResponse = CollectionResponse<
+   'teams',
+   'standings'
+>;
+
+export type TeamsStatsResponse = CollectionResponse<'teams', 'stats'>;
 
 /**
  * Response for team/roster sub-resource
@@ -353,6 +420,23 @@ export type PlayerResourceResponse = ResourceResponse<'player'>;
  * Response for players collection
  */
 export type PlayersCollectionResponse = CollectionResponse<'players'>;
+
+export type PlayersStatsResponse = CollectionResponse<'players', 'stats'>;
+
+export type PlayersOwnershipResponse = CollectionResponse<
+   'players',
+   'ownership'
+>;
+
+export type PlayersPercentOwnedResponse = CollectionResponse<
+   'players',
+   'percent_owned'
+>;
+
+export type PlayersDraftAnalysisResponse = CollectionResponse<
+   'players',
+   'draft_analysis'
+>;
 
 /**
  * Response for player/stats sub-resource
@@ -411,6 +495,9 @@ export type UserLeaguesResponse<TLeagueOut extends string = never> =
 export type UserTeamsResponse<TTeamOut extends string = never> =
    UsersGameCollectionWrapperResponse<'teams', 'team', TTeamOut>;
 
+export type UsersTeamsResponse<TTeamOut extends string = never> =
+   UsersTeamsWrapperResponse<TTeamOut>;
+
 /**
  * Response for transaction resource
  */
@@ -421,6 +508,11 @@ export type TransactionResourceResponse = ResourceResponse<'transaction'>;
  */
 export type TransactionsCollectionResponse =
    CollectionResponse<'transactions'>;
+
+export type TransactionPlayersResponse = ResourceResponse<
+   'transaction',
+   'players'
+>;
 
 export type ExpandedStageResponse<
    TStage extends string,
@@ -434,79 +526,134 @@ export type ExpandedStageResponse<
        : TStage extends 'player'
          ? ResourceResponse<'player', TOut>
          : TStage extends 'transaction'
-           ? TransactionResourceResponse
-           : TStage extends 'users'
-             ? UsersCollectionResponse
-             : TStage extends 'games'
-               ? CollectionResponse<'games', TOut>
-               : TStage extends 'leagues'
-                 ? CollectionResponse<'leagues', TOut>
-                 : TStage extends 'game.leagues'
-                   ? CollectionResponse<'leagues', TOut>
-                   : TStage extends 'game.players'
-                     ? CollectionResponse<'players'>
-                     : TStage extends 'game.stat_categories'
-                       ? GameStatCategoriesResponse
-                       : TStage extends 'game.position_types'
-                         ? GamePositionTypesResponse
-                         : TStage extends 'game.game_weeks'
-                           ? GameGameWeeksResponse
-                           : TStage extends 'league.settings'
-                             ? LeagueSettingsResponse
-                             : TStage extends 'league.standings'
-                               ? LeagueStandingsResponse
-                               : TStage extends 'league.scoreboard'
-                                 ? LeagueScoreboardResponse
-                                 : TStage extends 'league.teams'
-                                   ? NestedResourceCollectionResponse<
-                                        'league',
-                                        'teams',
-                                        'team',
-                                        TOut
-                                     >
-                                   : TStage extends 'league.players'
-                                     ? NestedResourceCollectionResponse<
-                                          'league',
-                                          'players',
-                                          'player'
-                                       >
-                                     : TStage extends 'league.transactions'
-                                       ? NestedResourceCollectionResponse<
-                                            'league',
-                                            'transactions',
-                                            'transaction'
-                                         >
-                                       : TStage extends 'league.drafts'
-                                         ? LeagueDraftsResponse
-                                         : TStage extends 'team.roster'
-                                           ? TeamRosterResponse
-                                           : TStage extends 'team.roster.players'
-                                             ? TeamRosterPlayersResponse
-                                             : TStage extends 'team.matchups'
-                                               ? TeamMatchupsResponse
-                                               : TStage extends 'team.stats'
-                                                 ? TeamStatsResponse
-                                                 : TStage extends 'team.standings'
-                                                   ? TeamStandingsResponse
-                                                   : TStage extends 'player.stats'
-                                                     ? PlayerStatsResponse
-                                                     : TStage extends 'player.ownership'
-                                                       ? PlayerOwnershipResponse
-                                                       : TStage extends 'player.percent_owned'
-                                                         ? PlayerPercentOwnedResponse
-                                                         : TStage extends 'player.draft_analysis'
-                                                           ? PlayerDraftAnalysisResponse
-                                                           : TStage extends 'users.games'
-                                                             ? UserGamesResponse
-                                                             : TStage extends 'users.leagues'
-                                                               ? UserLeaguesResponse<TOut>
-                                                               : TStage extends 'users.teams'
-                                                                 ? UserTeamsResponse<TOut>
-                                                                 : TStage extends 'users.games.leagues'
-                                                                   ? UserGameLeaguesResponse<TOut>
-                                                                   : TStage extends 'users.games.teams'
-                                                                     ? UserTeamsResponse<TOut>
-                                                                     : never;
+           ? ResourceResponse<'transaction', TOut>
+           : TStage extends 'transaction.players'
+             ? TransactionPlayersResponse
+             : TStage extends 'users'
+               ? UsersCollectionResponse
+               : TStage extends 'games'
+                 ? CollectionResponse<'games', TOut>
+                 : TStage extends 'games.leagues'
+                   ? GamesLeaguesResponse<TOut>
+                   : TStage extends 'games.players'
+                     ? GamesPlayersResponse<TOut>
+                     : TStage extends 'games.game_weeks'
+                       ? CollectionResponse<
+                            'games',
+                            Extract<TOut | 'game_weeks', string>
+                         >
+                       : TStage extends 'leagues'
+                         ? CollectionResponse<'leagues', TOut>
+                         : TStage extends 'game.leagues'
+                           ? GameLeaguesResponse<TOut>
+                           : TStage extends 'game.players'
+                             ? GamePlayersResponse<TOut>
+                             : TStage extends 'game.stat_categories'
+                               ? GameStatCategoriesResponse
+                               : TStage extends 'game.position_types'
+                                 ? GamePositionTypesResponse
+                                 : TStage extends 'game.game_weeks'
+                                   ? GameGameWeeksResponse
+                                   : TStage extends 'league.settings'
+                                     ? LeagueSettingsResponse
+                                     : TStage extends 'league.standings'
+                                       ? LeagueStandingsResponse
+                                       : TStage extends 'league.scoreboard'
+                                         ? LeagueScoreboardResponse
+                                         : TStage extends 'league.teams'
+                                           ? ResourceResponse<
+                                                'league',
+                                                Extract<
+                                                   TOut | 'teams',
+                                                   string
+                                                >
+                                             >
+                                           : TStage extends 'league.players'
+                                             ? ResourceResponse<
+                                                  'league',
+                                                  Extract<
+                                                     TOut | 'players',
+                                                     string
+                                                  >
+                                               >
+                                             : TStage extends 'league.transactions'
+                                               ? ResourceResponse<
+                                                    'league',
+                                                    Extract<
+                                                       | TOut
+                                                       | 'transactions',
+                                                       string
+                                                    >
+                                                 >
+                                               : TStage extends 'league.transactions.players'
+                                                 ? LeagueTransactionPlayersResponse
+                                                 : TStage extends 'league.drafts'
+                                                   ? LeagueDraftsResponse
+                                                   : TStage extends 'leagues.settings'
+                                                     ? LeaguesSettingsResponse<TOut>
+                                                     : TStage extends 'leagues.standings'
+                                                       ? LeaguesStandingsResponse<TOut>
+                                                       : TStage extends 'leagues.scoreboard'
+                                                         ? LeaguesScoreboardResponse<TOut>
+                                                         : TStage extends 'leagues.teams'
+                                                           ? LeaguesTeamsResponse<TOut>
+                                                           : TStage extends 'leagues.players'
+                                                             ? LeaguesPlayersResponse<TOut>
+                                                             : TStage extends 'leagues.transactions'
+                                                               ? LeaguesTransactionsResponse<TOut>
+                                                               : TStage extends 'leagues.drafts'
+                                                                 ? LeaguesDraftsResponse<TOut>
+                                                                 : TStage extends 'team.roster'
+                                                                   ? TeamRosterResponse
+                                                                   : TStage extends 'team.roster.players'
+                                                                     ? TeamRosterPlayersResponse
+                                                                     : TStage extends 'team.matchups'
+                                                                       ? TeamMatchupsResponse
+                                                                       : TStage extends 'team.stats'
+                                                                         ? TeamStatsResponse
+                                                                         : TStage extends 'team.standings'
+                                                                           ? TeamStandingsResponse
+                                                                           : TStage extends 'teams'
+                                                                             ? TeamsCollectionResponse
+                                                                             : TStage extends 'teams.roster'
+                                                                               ? TeamsRosterResponse
+                                                                               : TStage extends 'teams.roster.players'
+                                                                                 ? TeamsRosterPlayersResponse
+                                                                                 : TStage extends 'teams.matchups'
+                                                                                   ? TeamsMatchupsResponse
+                                                                                   : TStage extends 'teams.stats'
+                                                                                     ? TeamsStatsResponse
+                                                                                     : TStage extends 'teams.standings'
+                                                                                       ? TeamsStandingsResponse
+                                                                                       : TStage extends 'player.stats'
+                                                                                         ? PlayerStatsResponse
+                                                                                         : TStage extends 'player.ownership'
+                                                                                           ? PlayerOwnershipResponse
+                                                                                           : TStage extends 'player.percent_owned'
+                                                                                             ? PlayerPercentOwnedResponse
+                                                                                             : TStage extends 'player.draft_analysis'
+                                                                                               ? PlayerDraftAnalysisResponse
+                                                                                               : TStage extends 'players'
+                                                                                                 ? PlayersCollectionResponse
+                                                                                                 : TStage extends 'players.stats'
+                                                                                                   ? PlayersStatsResponse
+                                                                                                   : TStage extends 'players.ownership'
+                                                                                                     ? PlayersOwnershipResponse
+                                                                                                     : TStage extends 'players.percent_owned'
+                                                                                                       ? PlayersPercentOwnedResponse
+                                                                                                       : TStage extends 'players.draft_analysis'
+                                                                                                         ? PlayersDraftAnalysisResponse
+                                                                                                         : TStage extends 'users.games'
+                                                                                                           ? UserGamesResponse
+                                                                                                           : TStage extends 'users.leagues'
+                                                                                                             ? UserLeaguesResponse<TOut>
+                                                                                                             : TStage extends 'users.teams'
+                                                                                                               ? UsersTeamsResponse<TOut>
+                                                                                                               : TStage extends 'users.games.leagues'
+                                                                                                                 ? UserGameLeaguesResponse<TOut>
+                                                                                                                 : TStage extends 'users.games.teams'
+                                                                                                                   ? UserTeamsResponse<TOut>
+                                                                                                                   : never;
 
 /**
  * All response types for type inference
@@ -515,6 +662,8 @@ export type ExpandedStageResponse<
 export type AllResponseTypes =
    | GameResourceResponse
    | GamesCollectionResponse
+   | GamesLeaguesResponse
+   | GamesPlayersResponse
    | GameLeaguesResponse
    | GamePlayersResponse
    | GameStatCategoriesResponse
@@ -522,15 +671,28 @@ export type AllResponseTypes =
    | GameGameWeeksResponse
    | LeagueResourceResponse
    | LeaguesCollectionResponse
+   | LeaguesSettingsResponse
+   | LeaguesStandingsResponse
+   | LeaguesScoreboardResponse
+   | LeaguesTeamsResponse
+   | LeaguesPlayersResponse
+   | LeaguesTransactionsResponse
+   | LeaguesDraftsResponse
    | LeagueSettingsResponse
    | LeagueStandingsResponse
    | LeagueScoreboardResponse
    | LeagueTeamsResponse
    | LeaguePlayersResponse
    | LeagueTransactionsResponse
+   | LeagueTransactionPlayersResponse
    | LeagueDraftsResponse
    | TeamResourceResponse
    | TeamsCollectionResponse
+   | TeamsRosterResponse
+   | TeamsRosterPlayersResponse
+   | TeamsMatchupsResponse
+   | TeamsStandingsResponse
+   | TeamsStatsResponse
    | TeamRosterResponse
    | TeamRosterPlayersResponse
    | TeamMatchupsResponse
@@ -538,6 +700,10 @@ export type AllResponseTypes =
    | TeamStatsResponse
    | PlayerResourceResponse
    | PlayersCollectionResponse
+   | PlayersStatsResponse
+   | PlayersOwnershipResponse
+   | PlayersPercentOwnedResponse
+   | PlayersDraftAnalysisResponse
    | PlayerStatsResponse
    | PlayerOwnershipResponse
    | PlayerPercentOwnedResponse
@@ -547,5 +713,7 @@ export type AllResponseTypes =
    | UserGameLeaguesResponse
    | UserLeaguesResponse
    | UserTeamsResponse
+   | UsersTeamsResponse
    | TransactionResourceResponse
+   | TransactionPlayersResponse
    | TransactionsCollectionResponse;

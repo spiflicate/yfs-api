@@ -72,9 +72,17 @@ export type SubResourceName =
    | LeagueOutValue
    | TeamOutValue
    | PlayerOutValue
+   | 'players'
    | Extract<
         NavigationMethodNamesForStage<
-           'game' | 'league' | 'team' | 'users' | 'users.games'
+           | 'game'
+           | 'games'
+           | 'league'
+           | 'leagues'
+           | 'team'
+           | 'teams'
+           | 'users'
+           | 'users.games'
         >,
         CollectionName
      >

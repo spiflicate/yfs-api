@@ -23,6 +23,8 @@ export interface User extends BaseMetadata {
    games?: UserGame[];
    /** Leagues directly associated with the user query (optional) */
    leagues?: LeagueReference[];
+   /** Teams directly associated with the user query (optional) */
+   teams?: UserTeam[];
 }
 
 /**

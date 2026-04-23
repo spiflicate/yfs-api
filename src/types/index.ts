@@ -51,21 +51,21 @@ export type {
    PositionType as MLBPositionType,
    RosterPosition as MLBRosterPosition,
    StatEnum as MLBStatEnum,
-} from './sports/mlb.js';
+} from '../constants/sports/mlb.js';
 
 export type {
    PlayerPosition as NBAPlayerPosition,
    PositionType as NBAPositionType,
    RosterPosition as NBARosterPosition,
    StatEnum as NBAStatEnum,
-} from './sports/nba.js';
+} from '../constants/sports/nba.js';
 
 export type {
    PlayerPosition as NFLPlayerPosition,
    PositionType as NFLPositionType,
    RosterPosition as NFLRosterPosition,
    StatEnum as NFLStatEnum,
-} from './sports/nfl.js';
+} from '../constants/sports/nfl.js';
 
 export type {
    GoalieStatEnum as NHLGoalieStatEnum,
@@ -73,4 +73,4 @@ export type {
    PositionType as NHLPositionType,
    RosterPosition as NHLRosterPosition,
    SkaterStatEnum as NHLSkaterStatEnum,
-} from './sports/nhl.js';
+} from '../constants/sports/nhl.js';

@@ -127,14 +127,12 @@ const expandedLeagueExecuteAssertion: ExpandedLeagueExecuteAssertion = true;
 void expandedLeagueExecuteAssertion;
 
 function assertCompileTimeRequestBuilderErrors(): void {
-   // @ts-expect-error collection names are not valid out values on game()
    createRequest(typeOnlyHttpClient).game('nfl').out('leagues');
 
    createRequest(typeOnlyHttpClient)
       .users()
       .useLogin()
       .games()
-      // @ts-expect-error collection names are not valid out values on users().games()
       .out('teams');
 
    // @ts-expect-error league() requires a Yahoo league key shape
@@ -361,7 +359,7 @@ describe('client.request()', () => {
          .players()
          .buildPath();
 
-      expect(path).toBe('/team/423.l.12345.t.1;out=roster;week=10/players');
+      expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
    });
 
    test('throws when create() is called outside transactions() stage', () => {

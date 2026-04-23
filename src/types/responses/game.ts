@@ -1,4 +1,6 @@
 import type { PositionType } from '../common';
+import type { League } from './league.js';
+import type { Player } from './player.js';
 
 /**
  * Represents a game (sport) in the Yahoo Fantasy Sports system.
@@ -45,6 +47,12 @@ export interface Game {
 
    /** Array of position types available in this game */
    positionTypes?: PositionTypeObject[];
+
+   /** Leagues in this game when requested as a sub-resource or out expansion */
+   leagues?: League[];
+
+   /** Players in this game when requested as a sub-resource or out expansion */
+   players?: Player[];
 
    /** Statistical categories tracked for this game */
    statCategories?: StatCategories;

@@ -107,6 +107,9 @@ export const LeagueSubResource = {
    Settings: 'settings',
    Standings: 'standings',
    Scoreboard: 'scoreboard',
+   Teams: 'teams',
+   Players: 'players',
+   Transactions: 'transactions',
    Drafts: 'drafts',
 } as const satisfies Record<string, LeagueOutValue>;
 
@@ -128,6 +131,8 @@ export type TeamSubResource = TeamOutValue;
  * Game sub-resources that can be requested via 'out' parameter
  */
 export const GameSubResource = {
+   Leagues: 'leagues',
+   Players: 'players',
    StatCategories: 'stat_categories',
    PositionTypes: 'position_types',
    GameWeeks: 'game_weeks',
@@ -171,8 +176,7 @@ export type OutKey = 'out';
 /**
  * Common request filter keys
  */
-export type CommonFilterKey =
-   FilterKeyForStage<RouteStage>;
+export type CommonFilterKey = FilterKeyForStage<RouteStage>;
 
 export type CommonParamKey = ParamKeyForStage<RouteStage>;
 

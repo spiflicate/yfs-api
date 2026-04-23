@@ -34,6 +34,7 @@ import type {
    OutValueForStage,
    ParamHelperMethodsForStage,
    RouteStage,
+   RuntimeStageDefinition,
    RuntimeWriteMethod,
    StagesWithNext,
    WriteMethodNamesForStage,
@@ -57,6 +58,9 @@ export type PathSegment = (
    | {
         type: 'collection';
         keys?: string | string[];
+     }
+   | {
+        type: 'subResource';
      }
 ) & {
    name: string;
@@ -149,8 +153,8 @@ export class RequestBuilder<
       };
    }
 
-   private getCurrentStageConfig() {
-      return routeStageRuntime[this.state.stage];
+   private getCurrentStageConfig(): RuntimeStageDefinition {
+      return routeStageRuntime[this.state.stage] as RuntimeStageDefinition;
    }
 
    private getNextRuntimeStage(methodName: string): RouteStage {
@@ -162,7 +166,7 @@ export class RequestBuilder<
          );
       }
 
-      return nextStage;
+      return nextStage as RouteStage;
    }
 
    private stageAllowsWriteMethod(methodName: RuntimeWriteMethod): boolean {
@@ -211,20 +215,39 @@ export class RequestBuilder<
    }
 
    private addSegment(
-      type: 'resource' | 'collection',
-      name: ResourceName | CollectionName,
-      key?: string,
+      type: 'resource' | 'collection' | 'subResource',
+      name: ResourceName | CollectionName | SubResourceName,
+      keyOrKeys?: string | string[],
    ): void {
       if (type === 'resource') {
-         if (!key) {
+         if (!keyOrKeys || Array.isArray(keyOrKeys)) {
             throw new Error(`Resource segment ${name} requires a key.`);
          }
 
-         this.state.segments.push({ type, name, key, filters: {} });
+         this.state.segments.push({
+            type,
+            name,
+            key: keyOrKeys,
+            filters: {},
+         });
+         return;
+      }
+
+      if (type === 'collection') {
+         this.state.segments.push({
+            type,
+            name,
+            keys: keyOrKeys,
+            filters: {},
+         });
          return;
       }
 
       this.state.segments.push({ type, name, filters: {} });
+   }
+
+   private addSubResourceSegment(name: SubResourceName): void {
+      this.addSegment('subResource', name);
    }
 
    private getCurrentSegment(): PathSegment | undefined {
@@ -444,7 +467,7 @@ export class RequestBuilder<
          TStage,
          'settings'
       >;
-      this.setOutValue('settings');
+      this.addSubResourceSegment('settings');
       return this.asStage<NextStage<TStage, 'settings'>>(
          nextStage,
       ) as never;
@@ -457,7 +480,7 @@ export class RequestBuilder<
          TStage,
          'standings'
       >;
-      this.setOutValue('standings');
+      this.addSubResourceSegment('standings');
       return this.asStage<NextStage<TStage, 'standings'>>(
          nextStage,
       ) as never;
@@ -470,7 +493,7 @@ export class RequestBuilder<
          TStage,
          'scoreboard'
       >;
-      this.setOutValue('scoreboard');
+      this.addSubResourceSegment('scoreboard');
       return this.asStage<NextStage<TStage, 'scoreboard'>>(
          nextStage,
       ) as never;
@@ -486,7 +509,7 @@ export class RequestBuilder<
          TStage,
          'roster'
       >;
-      this.setOutValue('roster');
+      this.addSubResourceSegment('roster');
       if (filters?.week) this.setFilter('week', String(filters.week));
       if (filters?.date) {
          this.setFilter('date', this.normalizeDateValue(filters.date));
@@ -503,7 +526,7 @@ export class RequestBuilder<
          TStage,
          'matchups'
       >;
-      this.setOutValue('matchups');
+      this.addSubResourceSegment('matchups');
       if (filters?.weeks) this.setFilter('weeks', filters.weeks);
       return this.asStage<NextStage<TStage, 'matchups'>>(
          nextStage,
@@ -521,7 +544,7 @@ export class RequestBuilder<
          TStage,
          'stats'
       >;
-      this.setOutValue('stats');
+      this.addSubResourceSegment('stats');
       if (filters?.type) this.setFilter('type', filters.type);
       if (filters?.week) this.setFilter('week', String(filters.week));
       if (filters?.date) {
@@ -537,7 +560,7 @@ export class RequestBuilder<
          TStage,
          'ownership'
       >;
-      this.setOutValue('ownership');
+      this.addSubResourceSegment('ownership');
       return this.asStage<NextStage<TStage, 'ownership'>>(
          nextStage,
       ) as never;
@@ -549,7 +572,7 @@ export class RequestBuilder<
       const nextStage = this.getNextRuntimeStage(
          'percentOwned',
       ) as NextStage<TStage, 'percentOwned'>;
-      this.setOutValue('percent_owned');
+      this.addSubResourceSegment('percent_owned');
       return this.asStage<NextStage<TStage, 'percentOwned'>>(
          nextStage,
       ) as never;
@@ -561,7 +584,7 @@ export class RequestBuilder<
       const nextStage = this.getNextRuntimeStage(
          'draftAnalysis',
       ) as NextStage<TStage, 'draftAnalysis'>;
-      this.setOutValue('draft_analysis');
+      this.addSubResourceSegment('draft_analysis');
       return this.asStage<NextStage<TStage, 'draftAnalysis'>>(
          nextStage,
       ) as never;
@@ -573,7 +596,7 @@ export class RequestBuilder<
       const nextStage = this.getNextRuntimeStage(
          'statCategories',
       ) as NextStage<TStage, 'statCategories'>;
-      this.setOutValue('stat_categories');
+      this.addSubResourceSegment('stat_categories');
       return this.asStage<NextStage<TStage, 'statCategories'>>(
          nextStage,
       ) as never;
@@ -585,7 +608,7 @@ export class RequestBuilder<
       const nextStage = this.getNextRuntimeStage(
          'positionTypes',
       ) as NextStage<TStage, 'positionTypes'>;
-      this.setOutValue('position_types');
+      this.addSubResourceSegment('position_types');
       return this.asStage<NextStage<TStage, 'positionTypes'>>(
          nextStage,
       ) as never;
@@ -598,7 +621,7 @@ export class RequestBuilder<
          TStage,
          'gameWeeks'
       >;
-      this.setOutValue('game_weeks');
+      this.addSubResourceSegment('game_weeks');
       return this.asStage<NextStage<TStage, 'gameWeeks'>>(
          nextStage,
       ) as never;
@@ -615,42 +638,55 @@ export class RequestBuilder<
          TStage,
          'leagues'
       >;
-      this.addSegment('collection', 'leagues');
-      if (keys !== undefined) {
-         this.setFilter('league_keys', keys);
-      }
+      this.addSegment('collection', 'leagues', keys);
       return this.asStage<NextStage<TStage, 'leagues'>>(nextStage) as never;
    }
 
-   teams(): TStage extends StagesWithNext<'teams'>
+   teams(
+      keys?: TeamKeyLike | TeamKeyLike[],
+   ): TStage extends StagesWithNext<'teams'>
       ? StageView<NextStage<TStage, 'teams'>>
       : never {
       const nextStage = this.getNextRuntimeStage('teams') as NextStage<
          TStage,
          'teams'
       >;
-      this.addSegment('collection', 'teams');
+      this.addSegment('collection', 'teams', keys);
       return this.asStage<NextStage<TStage, 'teams'>>(nextStage) as never;
    }
 
-   players(): TStage extends StagesWithNext<'players'>
+   players(
+      keys?: PlayerKeyLike | PlayerKeyLike[],
+   ): TStage extends StagesWithNext<'players'>
       ? StageView<NextStage<TStage, 'players'>>
       : never {
       const nextStage = this.getNextRuntimeStage('players') as NextStage<
          TStage,
          'players'
       >;
-      this.addSegment('collection', 'players');
+      this.addSegment('collection', 'players', keys);
       return this.asStage<NextStage<TStage, 'players'>>(nextStage) as never;
    }
 
-   transactions(): TStage extends StagesWithNext<'transactions'>
+   transactions(
+      keys?:
+         | TransactionKeyLike
+         | TransactionKeyLike[]
+         | WaiverClaimKeyLike
+         | WaiverClaimKeyLike[]
+         | PendingTradeKeyLike
+         | PendingTradeKeyLike[],
+   ): TStage extends StagesWithNext<'transactions'>
       ? StageView<NextStage<TStage, 'transactions'>>
       : never {
       const nextStage = this.getNextRuntimeStage(
          'transactions',
       ) as NextStage<TStage, 'transactions'>;
-      this.addSegment('collection', 'transactions');
+      this.addSegment(
+         'collection',
+         'transactions',
+         keys as string | string[] | undefined,
+      );
       return this.asStage<NextStage<TStage, 'transactions'>>(
          nextStage,
       ) as never;
@@ -804,18 +840,20 @@ export class RequestBuilder<
          TStage,
          'drafts'
       >;
-      this.setOutValue('drafts');
+      this.addSubResourceSegment('drafts');
       return this.asStage<NextStage<TStage, 'drafts'>>(nextStage) as never;
    }
 
-   games(): TStage extends StagesWithNext<'games'>
+   games(
+      keys?: GameKeyLike | GameKeyLike[],
+   ): TStage extends StagesWithNext<'games'>
       ? StageView<NextStage<TStage, 'games'>>
       : never {
       const nextStage = this.getNextRuntimeStage('games') as NextStage<
          TStage,
          'games'
       >;
-      this.addSegment('collection', 'games');
+      this.addSegment('collection', 'games', keys);
       return this.asStage<NextStage<TStage, 'games'>>(nextStage) as never;
    }
 
@@ -837,7 +875,9 @@ export class RequestBuilder<
    >(
       subResources: TValue,
    ): StageView<TStage, MergeSelectedOut<TStage, TSelectedOut, TValue>> {
-      this.setFilter('out', subResources as FilterValue);
+      this.setOutValue(
+         subResources as unknown as SubResourceName | SubResourceName[],
+      );
       return this as never;
    }
 
@@ -856,8 +896,31 @@ export class RequestBuilder<
    teamKey(key: TeamKeyLike): this {
       return this.setFilter('team_key', key);
    }
+   transactionKeys(
+      keys:
+         | TransactionKeyLike
+         | TransactionKeyLike[]
+         | WaiverClaimKeyLike
+         | WaiverClaimKeyLike[]
+         | PendingTradeKeyLike
+         | PendingTradeKeyLike[],
+   ): this {
+      return this.setFilter('transaction_keys', keys as string | string[]);
+   }
    sort(sort: SortFilter | string): this {
       return this.setFilter('sort', sort);
+   }
+   sortType(value: string): this {
+      return this.setFilter('sort_type', value);
+   }
+   sortSeason(value: number | string): this {
+      return this.setFilter('sort_season', String(value));
+   }
+   sortWeek(value: number | string): this {
+      return this.setFilter('sort_week', String(value));
+   }
+   sortDate(value: DateFilterInput): this {
+      return this.setFilter('sort_date', this.normalizeDateValue(value));
    }
    count(n: number): this {
       return this.setFilter('count', String(n));
@@ -870,6 +933,16 @@ export class RequestBuilder<
    }
    week(w: number | string): this {
       return this.setFilter('week', String(w));
+   }
+   weeks(values: string | string[] | Array<number | string>): this {
+      if (Array.isArray(values)) {
+         return this.setFilter(
+            'weeks',
+            values.map((value) => String(value)),
+         );
+      }
+
+      return this.setFilter('weeks', values);
    }
    date(d: DateFilterInput): this {
       return this.setFilter('date', this.normalizeDateValue(d));

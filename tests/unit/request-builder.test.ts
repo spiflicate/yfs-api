@@ -164,9 +164,7 @@ describe('RequestBuilder', () => {
             .players()
             .buildPath();
 
-         expect(path).toBe(
-            '/team/423.l.12345.t.1;out=roster;week=10/players',
-         );
+         expect(path).toBe('/team/423.l.12345.t.1/roster;week=10/players');
       });
 
       it('builds league settings via sub-resource method', () => {
@@ -175,7 +173,7 @@ describe('RequestBuilder', () => {
             .settings()
             .buildPath();
 
-         expect(path).toBe('/league/423.l.12345;out=settings');
+         expect(path).toBe('/league/423.l.12345/settings');
       });
 
       it('builds league drafts via sub-resource method', () => {
@@ -184,7 +182,7 @@ describe('RequestBuilder', () => {
             .drafts()
             .buildPath();
 
-         expect(path).toBe('/league/423.l.12345;out=drafts');
+         expect(path).toBe('/league/423.l.12345/drafts');
       });
 
       it('rejects invalid runtime stage transitions without mutating the builder', () => {
@@ -281,7 +279,7 @@ describe('RequestBuilder', () => {
                   .game('257')
                   .statCategories()
                   .buildPath(),
-            expected: '/game/257;out=stat_categories',
+            expected: '/game/257/stat_categories',
          },
          {
             name: 'builds a league players path filtered by player keys',
@@ -335,7 +333,7 @@ describe('RequestBuilder', () => {
                   .team('223.l.431.t.1')
                   .matchups({ weeks: '1,5' })
                   .buildPath(),
-            expected: '/team/223.l.431.t.1;out=matchups;weeks=1,5',
+            expected: '/team/223.l.431.t.1/matchups;weeks=1,5',
          },
          {
             name: 'builds a team stats path for season coverage',
@@ -344,7 +342,7 @@ describe('RequestBuilder', () => {
                   .team('223.l.431.t.1')
                   .stats({ type: 'season' })
                   .buildPath(),
-            expected: '/team/223.l.431.t.1;out=stats;type=season',
+            expected: '/team/223.l.431.t.1/stats;type=season',
          },
          {
             name: 'builds a team stats path for date coverage',
@@ -354,7 +352,7 @@ describe('RequestBuilder', () => {
                   .stats({ type: 'date', date: '2011-07-06' })
                   .buildPath(),
             expected:
-               '/team/253.l.102614.t.10;out=stats;type=date;date=2011-07-06',
+               '/team/253.l.102614.t.10/stats;type=date;date=2011-07-06',
          },
          {
             name: 'builds a player ownership path',
@@ -363,7 +361,7 @@ describe('RequestBuilder', () => {
                   .player('223.p.5479')
                   .ownership()
                   .buildPath(),
-            expected: '/player/223.p.5479;out=ownership',
+            expected: '/player/223.p.5479/ownership',
          },
          {
             name: 'builds a league teams roster path',
@@ -483,9 +481,7 @@ describe('RequestBuilder', () => {
             .date(new Date(2024, 10, 15))
             .buildPath();
 
-         expect(path).toBe(
-            '/team/423.l.12345.t.1;out=roster;date=2024-11-15',
-         );
+         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
       });
 
       it('validates date() string format', () => {
@@ -504,9 +500,7 @@ describe('RequestBuilder', () => {
             .roster({ date: new Date(2024, 10, 15) })
             .buildPath();
 
-         expect(path).toBe(
-            '/team/423.l.12345.t.1;out=roster;date=2024-11-15',
-         );
+         expect(path).toBe('/team/423.l.12345.t.1/roster;date=2024-11-15');
       });
 
       it('supports array values for key filters', () => {
@@ -655,7 +649,7 @@ describe('RequestBuilder', () => {
             httpClient.put as ReturnType<typeof mock>
          ).mock.calls[0] as [string, string, unknown];
 
-         expect(path).toBe('/team/423.l.12345.t.1;out=roster;week=13');
+         expect(path).toBe('/team/423.l.12345.t.1/roster;week=13');
          expect(typeof body).toBe('string');
          expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
          expect(body).toContain('<fantasy_content>');
@@ -695,7 +689,7 @@ describe('RequestBuilder', () => {
 
          expect(httpClient.put).toHaveBeenCalledTimes(1);
          expect(httpClient.put).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1;out=roster',
+            '/team/423.l.12345.t.1/roster',
             '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>week</coverage_type><players><player><player_key>423.p.8332</player_key><position>WR</position></player><player><player_key>423.p.1423</player_key><position>BN</position></player></players><week>13</week></roster></fantasy_content>',
             undefined,
          );
@@ -721,7 +715,7 @@ describe('RequestBuilder', () => {
 
          expect(httpClient.put).toHaveBeenCalledTimes(1);
          expect(httpClient.put).toHaveBeenCalledWith(
-            '/team/423.l.12345.t.1;out=roster',
+            '/team/423.l.12345.t.1/roster',
             '<?xml version="1.0" encoding="UTF-8"?><fantasy_content><roster><coverage_type>date</coverage_type><players><player><player_key>423.p.9988</player_key><position>1B</position></player></players><date>2026-03-15</date></roster></fantasy_content>',
             undefined,
          );
@@ -1092,9 +1086,7 @@ describe('RequestBuilder', () => {
             .league('423.l.12345')
             .scoreboard();
 
-         expect(builder.toString()).toBe(
-            '/league/423.l.12345;out=scoreboard',
-         );
+         expect(builder.toString()).toBe('/league/423.l.12345/scoreboard');
       });
 
       it('returns a placeholder for an incomplete request', () => {
