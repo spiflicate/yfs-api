@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-
-import { BaseResource, type RequestState } from './base-resource';
-import type { Transport } from './transport';
+import type { Transport } from '../core/transport';
+import { type RequestState, Resource } from './base-resource';
 
 type TestSubResource = 'metadata' | 'players';
 
@@ -22,11 +21,7 @@ type TestParams =
         page?: number;
      };
 
-class TestQuery extends BaseResource<
-   TestParams,
-   TestSubResource,
-   TestParams['type']
-> {
+class TestQuery extends Resource<TestParams, TestSubResource> {
    static resource(
       params: Extract<TestParams, { type: 'resource' }>,
    ): TestQuery {
@@ -40,7 +35,7 @@ class TestQuery extends BaseResource<
    }
 
    protected override clone(params: TestParams): this {
-      return new TestQuery(this.transport, this.state, params) as this;
+      return new TestQuery(this._transport, this._state, params) as this;
    }
 
    protected override serialize(): string {

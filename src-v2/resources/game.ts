@@ -1,18 +1,17 @@
+import type { HttpClient as Transport } from '../client/http';
 import {
-   type BaseParams,
-   BaseResource,
+   Collection,
+   type CollectionParams,
+   // type BaseParams,
    type RequestState,
-} from '../core/base-resource';
-import type { Transport } from '../core/transport';
-
-type TypeLike<T extends string> = T | (string & {});
-
-type GameCode = 'nhl' | 'nfl' | 'mlb' | 'nba';
-type GameKey = `${number}`;
-type GameKeyLike = TypeLike<GameKey | GameCode>;
+   Resource,
+   type ResourceParams,
+} from './base-resource';
+import { LeagueResource } from './league';
+import type { GameKeyLike, LeagueKeyLike } from './types';
 
 // note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.
-type GameSubResource = 'metadata' | 'leagues' | 'players' | 'game_weeks';
+type GameSubResource = 'metadata' | 'game_weeks' | 'leagues' | 'players';
 
 type GameTypes =
    | 'full'
@@ -21,25 +20,23 @@ type GameTypes =
    | 'pickem-team-list';
 
 type GameFilters = {
-   game_keys?: GameKeyLike[];
    seasons?: `${number}`[];
    is_available?: '1';
    game_types?: GameTypes[];
 };
 
-type GameResourceParams = BaseParams<
-   'resource',
-   GameSubResource,
-   GameKeyLike
->;
+type GameResourceParams = ResourceParams<GameSubResource, GameKeyLike>;
 
-type GamesCollectionParams = BaseParams<'collection', GameSubResource> &
+type GamesCollectionParams = CollectionParams<
+   GameSubResource,
+   GameKeyLike,
+   'games'
+> &
    GameFilters;
 
-export class GameResource extends BaseResource<
+export class GameResource extends Resource<
    GameResourceParams,
-   GameSubResource,
-   'resource'
+   GameSubResource
 > {
    static create(
       transport: Transport,
@@ -54,15 +51,22 @@ export class GameResource extends BaseResource<
       });
    }
 
+   league(key: LeagueKeyLike): LeagueResource {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return LeagueResource.create(this._transport, state, key);
+   }
+
    clone(params: GameResourceParams): this {
-      return new GameResource(this.transport, this.state, params) as this;
+      return new GameResource(this._transport, this._state, params) as this;
    }
 }
 
-export class GamesCollection extends BaseResource<
+export class GamesCollection extends Collection<
    GamesCollectionParams,
-   GameSubResource,
-   'collection'
+   GameSubResource
 > {
    static create(
       transport: Transport,
@@ -72,35 +76,17 @@ export class GamesCollection extends BaseResource<
       return new GamesCollection(transport, state, {
          type: 'collection',
          name: 'games',
-         game_keys: keys ? [...keys] : undefined,
          out: [],
+         ...(keys ? { game_keys: keys } : {}),
       });
    }
 
    clone(params: GamesCollectionParams): this {
       // Safe as long as GamesCollection is not subclassed without overriding clone().
       return new GamesCollection(
-         this.transport,
-         this.state,
+         this._transport,
+         this._state,
          params,
       ) as this;
-   }
-
-   filters(filters: Partial<GameFilters>): GamesCollection {
-      const params: GamesCollectionParams = {
-         ...this.params,
-         ...(filters.seasons && { seasons: filters.seasons }),
-         ...(filters.is_available && {
-            is_available: filters.is_available,
-         }),
-         ...(filters.game_types && { game_types: filters.game_types }),
-      };
-
-      return new GamesCollection(this.transport, this.state, params);
-   }
-
-   async get(): Promise<unknown> {
-      const raw = await this.transport.get(this.toPath());
-      return raw;
    }
 }
