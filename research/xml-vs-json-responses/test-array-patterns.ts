@@ -4,7 +4,7 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { detectArrayPatterns } from '../src/utils/xmlParser';
+import { detectArrayPatterns } from '../../src/utils/xmlParser';
 
 const fixturesDir = join(__dirname, '../tests/fixtures/xml');
 const xmlFiles = readdirSync(fixturesDir).filter((f) => f.endsWith('.xml'));

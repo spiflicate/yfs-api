@@ -12,7 +12,7 @@
  */
 
 import { XMLParser } from 'fast-xml-parser';
-import { OAuth1Client } from '../src/client/OAuth1Client.js';
+import { OAuth1Client } from '../../src/client/OAuth1Client.js';
 
 const API_BASE_URL = 'https://fantasysports.yahooapis.com/fantasy/v2';
 

@@ -1,6 +1,8 @@
 # Yahoo Fantasy Sports API – Overview
 
-This document summarizes the official Yahoo Fantasy Sports API guide at https://developer.yahoo.com/fantasysports/guide/ and organizes it for use with this SDK.
+This document summarizes the official [Yahoo Fantasy Sports API guide](https://sports.yahoo.com/developer/docs/) (previously at https://developer.yahoo.com/fantasysports/guide/) and organizes it for use with this SDK.
+
+[Original App listing](https://developer.yahoo.com/apps/)
 
 ## Contents
 - [Introduction](#introduction)

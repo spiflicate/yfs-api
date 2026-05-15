@@ -8,7 +8,7 @@
  *   bun run scripts/inspect-xml-response.ts
  */
 
-import { YahooFantasyClient } from '../src/index.js';
+import { YahooFantasyClient } from '../../src/index.js';
 
 const consumerKey =
    process.env.YAHOO_CLIENT_ID || process.env.YAHOO_CONSUMER_KEY;

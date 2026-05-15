@@ -3,7 +3,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseYahooXML } from '../src/utils/xmlParser.js';
+import { parseYahooXML } from '../../src/utils/xmlParser.js';
 
 // Resolve xmlPath relative to this script file
 const __filename = fileURLToPath(import.meta.url);

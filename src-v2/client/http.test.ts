@@ -1,0 +1,992 @@
+/**
+ * Unit tests for HttpClient
+ */
+
+// biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
+
+import {
+   afterEach,
+   beforeEach,
+   describe,
+   expect,
+   mock,
+   test,
+} from 'bun:test';
+import {
+   AuthenticationError,
+   NetworkError,
+   NotFoundError,
+   RateLimitError,
+   YahooApiError,
+} from '../core/errors.js';
+import { API_BASE_URL, HTTP_STATUS } from '../utils/constants.js';
+import { HttpClient } from './http.js';
+import { OAuth2Client, type OAuth2Tokens } from './oauth2.js';
+
+function createTokenProvider(tokens?: OAuth2Tokens) {
+   return () => tokens;
+}
+
+describe('HttpClient', () => {
+   let oauth2Client: OAuth2Client;
+   let tokens: OAuth2Tokens;
+   let originalFetch: typeof global.fetch;
+
+   beforeEach(() => {
+      // Save original fetch
+      originalFetch = global.fetch;
+
+      // Create OAuth2 client
+      oauth2Client = new OAuth2Client(
+         'test-client-id',
+         'test-client-secret',
+         'https://example.com/callback',
+      );
+
+      // Create mock tokens
+      tokens = {
+         accessToken: 'test-access-token',
+         tokenType: 'bearer',
+         expiresIn: 3600,
+         refreshToken: 'test-refresh-token',
+         expiresAt: Date.now() + 3600 * 1000, // 1 hour from now
+      };
+   });
+
+   afterEach(() => {
+      // Restore original fetch
+      global.fetch = originalFetch;
+   });
+
+   describe('constructor', () => {
+      test('should create HttpClient with tokens', () => {
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         expect(client).toBeInstanceOf(HttpClient);
+      });
+
+      test('should create HttpClient without tokens', () => {
+         const client = new HttpClient(oauth2Client);
+         expect(client).toBeInstanceOf(HttpClient);
+      });
+
+      test('should accept custom options', () => {
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               timeout: 60000,
+               maxRetries: 5,
+               debug: true,
+            },
+         );
+         expect(client).toBeInstanceOf(HttpClient);
+      });
+   });
+
+   describe('setTokenProvider', () => {
+      test('should set token provider', async () => {
+         const client = new HttpClient(oauth2Client);
+         client.setTokenProvider(createTokenProvider(tokens));
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         await client.get('/test/path');
+         expect(client).toBeInstanceOf(HttpClient);
+      });
+   });
+
+   describe('setTokenRefreshCallback', () => {
+      test('should set token refresh callback', () => {
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         const callback = async () => tokens;
+         client.setTokenRefreshCallback(callback);
+         expect(client).toBeInstanceOf(HttpClient);
+      });
+   });
+
+   describe('get', () => {
+      test('should make successful GET request', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><data>test-data</data></fantasy_content>';
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         const result = await client.get('/test/path');
+
+         expect(result).toHaveProperty('data');
+         expect(fetchMock).toHaveBeenCalledTimes(1);
+
+         // Verify URL construction
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [url] = callArgs;
+         expect(url).toContain(API_BASE_URL);
+         expect(url).toContain('/test/path');
+         expect(url).toContain('format=xml');
+      });
+
+      test('should include authorization header', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.get('/test/path');
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers.Authorization).toBe(
+            `Bearer ${tokens.accessToken}`,
+         );
+      });
+
+      test('should include query parameters', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.get('/test/path', {
+            params: { status: 'A', count: 25, active: true },
+         });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [url] = callArgs;
+         expect(url).toContain('status=A');
+         expect(url).toContain('count=25');
+         expect(url).toContain('active=true');
+      });
+
+      test('should filter out undefined params', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.get('/test/path', {
+            params: { status: 'A', count: undefined },
+         });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [url] = callArgs;
+         expect(url).toContain('status=A');
+         expect(url).not.toContain('count');
+      });
+
+      test('should skip auth when skipAuth is true', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.get('/test/path', { skipAuth: true });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers.Authorization).toBeUndefined();
+      });
+   });
+
+   describe('post', () => {
+      test('should make successful POST request with body', async () => {
+         const requestBody = { key: 'value' };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         const result = await client.post('/test/path', requestBody);
+
+         expect(result).toHaveProperty('success');
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.method).toBe('POST');
+         expect(options.body).toBe(JSON.stringify(requestBody));
+         expect(options.headers['Content-Type']).toBe('application/json');
+      });
+
+      test('should default string POST bodies to XML content type', async () => {
+         const xmlBody =
+            '<?xml version="1.0"?><fantasy_content><transaction /></fantasy_content>';
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.post('/test/path', xmlBody);
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.body).toBe(xmlBody);
+         expect(options.headers['Content-Type']).toBe('application/xml');
+      });
+   });
+
+   describe('put', () => {
+      test('should make successful PUT request with body', async () => {
+         const requestBody = { key: 'value' };
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         const result = await client.put('/test/path', requestBody);
+
+         expect(result).toHaveProperty('success');
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.method).toBe('PUT');
+      });
+   });
+
+   describe('delete', () => {
+      test('should make successful DELETE request', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>';
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         const result = await client.delete('/test/path');
+
+         expect(result).toHaveProperty('success');
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.method).toBe('DELETE');
+         expect(options.headers['Content-Type']).toBeUndefined();
+      });
+   });
+
+   describe('error handling', () => {
+      test('should throw AuthenticationError on 401', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.UNAUTHORIZED,
+               text: () => Promise.resolve('Unauthorized'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            AuthenticationError,
+         );
+      });
+
+      test('should throw NotFoundError on 404', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.NOT_FOUND,
+               text: () => Promise.resolve('Not found'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            NotFoundError,
+         );
+      });
+
+      test('should throw RateLimitError on 429 after retries', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.TOO_MANY_REQUESTS,
+               headers: {
+                  get: (name: string) =>
+                     name === 'Retry-After' ? '60' : null,
+               },
+               text: () => Promise.resolve('Rate limited'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0, // Don't retry to speed up test
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            RateLimitError,
+         );
+      });
+
+      test('should throw YahooApiError on other error status', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: 400,
+               statusText: 'Bad Request',
+               text: () => Promise.resolve('Bad request body'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            YahooApiError,
+         );
+      });
+
+      test('should throw AuthenticationError when no tokens available', async () => {
+         const client = new HttpClient(oauth2Client); // No tokens
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            AuthenticationError,
+         );
+      });
+
+      test('should throw NetworkError on timeout', async () => {
+         const fetchMock = mock(() =>
+            Promise.reject(
+               Object.assign(new Error('Timeout'), { name: 'AbortError' }),
+            ),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            NetworkError,
+         );
+      });
+
+      test('should throw NetworkError on network error', async () => {
+         const fetchMock = mock(() =>
+            Promise.reject(new Error('Network failure')),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            NetworkError,
+         );
+      });
+   });
+
+   describe('token refresh', () => {
+      test('should refresh expired token before request', async () => {
+         const expiredTokens: OAuth2Tokens = {
+            ...tokens,
+            expiresAt: Date.now() - 1000, // Expired 1 second ago
+         };
+
+         const newTokens: OAuth2Tokens = {
+            ...tokens,
+            accessToken: 'new-access-token',
+            expiresAt: Date.now() + 3600 * 1000,
+         };
+
+         let currentTokens = expiredTokens;
+         let refreshCalled = false;
+         const refreshCallback = async () => {
+            refreshCalled = true;
+            currentTokens = newTokens;
+            return newTokens;
+         };
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            () => currentTokens,
+            refreshCallback,
+         );
+         await client.get('/test/path');
+
+         expect(refreshCalled).toBe(true);
+
+         // Verify new token was used
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers.Authorization).toBe(
+            `Bearer ${newTokens.accessToken}`,
+         );
+      });
+
+      test('should throw error if token expired and no refresh callback', async () => {
+         const expiredTokens: OAuth2Tokens = {
+            ...tokens,
+            expiresAt: Date.now() - 1000,
+         };
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(expiredTokens),
+         ); // No callback
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            AuthenticationError,
+         );
+      });
+
+      test('should refresh and retry once on 401 even when maxRetries is zero', async () => {
+         const newTokens: OAuth2Tokens = {
+            ...tokens,
+            accessToken: 'new-access-token',
+            expiresAt: Date.now() + 3600 * 1000,
+         };
+
+         let currentTokens = tokens;
+         let refreshCalled = false;
+         const refreshCallback = async () => {
+            refreshCalled = true;
+            currentTokens = newTokens;
+            return newTokens;
+         };
+
+         let attempts = 0;
+         const fetchMock = mock(() => {
+            attempts++;
+            if (attempts === 1) {
+               return Promise.resolve({
+                  ok: false,
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  text: () =>
+                     Promise.resolve(
+                        '<?xml version="1.0"?><error><description>Invalid cookie, please log in again.</description></error>',
+                     ),
+               });
+            }
+
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
+            });
+         });
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            () => currentTokens,
+            refreshCallback,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         const result = await client.get('/test/path');
+
+         expect(result).toHaveProperty('success');
+         expect(refreshCalled).toBe(true);
+         expect(fetchMock).toHaveBeenCalledTimes(2);
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length < 2) {
+            throw new Error('Expected fetch to be called twice');
+         }
+
+         const [, firstOptions] = calls[0] as any[];
+         const [, secondOptions] = calls[1] as any[];
+         expect(firstOptions.headers.Authorization).toBe(
+            `Bearer ${tokens.accessToken}`,
+         );
+         expect(secondOptions.headers.Authorization).toBe(
+            `Bearer ${newTokens.accessToken}`,
+         );
+      });
+
+      test('should only refresh once when 401 persists after retry', async () => {
+         const newTokens: OAuth2Tokens = {
+            ...tokens,
+            accessToken: 'new-access-token',
+            expiresAt: Date.now() + 3600 * 1000,
+         };
+
+         let currentTokens = tokens;
+         let refreshCalls = 0;
+         const refreshCallback = async () => {
+            refreshCalls++;
+            currentTokens = newTokens;
+            return newTokens;
+         };
+
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.UNAUTHORIZED,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><error><description>Invalid cookie, please log in again.</description></error>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            () => currentTokens,
+            refreshCallback,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            AuthenticationError,
+         );
+         expect(refreshCalls).toBe(1);
+         expect(fetchMock).toHaveBeenCalledTimes(2);
+      });
+   });
+
+   describe('retry logic', () => {
+      test('should retry on retryable status codes', async () => {
+         let attempts = 0;
+         const fetchMock = mock(() => {
+            attempts++;
+            if (attempts === 1) {
+               return Promise.resolve({
+                  ok: false,
+                  status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+                  text: () => Promise.resolve('Server error'),
+               });
+            }
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
+            });
+         });
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
+
+         const result = await client.get('/test/path');
+         expect(result).toHaveProperty('success');
+         expect(attempts).toBe(2);
+      });
+
+      test('should retry on 429 with Retry-After header', async () => {
+         let attempts = 0;
+         const fetchMock = mock(() => {
+            attempts++;
+            if (attempts === 1) {
+               return Promise.resolve({
+                  ok: false,
+                  status: HTTP_STATUS.TOO_MANY_REQUESTS,
+                  headers: {
+                     get: (name: string) =>
+                        name === 'Retry-After' ? '1' : null,
+                  },
+                  text: () => Promise.resolve('Rate limited'),
+               });
+            }
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
+            });
+         });
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
+
+         const result = await client.get('/test/path');
+         expect(result).toHaveProperty('success');
+         expect(attempts).toBe(2);
+      });
+
+      test('should exhaust retries and throw error', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: false,
+               status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+               text: () => Promise.resolve('Server error'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 2,
+            },
+         );
+
+         await expect(client.get('/test/path')).rejects.toThrow(
+            YahooApiError,
+         );
+         expect(fetchMock.mock.calls?.length).toBe(3); // Initial + 2 retries
+      });
+
+      test('should retry on network errors', async () => {
+         let attempts = 0;
+         const fetchMock = mock(() => {
+            attempts++;
+            if (attempts === 1) {
+               return Promise.reject(new Error('Network failure'));
+            }
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><success>true</success></fantasy_content>',
+                  ),
+            });
+         });
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               maxRetries: 1,
+            },
+         );
+
+         const result = await client.get('/test/path');
+         expect(result).toHaveProperty('success');
+         expect(attempts).toBe(2);
+      });
+   });
+
+   describe('custom options', () => {
+      test('should use custom headers', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.get('/test/path', {
+            headers: { 'X-Custom-Header': 'custom-value' },
+         });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers['X-Custom-Header']).toBe('custom-value');
+      });
+
+      test('should accept string body for POST', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.post('/test/path', 'raw-string-body');
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(typeof options.body).toBe('string');
+         expect(options.headers['Content-Type']).toBe('application/xml');
+      });
+
+      test('should respect explicit content type for string bodies', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+         await client.post('/test/path', '<xml />', {
+            headers: { 'Content-Type': 'text/plain' },
+         });
+
+         const calls = fetchMock.mock.calls;
+         if (!calls || calls.length === 0) {
+            throw new Error('Expected fetch to be called');
+         }
+         const callArgs = calls[0] as any[];
+         const [, options] = callArgs;
+         expect(options.headers['Content-Type']).toBe('text/plain');
+      });
+   });
+
+   describe('rate limiting', () => {
+      test('should wait for rate limiter', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<?xml version="1.0"?><fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         );
+         global.fetch = fetchMock as any;
+
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         // Make multiple rapid requests
+         await Promise.all([
+            client.get('/test/path1'),
+            client.get('/test/path2'),
+            client.get('/test/path3'),
+         ]);
+
+         expect(fetchMock.mock.calls?.length).toBe(3);
+      });
+   });
+});

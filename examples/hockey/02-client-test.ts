@@ -111,7 +111,7 @@ async function main() {
    console.log('Step 2: Testing API access...');
    try {
       const httpClient = client.getHttpClient();
-      const response = await httpClient.get('/users;use_login=1');
+      const response = await httpClient.get('/game;game_key=nfl');
       console.log('✓ API test successful!\n');
 
       console.log('Response preview:');
