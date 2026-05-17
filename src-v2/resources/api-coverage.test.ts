@@ -650,8 +650,6 @@ describe('API path coverage', () => {
 
    for (const route of validApiRoutes) {
       it(`builds supported route ${route.route}`, () => {
-         console.log(canonicalizePath(route.route));
-         console.log(canonicalizePath(route.build()));
          expect(canonicalizePath(route.build())).toBe(
             canonicalizePath(route.route),
          );
@@ -660,8 +658,6 @@ describe('API path coverage', () => {
 
    for (const route of invalidApiRoute) {
       it(`builds known-invalid api probe ${route.route}`, () => {
-         console.log(canonicalizePath(route.route));
-         console.log(canonicalizePath(route.build()));
          expect(canonicalizePath(route.build())).toBe(
             canonicalizePath(route.route),
          );

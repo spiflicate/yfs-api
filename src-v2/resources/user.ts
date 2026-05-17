@@ -1,15 +1,12 @@
 import type { HttpClient as Transport } from '../client/http';
+import { GamesCollection } from './game';
 import {
    Collection,
    type CollectionParams,
    // type BaseParams,
    type RequestState,
-   Resource,
-   type ResourceParams,
-} from './base-resource';
-import { GamesCollection } from './game';
-import { LeaguesCollection } from './league';
-import type { GameKeyLike, LeagueKeyLike } from './types';
+} from './resource';
+import type { GameKeyLike } from './types';
 
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;
 

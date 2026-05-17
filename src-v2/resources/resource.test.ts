@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import type { Transport } from '../core/transport';
-import { type RequestState, Resource } from './base-resource';
+import type { HttpClient as Transport } from '../client/http';
+import { type RequestState, Resource } from './resource';
 
 type TestSubResource = 'metadata' | 'players';
 
@@ -42,10 +42,8 @@ class TestQuery extends Resource<TestParams, TestSubResource> {
       return this.serialize();
    }
 }
-
-const transport = {
-   get: async () => ({}),
-} satisfies Transport;
+// biome-ignore lint/suspicious/noExplicitAny: intentional for testing abstract class
+const transport = {} as any satisfies Transport;
 
 const state: RequestState = {
    segments: ['fantasy', 'v2'],

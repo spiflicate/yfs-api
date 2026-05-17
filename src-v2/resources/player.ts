@@ -5,7 +5,7 @@ import {
    type RequestState,
    Resource,
    type ResourceParams,
-} from './base-resource';
+} from './resource';
 import type { PlayerKeyLike } from './types';
 
 type DateString = `${number}-${number}-${number}`;

@@ -1,12 +1,12 @@
 import type { HttpClient as Transport } from '../client/http';
+import { PlayersCollection } from './player';
 import {
    Collection,
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
-} from './base-resource';
-import { PlayersCollection } from './player';
+} from './resource';
 import { TeamsCollection } from './team';
 import { TransactionsCollection } from './transaction';
 import type {

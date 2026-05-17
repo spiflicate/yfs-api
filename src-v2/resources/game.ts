@@ -1,4 +1,6 @@
 import type { HttpClient as Transport } from '../client/http';
+import { LeaguesCollection } from './league';
+import { PlayersCollection } from './player';
 import {
    Collection,
    type CollectionParams,
@@ -6,9 +8,7 @@ import {
    type RequestState,
    Resource,
    type ResourceParams,
-} from './base-resource';
-import { LeaguesCollection } from './league';
-import { PlayersCollection } from './player';
+} from './resource';
 import type { GameKeyLike, LeagueKeyLike, PlayerKeyLike } from './types';
 
 // note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.

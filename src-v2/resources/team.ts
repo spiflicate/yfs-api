@@ -5,7 +5,7 @@ import {
    type RequestState,
    Resource,
    type ResourceParams,
-} from './base-resource';
+} from './resource';
 import { RosterResource, RostersCollection } from './roster';
 import type { TeamKeyLike } from './types';
 

@@ -1,6 +1,6 @@
 import type { HttpClient as Transport } from '../client/http';
-import type { RequestState } from './base-resource';
 import { PlayersCollection } from './player';
+import type { RequestState } from './resource';
 import type { PlayerKeyLike } from './types';
 
 type DateString = `${number}-${number}-${number}`;

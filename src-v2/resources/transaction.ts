@@ -5,7 +5,7 @@ import {
    type RequestState,
    Resource,
    type ResourceParams,
-} from './base-resource';
+} from './resource';
 import type { TeamKeyLike, TransactionKeyLike } from './types';
 
 type TransactionType =
