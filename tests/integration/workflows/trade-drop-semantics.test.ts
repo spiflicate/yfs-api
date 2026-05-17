@@ -15,12 +15,9 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { TransactionBuilder } from '../../../src/builders/transaction.js';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
-import type {
-   PlayerKey,
-   TeamKey,
-} from '../../../src/types/request/graph.js';
+import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import type { PlayerKey, TeamKey } from '../../../src/domain/common.js';
+import { TransactionBuilder } from '../../../src/resources/transaction-builder.js';
 import {
    getOAuth2Config,
    getStoredTokens,
@@ -124,11 +121,11 @@ describe.skipIf(
          ).toBeUndefined();
 
          const response = await client
-            .request()
+            .api()
             .league(leagueKey)
             .transactions()
             .create(buildTransaction(dropType))
-            .execute<Record<string, unknown>>();
+            .get<Record<string, unknown>>();
 
          expect(response).toBeDefined();
       }

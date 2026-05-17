@@ -18,7 +18,7 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import { YahooFantasyClient } from '../../../src/client/yahoo.js';
 import {
    getOAuth2Config,
    getStoredTokens,
@@ -48,7 +48,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
          test('should expose request builders', () => {
             const client = new YahooFantasyClient(config);
-            expect(client.request()).toBeDefined();
+            expect(client.api()).toBeDefined();
          });
 
          test('should not be authenticated without tokens', () => {

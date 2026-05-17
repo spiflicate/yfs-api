@@ -18,7 +18,7 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import { YahooFantasyClient } from '../../../src/client/yahoo.js';
 import {
    getOAuth2Config,
    getStoredTokens,
@@ -135,23 +135,12 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // Get current user
-            const user = await client
-               .request()
-               .users()
-               .useLogin()
-               .execute();
+            const user = await client.api().users().get();
             expect(user).toBeDefined();
 
             // Get user's teams (if any)
             const teams = extractTeams(
-               await client
-                  .request()
-                  .users()
-                  .useLogin()
-                  .games()
-                  .gameKeys('nhl')
-                  .teams()
-                  .execute(),
+               await client.api().users().games(['nhl']).teams().get(),
             );
             expect(teams).toBeDefined();
             expect(Array.isArray(teams)).toBe(true);
@@ -164,14 +153,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
             // Get user's teams
             const teams = extractTeams(
-               await client
-                  .request()
-                  .users()
-                  .useLogin()
-                  .games()
-                  .gameKeys('nhl')
-                  .teams()
-                  .execute(),
+               await client.api().users().games(['nhl']).teams().get(),
             );
 
             if (teams && teams.length > 0) {
@@ -180,18 +162,18 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get team details
                const team = await client
-                  .request()
+                  .api()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
-                  .execute();
+                  .get();
                expect(team).toBeDefined();
                expect(team.team.teamKey).toBe(teamKey);
 
                // Get current roster
                const roster = await client
-                  .request()
+                  .api()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
                   .roster()
-                  .execute();
+                  .get();
                expect(roster).toBeDefined();
                expect(roster.team.roster?.players).toBeDefined();
                expect(Array.isArray(roster.team.roster?.players)).toBe(
@@ -200,10 +182,10 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get team stats
                const stats = await client
-                  .request()
+                  .api()
                   .team(teamKey as `${number}.l.${number}.t.${number}`)
                   .stats()
-                  .execute();
+                  .get();
                expect(stats).toBeDefined();
             }
          });
@@ -212,18 +194,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
       describe('Player Search and Analysis', () => {
          test('should search and analyze players', async () => {
             // Get NHL game
-            const game = (await client.request().game('nhl').execute())
-               .game;
+            const game = (await client.api().game('nhl').get()).game;
             expect(game).toBeDefined();
 
             // Search for a specific player
             const searchResult = await client
-               .request()
+               .api()
                .game(game.gameKey)
                .players()
                .search('McDavid')
                .count(5)
-               .execute();
+               .get();
 
             expect(searchResult).toBeDefined();
             expect(searchResult.players).toBeDefined();
@@ -234,9 +215,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get detailed player information
                const player = await client
-                  .request()
+                  .api()
                   .player(firstPlayer.playerKey as `${number}.p.${number}`)
-                  .execute();
+                  .get();
                expect(player).toBeDefined();
                expect(player.player.name).toBeTruthy();
             }
@@ -245,14 +226,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
          test('should find free agents in league', async () => {
             // Get user's teams
             const teams = extractTeams(
-               await client
-                  .request()
-                  .users()
-                  .useLogin()
-                  .games()
-                  .gameKeys('nhl')
-                  .teams()
-                  .execute(),
+               await client.api().users().games(['nhl']).teams().get(),
             );
 
             if (teams && teams.length > 0) {
@@ -265,14 +239,14 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Search for free agents
                const freeAgents = await client
-                  .request()
+                  .api()
                   .league(leagueKey as `${number}.l.${number}`)
                   .players()
                   .status('FA')
                   .position('C')
                   .sort('60')
                   .count(25)
-                  .execute();
+                  .get();
 
                expect(freeAgents).toBeDefined();
                expect(freeAgents.league.players).toBeDefined();
@@ -285,14 +259,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
          test('should analyze league standings and matchups', async () => {
             // Get user's teams first
             const teams = extractTeams(
-               await client
-                  .request()
-                  .users()
-                  .useLogin()
-                  .games()
-                  .gameKeys('nhl')
-                  .teams()
-                  .execute(),
+               await client.api().users().games(['nhl']).teams().get(),
             );
 
             if (teams && teams.length > 0) {
@@ -305,35 +272,35 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get league details
                const league = await client
-                  .request()
+                  .api()
                   .league(leagueKey as `${number}.l.${number}`)
-                  .execute();
+                  .get();
                expect(league).toBeDefined();
 
                // Get current standings
                const standings = await client
-                  .request()
+                  .api()
                   .league(leagueKey as `${number}.l.${number}`)
                   .standings()
-                  .execute();
+                  .get();
                expect(standings).toBeDefined();
                expect(standings.league.standings).toBeDefined();
 
                // Get current week scoreboard
                const scoreboard = await client
-                  .request()
+                  .api()
                   .league(leagueKey as `${number}.l.${number}`)
                   .scoreboard()
-                  .execute();
+                  .get();
                expect(scoreboard).toBeDefined();
                expect(scoreboard.league.scoreboard).toBeDefined();
 
                // Get league settings
                const settings = await client
-                  .request()
+                  .api()
                   .league(leagueKey as `${number}.l.${number}`)
                   .settings()
-                  .execute();
+                  .get();
                expect(settings).toBeDefined();
             }
          });
@@ -345,14 +312,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
             // Get user's teams
             const teams = extractTeams(
-               await client
-                  .request()
-                  .users()
-                  .useLogin()
-                  .games()
-                  .gameKeys('nhl')
-                  .teams()
-                  .execute(),
+               await client.api().users().games(['nhl']).teams().get(),
             );
 
             if (teams && teams.length > 0) {
@@ -361,11 +321,11 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
                // Get the same team via team resource
                const teamDetails = await client
-                  .request()
+                  .api()
                   .team(
                      userTeam.teamKey as `${number}.l.${number}.t.${number}`,
                   )
-                  .execute();
+                  .get();
 
                // Data should be consistent
                expect(teamDetails.team.teamKey).toBe(userTeam.teamKey);
@@ -380,21 +340,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             await client.loadTokens();
 
             // This should retry on network issues
-            const user = await client
-               .request()
-               .users()
-               .useLogin()
-               .execute();
+            const user = await client.api().users().get();
             expect(user).toBeDefined();
          });
 
          test('should handle invalid resource keys gracefully', async () => {
             expect(async () => {
-               await client.request().league('999.l.99999').execute();
+               await client.api().league('999.l.99999').get();
             }).toThrow();
 
             // Should still be able to make valid requests
-            const games = await client.request().game('nhl').execute();
+            const games = await client.api().game('nhl').get();
             expect(games).toBeDefined();
          });
       });

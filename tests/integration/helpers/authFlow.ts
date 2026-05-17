@@ -13,9 +13,9 @@
  * See docs/TOKEN_FILE_GUIDE.md for complete documentation on token management.
  */
 
-import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
-import type { TokenStorage } from '../../../src/client/YahooFantasyClient.js';
-import { YahooFantasyClient } from '../../../src/client/YahooFantasyClient.js';
+import type { OAuth2Tokens } from '../../../src/auth/oauth2.js';
+import type { TokenStorage } from '../../../src/client/yahoo.js';
+import { YahooFantasyClient } from '../../../src/client/yahoo.js';
 import { getOAuth2Config, getStoredTokens } from './testConfig.js';
 
 /**
@@ -74,7 +74,7 @@ export class FileTokenStorage implements TokenStorage {
  * Prompt user for authorization code via console
  */
 async function promptForAuthCode(authUrl: string): Promise<string> {
-   console.log('\n' + '='.repeat(70));
+   console.log(`\n${'='.repeat(70)}`);
    console.log('AUTHENTICATION REQUIRED');
    console.log('='.repeat(70));
    console.log('\nPlease complete the following steps:');
@@ -85,7 +85,7 @@ async function promptForAuthCode(authUrl: string): Promise<string> {
       '3. Copy the authorization code from the redirect URL or page',
    );
    console.log('4. Paste it below and press Enter');
-   console.log('\n' + '='.repeat(70) + '\n');
+   console.log(`\n${'='.repeat(70)}\n`);
 
    // Use readline for cross-platform stdin reading
    const readline = await import('node:readline');

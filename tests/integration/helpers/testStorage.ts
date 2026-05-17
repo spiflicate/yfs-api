@@ -2,8 +2,8 @@
  * In-memory token storage for integration tests
  */
 
-import type { TokenStorage } from '../../../src/client/YahooFantasyClient.js';
-import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
+import type { OAuth2Tokens } from '../../../src/auth/oauth2.js';
+import type { TokenStorage } from '../../../src/client/yahoo.js';
 
 /**
  * Simple in-memory token storage for testing

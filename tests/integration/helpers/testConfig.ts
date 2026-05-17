@@ -5,8 +5,8 @@
  * which provides getAuthenticatedClient() for seamless token management.
  */
 
-import type { OAuth2Tokens } from '../../../src/client/OAuth2Client.js';
-import type { Config } from '../../../src/types/index.js';
+import type { OAuth2Tokens } from '../../../src/auth/oauth2.js';
+import type { Config } from '../../../src/client/yahoo.js';
 
 /**
  * Get OAuth 2.0 configuration from environment
