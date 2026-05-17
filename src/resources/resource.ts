@@ -173,11 +173,3 @@ export abstract class Resource<
       return `;${enc(key)}=${enc(value)}`;
    }
 }
-
-/**
- * Convenience base type for collection-only resource builders.
- */
-export abstract class Collection<
-   TParams extends CollectionParams<TSubResource>,
-   TSubResource extends string,
-> extends Resource<TParams, TSubResource> {}

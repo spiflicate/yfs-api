@@ -1,6 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
 import {
-   Collection,
    type CollectionParams,
    type RequestState,
    Resource,
@@ -205,7 +204,7 @@ export class PlayerResource extends Resource<
    }
 }
 
-export class PlayersCollection extends Collection<
+export class PlayersCollection extends Resource<
    PlayersCollectionParams,
    PlayerSubResource
 > {

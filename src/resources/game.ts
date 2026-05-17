@@ -2,7 +2,6 @@ import type { HttpClient as Transport } from '../client/http';
 import { LeaguesCollection } from './league';
 import { PlayersCollection } from './player';
 import {
-   Collection,
    type CollectionParams,
    // type BaseParams,
    type RequestState,
@@ -77,7 +76,7 @@ export class GameResource extends Resource<
    }
 }
 
-export class GamesCollection extends Collection<
+export class GamesCollection extends Resource<
    GamesCollectionParams,
    GameSubResource
 > {

@@ -1,6 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
 import {
-   Collection,
    type CollectionParams,
    type RequestState,
    Resource,
@@ -260,7 +259,7 @@ export class TeamResource extends Resource<
    }
 }
 
-export class TeamsCollection extends Collection<
+export class TeamsCollection extends Resource<
    TeamsCollectionParams,
    TeamSubResource
 > {

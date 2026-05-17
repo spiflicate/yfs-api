@@ -1,16 +1,16 @@
 import type { HttpClient as Transport } from '../client/http';
 import { GamesCollection } from './game';
 import {
-   Collection,
    type CollectionParams,
    // type BaseParams,
    type RequestState,
+   Resource,
 } from './resource';
 import type { GameKeyLike } from './types';
 
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;
 
-export class UsersCollection extends Collection<
+export class UsersCollection extends Resource<
    UsersCollectionParams,
    never
 > {
