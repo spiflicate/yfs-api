@@ -34,31 +34,7 @@
  * ```
  */
 
-// Export all types
-// Resource types
-// NHL-specific types
-export type {
-   ApiResponse,
-   BaseMetadata,
-   Config,
-   CoverageType,
-   DateRangeParams,
-   DraftStatus,
-   GameCode,
-   InferResponseType,
-   NHLPositionType,
-   PaginationParams,
-   PlayerStatus,
-   PositionType,
-   ResourceKey,
-   RosterChangeRequest,
-   RouteStage,
-   ScoringType,
-   SortParams,
-   StatValue,
-   TransactionStatus,
-   TransactionType,
-} from '../src/types/index.js';
+export { OAuth2Client, type OAuth2Tokens } from './auth/oauth2.js';
 // Export error types and guards
 export {
    AuthenticationError,
@@ -75,20 +51,31 @@ export {
    ValidationError,
    YahooApiError,
    YahooFantasyError,
-} from '../src/types/index.js';
-export {
-   CoverageTypeFilter,
-   GameSubResource,
-   LeagueSubResource,
-   PlayerStatusFilter,
-   PlayerSubResource,
-   SortFilter,
-   TeamSubResource,
-   TransactionTypeFilter,
-} from '../src/types/request/filters.js';
-export { OAuth2Client, type OAuth2Tokens } from './auth/oauth2.js';
+} from './client/errors';
 export type { TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasyClient } from './client/yahoo.js';
+// Export all types
+// Resource types
+// NHL-specific types
+export type {
+   ApiResponse,
+   BaseMetadata,
+   Config,
+   CoverageType,
+   DateRangeParams,
+   DraftStatus,
+   GameCode,
+   NHLPositionType,
+   PaginationParams,
+   PlayerStatus,
+   PositionType,
+   ResourceKey,
+   ScoringType,
+   SortParams,
+   StatValue,
+   TransactionStatus,
+   TransactionType,
+} from './domain/index';
 // Export XML parsing utilities (only the still-useful ones)
-export { parseYahooXML } from './utils/xmlParser.js';
+export { parseYahooXML } from './utils/xmlParser';

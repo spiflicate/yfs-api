@@ -5,10 +5,10 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
 
 import { describe, expect, mock, test } from 'bun:test';
-import type { Config } from '../../src/types/index.js';
-import { ConfigError } from '../../src/types/index.js';
 import type { OAuth2Tokens } from '../auth/oauth2.js';
-import { type TokenStorage, YahooFantasyClient } from './yahoo.js';
+import { ConfigError } from './errors.js';
+import type { Config, TokenStorage } from './yahoo';
+import { YahooFantasyClient } from './yahoo';
 
 describe('YahooFantasyClient', () => {
    const config: Config = {
