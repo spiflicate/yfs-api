@@ -1,5 +1,5 @@
 import { mkdir } from 'node:fs/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { argv, stdin as input, stdout as output } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { HttpClient } from '../../src/client/HttpClient.js';
 import { OAuth1Client } from '../../src/client/OAuth1Client.js';
@@ -16,8 +16,14 @@ import {
    type RouteConfidence,
    type RouteDefinition,
    type RouteMode,
+   type RouteSet,
    STATIC_ROUTE_SETS,
 } from './static-route-definitions.js';
+
+interface SelectedRoute {
+   route: RouteDefinition;
+   routeSet: RouteSet;
+}
 
 type RequestStatus = 'passed' | 'failed' | 'skipped';
 type ShapeStatus = 'passed' | 'warning' | 'not-run';
@@ -59,6 +65,7 @@ interface RouteResult {
    mode: RouteMode;
    path?: string;
    requestStatus: RequestStatus;
+   routeSet: RouteSet;
    retryProbe?: RetryProbe;
    shapeStatus: ShapeStatus;
    requestNotes: string[];
@@ -184,18 +191,36 @@ function parseRouteIds(routeIds: string[] | undefined): Set<string> | null {
    return new Set(routeIds.map((value) => value.trim()).filter(Boolean));
 }
 
+function parseCliArgs(args: string[]): { includeInvalid: boolean } {
+   return {
+      includeInvalid: args.includes('--include-invalid'),
+   };
+}
+
 function selectRoutes(
    mode: RouteMode | 'all',
    routeIds: Set<string> | null,
-): RouteDefinition[] {
+   includeInvalid: boolean,
+): SelectedRoute[] {
    const modes: RouteMode[] =
       mode === 'all' ? ['public', 'private'] : [mode];
 
-   return modes.flatMap((currentMode) =>
-      STATIC_ROUTE_SETS[currentMode].filter((route) =>
-         routeIds ? routeIds.has(route.id) : true,
-      ),
+   const selectedRoutes = modes.flatMap((currentMode) =>
+      STATIC_ROUTE_SETS[currentMode]
+         .filter((route) => (routeIds ? routeIds.has(route.id) : true))
+         .map((route) => ({ route, routeSet: currentMode as RouteSet })),
    );
+
+   if (!includeInvalid) {
+      return selectedRoutes;
+   }
+
+   const invalidRoutes = STATIC_ROUTE_SETS.invalid
+      .filter((route) => modes.includes(route.mode))
+      .filter((route) => (routeIds ? routeIds.has(route.id) : true))
+      .map((route) => ({ route, routeSet: 'invalid' as const }));
+
+   return [...selectedRoutes, ...invalidRoutes];
 }
 
 function resolveTemplate(
@@ -619,7 +644,8 @@ function hasReturnedData(response: unknown): boolean {
    return true;
 }
 
-async function runRoute(route: RouteDefinition): Promise<RouteResult> {
+async function runRoute(selectedRoute: SelectedRoute): Promise<RouteResult> {
+   const { route, routeSet } = selectedRoute;
    const resolved = resolveTemplate(route.pathTemplate, getRouteContext());
    if (!resolved.path) {
       return {
@@ -628,6 +654,7 @@ async function runRoute(route: RouteDefinition): Promise<RouteResult> {
          id: route.id,
          mode: route.mode,
          requestStatus: 'skipped',
+         routeSet,
          shapeStatus: 'not-run',
          requestNotes: [
             `missing placeholder values: ${resolved.missing.join(', ')}`,
@@ -657,6 +684,7 @@ async function runRoute(route: RouteDefinition): Promise<RouteResult> {
             mode: route.mode,
             path: resolved.path,
             requestStatus: 'failed',
+            routeSet,
             shapeStatus: 'not-run',
             requestNotes: [requestNote],
             shapeNotes: [],
@@ -676,6 +704,7 @@ async function runRoute(route: RouteDefinition): Promise<RouteResult> {
          mode: route.mode,
          path: resolved.path,
          requestStatus: 'passed',
+         routeSet,
          shapeStatus: shapeFailures.length > 0 ? 'warning' : 'passed',
          requestNotes: ['request succeeded and returned data'],
          shapeNotes,
@@ -711,6 +740,7 @@ async function runRoute(route: RouteDefinition): Promise<RouteResult> {
          mode: route.mode,
          path: resolved.path,
          requestStatus: 'failed',
+         routeSet,
          retryProbe,
          shapeStatus: 'not-run',
          requestNotes: [requestNote],
@@ -720,15 +750,31 @@ async function runRoute(route: RouteDefinition): Promise<RouteResult> {
 }
 
 function printHeader(
-   routes: RouteDefinition[],
+   routes: SelectedRoute[],
    mode: RouteMode | 'all',
+   includeInvalid: boolean,
 ): void {
+   const invalidRoutes = routes.filter(
+      (selectedRoute) => selectedRoute.routeSet === 'invalid',
+   ).length;
+
    console.log('='.repeat(72));
    console.log('Static Yahoo API Route Verifier');
    console.log('='.repeat(72));
    console.log(`Mode: ${mode}`);
+    console.log(`Include invalid: ${includeInvalid ? 'yes' : 'no'}`);
    console.log(`Routes selected: ${routes.length}`);
+   console.log(`Invalid routes selected: ${invalidRoutes}`);
    console.log();
+}
+
+function formatRouteDescriptor(
+   routeSet: RouteSet,
+   mode: RouteMode,
+   confidence: RouteConfidence,
+): string {
+   const scope = routeSet === 'invalid' ? `invalid via ${mode}` : routeSet;
+   return `${scope} / ${confidence}`;
 }
 
 function printResult(result: RouteResult): void {
@@ -746,9 +792,11 @@ function printResult(result: RouteResult): void {
            : 'SKIP_SHAPE';
 
    console.log(
-      `[${routePrefix}] [${shapePrefix}] ${result.id} (${result.mode})`,
+      `[${routePrefix}] [${shapePrefix}] ${result.id} (${result.routeSet === 'invalid' ? `invalid via ${result.mode}` : result.mode})`,
    );
-   console.log(`  Confidence: ${result.confidence}`);
+   console.log(
+      `  Route: ${formatRouteDescriptor(result.routeSet, result.mode, result.confidence)}`,
+   );
    if (result.path) {
       console.log(`  Path: ${result.path}`);
    }
@@ -1219,7 +1267,9 @@ function formatResultBlock(result: RouteResult): string[] {
    const dumpLink = toReportDumpLink(result.dumpFilePath);
 
    lines.push(`- Status: ${formatStatusLabel(result)}`);
-   lines.push(`- Route: ${result.mode} / ${result.confidence}`);
+   lines.push(
+      `- Route: ${formatRouteDescriptor(result.routeSet, result.mode, result.confidence)}`,
+   );
    lines.push(`- Path: ${result.path ?? '(missing path)'}`);
 
    if (dumpLink) {
@@ -1401,6 +1451,7 @@ function classifyResults(results: RouteResult[]): RecommendationBucket[] {
 function buildActionableReport(
    results: RouteResult[],
    mode: RouteMode | 'all',
+   includeInvalid: boolean,
 ): string {
    const routePassed = results.filter(
       (result) => result.requestStatus === 'passed',
@@ -1436,12 +1487,17 @@ function buildActionableReport(
    const unknownFailures = results.filter(
       (result) => result.failureAssessment?.kind === 'unknown-failure',
    ).length;
+   const invalidRoutesSelected = results.filter(
+      (result) => result.routeSet === 'invalid',
+   ).length;
 
    const lines: string[] = [
       '# Actionable Route Report',
       '',
       `- Mode: ${mode}`,
+      `- Invalid definitions included: ${includeInvalid ? 'yes' : 'no'}`,
       `- Routes selected: ${results.length}`,
+      `- Invalid routes selected: ${invalidRoutesSelected}`,
       `- Routes passed: ${routePassed}`,
       `- Routes failed: ${routeFailed}`,
       `- Routes skipped: ${routeSkipped}`,
@@ -1579,8 +1635,9 @@ function buildActionableReport(
 async function writeActionableReport(
    results: RouteResult[],
    mode: RouteMode | 'all',
+   includeInvalid: boolean,
 ): Promise<void> {
-   const report = buildActionableReport(results, mode);
+   const report = buildActionableReport(results, mode, includeInvalid);
    const reportPath = staticRouteVerifierConfig.output.reportFilePath;
    await Bun.write(reportPath, report);
    console.log();
@@ -1597,11 +1654,12 @@ async function ensureOutputDirectories(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+   const cliArgs = parseCliArgs(argv.slice(2));
    const mode = parseMode(staticRouteVerifierConfig.selection.mode);
    const routeIds = parseRouteIds(
       staticRouteVerifierConfig.selection.routeIds,
    );
-   const routes = selectRoutes(mode, routeIds);
+   const routes = selectRoutes(mode, routeIds, cliArgs.includeInvalid);
 
    if (routes.length === 0) {
       throw new Error(
@@ -1610,7 +1668,7 @@ async function main(): Promise<void> {
    }
 
    await ensureOutputDirectories();
-   printHeader(routes, mode);
+   printHeader(routes, mode, cliArgs.includeInvalid);
 
    const results: RouteResult[] = [];
    for (const route of routes) {
@@ -1620,7 +1678,7 @@ async function main(): Promise<void> {
    }
 
    printSummary(results);
-   await writeActionableReport(results, mode);
+   await writeActionableReport(results, mode, cliArgs.includeInvalid);
 
    if (results.some((result) => result.requestStatus === 'failed')) {
       process.exitCode = 1;

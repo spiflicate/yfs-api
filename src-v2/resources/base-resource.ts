@@ -21,6 +21,9 @@ type KeysParam<T extends string> = T extends `${infer Stem}s`
    ? `${Stem}_keys`
    : `${T}_keys`;
 
+/**
+ * Parameters for addressing a single Yahoo Fantasy resource instance.
+ */
 export type ResourceParams<
    TSubResource extends string,
    TKey extends string = string,
@@ -30,6 +33,10 @@ export type ResourceParams<
    key: TKey;
    out: TSubResource[];
 };
+
+/**
+ * Parameters for addressing a Yahoo Fantasy resource collection.
+ */
 export type CollectionParams<
    TSubResource extends string,
    TKey extends string = string,
@@ -40,10 +47,13 @@ export type CollectionParams<
    out: TSubResource[];
 } & Partial<
    TKeyName extends 'users'
-      ? Record<'use_login', boolean>
+      ? Record<'use_login', '1'>
       : Record<KeysParam<TKeyName>, TKey[]>
 >;
 
+/**
+ * Immutable request state accumulated while building a resource path.
+ */
 export interface RequestState {
    segments: string[];
    method?: string;
@@ -52,6 +62,12 @@ export interface RequestState {
 type Scalar = string | number | boolean;
 type PathValue = Scalar | null | undefined | readonly Scalar[];
 
+/**
+ * Base abstraction for a Yahoo Fantasy API resource path builder.
+ *
+ * It stores the current path state, supports adding sub-resources, and
+ * serializes resource parameters into Yahoo's semicolon-delimited path format.
+ */
 export abstract class Resource<
    TParams extends
       | ResourceParams<TSubResource>
@@ -66,12 +82,18 @@ export abstract class Resource<
 
    protected abstract clone(params: TParams): this;
 
+   /**
+    * Returns the full request path for the current resource state.
+    */
    toPath(): string {
       return [this._state.segments.join('/'), this.serialize()]
          .filter(Boolean)
          .join('/');
    }
 
+   /**
+    * Appends sub-resources to the current request and returns a cloned builder.
+    */
    include(...subResources: readonly TSubResource[]): this {
       return this.cloneWith({
          out: [...this._params.out, ...subResources],
@@ -79,10 +101,16 @@ export abstract class Resource<
       // FIXME: the type assertion is a bit of a workaround, maybe refactor the type construciton
    }
 
+   /**
+    * Returns the parameter state after applying a partial update.
+    */
    params(params: Partial<TParams>): TParams {
       return this.cloneWith(params)._params;
    }
 
+   /**
+    * Executes a GET request for the serialized resource path.
+    */
    async get(): Promise<unknown> {
       const path = this.toPath();
       return this._transport.get(path);
@@ -95,6 +123,9 @@ export abstract class Resource<
       });
    }
 
+   /**
+    * Serializes the current resource identifier and any path parameters.
+    */
    protected serialize(): string {
       let resourcePart = '';
       if (this._params.type === 'resource') {
@@ -108,6 +139,9 @@ export abstract class Resource<
       return resourcePart + paramPart;
    }
 
+   /**
+    * Serializes all non-structural params into Yahoo path segments.
+    */
    protected serializeParams(params: Record<string, PathValue>): string {
       return Object.entries(params)
          .filter(([key]) => !['type', 'name', 'key'].includes(key))
@@ -116,20 +150,20 @@ export abstract class Resource<
          .join('');
    }
 
+   /**
+    * Serializes a single parameter using Yahoo's semicolon-delimited syntax.
+    */
    protected serializeParam(key: string, value: PathValue): string {
       const enc = (value: unknown): string =>
          encodeURIComponent(String(value));
 
       if (
          value === undefined ||
+         value === null ||
          value === '' ||
          (Array.isArray(value) && value.length === 0)
       ) {
          return '';
-      }
-      // FIXME: decide whether we want to include params with null values
-      if (value === null) {
-         return ''; //`;${enc(key)}=`;
       }
 
       if (Array.isArray(value)) {
@@ -140,6 +174,9 @@ export abstract class Resource<
    }
 }
 
+/**
+ * Convenience base type for collection-only resource builders.
+ */
 export abstract class Collection<
    TParams extends CollectionParams<TSubResource>,
    TSubResource extends string,

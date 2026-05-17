@@ -13,30 +13,27 @@ type LeagueSubResource =
    | 'settings'
    | 'standings'
    | 'scoreboard'
-   // are these just normal collections chained on?
-   | 'teams'
-   | 'players'
-   | 'transactions';
-
-type LeagueFilters = {
-   league_keys?: LeagueKeyLike[];
-};
+   | 'draft_results' //needs to be confirmed
+   | 'draftresults'; // alternate spelling for collections
+// are these just normal collections chained on?
+// | 'teams'
+// | 'players'
+// | 'transactions';
 
 type LeagueResourceParams = ResourceParams<
-   LeagueSubResource,
+   Exclude<LeagueSubResource, 'draftresults'>,
    LeagueKeyLike
 >;
 
 type LeaguesCollectionParams = CollectionParams<
-   LeagueSubResource,
+   Exclude<LeagueSubResource, 'draft_results'>,
    LeagueKeyLike,
    'leagues'
-> &
-   LeagueFilters;
+>;
 
 export class LeagueResource extends Resource<
    LeagueResourceParams,
-   LeagueSubResource
+   Exclude<LeagueSubResource, 'draftresults'>
 > {
    static create(
       transport: Transport,
@@ -51,6 +48,18 @@ export class LeagueResource extends Resource<
       });
    }
 
+   teams(): never {
+      throw new Error('Not implemented');
+   }
+
+   players(): never {
+      throw new Error('Not implemented');
+   }
+
+   transactions(): never {
+      throw new Error('Not implemented');
+   }
+
    clone(params: LeagueResourceParams): this {
       return new LeagueResource(
          this._transport,
@@ -62,7 +71,7 @@ export class LeagueResource extends Resource<
 
 export class LeaguesCollection extends Collection<
    LeaguesCollectionParams,
-   LeagueSubResource
+   Exclude<LeagueSubResource, 'draft_results'>
 > {
    static create(
       transport: Transport,
@@ -75,6 +84,18 @@ export class LeaguesCollection extends Collection<
          out: [],
          ...(keys ? { league_keys: keys } : {}),
       });
+   }
+
+   teams(): never {
+      throw new Error('Not implemented');
+   }
+
+   players(): never {
+      throw new Error('Not implemented');
+   }
+
+   transactions(): never {
+      throw new Error('Not implemented');
    }
 
    clone(params: LeaguesCollectionParams): this {

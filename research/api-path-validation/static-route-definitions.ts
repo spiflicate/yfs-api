@@ -1,4 +1,5 @@
 export type RouteMode = 'public' | 'private';
+export type RouteSet = RouteMode | 'invalid';
 export type RouteConfidence = 'explicit' | 'composed';
 
 export type ExpectedValueType =
@@ -87,6 +88,14 @@ const publicRoutes: RouteDefinition[] = [
       'Safe explicit chain from the allowed chain matrix.',
    ),
    defineRoute(
+      'public-game-leagues-by-key',
+      'Game leagues collection scoped by league key',
+      'public',
+      'composed',
+      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}',
+      'Research-derived adjustment for game.leagues that succeeds with an explicit league key.',
+   ),
+   defineRoute(
       'public-game-players',
       'Game players collection',
       'public',
@@ -151,6 +160,14 @@ const publicRoutes: RouteDefinition[] = [
       'Documented leagues collection under games.',
    ),
    defineRoute(
+      'public-games-leagues-by-key',
+      'Games leagues collection scoped by league key',
+      'public',
+      'composed',
+      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}',
+      'Research-derived adjustment for games.leagues that succeeds with an explicit league key.',
+   ),
+   defineRoute(
       'public-games-out',
       'Games out expansion',
       'public',
@@ -183,12 +200,28 @@ const publicRoutes: RouteDefinition[] = [
       'Composed chain from game.leagues to teams.',
    ),
    defineRoute(
+      'public-game-leagues-by-key-teams',
+      'Game leagues teams chain scoped by league key',
+      'public',
+      'composed',
+      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/teams',
+      'Research-derived adjustment for game.leagues.teams that succeeds with an explicit league key.',
+   ),
+   defineRoute(
       'public-game-leagues-players',
       'Game leagues players chain',
       'public',
       'composed',
       '/game/{{PUBLIC_GAME_CODE}}/leagues/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
       'Composed chain from game.leagues to players.',
+   ),
+   defineRoute(
+      'public-game-leagues-by-key-players',
+      'Game leagues players chain scoped by league key',
+      'public',
+      'composed',
+      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
+      'Research-derived adjustment for game.leagues.players that succeeds with an explicit league key.',
    ),
    defineRoute(
       'public-game-leagues-transactions',
@@ -199,12 +232,28 @@ const publicRoutes: RouteDefinition[] = [
       'Composed chain from game.leagues to transactions.',
    ),
    defineRoute(
+      'public-game-leagues-by-key-transactions',
+      'Game leagues transactions chain scoped by league key',
+      'public',
+      'composed',
+      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
+      'Research-derived adjustment for game.leagues.transactions that succeeds with an explicit league key.',
+   ),
+   defineRoute(
       'public-games-leagues-teams',
       'Games leagues teams chain',
       'public',
       'composed',
       '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues/teams',
       'Composed chain from games.leagues to teams.',
+   ),
+   defineRoute(
+      'public-games-leagues-by-key-teams',
+      'Games leagues teams chain scoped by league key',
+      'public',
+      'composed',
+      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/teams',
+      'Research-derived adjustment for games.leagues.teams that succeeds with an explicit league key.',
    ),
    defineRoute(
       'public-games-leagues-players',
@@ -351,14 +400,13 @@ const privateRoutes: RouteDefinition[] = [
       '/users;use_login=1/leagues',
       'Composed users.leagues chain from allowed chain matrix.',
    ),
-   // altered version of previous
    defineRoute(
       'private-users-out-leagues',
-      'Authenticated user leagues root',
+      'Authenticated user leagues root via out expansion',
       'private',
       'composed',
       '/users;use_login=1;out=leagues',
-      'Composed users.leagues chain from allowed chain matrix.',
+      'Research-derived out expansion variant for users.leagues.',
    ),
    defineRoute(
       'private-users-teams',
@@ -877,9 +925,40 @@ const privateRoutes: RouteDefinition[] = [
    ),
 ];
 
+const INVALID_ROUTE_IDS = new Set<string>([
+   'public-game-leagues',
+   'public-games-leagues',
+   'public-games-out',
+   'public-games-out-by-key',
+   'public-games-out-by-key-players',
+   'public-game-leagues-teams',
+   'public-game-leagues-players',
+   'public-game-leagues-transactions',
+   'public-games-leagues-teams',
+   'public-games-leagues-players',
+   'public-games-leagues-transactions',
+   'private-users-leagues',
+   'private-users-out-leagues',
+   'private-league-players-sorted',
+   'private-league-transactions-by-keys',
+   'private-league-transactions-out',
+   'private-league-transactions-players',
+   'private-transaction-metadata',
+   'private-transaction-players',
+]);
+
+function isInvalidRoute(route: RouteDefinition): boolean {
+   return INVALID_ROUTE_IDS.has(route.id);
+}
+
 // Docs-derived testing surface from PATH_REFERENCE_TABLE, PATH_DECISION_TREE,
-// PATH_CHEAT_SHEET, and ALLOWED_CHAIN_MATRIX.
-export const STATIC_ROUTE_SETS: Record<RouteMode, RouteDefinition[]> = {
-   public: publicRoutes,
-   private: privateRoutes,
+// PATH_CHEAT_SHEET, and ALLOWED_CHAIN_MATRIX, split into default supported
+// routes plus known failing probes kept for explicit reproduction runs.
+export const STATIC_ROUTE_SETS: Record<RouteSet, RouteDefinition[]> = {
+   public: publicRoutes.filter((route) => !isInvalidRoute(route)),
+   private: privateRoutes.filter((route) => !isInvalidRoute(route)),
+   invalid: [
+      ...publicRoutes.filter((route) => isInvalidRoute(route)),
+      ...privateRoutes.filter((route) => isInvalidRoute(route)),
+   ],
 };

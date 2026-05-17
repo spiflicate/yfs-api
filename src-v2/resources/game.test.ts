@@ -1,26 +1,25 @@
 import { describe, expect, it } from 'bun:test';
-import { HttpClient as Transport } from '../client/http';
 import { GameResource, GamesCollection } from './game';
-import { LeagueResource } from './league';
+import { LeaguesCollection } from './league';
+
+// biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
+const transport = {} as any;
+const emptyState = { segments: [] };
 
 describe('GameResource', () => {
    it('should create a GameResource with the correct parameters', () => {
-      const transport = {} as any;
-      const state = { segments: [] };
       const key = 'nfl';
 
-      const gameResource = GameResource.create(transport, state, key);
+      const gameResource = GameResource.create(transport, emptyState, key);
 
       expect(gameResource).toBeInstanceOf(GameResource);
       expect(gameResource.toPath()).toBe('game/nfl');
    });
 
    it('should clone a GameResource with new parameters', () => {
-      const transport = {} as any;
-      const state = { segments: [] };
       const key = 'nfl';
 
-      const gameResource = GameResource.create(transport, state, key);
+      const gameResource = GameResource.create(transport, emptyState, key);
       const clonedResource = gameResource.clone({
          type: 'resource',
          name: 'game',
@@ -33,36 +32,61 @@ describe('GameResource', () => {
       expect(clonedResource).not.toBe(gameResource);
    });
 
-   it('should create a LeagueResource from a GameResource', () => {
-      const transport = {} as any;
-      const state = { segments: [] };
+   it('should return a new GameResource with the included sub-resource', () => {
+      const key = 'nfl';
+
+      const gameResource = GameResource.create(transport, emptyState, key);
+      const includedResource = gameResource.include(
+         'metadata',
+         'game_weeks',
+      );
+
+      expect(includedResource).toBeInstanceOf(GameResource);
+      expect(includedResource.toPath()).toBe(
+         'game/nfl;out=metadata,game_weeks',
+      );
+      expect(includedResource).not.toBe(gameResource);
+   });
+
+   it('should return a new GameResource with the "game_weeks" sub-resource included', () => {
+      const key = 'nfl';
+
+      const gameResource = GameResource.create(transport, emptyState, key);
+      const includedResource = gameResource.gameWeeks();
+
+      expect(includedResource).toBeInstanceOf(GameResource);
+      expect(includedResource.toPath()).toBe('game/nfl;out=game_weeks');
+      expect(includedResource).not.toBe(gameResource);
+   });
+
+   it('should create a LeaguesCollection from a GameResource', () => {
       const gameKey = 'nfl';
-      const leagueKey = 'nfl.l.12345';
+      const leagueKeys = ['nfl.l.12345', 'nfl.l.67890'];
 
-      const gameResource = GameResource.create(transport, state, gameKey);
-      const leagueResource = gameResource.league(leagueKey);
+      const gameResource = GameResource.create(
+         transport,
+         emptyState,
+         gameKey,
+      );
+      const leaguesCollection = gameResource.leagues(leagueKeys);
 
-      expect(leagueResource).toBeInstanceOf(LeagueResource);
-      expect(leagueResource.toPath()).toBe('game/nfl/league/nfl.l.12345');
+      expect(leaguesCollection).toBeInstanceOf(LeaguesCollection);
+      expect(leaguesCollection.toPath()).toBe(
+         'game/nfl/leagues;league_keys=nfl.l.12345,nfl.l.67890',
+      );
    });
 });
 
 describe('GamesCollection', () => {
    it('should create a GamesCollection with the correct parameters', () => {
-      const transport = {} as any;
-      const state = { segments: [] };
-
-      const gamesCollection = GamesCollection.create(transport, state);
+      const gamesCollection = GamesCollection.create(transport, emptyState);
 
       expect(gamesCollection).toBeInstanceOf(GamesCollection);
       expect(gamesCollection.toPath()).toBe('games');
    });
 
    it('should clone a GamesCollection with new parameters', () => {
-      const transport = {} as any;
-      const state = { segments: [] };
-
-      const gamesCollection = GamesCollection.create(transport, state);
+      const gamesCollection = GamesCollection.create(transport, emptyState);
       const clonedCollection = gamesCollection.clone({
          type: 'collection',
          name: 'games',

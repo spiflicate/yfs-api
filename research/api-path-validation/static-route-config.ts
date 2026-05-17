@@ -98,8 +98,8 @@ export const staticRouteVerifierConfig: StaticRouteVerifierConfig = {
       timeoutMs: 30000,
    },
    output: {
-      reportFilePath: 'research/actionable-route-report.md',
-      responseDumpDirPath: 'research/tmp',
+      reportFilePath: 'research/api-path-validation/actionable-route-report.md',
+      responseDumpDirPath: 'research/api-path-validation/tmp',
       shapePreviewLines: 14,
    },
 };

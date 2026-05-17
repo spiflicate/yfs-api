@@ -4,10 +4,10 @@
 
 Run a fixed set of raw Yahoo API paths and verify that each route still exists and still returns the expected high-level shape.
 
-This script bypasses `YahooFantasyClient` and the request builder entirely. It signs OAuth1 requests directly, manages OAuth2 tokens directly, fetches raw API paths with `fetch`, and then parses the returned XML.
+This script bypasses `YahooFantasyClient` and the request builder entirely. It uses the shared `HttpClient`, manages OAuth directly, requests raw API paths, and then parses the returned XML.
 
-The editable route matrix lives in `research/static-route-definitions.ts`.
-The runtime config lives in `research/static-route-config.ts`.
+The editable route matrix lives in `research/api-path-validation/static-route-definitions.ts`.
+The runtime config lives in `research/api-path-validation/static-route-config.ts`.
 
 The route matrix is derived from:
 
@@ -20,6 +20,12 @@ Each route definition is tagged with:
 
 - `mode`: `public` or `private`
 - `confidence`: `explicit` or `composed`
+
+The definitions are also split into three route sets:
+
+- `public`: public routes included by default
+- `private`: private routes included by default
+- `invalid`: known failing probes excluded by default but still preserved for repro runs
 
 ### Configure It
 
@@ -49,8 +55,36 @@ For OAuth2:
 ### Run It
 
 ```bash
-bun run research/static-route-verifier.ts
+cd research/api-path-validation && bun run static-route-verifier.ts
 ```
+
+To include the known failing probes as well:
+
+```bash
+cd research/api-path-validation && bun run static-route-verifier.ts --include-invalid
+```
+
+## One-Off Path Probe
+
+Run a single raw Yahoo API path from the terminal without editing the static route matrix.
+
+Use this when you want to quickly test one path, inspect the returned shape, or see whether a failure looks structural versus parameter-related.
+
+```bash
+cd research/api-path-validation && bun run path-probe.ts --mode public "/game/465"
+```
+
+```bash
+bun run research:path-probe -- --mode private "/league/465.l.30702/transactions;count=5"
+```
+
+Notes:
+
+- `--mode public` uses OAuth1 credentials from `static-route-config.ts`
+- `--mode private` uses the same OAuth2 token flow and persisted token file as the verifier
+- the path can be passed as a raw Yahoo API path like `/game/465` or as a full Yahoo API URL
+- each probe writes a JSON artifact under `research/api-path-validation/tmp/<timestamp>/`
+- failures are classified using the same heuristic buckets as the batch verifier
 
 ### Route Validation Priority
 
@@ -81,11 +115,11 @@ It also highlights:
 
 ### Response Dumps
 
-Each run creates a timestamped subdirectory under `output.responseDumpDirPath`, which defaults to `research/tmp`.
+Each run creates a timestamped subdirectory under `output.responseDumpDirPath`, which defaults to `research/api-path-validation/tmp`.
 
 Within that run folder, each exercised route writes a numbered JSON file.
 
-The verifier also updates `research/tmp/latest-run.txt` with the path to the newest run folder.
+The verifier also updates `research/api-path-validation/tmp/latest-run.txt` with the path to the newest run folder.
 
 Successful route dumps include:
 
