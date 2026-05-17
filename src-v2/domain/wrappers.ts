@@ -1,9 +1,9 @@
-import type { Game } from './game.js';
-import type { League } from './league.js';
-import type { Player } from './player.js';
-import type { Team } from './team.js';
-import type { Transaction } from './transaction.js';
-import type { User } from './user.js';
+import type { Game } from './models/game';
+import type { League } from './models/league';
+import type { Player } from './models/player';
+import type { Team } from './models/team';
+import type { Transaction } from './models/transaction';
+import type { User } from './models/user';
 
 /**
  * API response wrapper for game data.

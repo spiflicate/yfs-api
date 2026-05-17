@@ -1,7 +1,7 @@
-import type { FeloTier, PositionType } from '../common.js';
-import type { Player } from './player.js';
-import type { BaseTeam } from './team.js';
-import type { Transaction } from './transaction.js';
+import type { FeloTier, PositionType } from '../common';
+import type { Player } from './player';
+import type { BaseTeam } from './team';
+import type { Transaction } from './transaction';
 
 /**
  * API response wrapper for league data.

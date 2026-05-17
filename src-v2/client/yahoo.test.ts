@@ -5,13 +5,10 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
 
 import { describe, expect, mock, test } from 'bun:test';
-import type { Config } from '../../../src/types/index.js';
-import { ConfigError } from '../../../src/types/index.js';
-import type { OAuth2Tokens } from './oauth2.js';
-import {
-   type TokenStorage,
-   YahooFantasyClient,
-} from './YahooFantasyClient.js';
+import type { Config } from '../../src/types/index.js';
+import { ConfigError } from '../../src/types/index.js';
+import type { OAuth2Tokens } from '../auth/oauth2.js';
+import { type TokenStorage, YahooFantasyClient } from './yahoo.js';
 
 describe('YahooFantasyClient', () => {
    const config: Config = {
@@ -134,10 +131,12 @@ describe('YahooFantasyClient', () => {
       });
    });
 
-   describe('request builder', () => {
-      test('should expose the composable request builder', () => {
+   describe('api root', () => {
+      test('should expose the resource api root', () => {
          const client = new YahooFantasyClient(config);
-         expect(client.request()).toBeDefined();
+         expect(client.api().league('423.l.12345').toPath()).toBe(
+            'league/423.l.12345',
+         );
       });
    });
 

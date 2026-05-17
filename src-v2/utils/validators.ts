@@ -3,8 +3,8 @@
  * @module
  */
 
-import { ValidationError } from '../core/errors.js';
-import type { GameCode } from '../types/common.js';
+import { ValidationError } from '../client/errors.js';
+import type { GameCode } from '../domain/common.js';
 
 /**
  * Validates a resource key format

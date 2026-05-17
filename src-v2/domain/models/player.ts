@@ -1,4 +1,4 @@
-import type { ImageSource, PositionType } from '../common.js';
+import type { ImageSource, PositionType } from '../common';
 
 /**
  * API response wrapper for player data.

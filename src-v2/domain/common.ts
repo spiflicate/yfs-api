@@ -3,10 +3,10 @@
  * @module
  */
 
-// import * as MLB from './sports/mlb.js';
-// import * as NBA from './sports/nba.js';
-// import * as NFL from './sports/nfl.js';
-import type * as NHL from '../constants/sports/nhl.js';
+// import * as MLB from './sports/mlb';
+// import * as NBA from './sports/nba';
+// import * as NFL from './sports/nfl';
+import type * as NHL from './sports/nhl';
 
 /**
  * Game codes used by Yahoo Fantasy Sports API

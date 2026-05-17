@@ -3,8 +3,8 @@
  * @module
  */
 
-import type { FeloTier, ImageSource } from '../common.js';
-import type { Player } from './player.js';
+import type { FeloTier, ImageSource } from '../common';
+import type { Player } from './player';
 
 /**
  * Represents a team in the Yahoo Fantasy Sports system.

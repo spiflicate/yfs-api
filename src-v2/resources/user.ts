@@ -26,7 +26,7 @@ export class UsersCollection extends Collection<
       });
    }
 
-   games(keys: GameKeyLike[]): GamesCollection {
+   games(keys?: GameKeyLike[]): GamesCollection {
       const state = {
          ...this._state,
          segments: [...this._state.segments, this.serialize()],

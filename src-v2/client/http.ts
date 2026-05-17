@@ -3,14 +3,8 @@
  * @module
  */
 
-import {
-   AuthenticationError,
-   NetworkError,
-   NotFoundError,
-   RateLimitError,
-   YahooApiError,
-   YahooFantasyError,
-} from '../core/errors.js';
+import type { OAuth1Client } from '../auth/oauth1.js';
+import type { OAuth2Client, OAuth2Tokens } from '../auth/oauth2.js';
 import {
    API_BASE_URL,
    DEFAULT_MAX_RETRIES,
@@ -21,8 +15,14 @@ import {
    RETRYABLE_STATUS_CODES,
 } from '../utils/constants.js';
 import { parseYahooXML } from '../utils/xmlParser.js';
-import type { OAuth1Client } from './oauth1.js';
-import type { OAuth2Client, OAuth2Tokens } from './oauth2.js';
+import {
+   AuthenticationError,
+   NetworkError,
+   NotFoundError,
+   RateLimitError,
+   YahooApiError,
+   YahooFantasyError,
+} from './errors.js';
 
 /**
  * HTTP request options

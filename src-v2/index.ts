@@ -24,26 +24,16 @@
  * await client.authenticate(code);
  *
  * // Query your NHL teams
- * const teams = await client.request().users().useLogin().games().teams().execute();
+ * const teams = await client.api().league('423.l.12345').teams().get();
  *
  * // Query a roster
- * const roster = await client.request().team('423.l.12345.t.1').roster().execute();
+ * const roster = await client.api().team('423.l.12345.t.1').roster().get();
  *
  * // Query league settings
- * const settings = await client.request().league('423.l.12345').settings().execute();
+ * const settings = await client.api().league('423.l.12345').include('settings').get();
  * ```
  */
 
-export {
-   createRequest,
-   RequestBuilder,
-   type RootRequestBuilder,
-} from './builders/index.js';
-export { TransactionBuilder } from './builders/transaction.js';
-export { OAuth2Client, type OAuth2Tokens } from './client/oauth2.js';
-export type { TokenStorage } from './client/YahooFantasyClient.js';
-// Export client
-export { YahooFantasyClient } from './client/YahooFantasyClient.js';
 // Export all types
 // Resource types
 // NHL-specific types
@@ -68,7 +58,7 @@ export type {
    StatValue,
    TransactionStatus,
    TransactionType,
-} from './types/old-types/index.js';
+} from '../src/types/index.js';
 // Export error types and guards
 export {
    AuthenticationError,
@@ -85,7 +75,7 @@ export {
    ValidationError,
    YahooApiError,
    YahooFantasyError,
-} from './types/old-types/index.js';
+} from '../src/types/index.js';
 export {
    CoverageTypeFilter,
    GameSubResource,
@@ -95,18 +85,10 @@ export {
    SortFilter,
    TeamSubResource,
    TransactionTypeFilter,
-} from './types/old-types/request/filters.js';
+} from '../src/types/request/filters.js';
+export { OAuth2Client, type OAuth2Tokens } from './auth/oauth2.js';
+export type { TokenStorage } from './client/yahoo.js';
+// Export client
+export { YahooFantasyClient } from './client/yahoo.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';
-
-// old v2 index
-// export { YahooFantasySportsApi } from './api-root';
-// export type { Transport } from './core/transport';
-
-// export type {
-//    Manager,
-//    MatchupBase,
-//    PlayerBase,
-//    Standing,
-//    TeamBase,
-// } from './types/domain';

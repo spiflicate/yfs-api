@@ -5,7 +5,7 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: This file contains unit tests with explicit any types for mocking purposes
 
 import { beforeEach, describe, expect, test } from 'bun:test';
-import { ConfigError } from '../core/errors.js';
+import { ConfigError } from '../client/errors.js';
 import { OAuth1Client } from './oauth1.js';
 
 describe('OAuth1Client', () => {

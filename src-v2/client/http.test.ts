@@ -12,16 +12,16 @@ import {
    mock,
    test,
 } from 'bun:test';
+import { OAuth2Client, type OAuth2Tokens } from '../auth/oauth2.js';
+import { API_BASE_URL, HTTP_STATUS } from '../utils/constants.js';
 import {
    AuthenticationError,
    NetworkError,
    NotFoundError,
    RateLimitError,
    YahooApiError,
-} from '../core/errors.js';
-import { API_BASE_URL, HTTP_STATUS } from '../utils/constants.js';
+} from './errors.js';
 import { HttpClient } from './http.js';
-import { OAuth2Client, type OAuth2Tokens } from './oauth2.js';
 
 function createTokenProvider(tokens?: OAuth2Tokens) {
    return () => tokens;

@@ -28,20 +28,107 @@
  * await client.authenticate(code);
  *
  * // Make API calls
- * const league = await client.request().league('423.l.12345').execute();
- * const roster = await client.request().team('423.l.12345.t.1').roster().execute();
+ * const league = await client.api().league('423.l.12345').get();
+ * const roster = await client.api().team('423.l.12345.t.1').roster().get();
  * ```
  */
 
-import {
-   createRequest,
-   type RootRequestBuilder,
-} from '../builders/request.js';
-import type { Config } from '../types/old-types/index.js';
-import { ConfigError } from '../types/old-types/index.js';
+import { OAuth1Client } from '../auth/oauth1.js';
+import { OAuth2Client, type OAuth2Tokens } from '../auth/oauth2.js';
+import { type ApiRoot, createApi } from '../resources/api.js';
+import { ConfigError } from './errors.js';
 import { HttpClient } from './http.js';
-import { OAuth1Client } from './oauth1.js';
-import { OAuth2Client, type OAuth2Tokens } from './oauth2.js';
+
+/**
+ * Configuration options for Yahoo Fantasy Sports API client
+ *
+ * Supports two authentication modes:
+ * 1. User Authentication (OAuth 2.0) - Full access to all endpoints
+ * 2. Public Mode (OAuth 1.0) - Access to public endpoints only
+ */
+export interface Config {
+   /**
+    * OAuth client ID (Consumer Key) from Yahoo Developer
+    */
+   clientId: string;
+
+   /**
+    * OAuth client secret (Consumer Secret) from Yahoo Developer
+    */
+   clientSecret: string;
+
+   /**
+    * Enable public mode (OAuth 1.0 2-legged authentication)
+    *
+    * When true:
+    * - Uses OAuth 1.0 with HMAC-SHA1 signing
+    * - No user authorization required
+    * - Access limited to public endpoints only
+    * - redirectUri is not required
+    *
+    * When false (default):
+    * - Uses OAuth 2.0 Authorization Code Grant
+    * - Requires user authorization
+    * - Full access to all endpoints
+    * - redirectUri is required
+    *
+    * @default false
+    */
+   publicMode?: boolean;
+
+   /**
+    * Redirect URI for OAuth 2.0 flow
+    * Must match the URI configured in Yahoo Developer app
+    *
+    * Required when publicMode is false (default)
+    * Not used when publicMode is true
+    */
+   redirectUri?: string;
+
+   /**
+    * Optional: Access token if already authenticated
+    * Only used in user authentication mode (publicMode: false)
+    */
+   accessToken?: string;
+
+   /**
+    * Optional: Refresh token for getting new access tokens
+    * Only used in user authentication mode (publicMode: false)
+    */
+   refreshToken?: string;
+
+   /**
+    * Optional: Token expiration timestamp (milliseconds since epoch)
+    * Only used in user authentication mode (publicMode: false)
+    */
+   expiresAt?: number;
+
+   /**
+    * Optional: Enable debug logging
+    * @default false
+    */
+   debug?: boolean;
+
+   /**
+    * Optional: Return raw XML responses instead of parsed objects
+    * Useful for debugging, inspecting response structure, or custom parsing
+    * When true, all API methods return raw XML strings instead of typed objects
+    * @default false
+    */
+   rawXml?: boolean;
+
+   /**
+    * Optional: Request timeout in milliseconds
+    * @default 30000
+    */
+   timeout?: number;
+
+   /**
+    * Optional: Maximum retry attempts
+    * @default 3
+    */
+   maxRetries?: number;
+}
 
 /**
  * Callback interface for storing and retrieving OAuth 2.0 tokens
@@ -67,7 +154,7 @@ export interface TokenStorage {
 /**
  * Main Yahoo Fantasy Sports API client
  *
- * Provides access to Yahoo Fantasy Sports through a fluent request-builder API.
+ * Provides access to Yahoo Fantasy Sports through a fluent resource API.
  *
  * @example
  * ```typescript
@@ -87,9 +174,9 @@ export interface TokenStorage {
  * // Step 3: Complete authentication
  * await client.authenticate(code);
  *
- * // Use the request builder
- * const league = await client.request().league('423.l.12345').execute();
- * const teams = await client.request().users().useLogin().games().teams().execute();
+ * // Use the resource builders
+ * const league = await client.api().league('423.l.12345').get();
+ * const teams = await client.api().league('423.l.12345').teams().get();
  * ```
  */
 export class YahooFantasyClient {
@@ -111,7 +198,7 @@ export class YahooFantasyClient {
     *
     * @param config - Configuration options
     * @param tokenStorage - Optional token storage implementation
-    * @throws {ConfigError} If required configuration is missing or invalid
+    * @throws ConfigError - If required configuration is missing or invalid
     *
     * @example
     * ```typescript
@@ -252,59 +339,58 @@ export class YahooFantasyClient {
    }
 
    /**
-    * Create a new composable request builder
+    * Create a new resource API root
     *
-    * A type-safe, chainable API for building Yahoo Fantasy API queries.
-    * Provides autocomplete and sensible defaults.
+    * A type-safe, chainable API for Yahoo Fantasy resource queries.
+    * Provides resource-specific builders with path-safe chaining.
     *
-    * @returns A new RequestBuilder instance
+    * @returns A new ApiRoot instance
     *
     * @example Query league settings
     * ```typescript
-    * const league = await client.request()
+    * const league = await client.api()
     *   .league('423.l.12345')
-    *   .settings()
-    *   .execute();
+    *   .include('settings')
+    *   .get();
     * ```
     *
     * @example Query players with filters
     * ```typescript
-    * const players = await client.request()
+    * const players = await client.api()
     *   .league('423.l.12345')
     *   .players()
     *   .position('C')
     *   .status('FA')
     *   .count(25)
-    *   .execute();
+    *   .get();
     * ```
     *
     * @example Query team roster
     * ```typescript
-    * const roster = await client.request()
+    * const roster = await client.api()
     *   .team('423.l.12345.t.1')
-    *   .roster({ week: 10 })
-    *   .execute();
+    *   .roster()
+    *   .week(10)
+    *   .get();
+    * ```
+    *
+    * @example Query specific games
+    * ```typescript
+    * const games = await client.api()
+    *   .games(['nhl', 'nfl'])
+    *   .get();
     * ```
     *
     * @example Query user's games
     * ```typescript
-    * const games = await client.request()
-    *   .games()
-    *   .gameKeys(['nhl', 'nfl'])
-    *   .execute();
-    * ```
-    *
-    * @example Query user's games
-    * ```typescript
-    * const userGames = await client.request()
+    * const userGames = await client.api()
     *   .users()
-    *   .useLogin()
     *   .games()
-    *   .execute();
+    *   .get();
     * ```
     */
-   request(): RootRequestBuilder {
-      return createRequest(this.httpClient);
+   api(): ApiRoot {
+      return createApi(this.httpClient);
    }
 
    /**
@@ -318,7 +404,7 @@ export class YahooFantasyClient {
     * @param state - Optional state parameter for CSRF protection
     * @param language - Optional language code (default: 'en-us')
     * @returns Authorization URL that the user must visit
-    * @throws {ConfigError} If called in public mode
+    * @throws ConfigError - If called in public mode
     *
     * @example
     * ```typescript
@@ -343,7 +429,7 @@ export class YahooFantasyClient {
     * call this method to exchange it for access and refresh tokens.
     *
     * @param code - Authorization code from Yahoo OAuth redirect
-    * @throws {AuthenticationError} If authentication fails
+    * @throws AuthenticationError - If authentication fails
     *
     * @example
     * ```typescript
@@ -368,8 +454,8 @@ export class YahooFantasyClient {
     * call this method to exchange it for access and refresh tokens.
     *
     * @param code - Authorization code from Yahoo OAuth redirect
-    * @throws {AuthenticationError} If authentication fails
-    * @throws {ConfigError} If called in public mode
+    * @throws AuthenticationError - If authentication fails
+    * @throws ConfigError - If called in public mode
     *
     * @example
     * ```typescript
@@ -440,8 +526,8 @@ export class YahooFantasyClient {
     * Note: The HttpClient automatically refreshes tokens before making requests,
     * so you typically don't need to call this manually.
     *
-    * @throws {AuthenticationError} If refresh fails
-    * @throws {ConfigError} If no refresh token is available or if called in public mode
+    * @throws AuthenticationError - If refresh fails
+    * @throws ConfigError - If no refresh token is available or if called in public mode
     *
     * @example
     * ```typescript

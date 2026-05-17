@@ -1,6 +1,6 @@
 import type { PositionType } from '../common';
-import type { League } from './league.js';
-import type { Player } from './player.js';
+import type { League } from './league';
+import type { Player } from './player';
 
 /**
  * Represents a game (sport) in the Yahoo Fantasy Sports system.

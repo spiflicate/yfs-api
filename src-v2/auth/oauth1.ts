@@ -7,7 +7,7 @@
  * @module
  */
 
-import { ConfigError } from '../core/errors.js';
+import { ConfigError } from '../client/errors.js';
 
 /**
  * OAuth 1.0 signature method

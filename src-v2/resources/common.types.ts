@@ -6,7 +6,7 @@
 // import * as MLB from './sports/mlb.js';
 // import * as NBA from './sports/nba.js';
 // import * as NFL from './sports/nfl.js';
-import type * as NHL from '../constants/sports/nhl.js';
+import type * as NHL from '../domain/sports/nhl.js';
 
 /**
  * Game codes used by Yahoo Fantasy Sports API

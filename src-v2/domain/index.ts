@@ -1,9 +1,8 @@
 /**
- * Type exports for Yahoo Fantasy Sports API wrapper
+ * Domain exports for Yahoo Fantasy Sports API wrapper
  * @module
  */
 
-// Common types
 export type {
    ApiResponse,
    BaseMetadata,
@@ -21,50 +20,28 @@ export type {
    StatValue,
    TransactionStatus,
    TransactionType,
-} from './common.js';
-// Error types
-export {
-   AuthenticationError,
-   ConfigError,
-   isAuthenticationError,
-   isRateLimitError,
-   isValidationError,
-   isYahooApiError,
-   isYahooFantasyError,
-   NetworkError,
-   NotFoundError,
-   ParseError,
-   RateLimitError,
-   ValidationError,
-   YahooApiError,
-   YahooFantasyError,
-} from './errors.js';
-export type { RosterChangeRequest } from './request/filters.js';
-export type { InferResponseType } from './request/response-routes.js';
-export type { RouteStage } from './request/schema.js';
-
-// Sport-specific types
+} from './common';
 
 export type {
    PlayerPosition as MLBPlayerPosition,
    PositionType as MLBPositionType,
    RosterPosition as MLBRosterPosition,
    StatEnum as MLBStatEnum,
-} from '../constants/sports/mlb.js';
+} from './sports/mlb';
 
 export type {
    PlayerPosition as NBAPlayerPosition,
    PositionType as NBAPositionType,
    RosterPosition as NBARosterPosition,
    StatEnum as NBAStatEnum,
-} from '../constants/sports/nba.js';
+} from './sports/nba';
 
 export type {
    PlayerPosition as NFLPlayerPosition,
    PositionType as NFLPositionType,
    RosterPosition as NFLRosterPosition,
    StatEnum as NFLStatEnum,
-} from '../constants/sports/nfl.js';
+} from './sports/nfl';
 
 export type {
    GoalieStatEnum as NHLGoalieStatEnum,
@@ -72,4 +49,4 @@ export type {
    PositionType as NHLPositionType,
    RosterPosition as NHLRosterPosition,
    SkaterStatEnum as NHLSkaterStatEnum,
-} from '../constants/sports/nhl.js';
+} from './sports/nhl';

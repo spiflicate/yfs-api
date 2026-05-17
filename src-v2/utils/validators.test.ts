@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, test } from 'bun:test';
-import { ValidationError } from '../core/errors.js';
+import { ValidationError } from '../client/errors.js';
 import {
    validateDate,
    validateEnum,

@@ -3,7 +3,7 @@
  * @module
  */
 
-import { AuthenticationError, ConfigError } from '../core/errors.js';
+import { AuthenticationError, ConfigError } from '../client/errors.js';
 
 /**
  * OAuth 2.0 endpoints for Yahoo
