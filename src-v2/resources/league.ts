@@ -6,7 +6,15 @@ import {
    Resource,
    type ResourceParams,
 } from './base-resource';
-import type { LeagueKeyLike } from './types';
+import { PlayersCollection } from './player';
+import { TeamsCollection } from './team';
+import { TransactionsCollection } from './transaction';
+import type {
+   LeagueKeyLike,
+   PlayerKeyLike,
+   TeamKeyLike,
+   TransactionKeyLike,
+} from './types';
 
 // note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.
 type LeagueSubResource =
@@ -48,16 +56,28 @@ export class LeagueResource extends Resource<
       });
    }
 
-   teams(): never {
-      throw new Error('Not implemented');
+   teams(keys?: TeamKeyLike[]): TeamsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TeamsCollection.create(this._transport, state, keys);
    }
 
-   players(): never {
-      throw new Error('Not implemented');
+   players(keys?: PlayerKeyLike[]): PlayersCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return PlayersCollection.create(this._transport, state, keys);
    }
 
-   transactions(): never {
-      throw new Error('Not implemented');
+   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TransactionsCollection.create(this._transport, state, keys);
    }
 
    clone(params: LeagueResourceParams): this {
@@ -86,16 +106,28 @@ export class LeaguesCollection extends Collection<
       });
    }
 
-   teams(): never {
-      throw new Error('Not implemented');
+   teams(keys?: TeamKeyLike[]): TeamsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TeamsCollection.create(this._transport, state, keys);
    }
 
-   players(): never {
-      throw new Error('Not implemented');
+   players(keys?: PlayerKeyLike[]): PlayersCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return PlayersCollection.create(this._transport, state, keys);
    }
 
-   transactions(): never {
-      throw new Error('Not implemented');
+   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TransactionsCollection.create(this._transport, state, keys);
    }
 
    clone(params: LeaguesCollectionParams): this {

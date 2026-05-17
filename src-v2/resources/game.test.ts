@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { GameResource, GamesCollection } from './game';
 import { LeaguesCollection } from './league';
+import { PlayersCollection } from './player';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;
@@ -75,6 +76,20 @@ describe('GameResource', () => {
          'game/nfl/leagues;league_keys=nfl.l.12345,nfl.l.67890',
       );
    });
+
+   it('should create a PlayersCollection from a GameResource', () => {
+      const gameResource = GameResource.create(
+         transport,
+         emptyState,
+         'nfl',
+      );
+      const playersCollection = gameResource.players(['nfl.p.1']);
+
+      expect(playersCollection).toBeInstanceOf(PlayersCollection);
+      expect(playersCollection.toPath()).toBe(
+         'game/nfl/players;player_keys=nfl.p.1',
+      );
+   });
 });
 
 describe('GamesCollection', () => {
@@ -99,5 +114,19 @@ describe('GamesCollection', () => {
          'games;out=metadata;game_keys=nfl,mlb',
       );
       expect(clonedCollection).not.toBe(gamesCollection);
+   });
+
+   it('should create a PlayersCollection from a GamesCollection', () => {
+      const gamesCollection = GamesCollection.create(
+         transport,
+         emptyState,
+         ['nfl'],
+      );
+      const playersCollection = gamesCollection.players(['nfl.p.1']);
+
+      expect(playersCollection).toBeInstanceOf(PlayersCollection);
+      expect(playersCollection.toPath()).toBe(
+         'games;game_keys=nfl/players;player_keys=nfl.p.1',
+      );
    });
 });

@@ -8,7 +8,8 @@ import {
    type ResourceParams,
 } from './base-resource';
 import { LeaguesCollection } from './league';
-import type { GameKeyLike, LeagueKeyLike } from './types';
+import { PlayersCollection } from './player';
+import type { GameKeyLike, LeagueKeyLike, PlayerKeyLike } from './types';
 
 // note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.
 type GameSubResource = 'metadata' | 'game_weeks' | 'leagues' | 'players';
@@ -59,8 +60,12 @@ export class GameResource extends Resource<
       return LeaguesCollection.create(this._transport, state, keys);
    }
 
-   players(): never {
-      throw new Error('Not implemented');
+   players(keys?: PlayerKeyLike[]): PlayersCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return PlayersCollection.create(this._transport, state, keys);
    }
 
    gameWeeks(): this {
@@ -97,8 +102,12 @@ export class GamesCollection extends Collection<
       return LeaguesCollection.create(this._transport, state, keys);
    }
 
-   players(): never {
-      throw new Error('Not implemented');
+   players(keys?: PlayerKeyLike[]): PlayersCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return PlayersCollection.create(this._transport, state, keys);
    }
 
    clone(params: GamesCollectionParams): this {
