@@ -51,7 +51,7 @@ export {
    ValidationError,
    YahooApiError,
    YahooFantasyError,
-} from './client/errors';
+} from './client/errors.js';
 export type { TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasyClient } from './client/yahoo.js';
@@ -78,4 +78,4 @@ export type {
    TransactionType,
 } from './domain/index';
 // Export XML parsing utilities (only the still-useful ones)
-export { parseYahooXML } from './utils/xmlParser';
+export { parseYahooXML } from './utils/xmlParser.js';

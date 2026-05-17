@@ -18,7 +18,7 @@ import {
    ValidationError,
    YahooApiError,
    YahooFantasyError,
-} from '../../src/types/errors.js';
+} from './errors.js';
 
 describe('Error Types', () => {
    describe('YahooFantasyError', () => {

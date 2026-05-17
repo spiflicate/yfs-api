@@ -7,8 +7,8 @@
 import { describe, expect, mock, test } from 'bun:test';
 import type { OAuth2Tokens } from '../auth/oauth2.js';
 import { ConfigError } from './errors.js';
-import type { Config, TokenStorage } from './yahoo';
-import { YahooFantasyClient } from './yahoo';
+import type { Config, TokenStorage } from './yahoo.js';
+import { YahooFantasyClient } from './yahoo.js';
 
 describe('YahooFantasyClient', () => {
    const config: Config = {

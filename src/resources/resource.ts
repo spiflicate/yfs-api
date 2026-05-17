@@ -104,8 +104,8 @@ export abstract class Resource<
    /**
     * Returns the parameter state after applying a partial update.
     */
-   params(params: Partial<TParams>): TParams {
-      return this.cloneWith(params)._params;
+   params(params: Partial<TParams>): this {
+      return this.cloneWith(params);
    }
 
    /**
