@@ -167,7 +167,7 @@ export abstract class Resource<
       }
 
       if (Array.isArray(value)) {
-         return `;${enc(key)}=${value.map((item) => enc(item)).join(',')}`;
+         return `;${enc(key)}=${[...new Set(value)].map((item) => enc(item)).join(',')}`;
       }
 
       return `;${enc(key)}=${enc(value)}`;
