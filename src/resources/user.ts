@@ -26,12 +26,14 @@ export class UsersCollection extends Resource<
       });
    }
 
-   games(keys?: GameKeyLike[]): GamesCollection {
+   games(...keys: GameKeyLike[]): GamesCollection;
+   games(keys: GameKeyLike[]): GamesCollection;
+   games(...keys: GameKeyLike[] | [GameKeyLike[]]): GamesCollection {
       const state = {
          ...this._state,
          segments: [...this._state.segments, this.serialize()],
       };
-      return GamesCollection.create(this._transport, state, keys);
+      return GamesCollection.create(this._transport, state, keys.flat());
    }
 
    teams(): never {
