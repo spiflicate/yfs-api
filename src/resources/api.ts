@@ -32,11 +32,13 @@ export class ApiRoot {
       return GameResource.create(this.transport, createRootState(), key);
    }
 
-   games(keys?: GameKeyLike[]): GamesCollection {
+   games(...keys: GameKeyLike[]): GamesCollection;
+   games(keys: GameKeyLike[]): GamesCollection;
+   games(...keys: GameKeyLike[] | GameKeyLike[][]): GamesCollection {
       return GamesCollection.create(
          this.transport,
          createRootState(),
-         keys,
+         keys.flat(),
       );
    }
 
@@ -44,11 +46,15 @@ export class ApiRoot {
       return LeagueResource.create(this.transport, createRootState(), key);
    }
 
-   leagues(keys?: LeagueKeyLike[]): LeaguesCollection {
+   leagues(...keys: LeagueKeyLike[]): LeaguesCollection;
+   leagues(keys: LeagueKeyLike[]): LeaguesCollection;
+   leagues(
+      ...keys: LeagueKeyLike[] | LeagueKeyLike[][]
+   ): LeaguesCollection {
       return LeaguesCollection.create(
          this.transport,
          createRootState(),
-         keys,
+         keys.flat(),
       );
    }
 
@@ -56,11 +62,13 @@ export class ApiRoot {
       return TeamResource.create(this.transport, createRootState(), key);
    }
 
-   teams(keys?: TeamKeyLike[]): TeamsCollection {
+   teams(...keys: TeamKeyLike[]): TeamsCollection;
+   teams(keys: TeamKeyLike[]): TeamsCollection;
+   teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
       return TeamsCollection.create(
          this.transport,
          createRootState(),
-         keys,
+         keys.flat(),
       );
    }
 
@@ -68,11 +76,15 @@ export class ApiRoot {
       return PlayerResource.create(this.transport, createRootState(), key);
    }
 
-   players(keys?: PlayerKeyLike[]): PlayersCollection {
+   players(...keys: PlayerKeyLike[]): PlayersCollection;
+   players(keys: PlayerKeyLike[]): PlayersCollection;
+   players(
+      ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
+   ): PlayersCollection {
       return PlayersCollection.create(
          this.transport,
          createRootState(),
-         keys,
+         keys.flat(),
       );
    }
 
@@ -84,11 +96,15 @@ export class ApiRoot {
       );
    }
 
-   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
+   transactions(...keys: TransactionKeyLike[]): TransactionsCollection;
+   transactions(keys: TransactionKeyLike[]): TransactionsCollection;
+   transactions(
+      ...keys: TransactionKeyLike[] | TransactionKeyLike[][]
+   ): TransactionsCollection {
       return TransactionsCollection.create(
          this.transport,
          createRootState(),
-         keys,
+         keys.flat(),
       );
    }
 }

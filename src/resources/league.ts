@@ -22,10 +22,6 @@ type LeagueSubResource =
    | 'scoreboard'
    | 'draft_results' //needs to be confirmed
    | 'draftresults'; // alternate spelling for collections
-// are these just normal collections chained on?
-// | 'teams'
-// | 'players'
-// | 'transactions';
 
 type LeagueResourceParams = ResourceParams<
    Exclude<LeagueSubResource, 'draftresults'>,
