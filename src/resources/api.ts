@@ -4,11 +4,16 @@ import { LeagueResource, LeaguesCollection } from './league.js';
 import { PlayerResource, PlayersCollection } from './player.js';
 import type { RequestState } from './resource.js';
 import { TeamResource, TeamsCollection } from './team.js';
+import {
+   TransactionResource,
+   TransactionsCollection,
+} from './transaction.js';
 import type {
    GameKeyLike,
    LeagueKeyLike,
    PlayerKeyLike,
    TeamKeyLike,
+   TransactionKeyLike,
 } from './types.js';
 import { UsersCollection } from './user.js';
 
@@ -65,6 +70,22 @@ export class ApiRoot {
 
    players(keys?: PlayerKeyLike[]): PlayersCollection {
       return PlayersCollection.create(
+         this.transport,
+         createRootState(),
+         keys,
+      );
+   }
+
+   transaction(key: TransactionKeyLike): TransactionResource {
+      return TransactionResource.create(
+         this.transport,
+         createRootState(),
+         key,
+      );
+   }
+
+   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
+      return TransactionsCollection.create(
          this.transport,
          createRootState(),
          keys,
