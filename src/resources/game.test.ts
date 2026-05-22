@@ -17,22 +17,6 @@ describe('GameResource', () => {
       expect(gameResource.toPath()).toBe('game/nfl');
    });
 
-   it('should clone a GameResource with new parameters', () => {
-      const key = 'nfl';
-
-      const gameResource = GameResource.create(transport, emptyState, key);
-      const clonedResource = gameResource.clone({
-         type: 'resource',
-         name: 'game',
-         key: 'mlb',
-         out: ['metadata'],
-      });
-
-      expect(clonedResource).toBeInstanceOf(GameResource);
-      expect(clonedResource.toPath()).toBe('game/mlb;out=metadata');
-      expect(clonedResource).not.toBe(gameResource);
-   });
-
    it('should return a new GameResource with the included sub-resource', () => {
       const key = 'nfl';
 
@@ -98,22 +82,6 @@ describe('GamesCollection', () => {
 
       expect(gamesCollection).toBeInstanceOf(GamesCollection);
       expect(gamesCollection.toPath()).toBe('games');
-   });
-
-   it('should clone a GamesCollection with new parameters', () => {
-      const gamesCollection = GamesCollection.create(transport, emptyState);
-      const clonedCollection = gamesCollection.clone({
-         type: 'collection',
-         name: 'games',
-         out: ['metadata'],
-         game_keys: ['nfl', 'mlb'],
-      });
-
-      expect(clonedCollection).toBeInstanceOf(GamesCollection);
-      expect(clonedCollection.toPath()).toBe(
-         'games;out=metadata;game_keys=nfl,mlb',
-      );
-      expect(clonedCollection).not.toBe(gamesCollection);
    });
 
    it('should create a PlayersCollection from a GamesCollection', () => {

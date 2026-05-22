@@ -4,29 +4,30 @@ import {
    type RequestState,
    Resource,
    type ResourceParams,
+   type SubResourceParams,
 } from './resource';
 import { RosterResource, RostersCollection } from './roster';
 import type { TeamKeyLike } from './types';
 
-type DateString = `${number}-${number}-${number}`;
-type StatsCoverageType =
-   | 'season'
-   | 'date'
-   | 'week'
-   | 'lastweek'
-   | 'lastmonth';
-type TeamSubResource =
-   | 'metadata'
-   | 'roster'
-   | 'matchups'
-   | 'stats'
-   | 'standings';
+export const teamSubResources = [
+   'metadata',
+   'roster',
+   'matchups',
+   'stats',
+   'standings',
+   'draftresults', // need to confirm this
+] as const;
 
-type MatchupParams = {
+type DateString = `${number}-${number}-${number}`;
+type StatsCoverageType = 'season' | 'date' | 'week';
+// `'lastmonth' | 'lastweek'` are not valid for team resources, only for players.
+type TeamSubResource = (typeof teamSubResources)[number];
+
+type TeamMatchupsFilters = {
    weeks?: `${number}`[];
 };
 
-type TeamStatsParams = {
+type TeamStatsFilters = {
    week?: `${number}`;
    date?: DateString;
    type?: StatsCoverageType;
@@ -40,184 +41,24 @@ type TeamsCollectionParams = CollectionParams<
    'teams'
 >;
 
-const serializeParam = (key: string, value?: string): string => {
-   if (!value) {
-      return '';
-   }
+type TeamStatsParams = SubResourceParams<
+   Extract<TeamSubResource, 'stats'>
+> &
+   TeamStatsFilters;
 
-   return `;${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-};
+type TeamMatchupsParams = SubResourceParams<
+   Extract<TeamSubResource, 'matchups'>
+> &
+   TeamMatchupsFilters;
 
-abstract class BaseTeamMatchupsQuery<TParams extends MatchupParams> {
-   protected constructor(
-      protected readonly _transport: Transport,
-      protected readonly _state: RequestState,
-      protected readonly _params: TParams,
-   ) {}
-
-   protected abstract clone(params: TParams): this;
-
-   toPath(): string {
-      return [this._state.segments.join('/'), this.serialize()]
-         .filter(Boolean)
-         .join('/');
-   }
-
-   async get(): Promise<unknown> {
-      return this._transport.get(this.toPath());
-   }
-
-   weeks(weeks: readonly (number | `${number}`)[]): this {
-      return this.clone({
-         ...this._params,
-         weeks: weeks.map((week) => String(week) as `${number}`),
-      });
-   }
-
-   protected serialize(): string {
-      if (!this._params.weeks || this._params.weeks.length === 0) {
-         return 'matchups';
-      }
-
-      return `matchups;weeks=${this._params.weeks
-         .map((week) => encodeURIComponent(week))
-         .join(',')}`;
-   }
-}
-
-abstract class BaseTeamStatsQuery<TParams extends TeamStatsParams> {
-   protected constructor(
-      protected readonly _transport: Transport,
-      protected readonly _state: RequestState,
-      protected readonly _params: TParams,
-   ) {}
-
-   protected abstract clone(params: TParams): this;
-
-   toPath(): string {
-      return [this._state.segments.join('/'), this.serialize()]
-         .filter(Boolean)
-         .join('/');
-   }
-
-   async get(): Promise<unknown> {
-      return this._transport.get(this.toPath());
-   }
-
-   type(coverageType: StatsCoverageType): this {
-      return this.clone({
-         ...this._params,
-         type: coverageType,
-      });
-   }
-
-   week(week: number | `${number}`): this {
-      return this.clone({
-         ...this._params,
-         type: this._params.type ?? 'week',
-         week: String(week) as `${number}`,
-         date: undefined,
-      });
-   }
-
-   date(date: DateString): this {
-      return this.clone({
-         ...this._params,
-         type: this._params.type ?? 'date',
-         date,
-         week: undefined,
-      });
-   }
-
-   protected serialize(): string {
-      return [
-         'stats',
-         serializeParam('type', this._params.type),
-         serializeParam('week', this._params.week),
-         serializeParam('date', this._params.date),
-      ].join('');
-   }
-}
-
-export class TeamMatchupsResource extends BaseTeamMatchupsQuery<MatchupParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): TeamMatchupsResource {
-      return new TeamMatchupsResource(transport, state, {});
-   }
-
-   clone(params: MatchupParams): this {
-      return new TeamMatchupsResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class TeamMatchupsCollection extends BaseTeamMatchupsQuery<MatchupParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): TeamMatchupsCollection {
-      return new TeamMatchupsCollection(transport, state, {});
-   }
-
-   clone(params: MatchupParams): this {
-      return new TeamMatchupsCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class TeamStatsResource extends BaseTeamStatsQuery<TeamStatsParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): TeamStatsResource {
-      return new TeamStatsResource(transport, state, {});
-   }
-
-   clone(params: TeamStatsParams): this {
-      return new TeamStatsResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class TeamStatsCollection extends BaseTeamStatsQuery<TeamStatsParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): TeamStatsCollection {
-      return new TeamStatsCollection(transport, state, {});
-   }
-
-   clone(params: TeamStatsParams): this {
-      return new TeamStatsCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class TeamResource extends Resource<
-   TeamResourceParams,
-   TeamSubResource
-> {
+export class TeamResource extends Resource<TeamResourceParams> {
    static create(
       transport: Transport,
       state: RequestState,
       key: TeamKeyLike,
    ): TeamResource {
       return new TeamResource(transport, state, {
-         type: 'resource',
+         kind: 'resource',
          name: 'team',
          key,
          out: [],
@@ -254,22 +95,26 @@ export class TeamResource extends Resource<
       return this.include('standings');
    }
 
-   clone(params: TeamResourceParams): this {
-      return new TeamResource(this._transport, this._state, params) as this;
+   include(...subResources: TeamResourceParams['out']): this {
+      return this.cloneWith({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
+      });
    }
+
+   // clone(params: TeamResourceParams): this {
+   //    return new TeamResource(this._transport, this._state, params) as this;
+   // }
 }
 
-export class TeamsCollection extends Resource<
-   TeamsCollectionParams,
-   TeamSubResource
-> {
+export class TeamsCollection extends Resource<TeamsCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
       keys?: TeamKeyLike[],
    ): TeamsCollection {
       return new TeamsCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'teams',
          out: [],
          ...(keys ? { team_keys: keys } : {}),
@@ -284,33 +129,105 @@ export class TeamsCollection extends Resource<
       return RostersCollection.create(this._transport, state);
    }
 
-   matchups(): TeamMatchupsCollection {
+   matchups(): TeamMatchupsResource {
       const state = {
          ...this._state,
          segments: [...this._state.segments, this.serialize()],
       };
 
-      return TeamMatchupsCollection.create(this._transport, state);
+      return TeamMatchupsResource.create(this._transport, state);
    }
 
-   stats(): TeamStatsCollection {
+   stats(): TeamStatsResource {
       const state = {
          ...this._state,
          segments: [...this._state.segments, this.serialize()],
       };
 
-      return TeamStatsCollection.create(this._transport, state);
+      return TeamStatsResource.create(this._transport, state);
    }
 
    standings(): this {
       return this.include('standings');
    }
 
-   clone(params: TeamsCollectionParams): this {
-      return new TeamsCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
+   include(...subResources: TeamsCollectionParams['out']): this {
+      return this.cloneWith({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
+      });
+   }
+
+   // clone(params: TeamsCollectionParams): this {
+   //    return new TeamsCollection(
+   //       this._transport,
+   //       this._state,
+   //       params,
+   //    ) as this;
+   // }
+}
+
+export class TeamMatchupsResource extends Resource<TeamMatchupsParams> {
+   static create(
+      transport: Transport,
+      state: RequestState,
+   ): TeamMatchupsResource {
+      return new TeamMatchupsResource(transport, state, {
+         kind: 'subResource',
+         name: 'matchups',
+      });
+   }
+
+   // clone(params: TeamMatchupsParams): this {
+   //    return new TeamMatchupsResource(
+   //       this._transport,
+   //       this._state,
+   //       params,
+   //    ) as this;
+   // }
+
+   weeks(weeks: readonly (number | `${number}`)[]): this {
+      return this.clone({
+         ...this._params,
+         weeks: weeks.map((week) => String(week) as `${number}`),
+      });
+   }
+}
+
+export class TeamStatsResource extends Resource<TeamStatsParams> {
+   static create(
+      transport: Transport,
+      state: RequestState,
+   ): TeamStatsResource {
+      return new TeamStatsResource(transport, state, {
+         kind: 'subResource',
+         name: 'stats',
+      });
+   }
+
+   // clone(params: TeamStatsParams): this {
+   //    return new TeamStatsResource(
+   //       this._transport,
+   //       this._state,
+   //       params,
+   //    ) as this;
+   // }
+
+   week(week: number | `${number}`): Omit<TeamStatsResource, 'date'> {
+      return this.clone({
+         ...this._params,
+         type: 'week',
+         week: String(week) as `${number}`,
+         date: undefined,
+      });
+   }
+
+   date(date: DateString): Omit<TeamStatsResource, 'week'> {
+      return this.clone({
+         ...this._params,
+         type: 'date',
+         date,
+         week: undefined,
+      });
    }
 }

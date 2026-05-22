@@ -56,7 +56,7 @@ type GamesCollectionParams = CollectionParams<
 
 abstract class GameBase<
    TParams extends GameResourceParams | GamesCollectionParams,
-> extends Resource<TParams, GameSubResource> {
+> extends Resource<TParams> {
    leagues(...keys: LeagueKeyLike[]): LeaguesCollection;
    leagues(keys: LeagueKeyLike[]): LeaguesCollection;
    leagues(
@@ -80,6 +80,14 @@ abstract class GameBase<
       };
       return PlayersCollection.create(this._transport, state, keys.flat());
    }
+
+   include(...subResources: GameSubResource[]): this {
+      return this.clone({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
+      });
+   }
+
    gameWeeks(): this {
       return this.include('game_weeks');
    }
@@ -108,15 +116,11 @@ export class GameResource extends GameBase<GameResourceParams> {
       key: GameKeyLike,
    ): GameResource {
       return new GameResource(transport, state, {
-         type: 'resource',
+         kind: 'resource',
          name: 'game',
          key,
          out: [],
       });
-   }
-
-   clone(params: GameResourceParams): this {
-      return new GameResource(this._transport, this._state, params) as this;
    }
 }
 
@@ -127,7 +131,7 @@ export class GamesCollection extends GameBase<GamesCollectionParams> {
       keys?: GameKeyLike[],
    ): GamesCollection {
       return new GamesCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'games',
          out: [],
          ...(keys ? { game_keys: keys } : {}),
@@ -142,14 +146,5 @@ export class GamesCollection extends GameBase<GamesCollectionParams> {
          segments: [...this._state.segments, this.serialize()],
       };
       return TeamsCollection.create(this._transport, state, keys.flat());
-   }
-
-   clone(params: GamesCollectionParams): this {
-      // Safe as long as GamesCollection is not subclassed without overriding clone().
-      return new GamesCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
    }
 }

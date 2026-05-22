@@ -7,6 +7,34 @@ import {
 } from './resource';
 import type { PlayerKeyLike } from './types';
 
+export const playerSubResourceValues = [
+   'stats',
+   'ownership',
+   'percent_owned',
+   'draft_analysis',
+] as const;
+
+export const playerCollectionParamKeys = [
+   'player_keys',
+   'position',
+   'status',
+   'sort',
+   'sort_type',
+   'sort_season',
+   'sort_week',
+   'sort_date',
+   'count',
+   'start',
+   'search',
+   'week',
+   'date',
+] as const;
+
+export const playerCollectionParams = [
+   ...playerCollectionParamKeys,
+   'out',
+] as const;
+
 type DateString = `${number}-${number}-${number}`;
 type PlayerStatus = 'A' | 'FA' | 'W' | 'T' | 'K';
 type PlayerSort = `${number}` | 'NAME' | 'OR' | 'AR' | 'PTS';
@@ -157,20 +185,24 @@ export class PlayerStatsCollection extends BasePlayerStatsQuery<PlayerStatsParam
    }
 }
 
-export class PlayerResource extends Resource<
-   PlayerResourceParams,
-   PlayerSubResource
-> {
+export class PlayerResource extends Resource<PlayerResourceParams> {
    static create(
       transport: Transport,
       state: RequestState,
       key: PlayerKeyLike,
    ): PlayerResource {
       return new PlayerResource(transport, state, {
-         type: 'resource',
+         kind: 'resource',
          name: 'player',
          key,
          out: [],
+      });
+   }
+
+   include(...subResources: PlayerSubResource[]): this {
+      return this.cloneWith({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
       });
    }
 
@@ -194,30 +226,26 @@ export class PlayerResource extends Resource<
    draftAnalysis(): this {
       return this.include('draft_analysis');
    }
-
-   clone(params: PlayerResourceParams): this {
-      return new PlayerResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
 }
 
-export class PlayersCollection extends Resource<
-   PlayersCollectionParams,
-   PlayerSubResource
-> {
+export class PlayersCollection extends Resource<PlayersCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
       keys?: PlayerKeyLike[],
    ): PlayersCollection {
       return new PlayersCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'players',
          out: [],
          ...(keys ? { player_keys: keys } : {}),
+      });
+   }
+
+   include(...subResources: PlayerSubResource[]): this {
+      return this.cloneWith({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
       });
    }
 
@@ -298,13 +326,5 @@ export class PlayersCollection extends Resource<
 
    draftAnalysis(): this {
       return this.include('draft_analysis');
-   }
-
-   clone(params: PlayersCollectionParams): this {
-      return new PlayersCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
    }
 }

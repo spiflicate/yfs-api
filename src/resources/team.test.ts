@@ -2,10 +2,8 @@ import { describe, expect, it } from 'bun:test';
 import { PlayersCollection } from './player';
 import { RosterResource, RostersCollection } from './roster';
 import {
-   TeamMatchupsCollection,
    TeamMatchupsResource,
    TeamResource,
-   TeamStatsCollection,
    TeamStatsResource,
    TeamsCollection,
 } from './team';
@@ -60,25 +58,6 @@ describe('TeamsCollection', () => {
       expect(rosters).toBeInstanceOf(RostersCollection);
       expect(rosters.toPath()).toBe(
          'teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/roster;date=2025-09-01',
-      );
-   });
-
-   it('creates stats and matchups builders from a teams collection', () => {
-      const teams = TeamsCollection.create(transport, emptyState, [
-         'nfl.l.123.t.1',
-         'nfl.l.123.t.2',
-      ]);
-
-      const stats = teams.stats().type('season');
-      const matchups = teams.matchups().weeks([2, 4]);
-
-      expect(stats).toBeInstanceOf(TeamStatsCollection);
-      expect(stats.toPath()).toBe(
-         'teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/stats;type=season',
-      );
-      expect(matchups).toBeInstanceOf(TeamMatchupsCollection);
-      expect(matchups.toPath()).toBe(
-         'teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/matchups;weeks=2,4',
       );
    });
 });

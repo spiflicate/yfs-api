@@ -25,10 +25,10 @@ type KeysParam<T extends string> = T extends `${infer Stem}s`
  * Parameters for addressing a single Yahoo Fantasy resource instance.
  */
 export type ResourceParams<
-   TSubResource extends string,
+   TSubResource extends string = string,
    TKey extends string = string,
 > = {
-   type: 'resource';
+   kind: 'resource';
    name: ResourceName;
    key: TKey;
    out: TSubResource[];
@@ -38,11 +38,11 @@ export type ResourceParams<
  * Parameters for addressing a Yahoo Fantasy resource collection.
  */
 export type CollectionParams<
-   TSubResource extends string,
+   TSubResource extends string = string,
    TKey extends string = string,
    TKeyName extends CollectionName = CollectionName,
 > = {
-   type: 'collection';
+   kind: 'collection';
    name: CollectionName;
    out: TSubResource[];
 } & Partial<
@@ -50,6 +50,11 @@ export type CollectionParams<
       ? Record<'use_login', '1'>
       : Record<KeysParam<TKeyName>, TKey[]>
 >;
+
+export type SubResourceParams<TSubResourceName extends string = string> = {
+   kind: 'subResource';
+   name: TSubResourceName;
+};
 
 /**
  * Immutable request state accumulated while building a resource path.
@@ -69,10 +74,7 @@ type PathValue = Scalar | null | undefined | readonly Scalar[];
  * serializes resource parameters into Yahoo's semicolon-delimited path format.
  */
 export abstract class Resource<
-   TParams extends
-      | ResourceParams<TSubResource>
-      | CollectionParams<TSubResource>,
-   TSubResource extends string,
+   TParams extends ResourceParams | CollectionParams | SubResourceParams,
 > {
    protected constructor(
       protected readonly _transport: Transport,
@@ -80,7 +82,15 @@ export abstract class Resource<
       protected readonly _params: TParams,
    ) {}
 
-   protected abstract clone(params: TParams): this;
+   protected clone(params: TParams): this {
+      return new (
+         this.constructor as new (
+            transport: Transport,
+            state: RequestState,
+            params: TParams,
+         ) => Resource<TParams>
+      )(this._transport, this._state, params) as this;
+   }
 
    /**
     * Returns the full request path for the current resource state.
@@ -89,16 +99,6 @@ export abstract class Resource<
       return [this._state.segments.join('/'), this.serialize()]
          .filter(Boolean)
          .join('/');
-   }
-
-   /**
-    * Appends sub-resources to the current request and returns a cloned builder.
-    */
-   include(...subResources: readonly TSubResource[]): this {
-      return this.cloneWith({
-         out: [...this._params.out, ...subResources],
-      } as Partial<TParams>);
-      // FIXME: the type assertion is a bit of a workaround, maybe refactor the type construciton
    }
 
    /**
@@ -128,9 +128,12 @@ export abstract class Resource<
     */
    protected serialize(): string {
       let resourcePart = '';
-      if (this._params.type === 'resource') {
+      if (this._params.kind === 'resource') {
          resourcePart = `${this._params.name}/${encodeURIComponent(String(this._params.key))}`;
-      } else if (this._params.type === 'collection') {
+      } else if (
+         this._params.kind === 'collection' ||
+         this._params.kind === 'subResource'
+      ) {
          resourcePart = `${this._params.name}`;
       }
 
@@ -144,7 +147,7 @@ export abstract class Resource<
     */
    protected serializeParams(params: Record<string, PathValue>): string {
       return Object.entries(params)
-         .filter(([key]) => !['type', 'name', 'key'].includes(key))
+         .filter(([key]) => !['kind', 'name', 'key'].includes(key))
          .filter(([, value]) => value !== undefined)
          .map(([key, value]) => this.serializeParam(key, value))
          .join('');

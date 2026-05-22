@@ -7,6 +7,25 @@ import {
 } from './resource';
 import type { TeamKeyLike, TransactionKeyLike } from './types';
 
+export const transactionCollectionParams = [
+   'transaction_keys',
+   'type',
+   'types',
+   'team_key',
+   'count',
+   'start',
+   'out',
+] as const;
+
+export const transactionTraversalParams = [
+   'transaction_keys',
+   'type',
+   'types',
+   'team_key',
+   'count',
+   'start',
+] as const;
+
 type TransactionType =
    | 'add'
    | 'drop'
@@ -19,7 +38,7 @@ type TransactionType =
 type TransactionSubResource = 'metadata' | 'players';
 
 type TransactionCollectionFilters = {
-   transaction_type?: TransactionType;
+   type?: TransactionType;
    types?: TransactionType[];
    team_key?: TeamKeyLike;
    start?: number;
@@ -38,55 +57,52 @@ type TransactionsCollectionParams = CollectionParams<
 > &
    TransactionCollectionFilters;
 
-export class TransactionResource extends Resource<
-   TransactionResourceParams,
-   TransactionSubResource
-> {
+abstract class TransactionBase<
+   TParams extends TransactionResourceParams | TransactionsCollectionParams,
+> extends Resource<TParams> {
+   players(): this {
+      return this.include('players');
+   }
+
+   include(...subResources: TransactionSubResource[]): this {
+      return this.cloneWith({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
+      });
+   }
+}
+
+export class TransactionResource extends TransactionBase<TransactionResourceParams> {
    static create(
       transport: Transport,
       state: RequestState,
       key: TransactionKeyLike,
    ): TransactionResource {
       return new TransactionResource(transport, state, {
-         type: 'resource',
+         kind: 'resource',
          name: 'transaction',
          key,
          out: [],
       });
    }
-
-   players(): this {
-      return this.include('players');
-   }
-
-   clone(params: TransactionResourceParams): this {
-      return new TransactionResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
 }
 
-export class TransactionsCollection extends Resource<
-   TransactionsCollectionParams,
-   TransactionSubResource
-> {
+export class TransactionsCollection extends TransactionBase<TransactionsCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
       keys?: TransactionKeyLike[],
    ): TransactionsCollection {
       return new TransactionsCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'transactions',
          out: [],
          ...(keys ? { transaction_keys: keys } : {}),
       });
    }
 
-   type(transaction_type: TransactionType): this {
-      return this.cloneWith({ transaction_type });
+   type(type: TransactionType): this {
+      return this.cloneWith({ type });
    }
 
    types(types: TransactionType[]): this {
@@ -103,29 +119,5 @@ export class TransactionsCollection extends Resource<
 
    count(count: number): this {
       return this.cloneWith({ count });
-   }
-
-   players(): this {
-      return this.include('players');
-   }
-
-   clone(params: TransactionsCollectionParams): this {
-      return new TransactionsCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-
-   protected override serialize(): string {
-      const { transaction_type, ...params } = this._params;
-      const resourcePart = 'transactions';
-      const paramPart =
-         this.serializeParams(params) +
-         (transaction_type
-            ? this.serializeParam('type', transaction_type)
-            : '');
-
-      return resourcePart + paramPart;
    }
 }

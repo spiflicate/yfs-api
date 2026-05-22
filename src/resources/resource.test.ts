@@ -28,37 +28,21 @@ type TestCollectionParams = CollectionParams<
    page?: number;
 };
 
-class TestResourceQuery extends Resource<
-   TestResourceParams,
-   TestSubResource
-> {
+class TestResourceQuery extends Resource<TestResourceParams> {
    static create(params: TestResourceParams): TestResourceQuery {
       return new TestResourceQuery(transport, state, params);
    }
-
-   clone(params: TestResourceParams): this {
-      return new TestResourceQuery(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
+   getParams(): TestResourceParams {
+      return this._params;
    }
 }
 
-class TestCollectionQuery extends Resource<
-   TestCollectionParams,
-   TestSubResource
-> {
+class TestCollectionQuery extends Resource<TestCollectionParams> {
    static create(params: TestCollectionParams): TestCollectionQuery {
       return new TestCollectionQuery(transport, state, params);
    }
-
-   clone(params: TestCollectionParams): this {
-      return new TestCollectionQuery(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
+   getParams(): TestCollectionParams {
+      return this._params;
    }
 }
 
@@ -76,7 +60,7 @@ const state: RequestState = {
 describe('Resource', () => {
    it('builds a resource path and serializes non-reserved params', () => {
       const query = TestResourceQuery.create({
-         type: 'resource',
+         kind: 'resource',
          name: 'league',
          key: 'nhl.l.123',
          out: ['metadata', 'players'],
@@ -92,13 +76,15 @@ describe('Resource', () => {
 
    it('returns a cloned query when including sub-resources', () => {
       const original = TestResourceQuery.create({
-         type: 'resource',
+         kind: 'resource',
          name: 'league',
          key: 'nhl.l.123',
          out: ['metadata'],
       });
 
-      const updated = original.include('players');
+      const updated = original.params({
+         out: [...original.getParams().out, 'players'],
+      });
 
       expect(original.toPath()).toBe(
          'fantasy/v2/league/nhl.l.123;out=metadata',
@@ -113,7 +99,7 @@ describe('Resource', () => {
       requests.length = 0;
 
       const query = TestResourceQuery.create({
-         type: 'resource',
+         kind: 'resource',
          name: 'league',
          key: 'nhl.l.123',
          out: ['metadata'],
@@ -131,7 +117,7 @@ describe('Resource', () => {
 describe('Resource collections', () => {
    it('builds a collection path without resource keys', () => {
       const query = TestCollectionQuery.create({
-         type: 'collection',
+         kind: 'collection',
          name: 'leagues',
          out: ['players'],
          page: 2,
@@ -142,12 +128,15 @@ describe('Resource collections', () => {
 
    it('returns a cloned query when including sub-resources', () => {
       const original = TestCollectionQuery.create({
-         type: 'collection',
+         kind: 'collection',
          name: 'leagues',
          out: ['metadata'],
       });
 
-      const updated = original.include('players');
+      const updated = original.params({
+         ...original.getParams(),
+         out: [...original.getParams().out, 'players'],
+      });
 
       expect(original.toPath()).toBe('fantasy/v2/leagues;out=metadata');
       expect(updated.toPath()).toBe(
@@ -158,7 +147,7 @@ describe('Resource collections', () => {
 
    it('returns a cloned query when patching params', () => {
       const original = TestCollectionQuery.create({
-         type: 'collection',
+         kind: 'collection',
          name: 'leagues',
          out: ['players'],
          page: 2,

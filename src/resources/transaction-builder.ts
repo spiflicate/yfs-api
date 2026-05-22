@@ -1,4 +1,4 @@
-import type { PlayerKey, TeamKey } from './common.types';
+import type { PlayerKey, TeamKey } from '../domain/common';
 
 type TransactionMode = 'undetermined' | 'addDrop' | 'trade';
 

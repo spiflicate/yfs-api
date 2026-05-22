@@ -17,6 +17,12 @@ import type {
 } from './types.js';
 import { UsersCollection } from './user.js';
 
+// FIXME: this needs to go somewhere, just here for safe keeping
+export const scoreboardParams = ['week', 'date'] as const;
+export const rosterCoverageParams = ['week', 'date'] as const;
+export const matchupParams = ['weeks'] as const;
+export const statsCoverageParams = ['type', 'week', 'date'] as const;
+
 const createRootState = (): RequestState => ({
    segments: [],
 });

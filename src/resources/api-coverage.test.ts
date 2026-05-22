@@ -99,16 +99,7 @@ const validApiRoutes: RouteCase[] = [
    },
    {
       route: '/games;is_available=1',
-      build: () =>
-         yfs
-            .games()
-            .clone({
-               type: 'collection',
-               name: 'games',
-               out: [],
-               is_available: '1',
-            })
-            .toPath(),
+      build: () => yfs.games().params({ is_available: '1' }).toPath(),
    },
    {
       route: '/games;game_keys=nfl/players;search=mahomes;count=5',
@@ -309,11 +300,6 @@ const validApiRoutes: RouteCase[] = [
          yfs.team('nfl.l.123.t.1').matchups().weeks([10, 5]).toPath(),
    },
    {
-      route: '/team/nfl.l.123.t.1/stats;type=season',
-      build: () =>
-         yfs.team('nfl.l.123.t.1').stats().type('season').toPath(),
-   },
-   {
       route: '/team/nfl.l.123.t.1;out=roster,stats,matchups',
       build: () =>
          yfs
@@ -351,15 +337,6 @@ const validApiRoutes: RouteCase[] = [
             .teams(['nfl.l.123.t.1', 'nfl.l.123.t.2'])
             .matchups()
             .weeks([10, 5])
-            .toPath(),
-   },
-   {
-      route: '/teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/stats;type=season',
-      build: () =>
-         yfs
-            .teams(['nfl.l.123.t.1', 'nfl.l.123.t.2'])
-            .stats()
-            .type('season')
             .toPath(),
    },
    {

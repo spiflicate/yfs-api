@@ -10,16 +10,13 @@ import type { GameKeyLike } from './types';
 
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;
 
-export class UsersCollection extends Resource<
-   UsersCollectionParams,
-   never
-> {
+export class UsersCollection extends Resource<UsersCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
    ): UsersCollection {
       return new UsersCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'users',
          out: [],
          use_login: '1',
@@ -46,14 +43,5 @@ export class UsersCollection extends Resource<
 
    players(): never {
       throw new Error('Not implemented');
-   }
-
-   clone(params: UsersCollectionParams): this {
-      // Safe as long as UsersCollection is not subclassed without overriding clone().
-      return new UsersCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
    }
 }

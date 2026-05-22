@@ -15,122 +15,101 @@ import type {
    TransactionKeyLike,
 } from './types';
 
-// note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.
-type LeagueSubResource =
-   | 'settings'
-   | 'standings'
-   | 'scoreboard'
-   | 'draft_results' //needs to be confirmed
-   | 'draftresults'; // alternate spelling for collections
+const leagueSubResourceValues = [
+   'settings',
+   'standings',
+   'scoreboard',
+   'draftresults',
+] as const;
+
+type LeagueSubResource = (typeof leagueSubResourceValues)[number];
 
 type LeagueResourceParams = ResourceParams<
-   Exclude<LeagueSubResource, 'draftresults'>,
+   LeagueSubResource,
    LeagueKeyLike
 >;
 
 type LeaguesCollectionParams = CollectionParams<
-   Exclude<LeagueSubResource, 'draft_results'>,
+   LeagueSubResource,
    LeagueKeyLike,
    'leagues'
 >;
 
-export class LeagueResource extends Resource<
-   LeagueResourceParams,
-   Exclude<LeagueSubResource, 'draftresults'>
-> {
+abstract class LeagueBase<
+   TParams extends LeagueResourceParams | LeaguesCollectionParams,
+> extends Resource<TParams> {
+   teams(...keys: TeamKeyLike[]): TeamsCollection;
+   teams(keys: TeamKeyLike[]): TeamsCollection;
+   teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TeamsCollection.create(this._transport, state, keys.flat());
+   }
+
+   players(...keys: PlayerKeyLike[]): PlayersCollection;
+   players(keys: PlayerKeyLike[]): PlayersCollection;
+   players(
+      ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
+   ): PlayersCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return PlayersCollection.create(this._transport, state, keys.flat());
+   }
+
+   transactions(...keys: TransactionKeyLike[]): TransactionsCollection;
+   transactions(keys: TransactionKeyLike[]): TransactionsCollection;
+   transactions(
+      ...keys: TransactionKeyLike[] | TransactionKeyLike[][]
+   ): TransactionsCollection {
+      const state = {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+      };
+      return TransactionsCollection.create(
+         this._transport,
+         state,
+         keys.flat(),
+      );
+   }
+
+   include(...subResources: LeagueSubResource[]): this {
+      return this.clone({
+         ...this._params,
+         out: [...this._params.out, ...subResources],
+      });
+   }
+}
+
+export class LeagueResource extends LeagueBase<LeagueResourceParams> {
    static create(
       transport: Transport,
       state: RequestState,
       key: LeagueKeyLike,
    ): LeagueResource {
       return new LeagueResource(transport, state, {
-         type: 'resource',
+         kind: 'resource',
          name: 'league',
          key,
          out: [],
       });
    }
-
-   teams(keys?: TeamKeyLike[]): TeamsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return TeamsCollection.create(this._transport, state, keys);
-   }
-
-   players(keys?: PlayerKeyLike[]): PlayersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return PlayersCollection.create(this._transport, state, keys);
-   }
-
-   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return TransactionsCollection.create(this._transport, state, keys);
-   }
-
-   clone(params: LeagueResourceParams): this {
-      return new LeagueResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
 }
 
-export class LeaguesCollection extends Resource<
-   LeaguesCollectionParams,
-   Exclude<LeagueSubResource, 'draft_results'>
-> {
+export class LeaguesCollection extends LeagueBase<LeaguesCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
       keys?: LeagueKeyLike[],
    ): LeaguesCollection {
       return new LeaguesCollection(transport, state, {
-         type: 'collection',
+         kind: 'collection',
          name: 'leagues',
          out: [],
          ...(keys ? { league_keys: keys } : {}),
       });
-   }
-
-   teams(keys?: TeamKeyLike[]): TeamsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return TeamsCollection.create(this._transport, state, keys);
-   }
-
-   players(keys?: PlayerKeyLike[]): PlayersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return PlayersCollection.create(this._transport, state, keys);
-   }
-
-   transactions(keys?: TransactionKeyLike[]): TransactionsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return TransactionsCollection.create(this._transport, state, keys);
-   }
-
-   clone(params: LeaguesCollectionParams): this {
-      // Safe as long as LeaguesCollection is not subclassed without overriding clone().
-      return new LeaguesCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
    }
 }
