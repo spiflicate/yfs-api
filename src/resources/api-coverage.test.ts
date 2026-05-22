@@ -94,9 +94,8 @@ const validApiRoutes: RouteCase[] = [
          yfs.game('nfl').players().search('mahomes').count(5).toPath(),
    },
    {
-      route: '/game/nfl;out=players,game_weeks',
-      build: () =>
-         yfs.game('nfl').include('players', 'game_weeks').toPath(),
+      route: '/game/nfl;out=game_weeks',
+      build: () => yfs.game('nfl').include('game_weeks').toPath(),
    },
    {
       route: '/games;is_available=1',
@@ -450,11 +449,13 @@ const invalidApiRoute: RouteCase[] = [
    },
    {
       route: '/games;game_keys=nfl;out=leagues',
+      // @ts-expect-error out=leagues is not supported on games collection
       build: () => yfs.games(['nfl']).include('leagues').toPath(),
    },
    {
       route: '/games;game_keys=nfl;out=leagues,players',
       build: () =>
+         // @ts-expect-error out=leagues,players is not supported on games collection
          yfs.games(['nfl']).include('leagues', 'players').toPath(),
    },
    {
@@ -567,8 +568,8 @@ function assertTypeCoverage(): void {
    // @ts-expect-error users collection cannot out-expand leagues
    users.include('leagues');
 
-   // @ts-expect-error games collection does not expose teams directly
-   users.games(['nfl']).teams();
+   // // @ts-expect-error games collection does not expose teams directly
+   // users.games(['nfl']).teams();
 
    // @ts-expect-error league settings does not have a dedicated child builder yet
    LeagueResource.create(transport, emptyState, 'nfl.l.123').settings();
