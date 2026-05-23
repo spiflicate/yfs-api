@@ -1,3 +1,4 @@
+import { ValidationError } from '../client/errors';
 import type { HttpClient as Transport } from '../client/http';
 import {
    type CollectionParams,
@@ -85,6 +86,13 @@ export class TransactionResource extends TransactionBase<TransactionResourcePara
          out: [],
       });
    }
+
+   async put(): Promise<void> {
+      throw new Error('PUT is not yet implemented for transactions.');
+   }
+   async delete(): Promise<void> {
+      throw new Error('DELETE is not yet implemented for transactions.');
+   }
 }
 
 export class TransactionsCollection extends TransactionBase<TransactionsCollectionParams> {
@@ -101,12 +109,15 @@ export class TransactionsCollection extends TransactionBase<TransactionsCollecti
       });
    }
 
-   type(type: TransactionType): this {
-      return this.cloneWith({ type });
+   protected override serialize(): string {
+      this.validateSpecialTypeFilters();
+      return super.serialize();
    }
 
-   types(types: TransactionType[]): this {
-      return this.cloneWith({ types });
+   types(...types: TransactionType[]): this;
+   types(types: TransactionType[]): this;
+   types(...types: TransactionType[] | TransactionType[][]): this {
+      return this.cloneWith({ types: types.flat() });
    }
 
    teamKey(team_key: TeamKeyLike): this {
@@ -119,5 +130,34 @@ export class TransactionsCollection extends TransactionBase<TransactionsCollecti
 
    count(count: number): this {
       return this.cloneWith({ count });
+   }
+
+   async post(): Promise<void> {
+      throw new Error(
+         'POST is not yet implemented for transactions collection.',
+      );
+   }
+
+   private validateSpecialTypeFilters(): void {
+      if (this._params.team_key) {
+         return;
+      }
+
+      const requestedTypes = [
+         this._params.type,
+         ...(this._params.types ?? []),
+      ].filter((value): value is TransactionType => value !== undefined);
+
+      if (
+         requestedTypes.includes('waiver') ||
+         requestedTypes.includes('pending_trade')
+      ) {
+         throw new ValidationError(
+            'teamKey(team_key) is required when filtering transactions by waiver or pending_trade.',
+            'team_key',
+            'team_key must be set when type/types includes waiver or pending_trade',
+            requestedTypes,
+         );
+      }
    }
 }

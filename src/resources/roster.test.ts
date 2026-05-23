@@ -1,9 +1,17 @@
 import { describe, expect, it } from 'bun:test';
+import type { HttpClient as Transport } from '../client/http';
+import { RosterMoveBuilder } from './builders/roster-move-builder';
 import { PlayersCollection } from './player';
-import { RosterResource, RostersCollection } from './roster';
+import { RosterResource } from './roster';
 
-// biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
-const transport = {} as any;
+const putRequests: Array<{ path: string; body: unknown }> = [];
+
+const transport = {
+   put(path: string, body: unknown) {
+      putRequests.push({ path, body });
+      return Promise.resolve({ path, body });
+   },
+} as unknown as Transport;
 
 describe('RosterResource', () => {
    it('builds week and date scoped roster paths', () => {
@@ -31,17 +39,31 @@ describe('RosterResource', () => {
          'team/nfl.l.123.t.1/roster;week=10/players;player_keys=nfl.p.1',
       );
    });
-});
 
-describe('RostersCollection', () => {
-   it('builds collection roster paths', () => {
-      const roster = RostersCollection.create(transport, {
-         segments: ['teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2'],
-      }).date('2025-09-01');
+   it('serializes roster move builders for PUT requests using roster coverage defaults', async () => {
+      putRequests.length = 0;
 
-      expect(roster).toBeInstanceOf(RostersCollection);
-      expect(roster.toPath()).toBe(
-         'teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/roster;date=2025-09-01',
+      const roster = RosterResource.create(transport, {
+         segments: ['team', 'nfl.l.123.t.1'],
+      }).week(13);
+
+      await expect(
+         roster.put(new RosterMoveBuilder().movePlayer('461.p.8332', 'WR')),
+      ).resolves.toEqual({
+         path: 'team/nfl.l.123.t.1/roster;week=13',
+         body: expect.stringContaining(
+            '<coverage_type>week</coverage_type>',
+         ),
+      });
+
+      expect(putRequests).toHaveLength(1);
+      expect(putRequests[0]?.path).toBe(
+         'team/nfl.l.123.t.1/roster;week=13',
       );
+      expect(putRequests[0]?.body).toContain('<week>13</week>');
+      expect(putRequests[0]?.body).toContain(
+         '<player_key>461.p.8332</player_key>',
+      );
+      expect(putRequests[0]?.body).toContain('<position>WR</position>');
    });
 });

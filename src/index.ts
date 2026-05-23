@@ -77,5 +77,10 @@ export type {
    TransactionStatus,
    TransactionType,
 } from './domain/index';
+export {
+   type RosterMove,
+   RosterMoveBuilder,
+   type RosterMovePayload,
+} from './resources/builders/roster-move-builder.js';
 // Export XML parsing utilities (only the still-useful ones)
 export { parseYahooXML } from './utils/xmlParser.js';
