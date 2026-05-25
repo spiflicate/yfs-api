@@ -1,13 +1,6 @@
-// import type { Transport } from '../core/transport';
 import type { HttpClient as Transport } from '../client/http';
 
-type ResourceName =
-   | 'game'
-   | 'league'
-   | 'team'
-   | 'player'
-   | 'roster'
-   | 'transaction';
+type ResourceName = 'game' | 'league' | 'team' | 'player' | 'transaction';
 
 type CollectionName =
    | 'users'
@@ -16,6 +9,10 @@ type CollectionName =
    | 'teams'
    | 'players'
    | 'transactions';
+
+type SubResourceName = 'roster' | 'stats' | 'matchups';
+
+type ResponseScopeName = ResourceName | CollectionName | SubResourceName;
 
 type KeysParam<T extends string> = T extends `${infer Stem}s`
    ? `${Stem}_keys`
@@ -51,7 +48,9 @@ export type CollectionParams<
       : Record<KeysParam<TKeyName>, TKey[]>
 >;
 
-export type SubResourceParams<TSubResourceName extends string = string> = {
+export type SubResourceParams<
+   TSubResourceName extends SubResourceName = SubResourceName,
+> = {
    kind: 'subResource';
    name: TSubResourceName;
 };
@@ -61,11 +60,12 @@ export type SubResourceParams<TSubResourceName extends string = string> = {
  */
 export interface RequestState {
    segments: string[];
-   method?: string;
+   responseScope?: ResponseScopeName[];
 }
 
 type Scalar = string | number | boolean;
 type PathValue = Scalar | null | undefined | readonly Scalar[];
+type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
 /**
  * Base abstraction for a Yahoo Fantasy API resource path builder.
@@ -108,19 +108,91 @@ export abstract class Resource<
       return this.cloneWith(params);
    }
 
-   /**
-    * Executes a GET request for the serialized resource path.
-    */
-   async get(): Promise<unknown> {
-      const path = this.toPath();
-      return this._transport.get(path);
-   }
-
    protected cloneWith(patch: Partial<TParams>): this {
       return this.clone({
          ...this._params,
          ...patch,
       });
+   }
+
+   protected createChildState(): RequestState {
+      return {
+         ...this._state,
+         segments: [...this._state.segments, this.serialize()],
+         responseScope: this.getResponseScope(),
+      };
+   }
+
+   protected getResponseScope(): ResponseScopeName[] {
+      return [...(this._state.responseScope ?? []), this._params.name];
+   }
+
+   protected resolveResponseScope<TResult>(response: unknown): TResult {
+      const responseScope = this.getResponseScope();
+      const terminalScope = responseScope.at(-1);
+
+      if (!terminalScope) {
+         return response as TResult;
+      }
+
+      const resolved = findScopedValue(response, responseScope);
+
+      if (resolved === undefined) {
+         return response as TResult;
+      }
+
+      return {
+         [terminalScope]: resolved,
+      } as TResult;
+   }
+
+   async get(): Promise<unknown> {
+      return this.performRequest('get');
+   }
+
+   async post(body?: Record<string, unknown> | string): Promise<unknown> {
+      return this.performRequest('post', body);
+   }
+
+   async put(body?: Record<string, unknown> | string): Promise<unknown> {
+      return this.performRequest('put', body);
+   }
+
+   async delete(): Promise<unknown> {
+      return this.performRequest('delete');
+   }
+
+   protected async request<TResult>(
+      method: HttpMethod,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult> {
+      return this.performRequest<TResult>(method, body);
+   }
+
+   private async performRequest<TResult>(
+      method: HttpMethod,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult> {
+      const path = this.toPath();
+
+      switch (method) {
+         case 'get':
+            return this.resolveResponseScope<TResult>(
+               await this._transport.get(path),
+            );
+         case 'post':
+            return this.resolveResponseScope<TResult>(
+               await this._transport.post(path, body),
+            );
+         case 'put':
+            return this.resolveResponseScope<TResult>(
+               await this._transport.put(path, body),
+            );
+         case 'delete':
+            return this.resolveResponseScope<TResult>(
+               await this._transport.delete(path),
+            );
+      }
    }
 
    /**
@@ -175,4 +247,53 @@ export abstract class Resource<
 
       return `;${enc(key)}=${enc(value)}`;
    }
+}
+
+function findScopedValue(
+   value: unknown,
+   scope: readonly string[],
+): unknown {
+   if (scope.length === 0) {
+      return value;
+   }
+
+   if (Array.isArray(value)) {
+      for (const item of value) {
+         const resolved = findScopedValue(item, scope);
+         if (resolved !== undefined) {
+            return resolved;
+         }
+      }
+      return undefined;
+   }
+
+   if (!isRecord(value)) {
+      return undefined;
+   }
+
+   const [current, ...rest] = scope;
+
+   if (!current) {
+      return value;
+   }
+
+   if (current in value) {
+      const resolved = findScopedValue(value[current], rest);
+      if (resolved !== undefined) {
+         return resolved;
+      }
+   }
+
+   for (const nestedValue of Object.values(value)) {
+      const resolved = findScopedValue(nestedValue, scope);
+      if (resolved !== undefined) {
+         return resolved;
+      }
+   }
+
+   return undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+   return typeof value === 'object' && value !== null;
 }

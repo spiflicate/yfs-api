@@ -1,39 +1,13 @@
 import type { HttpClient as Transport } from '../client/http';
+import type { PlayerResponse, PlayersResponse } from '../domain/responses';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
+   type SubResourceParams,
 } from './resource';
 import type { PlayerKeyLike } from './types';
-
-export const playerSubResourceValues = [
-   'stats',
-   'ownership',
-   'percent_owned',
-   'draft_analysis',
-] as const;
-
-export const playerCollectionParamKeys = [
-   'player_keys',
-   'position',
-   'status',
-   'sort',
-   'sort_type',
-   'sort_season',
-   'sort_week',
-   'sort_date',
-   'count',
-   'start',
-   'search',
-   'week',
-   'date',
-] as const;
-
-export const playerCollectionParams = [
-   ...playerCollectionParamKeys,
-   'out',
-] as const;
 
 type DateString = `${number}-${number}-${number}`;
 type PlayerStatus = 'A' | 'FA' | 'W' | 'T' | 'K';
@@ -89,116 +63,12 @@ type PlayerStatsParams = {
    date?: DateString;
 };
 
-const serializeParam = (key: string, value?: string): string => {
-   if (!value) {
-      return '';
-   }
+type PlayerStatsResourceParams = SubResourceParams<'stats'> &
+   PlayerStatsParams;
 
-   return `;${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-};
-
-abstract class BasePlayerStatsQuery<TParams extends PlayerStatsParams> {
-   protected constructor(
-      protected readonly _transport: Transport,
-      protected readonly _state: RequestState,
-      protected readonly _params: TParams,
-   ) {}
-
-   protected abstract clone(params: TParams): this;
-
-   toPath(): string {
-      return [this._state.segments.join('/'), this.serialize()]
-         .filter(Boolean)
-         .join('/');
-   }
-
-   async get(): Promise<unknown> {
-      return this._transport.get(this.toPath());
-   }
-
-   type(coverageType: StatsCoverageType): this {
-      return this.clone({
-         ...this._params,
-         type: coverageType,
-      });
-   }
-
-   week(week: number | `${number}`): this {
-      return this.clone({
-         ...this._params,
-         type: this._params.type ?? 'week',
-         week: String(week) as `${number}`,
-         date: undefined,
-      });
-   }
-
-   date(date: DateString): this {
-      return this.clone({
-         ...this._params,
-         type: this._params.type ?? 'date',
-         date,
-         week: undefined,
-      });
-   }
-
-   protected serialize(): string {
-      return [
-         'stats',
-         serializeParam('type', this._params.type),
-         serializeParam('week', this._params.week),
-         serializeParam('date', this._params.date),
-      ].join('');
-   }
-}
-
-export class PlayerStatsResource extends BasePlayerStatsQuery<PlayerStatsParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): PlayerStatsResource {
-      return new PlayerStatsResource(transport, state, {});
-   }
-
-   clone(params: PlayerStatsParams): this {
-      return new PlayerStatsResource(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class PlayerStatsCollection extends BasePlayerStatsQuery<PlayerStatsParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-   ): PlayerStatsCollection {
-      return new PlayerStatsCollection(transport, state, {});
-   }
-
-   clone(params: PlayerStatsParams): this {
-      return new PlayerStatsCollection(
-         this._transport,
-         this._state,
-         params,
-      ) as this;
-   }
-}
-
-export class PlayerResource extends Resource<PlayerResourceParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-      key: PlayerKeyLike,
-   ): PlayerResource {
-      return new PlayerResource(transport, state, {
-         kind: 'resource',
-         name: 'player',
-         key,
-         out: [],
-      });
-   }
-
+abstract class PlayerBase<
+   TParams extends PlayerResourceParams | PlayersCollectionParams,
+> extends Resource<TParams> {
    include(...subResources: PlayerSubResource[]): this {
       return this.cloneWith({
          ...this._params,
@@ -207,10 +77,7 @@ export class PlayerResource extends Resource<PlayerResourceParams> {
    }
 
    stats(): PlayerStatsResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
 
       return PlayerStatsResource.create(this._transport, state);
    }
@@ -228,7 +95,26 @@ export class PlayerResource extends Resource<PlayerResourceParams> {
    }
 }
 
-export class PlayersCollection extends Resource<PlayersCollectionParams> {
+export class PlayerResource extends PlayerBase<PlayerResourceParams> {
+   static create(
+      transport: Transport,
+      state: RequestState,
+      key: PlayerKeyLike,
+   ): PlayerResource {
+      return new PlayerResource(transport, state, {
+         kind: 'resource',
+         name: 'player',
+         key,
+         out: [],
+      });
+   }
+
+   override async get() {
+      return this.request<PlayerResponse>('get');
+   }
+}
+
+export class PlayersCollection extends PlayerBase<PlayersCollectionParams> {
    static create(
       transport: Transport,
       state: RequestState,
@@ -239,13 +125,6 @@ export class PlayersCollection extends Resource<PlayersCollectionParams> {
          name: 'players',
          out: [],
          ...(keys ? { player_keys: keys } : {}),
-      });
-   }
-
-   include(...subResources: PlayerSubResource[]): this {
-      return this.cloneWith({
-         ...this._params,
-         out: [...this._params.out, ...subResources],
       });
    }
 
@@ -307,24 +186,48 @@ export class PlayersCollection extends Resource<PlayersCollectionParams> {
       return this.cloneWith({ count });
    }
 
-   stats(): PlayerStatsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+   override async get() {
+      return this.request<PlayersResponse>('get');
+   }
+}
 
-      return PlayerStatsCollection.create(this._transport, state);
+export class PlayerStatsResource extends Resource<PlayerStatsResourceParams> {
+   static create(
+      transport: Transport,
+      state: RequestState,
+   ): PlayerStatsResource {
+      return new PlayerStatsResource(transport, state, {
+         kind: 'subResource',
+         name: 'stats',
+      });
    }
 
-   ownership(): this {
-      return this.include('ownership');
+   type(coverageType: StatsCoverageType): this {
+      return this.clone({
+         ...this._params,
+         type: coverageType,
+      });
    }
 
-   percentOwned(): this {
-      return this.include('percent_owned');
+   week(week: number | `${number}`): this {
+      return this.clone({
+         ...this._params,
+         type: this._params.type ?? 'week',
+         week: String(week) as `${number}`,
+         date: undefined,
+      });
    }
 
-   draftAnalysis(): this {
-      return this.include('draft_analysis');
+   date(date: DateString): this {
+      return this.clone({
+         ...this._params,
+         type: this._params.type ?? 'date',
+         date,
+         week: undefined,
+      });
+   }
+
+   override async get() {
+      return super.get();
    }
 }

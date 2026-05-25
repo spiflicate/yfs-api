@@ -1,4 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
+import type { TeamResponse, TeamsResponse } from '../domain/responses';
 import {
    type CollectionParams,
    type RequestState,
@@ -6,7 +7,7 @@ import {
    type ResourceParams,
    type SubResourceParams,
 } from './resource';
-import { RosterResource, RostersCollection } from './roster';
+import { RosterResource } from './roster';
 import type { TeamKeyLike } from './types';
 
 export const teamSubResources = [
@@ -66,27 +67,18 @@ export class TeamResource extends Resource<TeamResourceParams> {
    }
 
    roster(): RosterResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return RosterResource.create(this._transport, state);
    }
 
    matchups(): TeamMatchupsResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
 
       return TeamMatchupsResource.create(this._transport, state);
    }
 
    stats(): TeamStatsResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
 
       return TeamStatsResource.create(this._transport, state);
    }
@@ -102,9 +94,9 @@ export class TeamResource extends Resource<TeamResourceParams> {
       });
    }
 
-   // clone(params: TeamResourceParams): this {
-   //    return new TeamResource(this._transport, this._state, params) as this;
-   // }
+   override async get() {
+      return this.request<TeamResponse>('get');
+   }
 }
 
 export class TeamsCollection extends Resource<TeamsCollectionParams> {
@@ -121,28 +113,19 @@ export class TeamsCollection extends Resource<TeamsCollectionParams> {
       });
    }
 
-   roster(): RostersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
-      return RostersCollection.create(this._transport, state);
+   roster(): RosterResource {
+      const state = this.createChildState();
+      return RosterResource.create(this._transport, state);
    }
 
    matchups(): TeamMatchupsResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
 
       return TeamMatchupsResource.create(this._transport, state);
    }
 
    stats(): TeamStatsResource {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
 
       return TeamStatsResource.create(this._transport, state);
    }
@@ -158,13 +141,9 @@ export class TeamsCollection extends Resource<TeamsCollectionParams> {
       });
    }
 
-   // clone(params: TeamsCollectionParams): this {
-   //    return new TeamsCollection(
-   //       this._transport,
-   //       this._state,
-   //       params,
-   //    ) as this;
-   // }
+   override async get() {
+      return this.request<TeamsResponse>('get');
+   }
 }
 
 export class TeamMatchupsResource extends Resource<TeamMatchupsParams> {
@@ -178,19 +157,15 @@ export class TeamMatchupsResource extends Resource<TeamMatchupsParams> {
       });
    }
 
-   // clone(params: TeamMatchupsParams): this {
-   //    return new TeamMatchupsResource(
-   //       this._transport,
-   //       this._state,
-   //       params,
-   //    ) as this;
-   // }
-
    weeks(weeks: readonly (number | `${number}`)[]): this {
       return this.clone({
          ...this._params,
          weeks: weeks.map((week) => String(week) as `${number}`),
       });
+   }
+   // FIXME: need to create a proper response type for this
+   override async get() {
+      return this.request<TeamsResponse>('get');
    }
 }
 
@@ -204,14 +179,6 @@ export class TeamStatsResource extends Resource<TeamStatsParams> {
          name: 'stats',
       });
    }
-
-   // clone(params: TeamStatsParams): this {
-   //    return new TeamStatsResource(
-   //       this._transport,
-   //       this._state,
-   //       params,
-   //    ) as this;
-   // }
 
    week(week: number | `${number}`): Omit<TeamStatsResource, 'date'> {
       return this.clone({
@@ -229,5 +196,9 @@ export class TeamStatsResource extends Resource<TeamStatsParams> {
          date,
          week: undefined,
       });
+   }
+   // FIXME: need to create a proper response type for this
+   override async get() {
+      return this.request<TeamsResponse>('get');
    }
 }

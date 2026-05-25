@@ -1,4 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
+import type { GameResponse, GamesResponse } from '../domain/responses';
 import { LeaguesCollection } from './league';
 import { PlayersCollection } from './player';
 import {
@@ -15,7 +16,6 @@ import type {
    TeamKeyLike,
 } from './types';
 
-// note: leagues and players here are not the same as full resource level leagues and players. These are sub-resources that can be included in the output of a game query, but they do not have the same structure or available endpoints as the full resource collections.
 const gameSubResources = [
    'dates',
    'game_weeks',
@@ -62,10 +62,7 @@ abstract class GameBase<
    leagues(
       ...keys: LeagueKeyLike[] | LeagueKeyLike[][]
    ): LeaguesCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return LeaguesCollection.create(this._transport, state, keys.flat());
    }
 
@@ -74,10 +71,7 @@ abstract class GameBase<
    players(
       ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
    ): PlayersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return PlayersCollection.create(this._transport, state, keys.flat());
    }
 
@@ -122,6 +116,10 @@ export class GameResource extends GameBase<GameResourceParams> {
          out: [],
       });
    }
+
+   override async get() {
+      return this.request<GameResponse>('get');
+   }
 }
 
 export class GamesCollection extends GameBase<GamesCollectionParams> {
@@ -141,10 +139,11 @@ export class GamesCollection extends GameBase<GamesCollectionParams> {
    teams(...keys: TeamKeyLike[]): TeamsCollection;
    teams(keys: TeamKeyLike[]): TeamsCollection;
    teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return TeamsCollection.create(this._transport, state, keys.flat());
+   }
+
+   override async get() {
+      return this.request<GamesResponse>('get');
    }
 }

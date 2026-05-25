@@ -1,4 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
+import type { LeagueResponse, LeaguesResponse } from '../domain/responses';
 import { PlayersCollection } from './player';
 import {
    type CollectionParams,
@@ -41,10 +42,7 @@ abstract class LeagueBase<
    teams(...keys: TeamKeyLike[]): TeamsCollection;
    teams(keys: TeamKeyLike[]): TeamsCollection;
    teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return TeamsCollection.create(this._transport, state, keys.flat());
    }
 
@@ -53,10 +51,7 @@ abstract class LeagueBase<
    players(
       ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
    ): PlayersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return PlayersCollection.create(this._transport, state, keys.flat());
    }
 
@@ -65,10 +60,7 @@ abstract class LeagueBase<
    transactions(
       ...keys: TransactionKeyLike[] | TransactionKeyLike[][]
    ): TransactionsCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return TransactionsCollection.create(
          this._transport,
          state,
@@ -97,6 +89,10 @@ export class LeagueResource extends LeagueBase<LeagueResourceParams> {
          out: [],
       });
    }
+
+   override async get() {
+      return this.request<LeagueResponse>('get');
+   }
 }
 
 export class LeaguesCollection extends LeagueBase<LeaguesCollectionParams> {
@@ -111,5 +107,9 @@ export class LeaguesCollection extends LeagueBase<LeaguesCollectionParams> {
          out: [],
          ...(keys ? { league_keys: keys } : {}),
       });
+   }
+
+   override async get() {
+      return this.request<LeaguesResponse>('get');
    }
 }

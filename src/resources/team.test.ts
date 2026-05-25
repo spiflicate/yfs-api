@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { PlayersCollection } from './player';
-import { RosterResource, RostersCollection } from './roster';
+import { RosterResource } from './roster';
 import {
    TeamMatchupsResource,
    TeamResource,
@@ -55,7 +55,7 @@ describe('TeamsCollection', () => {
       ]);
       const rosters = teams.roster().date('2025-09-01');
 
-      expect(rosters).toBeInstanceOf(RostersCollection);
+      expect(rosters).toBeInstanceOf(RosterResource);
       expect(rosters.toPath()).toBe(
          'teams;team_keys=nfl.l.123.t.1,nfl.l.123.t.2/roster;date=2025-09-01',
       );

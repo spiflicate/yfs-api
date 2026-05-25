@@ -46,18 +46,14 @@ export class RosterResource extends Resource<RosterParams> {
    }
 
    players(keys?: PlayerKeyLike[]): PlayersCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return PlayersCollection.create(this._transport, state, keys);
    }
 
-   async put(
-      body: RosterMoveBuilder | Record<string, unknown> | string,
+   override async put(
+      body?: RosterMoveBuilder | Record<string, unknown> | string,
    ): Promise<unknown> {
-      return this._transport.put(
-         this.toPath(),
+      return super.put(
          body instanceof RosterMoveBuilder
             ? body.toXml({
                  week: this._params.week,

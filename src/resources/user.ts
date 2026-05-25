@@ -1,4 +1,5 @@
 import type { HttpClient as Transport } from '../client/http';
+import type { UsersResponse } from '../domain/responses';
 import { GamesCollection } from './game';
 import {
    type CollectionParams,
@@ -26,10 +27,7 @@ export class UsersCollection extends Resource<UsersCollectionParams> {
    games(...keys: GameKeyLike[]): GamesCollection;
    games(keys: GameKeyLike[]): GamesCollection;
    games(...keys: GameKeyLike[] | [GameKeyLike[]]): GamesCollection {
-      const state = {
-         ...this._state,
-         segments: [...this._state.segments, this.serialize()],
-      };
+      const state = this.createChildState();
       return GamesCollection.create(this._transport, state, keys.flat());
    }
 
@@ -43,5 +41,9 @@ export class UsersCollection extends Resource<UsersCollectionParams> {
 
    players(): never {
       throw new Error('Not implemented');
+   }
+
+   override async get() {
+      return this.request<UsersResponse>('get');
    }
 }

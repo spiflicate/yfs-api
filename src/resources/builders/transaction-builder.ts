@@ -83,6 +83,47 @@ export class TransactionBuilder {
       return `<?xml version="1.0" encoding="UTF-8"?>${xmlBuilder.build(wrappedBody)}`;
    }
 
+   // TODO: add testing for this function implementation
+   static fromJson(json: Record<string, unknown>): TransactionBuilder {
+      const builder = new TransactionBuilder();
+      if (json.type === 'add/drop') {
+         builder.forTeamKey =
+            json.player?.transaction_data?.destination_team_key;
+         builder.addPlayerKey = json.player_key;
+         if (json.player?.transaction_data?.type === 'drop') {
+            builder.dropPlayerKey = json.player_key;
+         }
+         if (json.faab_bid) {
+            builder.faabBid = Number(json.faab_bid);
+         }
+      } else if (json.type === 'pending_trade') {
+         builder.fromTeamKey = json.trader_team_key;
+         builder.toTeamKeyValue = json.tradee_team_key;
+         if (Array.isArray(json.players?.player)) {
+            for (const player of json.players.player) {
+               if (
+                  player.transaction_data?.source_team_key ===
+                  builder.fromTeamKey
+               ) {
+                  builder.sentPlayers.push(player.player_key);
+               } else if (
+                  player.transaction_data?.source_team_key ===
+                  builder.toTeamKeyValue
+               ) {
+                  builder.receivedPlayers.push(player.player_key);
+               } else {
+                  builder.droppedPlayers.push(player.player_key);
+               }
+            }
+         }
+         if (json.trade_note) {
+            builder.tradeNote = json.trade_note;
+         }
+      }
+
+      return builder;
+   }
+
    toPayload(): Record<string, unknown> {
       const mode = this.getMode();
       if (mode === 'addDrop') {

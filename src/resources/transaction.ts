@@ -87,10 +87,13 @@ export class TransactionResource extends TransactionBase<TransactionResourcePara
       });
    }
 
-   async put(): Promise<void> {
+   override async get() {
+      return super.get();
+   }
+   override async put(): Promise<void> {
       throw new Error('PUT is not yet implemented for transactions.');
    }
-   async delete(): Promise<void> {
+   override async delete(): Promise<void> {
       throw new Error('DELETE is not yet implemented for transactions.');
    }
 }
@@ -132,7 +135,11 @@ export class TransactionsCollection extends TransactionBase<TransactionsCollecti
       return this.cloneWith({ count });
    }
 
-   async post(): Promise<void> {
+   override async get() {
+      this.validateSpecialTypeFilters();
+      return super.get();
+   }
+   override async post(): Promise<void> {
       throw new Error(
          'POST is not yet implemented for transactions collection.',
       );

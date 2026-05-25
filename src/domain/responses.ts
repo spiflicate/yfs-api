@@ -13,6 +13,7 @@ export interface GameResponse {
    /** The game data */
    game: Game;
 }
+
 /**
  * API response wrapper for games data.
  * Wraps the Games array returned from API endpoints.
@@ -50,6 +51,7 @@ export interface PlayerResponse {
    /** The player data */
    player: Player;
 }
+
 /**
  * API response wrapper for players data.
  * Wraps the Players array returned from API endpoints.
@@ -67,6 +69,7 @@ export interface TeamResponse {
    /** The team data */
    team: Team;
 }
+
 /**
  * API response wrapper for teams data.
  * Wraps the Teams array returned from API endpoints.
@@ -75,6 +78,7 @@ export interface TeamsResponse {
    /** The teams data */
    teams: Team[];
 }
+
 /**
  * API response wrapper for transaction data.
  * Wraps the Transaction object returned from API endpoints.
@@ -83,6 +87,7 @@ export interface TransactionResponse {
    /** The transaction data */
    transaction: Transaction;
 }
+
 /**
  * API response wrapper for transactions data.
  * Wraps the Transactions array returned from API endpoints.
@@ -91,6 +96,7 @@ export interface TransactionsResponse {
    /** The transactions data */
    transactions: Transaction[];
 }
+
 /**
  * API response wrapper for user data.
  * Wraps the User object returned from API endpoints.
@@ -99,6 +105,7 @@ export interface UserResponse {
    /** The user data */
    user: User;
 }
+
 /**
  * API response wrapper for users data.
  * Wraps the Users array returned from API endpoints.
@@ -130,3 +137,7 @@ export type TransactionErrorCode =
    | 'TRADE_DISALLOW_FAILED'
    | 'TRADE_VOTE_FAILED'
    | 'WAIVER_EDIT_FAILED';
+
+const ResponseKeyMap = {
+   resource: { game: {} as GameResponse },
+};
