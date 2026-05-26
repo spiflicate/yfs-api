@@ -308,6 +308,7 @@ describe('TransactionBuilder', () => {
          expect(() =>
             new TransactionBuilder()
                .forTeam('423.l.12345.t.1')
+               // @ts-expect-error testing invalid combination of add/drop and trade fields
                .fromTeam('423.l.12345.t.2')
                .addPlayer('423.p.3333')
                .toPayload(),
@@ -321,6 +322,7 @@ describe('TransactionBuilder', () => {
             new TransactionBuilder()
                .forTeam('423.l.12345.t.1')
                .addPlayer('423.p.3333')
+               // @ts-expect-error testing invalid combination of add/drop fields with trade note
                .note('Please accept')
                .toPayload(),
          ).toThrow(
