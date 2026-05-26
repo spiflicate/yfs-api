@@ -17,7 +17,7 @@
 
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { ConfigError } from '../../../src/client/errors.js';
-import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
 import {
    getOAuth1Config,
    hasValidCredentials,
@@ -35,22 +35,22 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
       describe('Client Configuration', () => {
          test('should create client in public mode', () => {
-            const client = new YahooFantasyClient(config);
-            expect(client).toBeInstanceOf(YahooFantasyClient);
+            const client = new YahooFantasySportsClient(config);
+            expect(client).toBeInstanceOf(YahooFantasySportsClient);
          });
 
          test('should be authenticated in public mode', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             expect(client.isAuthenticated()).toBe(true);
          });
 
          test('should throw error when calling getAuthUrl in public mode', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             expect(() => client.getAuthUrl()).toThrow(ConfigError);
          });
 
          test('should throw error when calling authenticate in public mode', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             expect(async () => {
                await client.authenticate('test-code');
             }).toThrow(ConfigError);
@@ -64,14 +64,14 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             };
 
             expect(
-               () => new YahooFantasyClient(publicConfig),
+               () => new YahooFantasySportsClient(publicConfig),
             ).not.toThrow();
          });
       });
 
       describe('Game Resource - Public Endpoints', () => {
          test('should fetch game metadata by code', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const game = (
                (await client.api().game('nhl').get()) as { game: any }
             ).game;
@@ -84,7 +84,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should fetch game metadata by game key', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             // NHL game key format: 427 (or similar)
             const game = (
                (await client.api().game('nhl').get()) as { game: any }
@@ -101,7 +101,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should fetch multiple games', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const games = (
                (await client.api().games(['nhl', 'nfl']).get()) as {
                   games: any[];
@@ -117,7 +117,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should fetch available games', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const games = (
                (await client
                   .api()
@@ -141,7 +141,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should include game metadata with settings', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const game = (
                (await client
                   .api()
@@ -159,7 +159,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
       describe('Player Search - Public Endpoints', () => {
          test('should search for players by name', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const result = (await client
                .api()
                .game('nhl')
@@ -180,7 +180,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should filter players by position', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const result = (await client
                .api()
                .game('nhl')
@@ -194,7 +194,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should sort players', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const result = (await client
                .api()
                .game('nhl')
@@ -208,7 +208,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should handle pagination', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const firstPage = (await client
                .api()
                .game('nhl')
@@ -244,7 +244,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
       describe('Error Handling', () => {
          test('should handle invalid game code', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
 
             expect(async () => {
                await client.api().game('invalid-game-code').get();
@@ -252,7 +252,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should handle invalid player search', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
 
             // Empty search should still work but might return fewer results
             const result = await client
@@ -269,7 +269,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
       describe('Multiple Requests', () => {
          test('should handle concurrent requests', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
 
             const requests = [
                client.api().game('nhl').get() as Promise<{ game: any }>,
@@ -292,7 +292,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should handle sequential requests', async () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
 
             const nhlGame = (await client.api().game('nhl').get()) as {
                game: any;

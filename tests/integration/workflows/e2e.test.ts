@@ -18,7 +18,7 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
 import {
    getOAuth2Config,
    getStoredTokens,
@@ -82,7 +82,7 @@ function extractTeams(
 describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
    'End-to-End Workflow Tests',
    () => {
-      let client: YahooFantasyClient;
+      let client: YahooFantasySportsClient;
 
       beforeAll(() => {
          const config = getOAuth2Config();
@@ -95,14 +95,17 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
          const storage = new InMemoryTokenStorage();
          storage.save(tokens);
 
-         client = new YahooFantasyClient(config, storage);
+         client = new YahooFantasySportsClient(config, storage);
       });
 
       describe('Authentication Flow', () => {
          test('should complete full authentication workflow', async () => {
             const config = getOAuth2Config();
             const storage = new InMemoryTokenStorage();
-            const testClient = new YahooFantasyClient(config, storage);
+            const testClient = new YahooFantasySportsClient(
+               config,
+               storage,
+            );
 
             // Initially not authenticated
             expect(testClient.isAuthenticated()).toBe(false);

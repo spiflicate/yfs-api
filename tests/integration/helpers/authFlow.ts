@@ -15,7 +15,7 @@
 
 import type { OAuth2Tokens } from '../../../src/auth/oauth2.js';
 import type { TokenStorage } from '../../../src/client/yahoo.js';
-import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
 import { getOAuth2Config, getStoredTokens } from './testConfig.js';
 
 /**
@@ -135,7 +135,7 @@ async function promptForAuthCode(authUrl: string): Promise<string> {
 export async function getAuthenticatedClient(
    forceReauth = false,
    tokenStorage?: TokenStorage,
-): Promise<YahooFantasyClient> {
+): Promise<YahooFantasySportsClient> {
    const config = getOAuth2Config();
    const storage = tokenStorage || new FileTokenStorage();
 
@@ -171,7 +171,7 @@ export async function getAuthenticatedClient(
 
    // Create client with existing tokens if available
    if (tokens && !forceReauth) {
-      const client = new YahooFantasyClient(
+      const client = new YahooFantasySportsClient(
          {
             ...config,
             accessToken: tokens.accessToken,
@@ -206,7 +206,7 @@ export async function getAuthenticatedClient(
 
    // Need to authenticate interactively
    console.log('\n🔐 Interactive OAuth authentication required');
-   const client = new YahooFantasyClient(config, storage);
+   const client = new YahooFantasySportsClient(config, storage);
 
    // Generate authorization URL
    const state = `test-${Date.now()}`;

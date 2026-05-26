@@ -15,7 +15,7 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
 import type { PlayerKey, TeamKey } from '../../../src/domain/common.js';
 import { TransactionBuilder } from '../../../src/resources/builders/transaction-builder.js';
 import {
@@ -52,7 +52,7 @@ describe.skipIf(
       !hasStoredTokens() ||
       !hasTradeDropSemanticsConfig(),
 )('Trade Drop Semantics Integration', () => {
-   let client: YahooFantasyClient;
+   let client: YahooFantasySportsClient;
 
    beforeAll(async () => {
       const config = getOAuth2Config();
@@ -65,7 +65,7 @@ describe.skipIf(
       const storage = new InMemoryTokenStorage();
       storage.save(tokens);
 
-      client = new YahooFantasyClient(config, storage);
+      client = new YahooFantasySportsClient(config, storage);
       await client.loadTokens();
    });
 
@@ -80,10 +80,8 @@ describe.skipIf(
          'TEST_DROPPED_PLAYER_KEY',
       ) as PlayerKey;
 
-      const buildTransaction = (
-         dropType: TradeDropType,
-      ): TransactionBuilder =>
-         new TransactionBuilder()
+      const buildTransaction = (dropType: TradeDropType) =>
+         TransactionBuilder.newTrade()
             .fromTeam(traderTeamKey)
             .toTeam(tradeeTeamKey)
             .sendPlayers([sentPlayerKey])
@@ -124,8 +122,7 @@ describe.skipIf(
             .api()
             .league(leagueKey)
             .transactions()
-            .create(buildTransaction(dropType))
-            .get<Record<string, unknown>>();
+            .createTransaction(buildTransaction(dropType));
 
          expect(response).toBeDefined();
       }

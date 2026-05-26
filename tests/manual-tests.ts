@@ -1,5 +1,9 @@
 // import { describe, expect, it } from 'bun:test';
-import { type OAuth2Tokens, YahooFantasyClient } from '../src/index';
+import {
+   type OAuth2Tokens,
+   RosterMoveBuilder,
+   YahooFantasyClient,
+} from '../src/index';
 
 async function main() {
    const yfs = await setup().catch((error) => {
@@ -8,17 +12,33 @@ async function main() {
    });
    try {
       // Example API call to verify authentication works
-      const user = await yfs.api().users().get();
-      const game = await yfs.api().game('nfl').gameWeeks().get();
-      console.log('Authenticated user info:', user);
-      console.log('Game info:', game);
+      // const user = await yfs.api().users().get();
+      // const game = await yfs.api().games('nfl').teams().get();
+      // const team = await yfs.api().game('nfl').leagues('').teams().get();
 
+      // console.log('Authenticated user info:', user);
+      // console.log('Game info:', game);
+      // console.log('Team info:', team);
+      // cal raleigh C - 11531
+      // trea turner SS - 10056
+      // jazz chisholm 2B,3B - 10839
+      const rosterMove = new RosterMoveBuilder()
+         .date('2026-05-26')
+         .movePlayer('mlb.p.10839', '2B');
+      // .movePlayer('mlb.p.10056', 'SS');
+      console.dir(rosterMove.toPayload(), { depth: 10 });
+      const teamInfo = await yfs
+         .api()
+         .team('mlb.l.230332.t.4')
+         .roster()
+         .update(rosterMove);
+      console.log('Updated team roster:', teamInfo);
       // Save result to tmp folder
       const outputPath = new URL(
-         'tmp/authenticated-user.json',
+         'tmp/updated-team-roster.json',
          import.meta.url,
       );
-      await Bun.write(outputPath, JSON.stringify(user, null, 2));
+      await Bun.write(outputPath, JSON.stringify(teamInfo, null, 2));
    } catch (error) {
       console.error('Error fetching user info:', error);
    }

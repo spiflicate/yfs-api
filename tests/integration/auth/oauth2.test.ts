@@ -18,7 +18,7 @@
  */
 
 import { beforeAll, describe, expect, test } from 'bun:test';
-import { YahooFantasyClient } from '../../../src/client/yahoo.js';
+import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
 import {
    getOAuth2Config,
    getStoredTokens,
@@ -42,24 +42,24 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
       describe('Client Configuration', () => {
          test('should create client with valid config', () => {
-            const client = new YahooFantasyClient(config);
-            expect(client).toBeInstanceOf(YahooFantasyClient);
+            const client = new YahooFantasySportsClient(config);
+            expect(client).toBeInstanceOf(YahooFantasySportsClient);
          });
 
          test('should expose request builders', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             expect(client.api()).toBeDefined();
          });
 
          test('should not be authenticated without tokens', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             expect(client.isAuthenticated()).toBe(false);
          });
       });
 
       describe('Authorization URL', () => {
          test('should generate valid authorization URL', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const authUrl = client.getAuthUrl();
 
             expect(authUrl).toBeTruthy();
@@ -70,7 +70,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should include state parameter', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const state = 'test-state-123';
             const authUrl = client.getAuthUrl(state);
 
@@ -78,7 +78,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          });
 
          test('should support custom language', () => {
-            const client = new YahooFantasyClient(config);
+            const client = new YahooFantasySportsClient(config);
             const authUrl = client.getAuthUrl(undefined, 'es-es');
 
             expect(authUrl).toContain('language=es-es');
@@ -93,7 +93,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                return;
             }
 
-            const clientWithTokens = new YahooFantasyClient({
+            const clientWithTokens = new YahooFantasySportsClient({
                ...config,
                accessToken: tokens.accessToken,
                refreshToken: tokens.refreshToken,
@@ -113,7 +113,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                expiresIn: -1,
             };
 
-            const client = new YahooFantasyClient({
+            const client = new YahooFantasySportsClient({
                ...config,
                accessToken: expiredTokens.accessToken,
                refreshToken: expiredTokens.refreshToken,
@@ -132,7 +132,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                expiresIn: 3600,
             };
 
-            const client = new YahooFantasyClient({
+            const client = new YahooFantasySportsClient({
                ...config,
                accessToken: validTokens.accessToken,
                refreshToken: validTokens.refreshToken,
@@ -149,7 +149,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                return;
             }
 
-            const client = new YahooFantasyClient({
+            const client = new YahooFantasySportsClient({
                ...config,
                accessToken: tokens.accessToken,
                refreshToken: tokens.refreshToken,
@@ -176,7 +176,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
       describe('Token Storage', () => {
          test('should integrate with token storage', async () => {
             const storage = new InMemoryTokenStorage();
-            const client = new YahooFantasyClient(config, storage);
+            const client = new YahooFantasySportsClient(config, storage);
 
             expect(await client.loadTokens()).toBe(false);
          });
@@ -191,7 +191,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             };
 
             const storage = createMockTokenStorage(mockTokens);
-            const client = new YahooFantasyClient(config, storage);
+            const client = new YahooFantasySportsClient(config, storage);
 
             const loaded = await client.loadTokens();
 
@@ -212,7 +212,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             };
 
             const storage = createMockTokenStorage(mockTokens);
-            const client = new YahooFantasyClient(config, storage);
+            const client = new YahooFantasySportsClient(config, storage);
 
             await client.loadTokens();
             expect(client.isAuthenticated()).toBe(true);
@@ -233,7 +233,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                return;
             }
 
-            const client = new YahooFantasyClient({
+            const client = new YahooFantasySportsClient({
                ...config,
                accessToken: tokens.accessToken,
                refreshToken: tokens.refreshToken,
@@ -258,7 +258,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             }
 
             // Create client with expired token
-            const client = new YahooFantasyClient({
+            const client = new YahooFantasySportsClient({
                ...config,
                accessToken: 'expired-token',
                refreshToken: tokens.refreshToken,
