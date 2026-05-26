@@ -8,16 +8,16 @@
  *
  * @example
  * ```typescript
- * import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+ * import { YahooFantasySportsClient } from 'yfs-api';
  *
- * const client = new YahooFantasyClient({
+ * const yfs = new YahooFantasySportsClient({
  *   clientId: process.env.YAHOO_CLIENT_ID!,
  *   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
- *   redirectUri: 'https://example.com/callback',
+ *   redirectUri: 'https://example.com/callback', // or 'oob'
  * });
  *
  * // Step 1: Get authorization URL
- * const authUrl = client.getAuthUrl();
+ * const authUrl = yfs.getAuthUrl();
  * console.log('Visit this URL and authorize:', authUrl);
  *
  * // Step 2: User authorizes and gets redirected with code
@@ -25,11 +25,11 @@
  * const code = '...'; // User authorization code from yahoo
  *
  * // Step 3: Exchange code for tokens
- * await client.authenticate(code);
+ * await yfs.authenticate(code);
  *
  * // Make API calls
- * const league = await client.api().league('423.l.12345').get();
- * const roster = await client.api().team('423.l.12345.t.1').roster().get();
+ * const league = await yfs.api().league('423.l.12345').get();
+ * const roster = await yfs.api().team('423.l.12345.t.1').roster().get();
  * ```
  */
 
@@ -158,28 +158,28 @@ export interface TokenStorage {
  *
  * @example
  * ```typescript
- * const client = new YahooFantasyClient({
+ * const yfs = new YahooFantasySportsClient({
  *   clientId: 'your-client-id',
  *   clientSecret: 'your-client-secret',
  *   redirectUri: 'https://example.com/callback',
  * });
  *
  * // Step 1: Get authorization URL
- * const authUrl = client.getAuthUrl();
+ * const authUrl = yfs.getAuthUrl();
  * console.log('Visit this URL and authorize:', authUrl);
  *
  * // Step 2: User authorizes and gets redirected with code
  * // Extract code from redirect: ?code=AUTHORIZATION_CODE
  *
  * // Step 3: Complete authentication
- * await client.authenticate(code);
+ * await yfs.authenticate(code);
  *
  * // Use the resource builders
- * const league = await client.api().league('423.l.12345').get();
- * const teams = await client.api().league('423.l.12345').teams().get();
+ * const league = await yfs.api().league('423.l.12345').get();
+ * const teams = await yfs.api().league('423.l.12345').teams().get();
  * ```
  */
-export class YahooFantasyClient {
+export class YahooFantasySportsClient {
    private config: Config & {
       debug: boolean;
       rawXml: boolean;
@@ -202,7 +202,7 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const client = new YahooFantasyClient({
+    * const yfs = new YahooFantasySportsClient({
     *   clientId: process.env.YAHOO_CLIENT_ID!,
     *   clientSecret: process.env.YAHOO_CLIENT_SECRET!,
     *   redirectUri: 'https://example.com/callback',
@@ -229,10 +229,10 @@ export class YahooFantasyClient {
     *   },
     * };
     *
-    * const client = new YahooFantasyClient(config, storage);
+    * const yfs = new YahooFantasySportsClient(config, storage);
     *
     * // Try to load existing tokens
-    * await client.loadTokens();
+    * await yfs.loadTokens();
     * ```
     */
    constructor(config: Config, tokenStorage?: TokenStorage) {
@@ -348,7 +348,7 @@ export class YahooFantasyClient {
     *
     * @example Query league settings
     * ```typescript
-    * const league = await client.api()
+    * const league = await yfs.api()
     *   .league('423.l.12345')
     *   .include('settings')
     *   .get();
@@ -356,7 +356,7 @@ export class YahooFantasyClient {
     *
     * @example Query players with filters
     * ```typescript
-    * const players = await client.api()
+    * const players = await yfs.api()
     *   .league('423.l.12345')
     *   .players()
     *   .position('C')
@@ -367,7 +367,7 @@ export class YahooFantasyClient {
     *
     * @example Query team roster
     * ```typescript
-    * const roster = await client.api()
+    * const roster = await yfs.api()
     *   .team('423.l.12345.t.1')
     *   .roster()
     *   .week(10)
@@ -376,14 +376,14 @@ export class YahooFantasyClient {
     *
     * @example Query specific games
     * ```typescript
-    * const games = await client.api()
+    * const games = await yfs.api()
     *   .games(['nhl', 'nfl'])
     *   .get();
     * ```
     *
     * @example Query user's games
     * ```typescript
-    * const userGames = await client.api()
+    * const userGames = await yfs.api()
     *   .users()
     *   .games()
     *   .get();
@@ -408,7 +408,7 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const authUrl = client.getAuthUrl('random-state-string');
+    * const authUrl = yfs.getAuthUrl('random-state-string');
     * console.log('Please visit:', authUrl);
     * console.log('After authorizing, you will be redirected with a code parameter.');
     * ```
@@ -433,14 +433,14 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const authUrl = client.getAuthUrl();
+    * const authUrl = yfs.getAuthUrl();
     * console.log('Visit:', authUrl);
     *
     * // After user authorizes and is redirected to:
     * // https://your-redirect-uri?code=AUTHORIZATION_CODE
     *
     * const code = '...'; // Extract from redirect URL
-    * await client.authenticate(code);
+    * await yfs.authenticate(code);
     *
     * console.log('Authenticated successfully!');
     * ```
@@ -459,14 +459,14 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const authUrl = client.getAuthUrl();
+    * const authUrl = yfs.getAuthUrl();
     * console.log('Visit:', authUrl);
     *
     * // After user authorizes and is redirected to:
     * // https://your-redirect-uri?code=AUTHORIZATION_CODE
     *
     * const code = '...'; // Extract from redirect URL
-    * await client.authenticate(code);
+    * await yfs.authenticate(code);
     *
     * console.log('Authenticated successfully!');
     * ```
@@ -490,13 +490,13 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const client = new YahooFantasyClient(config, storage);
+    * const yfs = new YahooFantasySportsClient(config, storage);
     *
-    * if (await client.loadTokens()) {
+    * if (await yfs.loadTokens()) {
     *   console.log('Using saved tokens');
     * } else {
     *   console.log('No saved tokens, need to authenticate');
-    *   const authUrl = client.getAuthUrl();
+    *   const authUrl = yfs.getAuthUrl();
     *   // ... authenticate
     * }
     * ```
@@ -532,11 +532,11 @@ export class YahooFantasyClient {
     * @example
     * ```typescript
     * try {
-    *   await client.refreshToken();
+    *   await yfs.refreshToken();
     *   console.log('Token refreshed successfully');
     * } catch (error) {
     *   console.log('Refresh failed, need to re-authenticate');
-    *   await client.authenticate(code);
+    *   await yfs.authenticate(code);
     * }
     * ```
     */
@@ -568,8 +568,8 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * if (!client.isAuthenticated()) {
-    *   await client.authenticate(code);
+    * if (!yfs.isAuthenticated()) {
+    *   await yfs.authenticate(code);
     * }
     * ```
     */
@@ -593,8 +593,8 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * if (client.isTokenExpired()) {
-    *   await client.refreshToken();
+    * if (yfs.isTokenExpired()) {
+    *   await yfs.refreshToken();
     * }
     * ```
     */
@@ -617,7 +617,7 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * const tokens = client.getTokens();
+    * const tokens = yfs.getTokens();
     * if (tokens) {
     *   // Save tokens for later use
     *   await saveToDatabase(tokens);
@@ -633,7 +633,7 @@ export class YahooFantasyClient {
     *
     * @example
     * ```typescript
-    * await client.logout();
+    * await yfs.logout();
     * console.log('Logged out successfully');
     * ```
     */

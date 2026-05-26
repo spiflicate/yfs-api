@@ -8,7 +8,7 @@ import { describe, expect, mock, test } from 'bun:test';
 import type { OAuth2Tokens } from '../auth/oauth2.js';
 import { ConfigError } from './errors.js';
 import type { Config, TokenStorage } from './yahoo.js';
-import { YahooFantasyClient } from './yahoo.js';
+import { YahooFantasySportsClient } from './yahoo.js';
 
 describe('YahooFantasyClient', () => {
    const config: Config = {
@@ -27,25 +27,25 @@ describe('YahooFantasyClient', () => {
 
    describe('constructor', () => {
       test('should create client with valid config', () => {
-         const client = new YahooFantasyClient(config);
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         const client = new YahooFantasySportsClient(config);
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
       });
 
       test('should throw ConfigError if clientId is missing', () => {
          expect(() => {
-            new YahooFantasyClient({ ...config, clientId: '' });
+            new YahooFantasySportsClient({ ...config, clientId: '' });
          }).toThrow(ConfigError);
       });
 
       test('should throw ConfigError if clientSecret is missing', () => {
          expect(() => {
-            new YahooFantasyClient({ ...config, clientSecret: '' });
+            new YahooFantasySportsClient({ ...config, clientSecret: '' });
          }).toThrow(ConfigError);
       });
 
       test('should throw ConfigError if redirectUri is missing in user auth mode', () => {
          expect(() => {
-            new YahooFantasyClient({
+            new YahooFantasySportsClient({
                clientId: config.clientId,
                clientSecret: config.clientSecret,
                redirectUri: '',
@@ -59,8 +59,8 @@ describe('YahooFantasyClient', () => {
             clientSecret: config.clientSecret,
             publicMode: true,
          };
-         const client = new YahooFantasyClient(publicConfig);
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         const client = new YahooFantasySportsClient(publicConfig);
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
          expect(client.isAuthenticated()).toBe(true);
       });
 
@@ -70,7 +70,7 @@ describe('YahooFantasyClient', () => {
             clientSecret: config.clientSecret,
             publicMode: true,
          };
-         const client = new YahooFantasyClient(publicConfig);
+         const client = new YahooFantasySportsClient(publicConfig);
          expect(() => {
             client.getAuthUrl();
          }).toThrow(ConfigError);
@@ -82,31 +82,34 @@ describe('YahooFantasyClient', () => {
             clientSecret: config.clientSecret,
             publicMode: true,
          };
-         const client = new YahooFantasyClient(publicConfig);
+         const client = new YahooFantasySportsClient(publicConfig);
          expect(async () => {
             await client.authenticate('test-code');
          }).toThrow(ConfigError);
       });
 
       test('should accept debug option', () => {
-         const client = new YahooFantasyClient({ ...config, debug: true });
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         const client = new YahooFantasySportsClient({
+            ...config,
+            debug: true,
+         });
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
       });
 
       test('should accept timeout option', () => {
-         const client = new YahooFantasyClient({
+         const client = new YahooFantasySportsClient({
             ...config,
             timeout: 60000,
          });
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
       });
 
       test('should accept maxRetries option', () => {
-         const client = new YahooFantasyClient({
+         const client = new YahooFantasySportsClient({
             ...config,
             maxRetries: 5,
          });
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
       });
 
       test('should accept tokens in config', () => {
@@ -116,7 +119,7 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 3600 * 1000,
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
          expect(client.isAuthenticated()).toBe(true);
       });
 
@@ -126,14 +129,14 @@ describe('YahooFantasyClient', () => {
             load: () => null,
             clear: () => {},
          };
-         const client = new YahooFantasyClient(config, storage);
-         expect(client).toBeInstanceOf(YahooFantasyClient);
+         const client = new YahooFantasySportsClient(config, storage);
+         expect(client).toBeInstanceOf(YahooFantasySportsClient);
       });
    });
 
    describe('api root', () => {
       test('should expose the resource api root', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          expect(client.api().league('423.l.12345').toPath()).toBe(
             'league/423.l.12345',
          );
@@ -142,7 +145,7 @@ describe('YahooFantasyClient', () => {
 
    describe('getAuthUrl', () => {
       test('should generate authorization URL', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          const authUrl = client.getAuthUrl();
 
          expect(authUrl).toContain(
@@ -155,7 +158,7 @@ describe('YahooFantasyClient', () => {
       });
 
       test('should include state parameter when provided', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          const state = 'random-state-string';
          const authUrl = client.getAuthUrl(state);
 
@@ -163,7 +166,7 @@ describe('YahooFantasyClient', () => {
       });
 
       test('should support custom language', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          const authUrl = client.getAuthUrl(undefined, 'es-es');
 
          expect(authUrl).toContain('language=es-es');
@@ -187,7 +190,7 @@ describe('YahooFantasyClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          await client.authenticate('test-code');
 
          expect(client.isAuthenticated()).toBe(true);
@@ -218,7 +221,7 @@ describe('YahooFantasyClient', () => {
             clear: () => {},
          };
 
-         const client = new YahooFantasyClient(config, storage);
+         const client = new YahooFantasySportsClient(config, storage);
          await client.authenticate('test-code');
 
          expect(savedTokens).toBeDefined();
@@ -236,7 +239,7 @@ describe('YahooFantasyClient', () => {
             clear: () => {},
          };
 
-         const client = new YahooFantasyClient(config, storage);
+         const client = new YahooFantasySportsClient(config, storage);
          const loaded = await client.loadTokens();
 
          expect(loaded).toBe(true);
@@ -250,7 +253,7 @@ describe('YahooFantasyClient', () => {
             clear: () => {},
          };
 
-         const client = new YahooFantasyClient(config, storage);
+         const client = new YahooFantasySportsClient(config, storage);
          const loaded = await client.loadTokens();
 
          expect(loaded).toBe(false);
@@ -258,7 +261,7 @@ describe('YahooFantasyClient', () => {
       });
 
       test('should return false when no storage provided', async () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          const loaded = await client.loadTokens();
 
          expect(loaded).toBe(false);
@@ -271,7 +274,7 @@ describe('YahooFantasyClient', () => {
             clear: async () => {},
          };
 
-         const client = new YahooFantasyClient(config, storage);
+         const client = new YahooFantasySportsClient(config, storage);
          const loaded = await client.loadTokens();
 
          expect(loaded).toBe(true);
@@ -301,7 +304,7 @@ describe('YahooFantasyClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
          await client.refreshToken();
 
          const tokens = client.getTokens();
@@ -309,7 +312,7 @@ describe('YahooFantasyClient', () => {
       });
 
       test('should throw ConfigError if no refresh token available', async () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
 
          await expect(client.refreshToken()).rejects.toThrow(ConfigError);
       });
@@ -345,7 +348,10 @@ describe('YahooFantasyClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
-         const client = new YahooFantasyClient(configWithTokens, storage);
+         const client = new YahooFantasySportsClient(
+            configWithTokens,
+            storage,
+         );
          await client.refreshToken();
 
          if (savedTokens) {
@@ -362,13 +368,13 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 3600 * 1000,
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          expect(client.isAuthenticated()).toBe(true);
       });
 
       test('should return false when no tokens', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
 
          expect(client.isAuthenticated()).toBe(false);
       });
@@ -382,7 +388,7 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 3600 * 1000, // 1 hour from now
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          expect(client.isTokenExpired()).toBe(false);
       });
@@ -394,13 +400,13 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() - 1000, // 1 second ago
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          expect(client.isTokenExpired()).toBe(true);
       });
 
       test('should return true when no tokens', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
 
          expect(client.isTokenExpired()).toBe(true);
       });
@@ -412,7 +418,7 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 30 * 1000, // 30 seconds from now
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          // With 60 second buffer, should be expired
          expect(client.isTokenExpired(60)).toBe(true);
@@ -430,7 +436,7 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 3600 * 1000,
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          const tokens = client.getTokens();
          expect(tokens).not.toBeNull();
@@ -438,7 +444,7 @@ describe('YahooFantasyClient', () => {
       });
 
       test('should return null when not authenticated', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
 
          const tokens = client.getTokens();
          expect(tokens).toBeNull();
@@ -453,7 +459,7 @@ describe('YahooFantasyClient', () => {
             refreshToken: 'test-refresh',
             expiresAt: Date.now() + 3600 * 1000,
          };
-         const client = new YahooFantasyClient(configWithTokens);
+         const client = new YahooFantasySportsClient(configWithTokens);
 
          expect(client.isAuthenticated()).toBe(true);
 
@@ -480,7 +486,10 @@ describe('YahooFantasyClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
-         const client = new YahooFantasyClient(configWithTokens, storage);
+         const client = new YahooFantasySportsClient(
+            configWithTokens,
+            storage,
+         );
          await client.logout();
 
          expect(cleared).toBe(true);
@@ -503,7 +512,10 @@ describe('YahooFantasyClient', () => {
             expiresAt: Date.now() + 3600 * 1000,
          };
 
-         const client = new YahooFantasyClient(configWithTokens, storage);
+         const client = new YahooFantasySportsClient(
+            configWithTokens,
+            storage,
+         );
          await client.logout();
 
          expect(cleared).toBe(true);
@@ -512,7 +524,7 @@ describe('YahooFantasyClient', () => {
 
    describe('getHttpClient', () => {
       test('should return HTTP client', () => {
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          const httpClient = client.getHttpClient();
 
          expect(httpClient).toBeDefined();
@@ -544,7 +556,7 @@ describe('YahooFantasyClient', () => {
             clear: () => {},
          };
 
-         const client = new YahooFantasyClient(config, storage);
+         const client = new YahooFantasySportsClient(config, storage);
          await client.authenticate('test-code');
 
          expect(saveCallCount).toBe(1);
@@ -565,7 +577,7 @@ describe('YahooFantasyClient', () => {
          );
          global.fetch = fetchMock as any;
 
-         const client = new YahooFantasyClient(config);
+         const client = new YahooFantasySportsClient(config);
          await client.authenticate('test-code');
 
          expect(client.isAuthenticated()).toBe(true);
