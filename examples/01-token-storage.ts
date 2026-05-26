@@ -6,30 +6,33 @@
  *
  * Features:
  * - Encrypts tokens at rest using AES-256-GCM
+ * - Persists an auto-generated recovery key in a sibling .key file
  * - Proper file permissions (readable only by current user)
  * - Atomic writes to prevent corruption
  * - Error handling and logging
  */
 
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { chmod, readFile, unlink, writeFile } from 'node:fs/promises';
-import type { OAuth2Tokens } from '../../src/client/OAuth2Client.js';
-import type { TokenStorage } from '../../src/client/YahooFantasyClient.js';
+import type { OAuth2Tokens } from '../src/auth/oauth2.js';
+import type { TokenStorage } from '../src/client/yahoo.js';
 
 /**
  * Secure file-based token storage with encryption
  */
 export class FileTokenStorage implements TokenStorage {
    private readonly filePath: string;
+   private readonly keyFilePath: string;
    private readonly encryptionKey: Buffer;
    private readonly debug: boolean;
+   private readonly usesGeneratedKey: boolean;
 
    /**
     * Creates a new file-based token storage
     *
     * @param filePath - Path to store the token file (default: .tokens.enc)
-    * @param encryptionKey - 32-byte encryption key (leave empty to disable encryption)
+    * @param encryptionKey - 32-byte encryption key as 64 hex characters
     * @param debug - Enable debug logging
     */
    constructor(
@@ -38,28 +41,34 @@ export class FileTokenStorage implements TokenStorage {
       debug = false,
    ) {
       this.filePath = filePath;
+      this.keyFilePath = `${filePath}.key`;
       this.debug = debug;
 
-      // Use provided key or generate a random one (not recommended for production)
+      // Use provided key, reuse a persisted sidecar key, or generate one for first save.
       if (encryptionKey) {
-         if (encryptionKey.length !== 64) {
-            // 32 bytes = 64 hex characters
-            throw new Error(
-               'Encryption key must be 64 hex characters (32 bytes)',
-            );
-         }
-         this.encryptionKey = Buffer.from(encryptionKey, 'hex');
-      } else {
-         // Generate random key (WARNING: This means tokens can't be recovered after restart)
-         this.encryptionKey = randomBytes(32);
+         this.encryptionKey = this.parseEncryptionKey(encryptionKey);
+         this.usesGeneratedKey = false;
+      } else if (existsSync(this.keyFilePath)) {
+         const persistedKey = readFileSync(this.keyFilePath, 'utf8').trim();
+         this.encryptionKey = this.parseEncryptionKey(persistedKey);
+         this.usesGeneratedKey = true;
+
          if (this.debug) {
             console.warn(
-               '[FileTokenStorage] No encryption key provided, using random key',
-            );
-            console.warn(
-               '[FileTokenStorage] Tokens will not persist across restarts',
+               `[FileTokenStorage] Loaded encryption key from ${this.keyFilePath}`,
             );
          }
+      } else {
+         // Generate a random key and persist it next to the token file on first save.
+         this.encryptionKey = randomBytes(32);
+         this.usesGeneratedKey = true;
+
+         console.warn(
+            '[FileTokenStorage] No encryption key provided; a sidecar .key file will be written on first save',
+         );
+         console.warn(
+            `[FileTokenStorage] Store ${this.keyFilePath} safely, then remove it from disk once backed up`,
+         );
       }
    }
 
@@ -73,6 +82,8 @@ export class FileTokenStorage implements TokenStorage {
                `[FileTokenStorage] Saving tokens to ${this.filePath}`,
             );
          }
+
+         await this.persistGeneratedKey();
 
          // Serialize tokens
          const plaintext = JSON.stringify(tokens, null, 2);
@@ -161,6 +172,10 @@ export class FileTokenStorage implements TokenStorage {
             await unlink(this.filePath);
          }
 
+         if (this.usesGeneratedKey && existsSync(this.keyFilePath)) {
+            await unlink(this.keyFilePath);
+         }
+
          if (this.debug) {
             console.log('[FileTokenStorage] Tokens cleared successfully');
          }
@@ -191,6 +206,35 @@ export class FileTokenStorage implements TokenStorage {
 
       // Combine: IV (16) + Auth Tag (16) + Encrypted Data
       return Buffer.concat([iv, authTag, encrypted]);
+   }
+
+   private parseEncryptionKey(encryptionKey: string): Buffer {
+      if (encryptionKey.length !== 64) {
+         throw new Error(
+            'Encryption key must be 64 hex characters (32 bytes)',
+         );
+      }
+
+      return Buffer.from(encryptionKey, 'hex');
+   }
+
+   private async persistGeneratedKey(): Promise<void> {
+      if (!this.usesGeneratedKey || existsSync(this.keyFilePath)) {
+         return;
+      }
+
+      await writeFile(
+         this.keyFilePath,
+         `${this.encryptionKey.toString('hex')}\n`,
+      );
+      await chmod(this.keyFilePath, 0o600);
+
+      console.warn(
+         `[FileTokenStorage] Wrote recovery key to ${this.keyFilePath}`,
+      );
+      console.warn(
+         '[FileTokenStorage] Store it safely, then remove the file from disk',
+      );
    }
 
    /**
