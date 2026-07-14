@@ -7,6 +7,16 @@
 
 Install the locked dependency graph with `bun install --frozen-lockfile`.
 
+## Branches
+
+`dev` is the default integration branch. Start work from `dev` and target `dev`
+with pull requests. Do not commit or open routine pull requests directly against
+`main`.
+
+`main` contains only known-good commits and release history. Promote `dev` to
+`main` with a pull request after CI passes and the complete package gate has
+been verified. Create release tags from `main` only.
+
 ## Local Gates
 
 ```bash
@@ -49,4 +59,5 @@ the repository's sanitization guarantees.
 - Update package-root examples and current docs when behavior changes.
 
 Use Conventional Commits and run the complete package gate before opening a
-pull request.
+pull request. Routine pull requests target `dev`; only verified promotion pull
+requests target `main`.
