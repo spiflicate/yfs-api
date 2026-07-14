@@ -27,21 +27,15 @@ type StatsCoverageType =
    | 'lastweek'
    | 'lastmonth';
 type PlayerSortType = StatsCoverageType;
-type PlayerSubResource =
-   | 'metadata'
-   | 'stats'
-   | 'ownership'
-   | 'percent_owned';
-type PlayerExpansionField<T extends PlayerSubResource> = T extends 'stats'
+type PlayerExpansion = 'stats' | 'ownership';
+type PlayerExpansionField<T extends PlayerExpansion> = T extends 'stats'
    ? 'playerStats'
-   : T extends 'percent_owned'
-     ? 'percentOwned'
-     : T extends 'ownership'
-       ? 'ownership'
-       : never;
+   : T extends 'ownership'
+     ? 'ownership'
+     : never;
 type PlayerExpansionPath<
    TPath extends ResponsePath,
-   TSubResource extends PlayerSubResource,
+   TSubResource extends PlayerExpansion,
 > = TSubResource extends TSubResource
    ? PlayerExpansionField<TSubResource> extends infer TField extends string
       ? AppendResponsePath<TPath, TField>
@@ -61,13 +55,10 @@ type PlayersCollectionFilters = PlayerFilters & {
    start?: number;
    count?: number;
 };
-type PlayerResourceParams = ResourceParams<
-   PlayerSubResource,
-   PlayerKeyLike
-> &
+type PlayerResourceParams = ResourceParams<PlayerExpansion, PlayerKeyLike> &
    PlayerFilters;
 type PlayersCollectionParams = CollectionParams<
-   PlayerSubResource,
+   PlayerExpansion,
    PlayerKeyLike,
    'players'
 > &
@@ -77,6 +68,8 @@ type PlayerStatsResourceParams = SubResourceParams<'stats'> & {
    week?: `${number}`;
    date?: DateString;
 };
+type PlayerOwnershipResourceParams = SubResourceParams<'ownership'>;
+type PlayerPercentOwnedResourceParams = SubResourceParams<'percent_owned'>;
 
 abstract class PlayerBase<
    TParams extends PlayerResourceParams | PlayersCollectionParams,
@@ -89,6 +82,26 @@ abstract class PlayerBase<
       AppendResponsePath<TPath, 'playerStats'>
    > {
       return PlayerStatsResource.create(
+         this._transport,
+         this.createChildState(),
+      );
+   }
+
+   ownership(): PlayerOwnershipResource<
+      TRoot,
+      AppendResponsePath<TPath, 'ownership'>
+   > {
+      return PlayerOwnershipResource.create(
+         this._transport,
+         this.createChildState(),
+      );
+   }
+
+   percentOwned(): PlayerPercentOwnedResource<
+      TRoot,
+      AppendResponsePath<TPath, 'percentOwned'>
+   > {
+      return PlayerPercentOwnedResource.create(
          this._transport,
          this.createChildState(),
       );
@@ -113,7 +126,7 @@ export class PlayerResource<
       });
    }
 
-   include<const TSubResources extends readonly PlayerSubResource[]>(
+   include<const TSubResources extends readonly PlayerExpansion[]>(
       ...subResources: TSubResources
    ): PlayerResource<
       TRoot,
@@ -127,14 +140,6 @@ export class PlayerResource<
          TPath,
          TRequiredPath | PlayerExpansionPath<TPath, TSubResources[number]>
       >;
-   }
-
-   ownership() {
-      return this.include('ownership');
-   }
-
-   percentOwned() {
-      return this.include('percent_owned');
    }
 }
 
@@ -159,7 +164,7 @@ export class PlayersCollection<
       });
    }
 
-   include<const TSubResources extends readonly PlayerSubResource[]>(
+   include<const TSubResources extends readonly PlayerExpansion[]>(
       ...subResources: TSubResources
    ): PlayersCollection<
       TRoot,
@@ -173,14 +178,6 @@ export class PlayersCollection<
          TPath,
          TRequiredPath | PlayerExpansionPath<TPath, TSubResources[number]>
       >;
-   }
-
-   ownership() {
-      return this.include('ownership');
-   }
-
-   percentOwned() {
-      return this.include('percent_owned');
    }
 
    position(position: string): this {
@@ -269,6 +266,42 @@ export class PlayerStatsResource<
          type: this._params.type ?? 'date',
          date,
          week: undefined,
+      });
+   }
+}
+
+export class PlayerOwnershipResource<
+   TRoot = YahooPlayerResponseDto,
+   TPath extends ResponsePath = readonly ['player', 'ownership'],
+> extends Resource<
+   PlayerOwnershipResourceParams,
+   RequireResponsePath<TRoot, TPath>
+> {
+   static create<TRoot, TPath extends ResponsePath>(
+      transport: Transport,
+      state: RequestState,
+   ): PlayerOwnershipResource<TRoot, TPath> {
+      return new PlayerOwnershipResource(transport, state, {
+         kind: 'subResource',
+         name: 'ownership',
+      });
+   }
+}
+
+export class PlayerPercentOwnedResource<
+   TRoot = YahooPlayerResponseDto,
+   TPath extends ResponsePath = readonly ['player', 'percentOwned'],
+> extends Resource<
+   PlayerPercentOwnedResourceParams,
+   RequireResponsePath<TRoot, TPath>
+> {
+   static create<TRoot, TPath extends ResponsePath>(
+      transport: Transport,
+      state: RequestState,
+   ): PlayerPercentOwnedResource<TRoot, TPath> {
+      return new PlayerPercentOwnedResource(transport, state, {
+         kind: 'subResource',
+         name: 'percent_owned',
       });
    }
 }

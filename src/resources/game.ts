@@ -68,6 +68,13 @@ type GamesCollectionParams = CollectionParams<
    'games'
 > &
    GameFilters;
+type GamesCollectionContext = 'root' | 'user';
+type GamesLeagueArguments<TContext extends GamesCollectionContext> =
+   TContext extends 'root'
+      ?
+           | [key: LeagueKeyLike, ...keys: LeagueKeyLike[]]
+           | [keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]]]
+      : LeagueKeyLike[] | [keys: LeagueKeyLike[]];
 
 abstract class GameBase<
    TParams extends GameResourceParams | GamesCollectionParams,
@@ -115,16 +122,26 @@ export class GameResource<
       ...keys: LeagueKeyLike[]
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
    leagues(
-      keys: LeagueKeyLike[],
+      keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]],
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
    leagues(
-      keyOrKeys: LeagueKeyLike | LeagueKeyLike[],
+      keyOrKeys: LeagueKeyLike | readonly LeagueKeyLike[],
       ...keys: LeagueKeyLike[]
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
+      if (keyOrKeys === undefined) {
+         throw new TypeError('At least one league key is required.');
+      }
+      const leagueKeys = Array.isArray(keyOrKeys)
+         ? [...keyOrKeys]
+         : [keyOrKeys, ...keys];
+      if (leagueKeys.length === 0) {
+         throw new TypeError('At least one league key is required.');
+      }
+
       return LeaguesCollection.create(
          this._transport,
          this.createChildState(),
-         Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys, ...keys],
+         leagueKeys,
       );
    }
 
@@ -161,6 +178,7 @@ export class GamesCollection<
    TRoot = YahooGamesResponseDto,
    TPath extends ResponsePath = readonly ['games'],
    TRequiredPath extends ResponsePath = TPath,
+   TContext extends GamesCollectionContext = 'root',
 > extends GameBase<GamesCollectionParams, TRoot, TPath, TRequiredPath> {
    static create<
       TRoot = YahooGamesResponseDto,
@@ -169,7 +187,20 @@ export class GamesCollection<
       transport: Transport,
       state: RequestState,
       keys?: GameKeyLike[],
-   ): GamesCollection<TRoot, TPath> {
+   ): GamesCollection<TRoot, TPath, TPath, 'root'> {
+      return new GamesCollection(transport, state, {
+         kind: 'collection',
+         name: 'games',
+         out: [],
+         ...(keys ? { game_keys: keys } : {}),
+      });
+   }
+
+   static createForUser<TRoot, TPath extends ResponsePath>(
+      transport: Transport,
+      state: RequestState,
+      keys?: GameKeyLike[],
+   ): GamesCollection<TRoot, TPath, TPath, 'user'> {
       return new GamesCollection(transport, state, {
          kind: 'collection',
          name: 'games',
@@ -179,28 +210,25 @@ export class GamesCollection<
    }
 
    leagues(
-      ...keys: LeagueKeyLike[]
-   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
-   leagues(
-      keys: LeagueKeyLike[],
-   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
-   leagues(
-      ...keys: LeagueKeyLike[] | LeagueKeyLike[][]
+      ...keys: GamesLeagueArguments<TContext>
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
       return LeaguesCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         keys.flat() as LeagueKeyLike[],
       );
    }
 
    teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
       ...keys: TeamKeyLike[]
    ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
    teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
       keys: TeamKeyLike[],
    ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
    teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
       ...keys: TeamKeyLike[] | TeamKeyLike[][]
    ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>> {
       return TeamsCollection.create(
@@ -215,14 +243,16 @@ export class GamesCollection<
    ): GamesCollection<
       TRoot,
       TPath,
-      TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>
+      TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>,
+      TContext
    > {
       return this.cloneWith({
          out: [...this._params.out, ...subResources],
       }) as GamesCollection<
          TRoot,
          TPath,
-         TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>
+         TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>,
+         TContext
       >;
    }
 

@@ -5,6 +5,7 @@ import type {
    YahooLeagueResponseDto,
    YahooLoggedInUsersResponseDto,
    YahooPlayerResponseDto,
+   YahooPlayersResponseDto,
 } from '../domain/normalized';
 import { ApiRoot, createApi } from './api';
 import type { RequireResponsePath } from './response-contract';
@@ -35,17 +36,48 @@ describe('ApiRoot', () => {
       expect(api.player('nfl.p.1').toPath()).toBe('player/nfl.p.1');
    });
 
+   it('rejects empty top-level collection roots at runtime', () => {
+      const api = createApi(transport);
+
+      for (const method of [
+         api.games,
+         api.leagues,
+         api.teams,
+         api.players,
+      ]) {
+         expect(() => Reflect.apply(method, api, [])).toThrow(
+            'At least one',
+         );
+         expect(() => Reflect.apply(method, api, [[]])).toThrow(
+            'At least one',
+         );
+      }
+   });
+
    it('carries exact root response types through validated chains', () => {
       const api = createApi(transport as HttpClient);
       const gameIncludes = api
          .game('465')
          .include('game_weeks', 'stat_categories', 'position_types');
       const leagueTeams = api.game('465').leagues('465.l.1').teams();
-      const userTeams = api.users().games().teams().roster().players();
+      const directUserTeams = api.users().teams();
+      const nestedUserTeams = api
+         .users()
+         .games()
+         .teams()
+         .roster()
+         .players();
+      const userGameLeagues = api.users().games().leagues();
       const leagueRoster = api.leagues('465.l.1').teams().roster();
       const playerIncludes = api
          .player('465.p.1')
-         .include('ownership', 'percent_owned');
+         .include('stats', 'ownership');
+      const playerPercentOwned = api.player('465.p.1').percentOwned();
+      const playersOwnership = api.players('465.p.1').ownership();
+      const leaguePlayerPercentOwned = api
+         .league('465.l.1')
+         .players('465.p.1')
+         .percentOwned();
       const teamStats = api.teams('465.l.1.t.1').stats();
       const playerStats = api.players('465.p.1').stats();
 
@@ -68,13 +100,37 @@ describe('ApiRoot', () => {
          Equal<LeagueTeamsActual, LeagueTeamsExpected>
       >;
 
-      type UserTeamsActual = Awaited<ReturnType<typeof userTeams.get>>;
-      type UserTeamsExpected = RequireResponsePath<
+      type DirectUserTeamsActual = Awaited<
+         ReturnType<typeof directUserTeams.get>
+      >;
+      type DirectUserTeamsExpected = RequireResponsePath<
+         YahooLoggedInUsersResponseDto,
+         readonly ['users', 'teams']
+      >;
+      type _DirectUserTeamsEqual = Assert<
+         Equal<DirectUserTeamsActual, DirectUserTeamsExpected>
+      >;
+
+      type NestedUserTeamsActual = Awaited<
+         ReturnType<typeof nestedUserTeams.get>
+      >;
+      type NestedUserTeamsExpected = RequireResponsePath<
          YahooLoggedInUsersResponseDto,
          readonly ['users', 'games', 'teams', 'roster', 'players']
       >;
-      type _UserTeamsEqual = Assert<
-         Equal<UserTeamsActual, UserTeamsExpected>
+      type _NestedUserTeamsEqual = Assert<
+         Equal<NestedUserTeamsActual, NestedUserTeamsExpected>
+      >;
+
+      type UserGameLeaguesActual = Awaited<
+         ReturnType<typeof userGameLeagues.get>
+      >;
+      type UserGameLeaguesExpected = RequireResponsePath<
+         YahooLoggedInUsersResponseDto,
+         readonly ['users', 'games', 'leagues']
+      >;
+      type _UserGameLeaguesEqual = Assert<
+         Equal<UserGameLeaguesActual, UserGameLeaguesExpected>
       >;
 
       type LeagueRosterActual = Awaited<
@@ -92,10 +148,46 @@ describe('ApiRoot', () => {
       type PlayerExpected = RequireResponsePath<
          YahooPlayerResponseDto,
          | readonly ['player']
+         | readonly ['player', 'playerStats']
          | readonly ['player', 'ownership']
-         | readonly ['player', 'percentOwned']
       >;
       type _PlayerEqual = Assert<Equal<PlayerActual, PlayerExpected>>;
+
+      type PlayerPercentOwnedActual = Awaited<
+         ReturnType<typeof playerPercentOwned.get>
+      >;
+      type PlayerPercentOwnedExpected = RequireResponsePath<
+         YahooPlayerResponseDto,
+         readonly ['player', 'percentOwned']
+      >;
+      type _PlayerPercentOwnedEqual = Assert<
+         Equal<PlayerPercentOwnedActual, PlayerPercentOwnedExpected>
+      >;
+
+      type PlayersOwnershipActual = Awaited<
+         ReturnType<typeof playersOwnership.get>
+      >;
+      type PlayersOwnershipExpected = RequireResponsePath<
+         YahooPlayersResponseDto,
+         readonly ['players', 'ownership']
+      >;
+      type _PlayersOwnershipEqual = Assert<
+         Equal<PlayersOwnershipActual, PlayersOwnershipExpected>
+      >;
+
+      type LeaguePlayerPercentOwnedActual = Awaited<
+         ReturnType<typeof leaguePlayerPercentOwned.get>
+      >;
+      type LeaguePlayerPercentOwnedExpected = RequireResponsePath<
+         YahooLeagueResponseDto,
+         readonly ['league', 'players', 'percentOwned']
+      >;
+      type _LeaguePlayerPercentOwnedEqual = Assert<
+         Equal<
+            LeaguePlayerPercentOwnedActual,
+            LeaguePlayerPercentOwnedExpected
+         >
+      >;
 
       type TeamStatsActual = Awaited<ReturnType<typeof teamStats.get>>;
       type TeamStatsExpected = RequireResponsePath<
@@ -128,5 +220,47 @@ describe('ApiRoot', () => {
       expect(gameIncludes.toPath()).toContain(
          'game_weeks,stat_categories,position_types',
       );
+   });
+
+   it('enforces collection keys and game traversal capabilities at compile time', () => {
+      const api = createApi(transport as HttpClient);
+      const rootGames = api.games('465');
+      const userGames = api.users().games();
+
+      userGames.teams();
+      userGames.leagues();
+      rootGames.leagues('465.l.1');
+
+      const compileInvalidRoutes = () => {
+         // @ts-expect-error top-level game collections require keys
+         api.games();
+         // @ts-expect-error top-level game collections reject empty arrays
+         api.games([]);
+         // @ts-expect-error top-level league collections require keys
+         api.leagues();
+         // @ts-expect-error top-level league collections reject empty arrays
+         api.leagues([]);
+         // @ts-expect-error top-level team collections require keys
+         api.teams();
+         // @ts-expect-error top-level team collections reject empty arrays
+         api.teams([]);
+         // @ts-expect-error top-level player collections require keys
+         api.players();
+         // @ts-expect-error top-level player collections reject empty arrays
+         api.players([]);
+         // @ts-expect-error root game collections cannot traverse teams
+         rootGames.teams();
+         // @ts-expect-error root game-to-league traversal requires keys
+         rootGames.leagues();
+         // @ts-expect-error root game-to-league traversal rejects empty arrays
+         rootGames.leagues([]);
+         // @ts-expect-error singular game-to-league traversal rejects empty arrays
+         api.game('465').leagues([]);
+         // @ts-expect-error percent-owned is a child route, not an expansion
+         api.player('465.p.1').include('percent_owned');
+      };
+
+      expect(compileInvalidRoutes).toBeFunction();
+      expect(userGames.toPath()).toBe('users;use_login=1/games');
    });
 });

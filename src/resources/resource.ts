@@ -10,7 +10,12 @@ type CollectionName =
    | 'players'
    | 'transactions';
 
-type SubResourceName = 'roster' | 'stats' | 'matchups';
+type SubResourceName =
+   | 'roster'
+   | 'stats'
+   | 'matchups'
+   | 'ownership'
+   | 'percent_owned';
 
 type KeysParam<T extends string> = T extends `${infer Stem}s`
    ? `${Stem}_keys`

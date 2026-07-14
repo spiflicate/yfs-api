@@ -36,21 +36,27 @@ export class UsersCollection extends Resource<
       ...keys: GameKeyLike[]
    ): GamesCollection<
       YahooLoggedInUsersResponseDto,
-      AppendResponsePath<UsersPath, 'games'>
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
    >;
    games(
       keys: GameKeyLike[],
    ): GamesCollection<
       YahooLoggedInUsersResponseDto,
-      AppendResponsePath<UsersPath, 'games'>
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
    >;
    games(
       ...keys: GameKeyLike[] | GameKeyLike[][]
    ): GamesCollection<
       YahooLoggedInUsersResponseDto,
-      AppendResponsePath<UsersPath, 'games'>
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
    > {
-      return GamesCollection.create(
+      return GamesCollection.createForUser(
          this._transport,
          this.createChildState(),
          keys.flat(),
@@ -59,7 +65,7 @@ export class UsersCollection extends Resource<
 
    teams(): TeamsCollection<
       YahooLoggedInUsersResponseDto,
-      readonly ['users', 'games', 'teams']
+      readonly ['users', 'teams']
    > {
       return TeamsCollection.create(
          this._transport,

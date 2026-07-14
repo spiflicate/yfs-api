@@ -810,6 +810,8 @@ export interface YahooLoggedInUserDto {
    guid: string;
    /** Games returned by a logged-in-user games traversal. */
    games?: YahooGameDto[];
+   /** Teams returned by the validated direct logged-in-user traversal. */
+   teams?: YahooTeamDto[];
 }
 
 /** Logged-in users wrapper after Yahoo's collection normalization. */
