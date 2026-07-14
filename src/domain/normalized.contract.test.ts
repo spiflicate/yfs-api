@@ -33,6 +33,7 @@ import type {
    YahooPlayerDto,
    YahooPlayerOwnershipResponseDto,
    YahooPlayerStatsResponseDto,
+   YahooRosterUpdateConfirmationDto,
    YahooTeamDto,
    YahooTeamMatchupsResponseDto,
    YahooTeamRosterResponseDto,
@@ -196,5 +197,14 @@ describe('normalized Yahoo DTO fixture contracts', () => {
          league.transactions[0]?.players?.[0]?.transactionData
             .destinationType,
       ).toBe('waivers');
+   });
+
+   test('represents the probed roster update success confirmation', () => {
+      const response = typed<YahooRosterUpdateConfirmationDto>({
+         confirmation: { status: 'success' },
+      });
+
+      expect(response.confirmation.status).toBe('success');
+      expect(Object.keys(response)).toEqual(['confirmation']);
    });
 });
