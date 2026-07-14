@@ -137,7 +137,3 @@ export type TransactionErrorCode =
    | 'TRADE_DISALLOW_FAILED'
    | 'TRADE_VOTE_FAILED'
    | 'WAIVER_EDIT_FAILED';
-
-const ResponseKeyMap = {
-   resource: { game: {} as GameResponse },
-};

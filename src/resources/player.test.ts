@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import {
    PlayerResource,
-   PlayerStatsCollection,
    PlayerStatsResource,
    PlayersCollection,
 } from './player';
@@ -57,7 +56,7 @@ describe('PlayersCollection', () => {
          .stats()
          .date('2025-09-01');
 
-      expect(collection).toBeInstanceOf(PlayerStatsCollection);
+      expect(collection).toBeInstanceOf(PlayerStatsResource);
       expect(collection.toPath()).toBe(
          'players;player_keys=nfl.p.1,nfl.p.2/stats;type=date;date=2025-09-01',
       );
