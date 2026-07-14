@@ -123,6 +123,13 @@ Live integration tests are manual. Destructive tests require the separate
 `test:integration:destructive` command and explicit configuration. See
 `docs/INTEGRATION_TEST_SETUP.md`.
 
+## Documentation
+
+- [Domain glossary](docs/CONTEXT.MD)
+- [OAuth 2.0](docs/OAUTH2_IMPLEMENTATION.md)
+- [Token storage](docs/TOKEN_FILE_GUIDE.md)
+- [Integration tests](docs/INTEGRATION_TEST_SETUP.md)
+
 ## Release History
 
 `2.1.0` is the current stable API. Material for the `2.0.0-beta.*` and `1.x`

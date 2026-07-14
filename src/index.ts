@@ -4,11 +4,11 @@
  * A fully typed TypeScript wrapper for the Yahoo Fantasy Sports API
  * with excellent developer experience.
  *
- * @module yahoo-fantasy-sports
+ * @module yfs-api
  *
  * @example
  * ```typescript
- * import { YahooFantasyClient } from 'yahoo-fantasy-sports';
+ * import { YahooFantasyClient } from 'yfs-api';
  *
  * const client = new YahooFantasyClient({
  *   clientId: process.env.YAHOO_CLIENT_ID!,
@@ -16,21 +16,24 @@
  *   redirectUri: 'https://example.com/callback',
  * });
  *
- * // Get authorization URL
- * const authUrl = client.getAuthUrl();
- * console.log('Visit:', authUrl);
+ * const authorization = client.createAuthorizationRequest();
+ * // Save authorization.state in the user's server-side session, then
+ * // redirect the user to authorization.url.
  *
- * // After user authorizes, exchange code for tokens
+ * client.validateAuthorizationState(authorization.state, callbackState);
  * await client.authenticate(code);
  *
- * // Query your NHL teams
- * const teams = await client.api().league('423.l.12345').teams().get();
+ * // Nested responses preserve users -> games -> teams.
+ * const response = await client.api().users().games(['nhl']).teams().get();
+ * for (const user of response.users) {
+ *   for (const game of user.games ?? []) console.log(game.teams ?? []);
+ * }
  *
- * // Query a roster
- * const roster = await client.api().team('423.l.12345.t.1').roster().get();
- *
- * // Query league settings
- * const settings = await client.api().league('423.l.12345').include('settings').get();
+ * const league = await client
+ *   .api()
+ *   .league('423.l.12345')
+ *   .include('settings')
+ *   .get();
  * ```
  */
 

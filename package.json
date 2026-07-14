@@ -8,8 +8,8 @@
    "types": "./dist/index.d.ts",
    "exports": {
       ".": {
-         "import": "./dist/index.js",
-         "types": "./dist/index.d.ts"
+         "types": "./dist/index.d.ts",
+         "import": "./dist/index.js"
       }
    },
    "files": [
@@ -35,13 +35,15 @@
       "lint:fix": "biome check --write src scripts examples tests/integration tests/package package.json tsconfig.json tsconfig.build.json tsconfig.integration.json tsconfig.examples.json biome.json",
       "format": "biome format --write src scripts examples tests/integration tests/package package.json tsconfig.json tsconfig.build.json tsconfig.integration.json tsconfig.examples.json biome.json",
       "scan:extensions": "node scripts/scan-extensions.mjs dist",
-      "pack": "bun run clean && bun run check && bun run pack:artifact",
+      "pack": "bun run pack:artifact",
       "pack:artifact": "bun pm pack --ignore-scripts --filename yfs-api-2.1.0.tgz",
+      "prepack": "bun run check:source && bun run clean && bun run build && bun run type-check:examples && bun run scan:extensions",
+      "verify:prepack": "npm pack --dry-run",
       "verify:tarball": "node scripts/verify-tarball.mjs yfs-api-2.1.0.tgz",
       "verify:installed": "node scripts/verify-installed.mjs yfs-api-2.1.0.tgz",
       "check:source": "bun run type-check && bun run type-check:integration && bun run lint && bun run test && bun run test:fixtures",
       "check": "bun run check:source && bun run clean && bun run build && bun run type-check:examples && bun run scan:extensions",
-      "check:package": "bun run clean && bun run check:source && bun run build && bun run type-check:examples && bun run scan:extensions && bun run pack:artifact && bun run verify:tarball && bun run verify:installed",
+      "check:package": "bun run verify:prepack && bun run pack:artifact && bun run verify:tarball && bun run verify:installed",
       "clean": "rm -rf dist .package-consumer yfs-api-2.1.0.tgz"
    },
    "keywords": [

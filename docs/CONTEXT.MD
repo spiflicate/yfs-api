@@ -1,6 +1,4 @@
-# Historical Domain Context
-
-> Archived for reference. This is not current 2.1.0 package guidance.
+# Domain Context
 
 ## Purpose
 
