@@ -77,4 +77,24 @@ describe('RosterResource', () => {
          roster.put(new RosterMoveBuilder().movePlayer('461.p.8332', 'WR')),
       ).rejects.toBe(error);
    });
+
+   it('propagates empty write success without manufacturing confirmation', async () => {
+      let calls = 0;
+      const emptyTransport = {
+         put: () => {
+            calls++;
+            return Promise.resolve(undefined);
+         },
+      } as unknown as Transport;
+      const roster = RosterResource.create(emptyTransport, {
+         segments: ['team', 'nfl.l.123.t.1'],
+      }).week(13);
+
+      await expect(
+         roster.update(
+            new RosterMoveBuilder().movePlayer('461.p.8332', 'WR'),
+         ),
+      ).resolves.toBeUndefined();
+      expect(calls).toBe(1);
+   });
 });

@@ -34,7 +34,11 @@
  * ```
  */
 
-export { OAuth2Client, type OAuth2Tokens } from './auth/oauth2.js';
+export {
+   type OAuth2AuthorizationRequest,
+   OAuth2Client,
+   type OAuth2Tokens,
+} from './auth/oauth2.js';
 // Export error types and guards
 export {
    AuthenticationError,

@@ -66,19 +66,19 @@ export class RosterResource<
 
    update(
       moves: RosterMoveBuilder,
-   ): Promise<YahooRosterUpdateConfirmationDto> {
+   ): Promise<YahooRosterUpdateConfirmationDto | undefined> {
       return this.put(moves);
    }
 
    setLineup(
       moves: RosterMoveBuilder,
-   ): Promise<YahooRosterUpdateConfirmationDto> {
+   ): Promise<YahooRosterUpdateConfirmationDto | undefined> {
       return this.put(moves);
    }
 
    override async put(
       body?: RosterMoveBuilder | Record<string, unknown> | string,
-   ): Promise<YahooRosterUpdateConfirmationDto> {
+   ): Promise<YahooRosterUpdateConfirmationDto | undefined> {
       return super.put(
          body instanceof RosterMoveBuilder
             ? body.toXml({

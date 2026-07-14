@@ -68,15 +68,19 @@ class TestQuery extends Resource<TestParams, TestResponse, TestResponse> {
       });
    }
 
-   sendPost(body: Record<string, unknown>): Promise<TestResponse> {
+   sendPost(
+      body: Record<string, unknown>,
+   ): Promise<TestResponse | undefined> {
       return this.post(body);
    }
 
-   sendPut(body: Record<string, unknown>): Promise<TestResponse> {
+   sendPut(
+      body: Record<string, unknown>,
+   ): Promise<TestResponse | undefined> {
       return this.put(body);
    }
 
-   sendDelete(): Promise<TestResponse> {
+   sendDelete(): Promise<TestResponse | undefined> {
       return this.delete();
    }
 }

@@ -131,31 +131,47 @@ export abstract class Resource<
 
    protected async post(
       body?: Record<string, unknown> | string,
-   ): Promise<TWriteResponse> {
+   ): Promise<TWriteResponse | undefined> {
       return this.performRequest<TWriteResponse>('post', body);
    }
 
    protected async put(
       body?: Record<string, unknown> | string,
-   ): Promise<TWriteResponse> {
+   ): Promise<TWriteResponse | undefined> {
       return this.performRequest<TWriteResponse>('put', body);
    }
 
-   protected async delete(): Promise<TWriteResponse> {
+   protected async delete(): Promise<TWriteResponse | undefined> {
       return this.performRequest<TWriteResponse>('delete');
    }
 
+   protected request<TResult>(
+      method: 'get',
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult>;
+   protected request<TResult>(
+      method: Exclude<HttpMethod, 'get'>,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult | undefined>;
    protected async request<TResult>(
       method: HttpMethod,
       body?: Record<string, unknown> | string,
-   ): Promise<TResult> {
+   ): Promise<TResult | undefined> {
       return this.performRequest<TResult>(method, body);
    }
 
+   private performRequest<TResult>(
+      method: 'get',
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult>;
+   private performRequest<TResult>(
+      method: HttpMethod,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult | undefined>;
    private async performRequest<TResult>(
       method: HttpMethod,
       body?: Record<string, unknown> | string,
-   ): Promise<TResult> {
+   ): Promise<TResult | undefined> {
       const path = this.toPath();
 
       switch (method) {

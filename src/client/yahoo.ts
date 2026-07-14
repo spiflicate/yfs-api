@@ -34,7 +34,11 @@
  */
 
 import { OAuth1Client } from '../auth/oauth1.js';
-import { OAuth2Client, type OAuth2Tokens } from '../auth/oauth2.js';
+import {
+   type OAuth2AuthorizationRequest,
+   OAuth2Client,
+   type OAuth2Tokens,
+} from '../auth/oauth2.js';
 import { type ApiRoot, createApi } from '../resources/api.js';
 import { ConfigError } from './errors.js';
 import { HttpClient, type RequestOptions } from './http.js';
@@ -183,6 +187,7 @@ export class YahooFantasySportsClient {
    private httpClient: HttpClient;
    private tokenStorage?: TokenStorage;
    private tokens?: OAuth2Tokens;
+   private refreshInFlight?: Promise<OAuth2Tokens>;
 
    /**
     * Creates a new Yahoo Fantasy Sports API client
@@ -279,6 +284,7 @@ export class YahooFantasySportsClient {
             this.config.clientId,
             this.config.clientSecret,
             redirectUri,
+            this.config.timeout,
          );
 
          // Build tokens if available in config
@@ -303,21 +309,7 @@ export class YahooFantasySportsClient {
       this.httpClient = new HttpClient(
          this.oauth2Client,
          () => this.tokens,
-         async () => {
-            if (!this.oauth2Client) {
-               throw new ConfigError(
-                  'OAuth 2.0 client is not available in public mode',
-               );
-            }
-            if (!this.tokens?.refreshToken) {
-               throw new ConfigError('No refresh token available');
-            }
-            const newTokens = await this.oauth2Client.refreshAccessToken(
-               this.tokens.refreshToken,
-            );
-            await this.setTokens(newTokens);
-            return newTokens;
-         },
+         () => this.refreshTokens(),
          {
             timeout: this.config.timeout,
             maxRetries: this.config.maxRetries,
@@ -414,6 +406,29 @@ export class YahooFantasySportsClient {
          );
       }
       return this.oauth2Client.getAuthorizationUrl(state, language);
+   }
+
+   createAuthorizationRequest(
+      language = 'en-us',
+   ): OAuth2AuthorizationRequest {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'createAuthorizationRequest is not available in public mode',
+         );
+      }
+      return this.oauth2Client.createAuthorizationRequest(language);
+   }
+
+   validateAuthorizationState(
+      expected: string,
+      received: string | null | undefined,
+   ): void {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'validateAuthorizationState is not available in public mode',
+         );
+      }
+      this.oauth2Client.validateAuthorizationState(expected, received);
    }
 
    /**
@@ -546,10 +561,7 @@ export class YahooFantasySportsClient {
          );
       }
 
-      const newTokens = await this.oauth2Client.refreshAccessToken(
-         this.tokens.refreshToken,
-      );
-      await this.setTokens(newTokens);
+      await this.refreshTokens();
    }
 
    /**
@@ -656,6 +668,36 @@ export class YahooFantasySportsClient {
       if (this.tokenStorage) {
          await this.tokenStorage.save(tokens);
       }
+   }
+
+   private refreshTokens(): Promise<OAuth2Tokens> {
+      const oauth2Client = this.oauth2Client;
+      const refreshToken = this.tokens?.refreshToken;
+      if (!oauth2Client) {
+         return Promise.reject(
+            new ConfigError(
+               'OAuth 2.0 client is not available in public mode',
+            ),
+         );
+      }
+      if (!refreshToken) {
+         return Promise.reject(
+            new ConfigError('No refresh token available'),
+         );
+      }
+      if (!this.refreshInFlight) {
+         this.refreshInFlight = (async () => {
+            try {
+               const newTokens =
+                  await oauth2Client.refreshAccessToken(refreshToken);
+               await this.setTokens(newTokens);
+               return newTokens;
+            } finally {
+               this.refreshInFlight = undefined;
+            }
+         })();
+      }
+      return this.refreshInFlight;
    }
 
    /**
