@@ -7,14 +7,13 @@
       "declaration": true,
       "declarationMap": true,
       "sourceMap": true,
-      // Module system - ESM output for modern Node.js
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "target": "ES2022",
       "lib": ["ES2022"],
       // Build-specific overrides
       "noEmit": false,
-      "allowImportingTsExtensions": false,
+      "types": ["node"],
       "verbatimModuleSyntax": true,
       // Additional strictness for library code
       "noUnusedLocals": true,
@@ -26,10 +25,8 @@
       "forceConsistentCasingInFileNames": true,
       "resolveJsonModule": true,
       "isolatedModules": true,
-      // Performance & DX
       "skipLibCheck": true,
-      "incremental": true,
-      "tsBuildInfoFile": "./dist/.tsbuildinfo",
+      "incremental": false,
       // Remove internal paths from declarations
       "declarationDir": "./dist",
       "stripInternal": true
@@ -40,6 +37,7 @@
       "dist",
       "**/*.test.ts",
       "**/*.spec.ts",
+      "src/resources/builders/transaction-builder.ts",
       "tests",
       "examples",
       "scripts",

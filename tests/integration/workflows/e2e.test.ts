@@ -210,10 +210,10 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                .get();
 
             expect(searchResult).toBeDefined();
-            expect(searchResult.players).toBeDefined();
+            expect(searchResult.game.players).toBeDefined();
 
-            if (searchResult.players && searchResult.players.length > 0) {
-               const firstPlayer = searchResult.players[0];
+            if (searchResult.game.players.length > 0) {
+               const firstPlayer = searchResult.game.players[0];
                if (!firstPlayer?.playerKey) return;
 
                // Get detailed player information
@@ -284,7 +284,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                const standings = await client
                   .api()
                   .league(leagueKey as `${number}.l.${number}`)
-                  .standings()
+                  .include('standings')
                   .get();
                expect(standings).toBeDefined();
                expect(standings.league.standings).toBeDefined();
@@ -293,7 +293,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                const scoreboard = await client
                   .api()
                   .league(leagueKey as `${number}.l.${number}`)
-                  .scoreboard()
+                  .include('scoreboard')
                   .get();
                expect(scoreboard).toBeDefined();
                expect(scoreboard.league.scoreboard).toBeDefined();
@@ -302,7 +302,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                const settings = await client
                   .api()
                   .league(leagueKey as `${number}.l.${number}`)
-                  .settings()
+                  .include('settings')
                   .get();
                expect(settings).toBeDefined();
             }

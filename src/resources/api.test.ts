@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'bun:test';
-import type { HttpClient } from '../client/http';
+import type { HttpClient } from '../client/http.js';
 import type {
    YahooGameResponseDto,
    YahooLeagueResponseDto,
    YahooLoggedInUsersResponseDto,
    YahooPlayerResponseDto,
    YahooPlayersResponseDto,
-} from '../domain/normalized';
-import { ApiRoot, createApi } from './api';
-import type { RequireResponsePath } from './response-contract';
+} from '../domain/normalized.js';
+import { ApiRoot, createApi } from './api.js';
+import type { RequireResponsePath } from './response-contract.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;
@@ -137,7 +137,7 @@ describe('ApiRoot', () => {
          ReturnType<typeof leagueRoster.get>
       >;
       type LeagueRosterExpected = RequireResponsePath<
-         import('../domain/normalized').YahooLeaguesResponseDto,
+         import('../domain/normalized.js').YahooLeaguesResponseDto,
          readonly ['leagues', 'teams', 'roster']
       >;
       type _LeagueRosterEqual = Assert<
@@ -191,7 +191,7 @@ describe('ApiRoot', () => {
 
       type TeamStatsActual = Awaited<ReturnType<typeof teamStats.get>>;
       type TeamStatsExpected = RequireResponsePath<
-         import('../domain/normalized').YahooTeamsResponseDto,
+         import('../domain/normalized.js').YahooTeamsResponseDto,
          readonly ['teams', 'teamStats']
       >;
       type _TeamStatsEqual = Assert<
@@ -200,7 +200,7 @@ describe('ApiRoot', () => {
 
       type PlayerStatsActual = Awaited<ReturnType<typeof playerStats.get>>;
       type PlayerStatsExpected = RequireResponsePath<
-         import('../domain/normalized').YahooPlayersResponseDto,
+         import('../domain/normalized.js').YahooPlayersResponseDto,
          readonly ['players', 'playerStats']
       >;
       type _PlayerStatsEqual = Assert<

@@ -1,28 +1,28 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import type {
    YahooGameResponseDto,
    YahooGamesResponseDto,
-} from '../domain/normalized';
-import { LeaguesCollection } from './league';
-import { PlayersCollection } from './player';
+} from '../domain/normalized.js';
+import { LeaguesCollection } from './league.js';
+import { PlayersCollection } from './player.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import { TeamsCollection } from './team';
+} from './response-contract.js';
+import { TeamsCollection } from './team.js';
 import type {
    GameKeyLike,
    LeagueKeyLike,
    PlayerKeyLike,
    TeamKeyLike,
-} from './types';
+} from './types.js';
 
 const gameSubResources = [
    'game_weeks',

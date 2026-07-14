@@ -35,6 +35,11 @@
  */
 
 export {
+   OAuth1Client,
+   type OAuth1Params,
+   type OAuth1SignatureMethod,
+} from './auth/oauth1.js';
+export {
    type OAuth2AuthorizationRequest,
    OAuth2Client,
    type OAuth2Tokens,
@@ -56,9 +61,11 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './client/errors.js';
+export type { RequestOptions } from './client/http.js';
 export type { Config, TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasySportsClient as YahooFantasyClient } from './client/yahoo.js';
+export type * from './domain/common.js';
 // Export all types
 // Resource types
 // NHL-specific types
@@ -78,9 +85,11 @@ export type {
    StatValue,
    TransactionStatus,
    TransactionType,
-} from './domain/index';
+} from './domain/index.js';
 export type * from './domain/normalized.js';
 export {
+   type DateString,
+   type RosterCoverageOptions,
    type RosterMove,
    RosterMoveBuilder,
    type RosterMovePayload,

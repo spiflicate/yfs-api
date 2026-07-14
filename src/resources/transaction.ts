@@ -1,17 +1,17 @@
-import { ValidationError } from '../client/errors';
-import type { HttpClient as Transport } from '../client/http';
-import type { YahooTransactionsResponseDto } from '../domain/normalized';
+import { ValidationError } from '../client/errors.js';
+import type { HttpClient as Transport } from '../client/http.js';
+import type { YahooTransactionsResponseDto } from '../domain/normalized.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import type { TeamKeyLike, TransactionKeyLike } from './types';
+} from './response-contract.js';
+import type { TeamKeyLike, TransactionKeyLike } from './types.js';
 
 export const transactionCollectionParams = [
    'transaction_keys',

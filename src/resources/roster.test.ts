@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'bun:test';
-import { YahooApiError } from '../client/errors';
-import type { HttpClient as Transport } from '../client/http';
-import { RosterMoveBuilder } from './builders/roster-move-builder';
-import { PlayersCollection } from './player';
-import { RosterResource } from './roster';
+import { YahooApiError } from '../client/errors.js';
+import type { HttpClient as Transport } from '../client/http.js';
+import { RosterMoveBuilder } from './builders/roster-move-builder.js';
+import { PlayersCollection } from './player.js';
+import { RosterResource } from './roster.js';
 
 const putRequests: Array<{ path: string; body: unknown }> = [];
 const confirmation = { confirmation: { status: 'success' as const } };

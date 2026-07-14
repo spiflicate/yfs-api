@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { ValidationError } from '../client/errors';
-import { TransactionsCollection } from './transaction';
+import { ValidationError } from '../client/errors.js';
+import { TransactionsCollection } from './transaction.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;

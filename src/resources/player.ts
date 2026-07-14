@@ -1,21 +1,21 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import type {
    YahooPlayerResponseDto,
    YahooPlayersResponseDto,
-} from '../domain/normalized';
+} from '../domain/normalized.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
    type SubResourceParams,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import type { PlayerKeyLike } from './types';
+} from './response-contract.js';
+import type { PlayerKeyLike } from './types.js';
 
 type DateString = `${number}-${number}-${number}`;
 type PlayerStatus = 'A' | 'FA' | 'W' | 'T' | 'K';

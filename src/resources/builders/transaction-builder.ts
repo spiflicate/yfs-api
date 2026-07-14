@@ -1,5 +1,5 @@
 import { XMLBuilder } from 'fast-xml-parser';
-import type { PlayerKeyLike, TeamKeyLike } from '../types';
+import type { PlayerKeyLike, TeamKeyLike } from '../types.js';
 
 type AddTransactionPlayer = {
    player_key: PlayerKeyLike;

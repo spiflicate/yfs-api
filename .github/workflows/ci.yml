@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun audit
+      - run: SKIP_INTEGRATION_TESTS=true bun run test:integration
+      - run: SKIP_INTEGRATION_TESTS=true bun run test:integration:destructive
+      - run: bun run check:package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yfs-api-2.1.0
+          path: yfs-api-2.1.0.tgz
+          if-no-files-found: error
+
+  node-smoke:
+    needs: package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: yfs-api-2.1.0
+      - run: mkdir package-smoke
+      - run: npm install --prefix package-smoke --ignore-scripts --no-audit --no-fund "$GITHUB_WORKSPACE/yfs-api-2.1.0.tgz"
+      - run: cp tests/package/runtime.mjs package-smoke/runtime.mjs
+      - run: node package-smoke/runtime.mjs

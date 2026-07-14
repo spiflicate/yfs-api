@@ -1,17 +1,14 @@
 {
    "compilerOptions": {
-      // Environment setup & latest features
-      "lib": ["ESNext"],
-      "target": "ESNext",
-      "module": "Preserve",
+      "lib": ["ES2022", "DOM"],
+      "target": "ES2022",
+      "module": "NodeNext",
       "moduleDetection": "force",
       "jsx": "react-jsx",
-      "allowJs": true,
-      "types": ["bun"],
+      "allowJs": false,
+      "types": ["bun", "node"],
 
-      // Bundler mode
-      "moduleResolution": "bundler",
-      "allowImportingTsExtensions": true,
+      "moduleResolution": "NodeNext",
       "verbatimModuleSyntax": true,
       "noEmit": true,
 
@@ -22,7 +19,6 @@
       "noUncheckedIndexedAccess": true,
       "noImplicitOverride": true,
 
-      // Some stricter flags (disabled by default)
       "noUnusedLocals": false,
       "noUnusedParameters": false,
       "noPropertyAccessFromIndexSignature": false

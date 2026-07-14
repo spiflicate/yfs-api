@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'bun:test';
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import {
    type RequestState,
    Resource,
    type ResourceParams,
-} from './resource';
+} from './resource.js';
 
 type TestParams = ResourceParams<'metadata' | 'players'> & {
    name: 'league';

@@ -18,30 +18,30 @@ export type {
    StatValue,
    TransactionStatus,
    TransactionType,
-} from './common';
+} from './common.js';
 
-export type * from './normalized';
+export type * from './normalized.js';
 
 export type {
    PlayerPosition as MLBPlayerPosition,
    PositionType as MLBPositionType,
    RosterPosition as MLBRosterPosition,
    StatEnum as MLBStatEnum,
-} from './sports/mlb';
+} from './sports/mlb.js';
 
 export type {
    PlayerPosition as NBAPlayerPosition,
    PositionType as NBAPositionType,
    RosterPosition as NBARosterPosition,
    StatEnum as NBAStatEnum,
-} from './sports/nba';
+} from './sports/nba.js';
 
 export type {
    PlayerPosition as NFLPlayerPosition,
    PositionType as NFLPositionType,
    RosterPosition as NFLRosterPosition,
    StatEnum as NFLStatEnum,
-} from './sports/nfl';
+} from './sports/nfl.js';
 
 export type {
    GoalieStatEnum as NHLGoalieStatEnum,
@@ -49,4 +49,4 @@ export type {
    PositionType as NHLPositionType,
    RosterPosition as NHLRosterPosition,
    SkaterStatEnum as NHLSkaterStatEnum,
-} from './sports/nhl';
+} from './sports/nhl.js';

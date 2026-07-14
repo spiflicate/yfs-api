@@ -11,4 +11,4 @@ export type {
    YahooTeamsResponseDto,
    YahooTransactionResponseDto,
    YahooTransactionsResponseDto,
-} from './normalized';
+} from './normalized.js';

@@ -1,28 +1,28 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import type {
    YahooLeagueResponseDto,
    YahooLeaguesResponseDto,
-} from '../domain/normalized';
-import { PlayersCollection } from './player';
+} from '../domain/normalized.js';
+import { PlayersCollection } from './player.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import { TeamsCollection } from './team';
-import { TransactionsCollection } from './transaction';
+} from './response-contract.js';
+import { TeamsCollection } from './team.js';
+import { TransactionsCollection } from './transaction.js';
 import type {
    LeagueKeyLike,
    PlayerKeyLike,
    TeamKeyLike,
    TransactionKeyLike,
-} from './types';
+} from './types.js';
 
 const leagueSubResources = ['settings', 'standings', 'scoreboard'] as const;
 type LeagueSubResource = (typeof leagueSubResources)[number];

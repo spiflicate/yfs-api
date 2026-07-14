@@ -1,4 +1,4 @@
-import type { ImageSource, StatValue } from './common';
+import type { ImageSource, StatValue } from './common.js';
 
 /** Mechanically normalized metadata for a Yahoo fantasy game (sport and season). */
 export interface YahooGameDto {

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'bun:test';
-import { createApi } from './api';
+import { createApi } from './api.js';
 import {
    PlayerOwnershipResource,
    PlayerPercentOwnedResource,
    PlayerResource,
    PlayerStatsResource,
    PlayersCollection,
-} from './player';
+} from './player.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;

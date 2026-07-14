@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'bun:test';
-import { LeagueResource, LeaguesCollection } from './league';
-import { PlayersCollection } from './player';
-import { TeamsCollection } from './team';
-import { TransactionsCollection } from './transaction';
+import { LeagueResource, LeaguesCollection } from './league.js';
+import { PlayersCollection } from './player.js';
+import { TeamsCollection } from './team.js';
+import { TransactionsCollection } from './transaction.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;

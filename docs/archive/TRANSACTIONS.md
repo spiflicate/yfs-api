@@ -1,4 +1,7 @@
-# Yahoo Fantasy Sports API – Transactions
+# Historical Yahoo Fantasy Sports API Transactions Notes
+
+> Archived for reference. Transaction mutation resources and builders are not
+> part of the stable 2.1.0 package-root API.
 
 This document summarizes the **Transaction resource** and **Transactions collection** from the official Yahoo Fantasy Sports API guide.
 

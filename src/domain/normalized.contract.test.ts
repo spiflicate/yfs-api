@@ -1,27 +1,73 @@
 import { describe, expect, test } from 'bun:test';
-import gameMlbFixture from '../../tests/fixtures/data/game-mlb.json';
-import gameMlbMultipleFixture from '../../tests/fixtures/data/game-mlb-multiple.json';
-import gameNbaFixture from '../../tests/fixtures/data/game-nba.json';
-import gameNbaMultipleFixture from '../../tests/fixtures/data/game-nba-multiple.json';
-import gameNflFixture from '../../tests/fixtures/data/game-nfl.json';
-import gameNflMultipleFixture from '../../tests/fixtures/data/game-nfl-multiple.json';
-import gameNhlFixture from '../../tests/fixtures/data/game-nhl.json';
-import gameNhlMultipleFixture from '../../tests/fixtures/data/game-nhl-multiple.json';
-import leagueFixture from '../../tests/fixtures/data/league-nhl-l-121384.json';
-import leagueScoreboardFixture from '../../tests/fixtures/data/league-nhl-l-121384-scoreboard.json';
-import leagueSettingsFixture from '../../tests/fixtures/data/league-nhl-l-121384-settings.json';
-import leagueStandingsFixture from '../../tests/fixtures/data/league-nhl-l-121384-standings.json';
-import leagueTransactionsFixture from '../../tests/fixtures/data/league-nhl-l-121384-transactions.json';
-import playerFixture from '../../tests/fixtures/data/player-465-p-7147.json';
-import playerOwnershipFixture from '../../tests/fixtures/data/player-465-p-7147-ownership.json';
-import playerStatsFixture from '../../tests/fixtures/data/player-465-p-7147-stats.json';
-import teamFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14.json';
-import teamMatchupsFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-matchups.json';
-import teamRosterFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-roster.json';
-import teamStatsFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-stats.json';
-import userCurrentFixture from '../../tests/fixtures/data/user-current.json';
-import userGamesFixture from '../../tests/fixtures/data/user-games.json';
-import userTeamsFixture from '../../tests/fixtures/data/user-teams.json';
+import gameMlbFixture from '../../tests/fixtures/data/game-mlb.json' with {
+   type: 'json',
+};
+import gameMlbMultipleFixture from '../../tests/fixtures/data/game-mlb-multiple.json' with {
+   type: 'json',
+};
+import gameNbaFixture from '../../tests/fixtures/data/game-nba.json' with {
+   type: 'json',
+};
+import gameNbaMultipleFixture from '../../tests/fixtures/data/game-nba-multiple.json' with {
+   type: 'json',
+};
+import gameNflFixture from '../../tests/fixtures/data/game-nfl.json' with {
+   type: 'json',
+};
+import gameNflMultipleFixture from '../../tests/fixtures/data/game-nfl-multiple.json' with {
+   type: 'json',
+};
+import gameNhlFixture from '../../tests/fixtures/data/game-nhl.json' with {
+   type: 'json',
+};
+import gameNhlMultipleFixture from '../../tests/fixtures/data/game-nhl-multiple.json' with {
+   type: 'json',
+};
+import leagueFixture from '../../tests/fixtures/data/league-nhl-l-121384.json' with {
+   type: 'json',
+};
+import leagueScoreboardFixture from '../../tests/fixtures/data/league-nhl-l-121384-scoreboard.json' with {
+   type: 'json',
+};
+import leagueSettingsFixture from '../../tests/fixtures/data/league-nhl-l-121384-settings.json' with {
+   type: 'json',
+};
+import leagueStandingsFixture from '../../tests/fixtures/data/league-nhl-l-121384-standings.json' with {
+   type: 'json',
+};
+import leagueTransactionsFixture from '../../tests/fixtures/data/league-nhl-l-121384-transactions.json' with {
+   type: 'json',
+};
+import playerFixture from '../../tests/fixtures/data/player-465-p-7147.json' with {
+   type: 'json',
+};
+import playerOwnershipFixture from '../../tests/fixtures/data/player-465-p-7147-ownership.json' with {
+   type: 'json',
+};
+import playerStatsFixture from '../../tests/fixtures/data/player-465-p-7147-stats.json' with {
+   type: 'json',
+};
+import teamFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14.json' with {
+   type: 'json',
+};
+import teamMatchupsFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-matchups.json' with {
+   type: 'json',
+};
+import teamRosterFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-roster.json' with {
+   type: 'json',
+};
+import teamStatsFixture from '../../tests/fixtures/data/team-nhl-l-121384-t-14-stats.json' with {
+   type: 'json',
+};
+import userCurrentFixture from '../../tests/fixtures/data/user-current.json' with {
+   type: 'json',
+};
+import userGamesFixture from '../../tests/fixtures/data/user-games.json' with {
+   type: 'json',
+};
+import userTeamsFixture from '../../tests/fixtures/data/user-teams.json' with {
+   type: 'json',
+};
 import type {
    YahooGameDto,
    YahooLeagueDto,

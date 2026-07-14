@@ -6,7 +6,7 @@
  * live pending trade proposal in your league.
  *
  * Required env vars (in addition to OAuth2 token env vars):
- * - RUN_TRADE_DROP_SEMANTICS_TESTS=true
+ * - RUN_DESTRUCTIVE_INTEGRATION_TESTS=true
  * - TEST_LEAGUE_KEY=423.l.12345
  * - TEST_TRADER_TEAM_KEY=423.l.12345.t.1
  * - TEST_TRADEE_TEAM_KEY=423.l.12345.t.2
@@ -30,7 +30,7 @@ type TradeDropType = 'pending_trade' | 'drop';
 
 function hasTradeDropSemanticsConfig(): boolean {
    return (
-      process.env.RUN_TRADE_DROP_SEMANTICS_TESTS === 'true' &&
+      process.env.RUN_DESTRUCTIVE_INTEGRATION_TESTS === 'true' &&
       !!process.env.TEST_LEAGUE_KEY &&
       !!process.env.TEST_TRADER_TEAM_KEY &&
       !!process.env.TEST_TRADEE_TEAM_KEY &&
@@ -119,10 +119,11 @@ describe.skipIf(
          ).toBeUndefined();
 
          const response = await client
-            .api()
-            .league(leagueKey)
-            .transactions()
-            .createTransaction(buildTransaction(dropType));
+            .getHttpClient()
+            .post(
+               `league/${leagueKey}/transactions`,
+               buildTransaction(dropType).toXml(),
+            );
 
          expect(response).toBeDefined();
       }

@@ -1,24 +1,24 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import type {
    YahooRosterUpdateConfirmationDto,
    YahooTeamResponseDto,
-} from '../domain/normalized';
+} from '../domain/normalized.js';
 import {
    type DateString,
    RosterMoveBuilder,
-} from './builders/roster-move-builder';
-import { PlayersCollection } from './player';
+} from './builders/roster-move-builder.js';
+import { PlayersCollection } from './player.js';
 import {
    type RequestState,
    Resource,
    type SubResourceParams,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import type { PlayerKeyLike } from './types';
+} from './response-contract.js';
+import type { PlayerKeyLike } from './types.js';
 
 type RosterParams = SubResourceParams<'roster'> & {
    week?: `${number}`;

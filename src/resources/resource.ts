@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 
 type ResourceName = 'game' | 'league' | 'team' | 'player' | 'transaction';
 

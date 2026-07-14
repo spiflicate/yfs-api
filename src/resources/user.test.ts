@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
-import type { HttpClient } from '../client/http';
-import { UsersCollection } from './user';
+import type { HttpClient } from '../client/http.js';
+import { UsersCollection } from './user.js';
 
 const transport = {} as HttpClient;
 

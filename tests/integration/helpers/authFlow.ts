@@ -13,6 +13,8 @@
  * See docs/TOKEN_FILE_GUIDE.md for complete documentation on token management.
  */
 
+import { existsSync } from 'node:fs';
+import { rm } from 'node:fs/promises';
 import type { OAuth2Tokens } from '../../../src/auth/oauth2.js';
 import type { TokenStorage } from '../../../src/client/yahoo.js';
 import { YahooFantasySportsClient } from '../../../src/client/yahoo.js';
@@ -28,34 +30,23 @@ export class FileTokenStorage implements TokenStorage {
       this.tokenPath = tokenPath;
    }
 
-   save(tokens: OAuth2Tokens): void {
+   async save(tokens: OAuth2Tokens): Promise<void> {
       try {
-         Bun.write(this.tokenPath, JSON.stringify(tokens, null, 2));
+         await Bun.write(this.tokenPath, JSON.stringify(tokens, null, 2));
       } catch (error) {
          console.error('Failed to save tokens:', error);
       }
    }
 
-   /**
-    * Synchronous load is not supported for file storage
-    * Use loadAsync() instead
-    */
-   load(): OAuth2Tokens | null {
-      return null;
-   }
-
-   clear(): void {
+   async clear(): Promise<void> {
       try {
-         const file = Bun.file(this.tokenPath);
-         if (file.size > 0) {
-            Bun.write(this.tokenPath, '');
-         }
+         await rm(this.tokenPath, { force: true });
       } catch {
          // Ignore errors
       }
    }
 
-   async loadAsync(): Promise<OAuth2Tokens | null> {
+   async load(): Promise<OAuth2Tokens | null> {
       try {
          const file = Bun.file(this.tokenPath);
          const exists = await file.exists();
@@ -67,6 +58,10 @@ export class FileTokenStorage implements TokenStorage {
       } catch {
          return null;
       }
+   }
+
+   exists(): boolean {
+      return existsSync(this.tokenPath);
    }
 }
 
@@ -152,7 +147,7 @@ export async function getAuthenticatedClient(
 
       // Priority 2: File storage (.test-tokens.json)
       if (!tokens && storage instanceof FileTokenStorage) {
-         tokens = await storage.loadAsync();
+         tokens = await storage.load();
          if (tokens) {
             tokenSource = '.test-tokens.json';
          }
@@ -252,8 +247,7 @@ export function canAuthenticate(): boolean {
 
       // Check file storage
       const storage = new FileTokenStorage();
-      const fileTokens = storage.load();
-      if (fileTokens && fileTokens.expiresAt > Date.now()) {
+      if (storage.exists()) {
          return true;
       }
 
@@ -268,8 +262,8 @@ export function canAuthenticate(): boolean {
  * Clear all stored authentication tokens
  * Useful for testing authentication flows or cleaning up after tests
  */
-export function clearStoredTokens(): void {
+export async function clearStoredTokens(): Promise<void> {
    const storage = new FileTokenStorage();
-   storage.clear();
+   await storage.clear();
    console.log('✓ Cleared stored tokens');
 }

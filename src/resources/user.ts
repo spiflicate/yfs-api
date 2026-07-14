@@ -1,17 +1,17 @@
-import type { HttpClient as Transport } from '../client/http';
-import type { YahooLoggedInUsersResponseDto } from '../domain/normalized';
-import { GamesCollection } from './game';
+import type { HttpClient as Transport } from '../client/http.js';
+import type { YahooLoggedInUsersResponseDto } from '../domain/normalized.js';
+import { GamesCollection } from './game.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
-} from './response-contract';
-import { TeamsCollection } from './team';
-import type { GameKeyLike } from './types';
+} from './response-contract.js';
+import { TeamsCollection } from './team.js';
+import type { GameKeyLike } from './types.js';
 
 type UsersPath = readonly ['users'];
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;

@@ -6,8 +6,8 @@ import type {
    YahooLoggedInUsersResponseDto,
    YahooTeamDto,
    YahooTeamRosterDto,
-} from '../domain/normalized';
-import type { RequireResponsePath } from './response-contract';
+} from '../domain/normalized.js';
+import type { RequireResponsePath } from './response-contract.js';
 
 type Assert<TValue extends true> = TValue;
 type Equal<TLeft, TRight> = [TLeft] extends [TRight]

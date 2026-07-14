@@ -3,7 +3,7 @@ import {
    type OAuth2Tokens,
    RosterMoveBuilder,
    YahooFantasyClient,
-} from '../src/index';
+} from '../src/index.js';
 
 async function main() {
    const yfs = await setup().catch((error) => {

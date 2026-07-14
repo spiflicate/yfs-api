@@ -1,22 +1,22 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 import type {
    YahooTeamResponseDto,
    YahooTeamsResponseDto,
-} from '../domain/normalized';
+} from '../domain/normalized.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
    type SubResourceParams,
-} from './resource';
+} from './resource.js';
 import type {
    AppendResponsePath,
    RequireResponsePath,
    ResponsePath,
-} from './response-contract';
-import { RosterResource } from './roster';
-import type { TeamKeyLike } from './types';
+} from './response-contract.js';
+import { RosterResource } from './roster.js';
+import type { TeamKeyLike } from './types.js';
 
 export const teamSubResources = [
    'metadata',

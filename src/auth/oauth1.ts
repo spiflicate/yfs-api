@@ -7,6 +7,7 @@
  * @module
  */
 
+import { createHmac, randomBytes } from 'node:crypto';
 import { ConfigError } from '../client/errors.js';
 
 /**
@@ -209,10 +210,7 @@ export class OAuth1Client {
     * @returns Random nonce string
     */
    private generateNonce(): string {
-      return (
-         Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15)
-      );
+      return randomBytes(16).toString('hex');
    }
 
    /**
@@ -225,10 +223,7 @@ export class OAuth1Client {
     * @returns Base64-encoded signature
     */
    private hmacSha1(data: string, key: string): string {
-      // Use Node.js crypto module for HMAC-SHA1
-      // This is available in both Node.js and Bun
-      const crypto = require('node:crypto');
-      const hmac = crypto.createHmac('sha1', key);
+      const hmac = createHmac('sha1', key);
       hmac.update(data);
       return hmac.digest('base64');
    }

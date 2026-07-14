@@ -29,7 +29,7 @@
  */
 
 import { XMLParser } from 'fast-xml-parser';
-import { snakeToCamel } from './formatters';
+import { snakeToCamel } from './formatters.js';
 
 /**
  * Configured XML parser for Yahoo Fantasy Sports API
