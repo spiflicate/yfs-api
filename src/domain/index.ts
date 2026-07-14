@@ -4,9 +4,7 @@
  */
 
 export type {
-   ApiResponse,
    BaseMetadata,
-   Config,
    CoverageType,
    DateRangeParams,
    DraftStatus,
@@ -21,6 +19,8 @@ export type {
    TransactionStatus,
    TransactionType,
 } from './common';
+
+export type * from './normalized';
 
 export type {
    PlayerPosition as MLBPlayerPosition,

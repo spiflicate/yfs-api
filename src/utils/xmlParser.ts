@@ -1,5 +1,5 @@
 /**
- * XML parsing utilities for Yahoo Fantasy Sports API
+ * Mechanical XML normalization for Yahoo Fantasy Sports API payloads.
  *
  * Yahoo's XML API returns cleaner, more consistent data than JSON:
  * - No numeric string keys ("0", "1", "2")
@@ -9,12 +9,10 @@
  *
  * ## Usage
  *
- * The main export is `parseYahooXML()`, which handles all Yahoo Fantasy Sports API
- * XML responses. It automatically:
- * - Parses the XML structure
- * - Unwraps the fantasy_content wrapper
- * - Detects and normalizes arrays (e.g., `teams.team` → `teams` as array)
- * - Handles error responses
+ * The main export is `parseYahooXML()`. It camel-cases element names, applies
+ * configured scalar coercion, unwraps `fantasy_content`, and converts known
+ * plural/singular collection wrappers to arrays. It does not validate an
+ * endpoint payload against a DTO.
  *
  * ```typescript
  * import { parseYahooXML } from './utils/xmlParser.js';
@@ -73,14 +71,14 @@ const yahooXMLParser = new XMLParser({
 });
 
 /**
- * Parses Yahoo Fantasy Sports API XML response with automatic array normalization
+ * Mechanically normalizes a Yahoo Fantasy Sports API XML response.
  *
- * This is the main parsing function that handles all Yahoo Fantasy Sports API XML responses.
- * It automatically:
- * - Parses the XML structure
- * - Unwraps the fantasy_content wrapper
- * - Detects and normalizes arrays (e.g., teams.team -> teams as array)
- * - Handles error responses
+ * Element names are camel-cased, configured scalar values are coerced,
+ * `fantasy_content` is unwrapped, and known plural/singular collection wrappers
+ * are replaced by arrays. Empty known collections become empty arrays.
+ *
+ * The generic return type is caller-supplied typing only. It performs no runtime
+ * endpoint validation or endpoint-specific narrowing.
  *
  * @param xml - Raw XML string from API
  * @returns Parsed and normalized data object

@@ -52,16 +52,14 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './client/errors.js';
-export type { TokenStorage } from './client/yahoo.js';
+export type { Config, TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasySportsClient as YahooFantasyClient } from './client/yahoo.js';
 // Export all types
 // Resource types
 // NHL-specific types
 export type {
-   ApiResponse,
    BaseMetadata,
-   Config,
    CoverageType,
    DateRangeParams,
    DraftStatus,
@@ -77,6 +75,7 @@ export type {
    TransactionStatus,
    TransactionType,
 } from './domain/index';
+export type * from './domain/normalized.js';
 export {
    type RosterMove,
    RosterMoveBuilder,

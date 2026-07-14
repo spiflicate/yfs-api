@@ -1,13 +1,13 @@
 {
-  "teamKey": "465.l.30702.t.9",
-  "teamId": 9,
-  "name": "Scoreface",
+  "teamKey": "465.l.90019.t.43",
+  "teamId": 43,
+  "name": "Synthetic Team 031",
   "isOwnedByCurrentLogin": 1,
-  "url": "https://hockey.fantasysports.yahoo.com/hockey/30702/9",
+  "url": "https://example.invalid/fantasy/team/465.l.90019.t.43",
   "teamLogos": [
     {
       "size": "large",
-      "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/faff67dbfe2a8c7b2657dc27e7cdcc4d34ef865e69ba6fcd12a9ee730905366f.png"
+      "url": "https://example.invalid/team-logo/039.png"
     }
   ],
   "previousSeasonTeamRank": 2,
@@ -24,10 +24,10 @@
   "managers": [
     {
       "managerId": 9001,
-      "nickname": "Manager 001",
-      "guid": "SYNTHETICGUID000000000001",
+      "nickname": "Manager 016",
+      "guid": "SYNTHETICGUID000000000027",
       "isCurrentLogin": 1,
-      "imageUrl": "https://example.invalid/profile/001.png",
+      "imageUrl": "https://example.invalid/profile/004.png",
       "feloScore": 500,
       "feloTier": "bronze"
     }

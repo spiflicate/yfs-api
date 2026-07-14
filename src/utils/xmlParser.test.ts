@@ -127,6 +127,21 @@ describe('xmlParser', () => {
             'Invalid Yahoo API response: missing fantasy_content wrapper',
          );
       });
+
+      test('should not treat the generic return type as endpoint validation', () => {
+         const xml = `
+				<fantasy_content>
+					<team><team_key>423.l.12345.t.1</team_key></team>
+				</fantasy_content>
+			`;
+
+         const result = parseYahooXML<{ league: { leagueKey: string } }>(
+            xml,
+         );
+         const actual: unknown = result;
+
+         expect(actual).toEqual({ team: { teamKey: '423.l.12345.t.1' } });
+      });
    });
 
    describe('ensureArray', () => {
