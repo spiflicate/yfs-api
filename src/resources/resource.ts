@@ -60,6 +60,7 @@ export type SubResourceParams<
  */
 export interface RequestState {
    segments: string[];
+   parts?: Array<ResourceParams | CollectionParams | SubResourceParams>;
    responseScope?: ResponseScopeName[];
 }
 

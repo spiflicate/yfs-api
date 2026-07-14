@@ -6,7 +6,19 @@
 /**
  * Roster positions
  */
-export type RosterPosition = string;
+export type RosterPosition =
+   | 'C'
+   | '1B'
+   | '2B'
+   | '3B'
+   | 'SS'
+   | 'OF'
+   | 'UTIL'
+   | 'SP'
+   | 'RP'
+   | 'P'
+   | 'BN'
+   | 'IL';
 
 /**
  * Player positions

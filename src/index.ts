@@ -54,7 +54,7 @@ export {
 } from './client/errors.js';
 export type { TokenStorage } from './client/yahoo.js';
 // Export client
-export { YahooFantasyClient } from './client/yahoo.js';
+export { YahooFantasySportsClient as YahooFantasyClient } from './client/yahoo.js';
 // Export all types
 // Resource types
 // NHL-specific types

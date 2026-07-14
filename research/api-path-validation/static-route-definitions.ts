@@ -724,6 +724,14 @@ const privateRoutes: RouteDefinition[] = [
       'Documented team stats path.',
    ),
    defineRoute(
+      'private-team-stats-date',
+      'Private team stats by date',
+      'private',
+      'explicit',
+      '/team/{{PRIVATE_TEAM_KEY}};out=standings,stats;type=date;date={{DATE}}',
+      'Documented team stats path with date coverage.',
+   ),
+   defineRoute(
       'private-team-out',
       'Private team out expansion',
       'private',

@@ -50,6 +50,14 @@ export class RosterResource extends Resource<RosterParams> {
       return PlayersCollection.create(this._transport, state, keys);
    }
 
+   update(moves: RosterMoveBuilder): Promise<unknown> {
+      return this.put(moves);
+   }
+
+   setLineup(moves: RosterMoveBuilder): Promise<unknown> {
+      return this.put(moves);
+   }
+
    override async put(
       body?: RosterMoveBuilder | Record<string, unknown> | string,
    ): Promise<unknown> {

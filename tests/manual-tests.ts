@@ -10,9 +10,29 @@ async function main() {
       console.error('An error occurred during setup:', error);
       throw error; // re-throw to prevent further execution
    });
+   const request = yfs.getHttpClient().get;
+
+   async function innermain() {
+      const userinfoRes = (await request(
+         'https://api.login.yahoo.com/openid/v1/userinfo',
+         {
+            method: 'GET',
+            headers: {
+               Authorization: `Bearer ${yfs.getTokens()?.accessToken || ''}`,
+            },
+         },
+      )) as any;
+
+      const userinfo = await userinfoRes.body.json();
+      console.log('OpenID Connect User info:', userinfo);
+   }
+
    try {
       // Example API call to verify authentication works
-      // const user = await yfs.api().users().get();
+      const user = await yfs.api().users().get();
+      console.log('Authenticated user info:', user);
+
+      await innermain();
       // const game = await yfs.api().games('nfl').teams().get();
       // const team = await yfs.api().game('nfl').leagues('').teams().get();
 
@@ -22,23 +42,22 @@ async function main() {
       // cal raleigh C - 11531
       // trea turner SS - 10056
       // jazz chisholm 2B,3B - 10839
-      const rosterMove = new RosterMoveBuilder()
-         .date('2026-05-26')
-         .movePlayer('mlb.p.10839', '2B');
-      // .movePlayer('mlb.p.10056', 'SS');
-      console.dir(rosterMove.toPayload(), { depth: 10 });
-      const teamInfo = await yfs
-         .api()
-         .team('mlb.l.230332.t.4')
-         .roster()
-         .update(rosterMove);
-      console.log('Updated team roster:', teamInfo);
+      // const rosterMove = new RosterMoveBuilder()
+      //    .date('2026-05-26')
+      //    .movePlayer('mlb.p.10839', '2B');
+      // console.dir(rosterMove.toPayload(), { depth: 10 });
+      // const teamInfo = await yfs
+      //    .api()
+      //    .team('mlb.l.230332.t.4')
+      //    .roster()
+      //    .update(rosterMove);
+      // console.log('Updated team roster:', teamInfo);
       // Save result to tmp folder
-      const outputPath = new URL(
-         'tmp/updated-team-roster.json',
-         import.meta.url,
-      );
-      await Bun.write(outputPath, JSON.stringify(teamInfo, null, 2));
+      // const outputPath = new URL(
+      //    'tmp/updated-team-roster.json',
+      //    import.meta.url,
+      // );
+      // await Bun.write(outputPath, JSON.stringify(teamInfo, null, 2));
    } catch (error) {
       console.error('Error fetching user info:', error);
    }
@@ -94,7 +113,7 @@ async function setup() {
       {
          clientId: process.env.YAHOO_CLIENT_ID,
          clientSecret: process.env.YAHOO_CLIENT_SECRET,
-         redirectUri: 'oob',
+         redirectUri: 'https://yahoo.jbru.dev/callback',
       },
       tokenStorage,
    );

@@ -1,4 +1,4 @@
-import type { OAuth2Tokens } from '../../src/client/OAuth2Client.js';
+import type { OAuth2Tokens } from '../../src/auth/oauth2.js';
 import type { RouteMode } from './static-route-definitions.js';
 
 export interface StaticRouteVerifierConfig {
@@ -19,29 +19,30 @@ export interface StaticRouteVerifierConfig {
          seedTokens?: OAuth2Tokens;
       };
    };
-   routeContext: {
-      ALT_WEEK?: string;
-      COUNT_SMALL: string;
-      DATE: string;
-      GAME_KEY_FILTER: string;
-      PRIVATE_LEAGUE_KEY?: string;
-      PRIVATE_LEAGUE_KEYS?: string;
-      PRIVATE_PLAYER_KEY?: string;
-      PRIVATE_PLAYER_KEYS?: string;
-      PRIVATE_PLAYER_POSITION: string;
-      PRIVATE_PLAYER_SEARCH: string;
-      PRIVATE_TEAM_KEY?: string;
-      PRIVATE_TEAM_KEYS?: string;
-      PRIVATE_TRANSACTION_KEY?: string;
-      PRIVATE_TRANSACTION_KEYS?: string;
-      PRIVATE_TRANSACTION_TYPE: string;
-      PUBLIC_GAME_CODE: string;
-      PUBLIC_GAME_KEY: string;
-      PUBLIC_LEAGUE_KEY?: string;
-      PUBLIC_PLAYER_SEARCH: string;
-      SEASON: string;
-      WEEK: string;
-   };
+   routeContext: Record<
+      'public' | 'private',
+      Partial<{
+         ALT_WEEK: string;
+         COUNT_SMALL: string;
+         DATE: string;
+         GAME_CODE: string;
+         GAME_KEYS: string;
+         GAME_KEY: string;
+         LEAGUE_KEYS: string;
+         LEAGUE_KEY: string;
+         PLAYER_KEYS: string;
+         PLAYER_KEY: string;
+         PLAYER_POSITION: string;
+         PLAYER_SEARCH: string;
+         SEASON: string;
+         TEAM_KEYS: string;
+         TEAM_KEY: string;
+         TRANSACTION_KEYS: string;
+         TRANSACTION_KEY: string;
+         TRANSACTION_TYPE: string;
+         WEEK: string;
+      }>
+   >;
    request: {
       timeoutMs: number;
    };
@@ -72,33 +73,43 @@ export const staticRouteVerifierConfig: StaticRouteVerifierConfig = {
       },
    },
    routeContext: {
-      ALT_WEEK: '2',
-      COUNT_SMALL: '5',
-      DATE: '2025-11-24',
-      GAME_KEY_FILTER: 'nhl',
-      PRIVATE_LEAGUE_KEY: '465.l.30702',
-      PRIVATE_LEAGUE_KEYS: '465.l.30702',
-      PRIVATE_PLAYER_KEY: 'nhl.p.5431',
-      PRIVATE_PLAYER_KEYS: 'nhl.p.8284,nhl.p.5431',
-      PRIVATE_PLAYER_POSITION: 'C',
-      PRIVATE_PLAYER_SEARCH: 'mcdavid',
-      PRIVATE_TEAM_KEY: '465.l.30702.t.9',
-      PRIVATE_TEAM_KEYS: '465.l.30702.t.9',
-      PRIVATE_TRANSACTION_KEY: '465.l.30702.tr.1334',
-      PRIVATE_TRANSACTION_KEYS: '465.l.30702.tr.1326,465.l.30702.tr.1334',
-      PRIVATE_TRANSACTION_TYPE: 'waiver',
-      PUBLIC_GAME_CODE: 'nhl',
-      PUBLIC_GAME_KEY: '465',
-      PUBLIC_LEAGUE_KEY: '465.l.121384',
-      PUBLIC_PLAYER_SEARCH: 'mcdavid',
-      SEASON: '2025',
-      WEEK: '1',
+      public: {
+         GAME_CODE: 'nhl',
+         GAME_KEY: '465',
+         LEAGUE_KEY: '465.l.121384',
+         PLAYER_KEY: 'nhl.p.5431',
+         SEASON: '2025',
+         TEAM_KEY: '465.l.121384.t.14',
+         WEEK: '1',
+      },
+      private: {
+         ALT_WEEK: '2',
+         COUNT_SMALL: '5',
+         DATE: '2025-10-26',
+         GAME_CODE: 'nhl',
+         GAME_KEYS: '465',
+         GAME_KEY: '465',
+         LEAGUE_KEYS: '465.l.30702',
+         LEAGUE_KEY: '465.l.30702',
+         PLAYER_KEYS: 'nhl.p.8284,nhl.p.5431',
+         PLAYER_KEY: 'nhl.p.5431',
+         PLAYER_POSITION: 'C',
+         PLAYER_SEARCH: 'mcdavid',
+         SEASON: '2025',
+         TEAM_KEYS: '465.l.30702.t.9',
+         TEAM_KEY: '465.l.30702.t.9',
+         TRANSACTION_KEYS: '465.l.30702.tr.1326,465.l.30702.tr.1334',
+         TRANSACTION_KEY: '465.l.30702.tr.1334',
+         TRANSACTION_TYPE: 'waiver',
+         WEEK: '1',
+      },
    },
    request: {
       timeoutMs: 30000,
    },
    output: {
-      reportFilePath: 'research/api-path-validation/actionable-route-report.md',
+      reportFilePath:
+         'research/api-path-validation/actionable-route-report.md',
       responseDumpDirPath: 'research/api-path-validation/tmp',
       shapePreviewLines: 14,
    },

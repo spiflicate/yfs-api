@@ -1,5 +1,6 @@
 import { ValidationError } from '../client/errors';
 import type { HttpClient as Transport } from '../client/http';
+import type { TransactionBuilder } from './builders/transaction-builder';
 import {
    type CollectionParams,
    type RequestState,
@@ -135,15 +136,19 @@ export class TransactionsCollection extends TransactionBase<TransactionsCollecti
       return this.cloneWith({ count });
    }
 
+   createTransaction(transaction: TransactionBuilder): Promise<unknown> {
+      return this.post(transaction.toXml());
+   }
+
    override async get() {
       this.validateSpecialTypeFilters();
       return super.get();
    }
-   override async post(): Promise<void> {
-      throw new Error(
-         'POST is not yet implemented for transactions collection.',
-      );
-   }
+   // override async post(): Promise<void> {
+   //    throw new Error(
+   //       'POST is not yet implemented for transactions collection.',
+   //    );
+   // }
 
    private validateSpecialTypeFilters(): void {
       if (this._params.team_key) {

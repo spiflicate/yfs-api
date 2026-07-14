@@ -7,6 +7,7 @@ import {
    type RequestState,
    Resource,
 } from './resource';
+import { TeamsCollection } from './team';
 import type { GameKeyLike } from './types';
 
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;
@@ -31,8 +32,9 @@ export class UsersCollection extends Resource<UsersCollectionParams> {
       return GamesCollection.create(this._transport, state, keys.flat());
    }
 
-   teams(): never {
-      throw new Error('Not implemented');
+   teams(): TeamsCollection {
+      const state = this.createChildState();
+      return TeamsCollection.create(this._transport, state, []);
    }
 
    leagues(): never {

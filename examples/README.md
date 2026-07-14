@@ -7,6 +7,7 @@
 Provides two `TokenStorage` implementations:
 
 - `FileTokenStorage`: encrypted file storage using AES-256-GCM
+- `KeytarTokenStorage`: OS keychain storage via `keytar`
 - `SimpleFileTokenStorage`: plain JSON file storage for development only
 
 ### `usage-example.ts.future`
@@ -136,6 +137,46 @@ const yfs = new YahooFantasySportsClient(
 ```
 
 This writes readable JSON to disk. Do not use it for production credentials.
+
+## OS keychain storage with `keytar`
+
+Use `KeytarTokenStorage` when you want the OS credential store to hold tokens instead of a file.
+
+Install `keytar` in your app first:
+
+```bash
+bun add keytar
+```
+
+or:
+
+```bash
+npm install keytar
+```
+
+Then use the storage implementation from the example:
+
+```typescript
+import { YahooFantasySportsClient } from '../../src/index.js';
+import { KeytarTokenStorage } from './01-token-storage.js';
+
+const storage = new KeytarTokenStorage(
+   'com.example.yfs-api',
+   'primary-user',
+   true,
+);
+
+const yfs = new YahooFantasySportsClient(
+   {
+      clientId: process.env.YAHOO_CLIENT_ID || '',
+      clientSecret: process.env.YAHOO_CLIENT_SECRET || '',
+      redirectUri: process.env.YAHOO_REDIRECT_URI || 'oob',
+   },
+   storage,
+);
+```
+
+`service` is the application-level namespace in the keychain, and `account` identifies the stored Yahoo token set.
 
 ## Suggested `.gitignore` entries
 

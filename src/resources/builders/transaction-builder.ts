@@ -1,10 +1,6 @@
 import { XMLBuilder } from 'fast-xml-parser';
 import type { PlayerKeyLike, TeamKeyLike } from '../types';
 
-type TransactionType = 'add' | 'drop' | 'add/drop' | 'pending_trade';
-
-type TransactionMode = 'addDrop' | 'trade' | 'undetermined';
-
 type AddTransactionPlayer = {
    player_key: PlayerKeyLike;
    transaction_data: {
@@ -78,108 +74,16 @@ export type TransactionPayload =
    | DropTransactionPayload
    | PendingTradeTransactionPayload;
 
-type TradeOnlyMethods =
-   | 'fromTeam'
-   | 'toTeam'
-   | 'sendPlayers'
-   | 'receivePlayers'
-   | 'dropPlayers'
-   | 'note';
-type AddDropOnlyMethods = 'forTeam' | 'addPlayer' | 'dropPlayer' | 'bid';
-type AlwaysAvailableMethods = 'toXml' | 'toPayload';
-
-/**
- * Fluent builder for Yahoo transaction request payloads.
- */
-export class TransactionBuilder {
-   private forTeamKey?: TeamKeyLike;
-   private fromTeamKey?: TeamKeyLike;
-   private toTeamKeyValue?: TeamKeyLike;
-   private addPlayerKey?: PlayerKeyLike;
-   private dropPlayerKey?: PlayerKeyLike;
-   private sentPlayers: PlayerKeyLike[] = [];
-   private receivedPlayers: PlayerKeyLike[] = [];
-   private droppedPlayers: PlayerKeyLike[] = [];
-   private faabBid?: number;
-   private tradeNote?: string;
-   #type?: TransactionType;
-
-   forTeam(teamKey: TeamKeyLike): Omit<this, 'forTeam' | TradeOnlyMethods> {
-      this.#setType('add/drop');
-      this.forTeamKey = teamKey;
-      return this;
+export abstract class TransactionBuilder<
+   TPayload extends TransactionPayload = TransactionPayload,
+> {
+   static newAddDrop(): AddDropTransactionBuilder {
+      return new AddDropTransactionBuilder();
    }
 
-   fromTeam(
-      teamKey: TeamKeyLike,
-   ): Omit<this, 'fromTeam' | AddDropOnlyMethods> {
-      this.#setType('pending_trade');
-      this.fromTeamKey = teamKey;
-      return this;
+   static newTrade(): TradeTransactionBuilder {
+      return new TradeTransactionBuilder();
    }
-
-   toTeam(teamKey: TeamKeyLike): Omit<this, 'toTeam' | AddDropOnlyMethods> {
-      this.#setType('pending_trade');
-      this.toTeamKeyValue = teamKey;
-      return this;
-   }
-
-   addPlayer(
-      playerKey: PlayerKeyLike,
-   ): Pick<this, AddDropOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('add/drop');
-      this.addPlayerKey = playerKey;
-      return this;
-   }
-
-   dropPlayer(
-      playerKey: PlayerKeyLike,
-   ): Pick<this, AddDropOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('add/drop');
-      this.dropPlayerKey = playerKey;
-      return this;
-   }
-
-   sendPlayers(
-      playerKeys: PlayerKeyLike[],
-   ): Pick<this, TradeOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('pending_trade');
-      this.sentPlayers = [...playerKeys];
-      return this;
-   }
-
-   receivePlayers(
-      playerKeys: PlayerKeyLike[],
-   ): Pick<this, TradeOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('pending_trade');
-      this.receivedPlayers = [...playerKeys];
-      return this;
-   }
-
-   dropPlayers(
-      playerKeys: PlayerKeyLike[],
-   ): Pick<this, TradeOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('pending_trade');
-      this.droppedPlayers = [...playerKeys];
-      return this;
-   }
-
-   bid(
-      amount: number,
-   ): Pick<this, AddDropOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('add/drop');
-      this.faabBid = amount;
-      return this;
-   }
-
-   note(
-      text: string,
-   ): Pick<this, TradeOnlyMethods | AlwaysAvailableMethods> {
-      this.#setType('pending_trade');
-      this.tradeNote = text;
-      return this;
-   }
-
    toXml(): string {
       const payload = this.toPayload();
       const xmlBuilder = new XMLBuilder({
@@ -190,58 +94,43 @@ export class TransactionBuilder {
       return `<?xml version="1.0" encoding="UTF-8"?>${xmlBuilder.build({ fantasy_content: payload })}`;
    }
 
-   // fromJson(json: Record<string, unknown>): this {
-   //    // Consider implementing this if needed for testing or other purposes
-   //    throw new Error('fromJson is not implemented.');
-   // }
+   abstract toPayload(): TPayload;
+}
 
-   toPayload(): TransactionPayload {
-      const mode = this.getMode();
-      if (mode === 'addDrop') {
-         return this.buildAddDropTransactionPayload();
-      }
-      if (mode === 'trade') {
-         return { transaction: this.buildTradeTransaction() };
-      }
+/**
+ * Fluent builder for Yahoo add/drop transaction request payloads.
+ */
+export class AddDropTransactionBuilder extends TransactionBuilder<
+   | AddDropTransactionPayload
+   | AddTransactionPayload
+   | DropTransactionPayload
+> {
+   private forTeamKey?: TeamKeyLike;
+   private addPlayerKey?: PlayerKeyLike;
+   private dropPlayerKey?: PlayerKeyLike;
+   private faabBid?: number;
 
-      throw new Error(
-         'Cannot infer transaction type. Provide add/drop details or trade details.',
-      );
+   forTeam(teamKey: TeamKeyLike): this {
+      this.forTeamKey = teamKey;
+      return this;
    }
 
-   #setType(type: TransactionType): void {
-      // Only set type once, based on the first method called that provides a clear indication of transaction type.
-      if (this.#type === undefined) {
-         this.#type = type;
-      }
+   addPlayer(playerKey: PlayerKeyLike): this {
+      this.addPlayerKey = playerKey;
+      return this;
    }
 
-   private getMode(): TransactionMode {
-      const hasTradeShape =
-         !!this.fromTeamKey ||
-         !!this.toTeamKeyValue ||
-         this.sentPlayers.length > 0 ||
-         this.receivedPlayers.length > 0 ||
-         this.droppedPlayers.length > 0 ||
-         this.tradeNote !== undefined;
-      const hasAddDropShape =
-         !!this.forTeamKey ||
-         !!this.addPlayerKey ||
-         !!this.dropPlayerKey ||
-         this.faabBid !== undefined;
-
-      if (hasTradeShape && hasAddDropShape) {
-         throw new Error(
-            'Cannot mix add/drop and trade fields in the same transaction.',
-         );
-      }
-
-      if (hasAddDropShape) return 'addDrop';
-      if (hasTradeShape) return 'trade';
-      return 'undetermined';
+   dropPlayer(playerKey: PlayerKeyLike): this {
+      this.dropPlayerKey = playerKey;
+      return this;
    }
 
-   private buildAddDropTransactionPayload():
+   bid(amount: number): this {
+      this.faabBid = amount;
+      return this;
+   }
+
+   toPayload():
       | AddDropTransactionPayload
       | AddTransactionPayload
       | DropTransactionPayload {
@@ -257,17 +146,10 @@ export class TransactionBuilder {
       }
 
       if (this.addPlayerKey && this.dropPlayerKey) {
-         const faabBid =
-            this.faabBid !== undefined
-               ? ({
-                    faab_bid: String(this.faabBid) as `${number}`,
-                 } as const)
-               : {};
-
          return {
             transaction: {
                type: 'add/drop',
-               ...faabBid,
+               ...this.formatFaabBid(),
                players: {
                   player: [
                      {
@@ -291,17 +173,10 @@ export class TransactionBuilder {
       }
 
       if (this.addPlayerKey) {
-         const faabBid =
-            this.faabBid !== undefined
-               ? ({
-                    faab_bid: String(this.faabBid) as `${number}`,
-                 } as const)
-               : {};
-
          return {
             transaction: {
                type: 'add',
-               ...faabBid,
+               ...this.formatFaabBid(),
                player: {
                   player_key: this.addPlayerKey,
                   transaction_data: {
@@ -332,6 +207,62 @@ export class TransactionBuilder {
             },
          },
       };
+   }
+
+   private formatFaabBid(): Partial<
+      Pick<AddDropTransactionPayload['transaction'], 'faab_bid'>
+   > {
+      if (this.faabBid === undefined) {
+         return {};
+      }
+
+      return { faab_bid: String(this.faabBid) as `${number}` };
+   }
+}
+
+/**
+ * Fluent builder for Yahoo trade transaction request payloads.
+ */
+export class TradeTransactionBuilder extends TransactionBuilder<PendingTradeTransactionPayload> {
+   private fromTeamKey?: TeamKeyLike;
+   private toTeamKeyValue?: TeamKeyLike;
+   private sentPlayers: PlayerKeyLike[] = [];
+   private receivedPlayers: PlayerKeyLike[] = [];
+   private droppedPlayers: PlayerKeyLike[] = [];
+   private tradeNote?: string;
+
+   fromTeam(teamKey: TeamKeyLike): this {
+      this.fromTeamKey = teamKey;
+      return this;
+   }
+
+   toTeam(teamKey: TeamKeyLike): this {
+      this.toTeamKeyValue = teamKey;
+      return this;
+   }
+
+   sendPlayers(playerKeys: PlayerKeyLike[]): this {
+      this.sentPlayers = [...playerKeys];
+      return this;
+   }
+
+   receivePlayers(playerKeys: PlayerKeyLike[]): this {
+      this.receivedPlayers = [...playerKeys];
+      return this;
+   }
+
+   dropPlayers(playerKeys: PlayerKeyLike[]): this {
+      this.droppedPlayers = [...playerKeys];
+      return this;
+   }
+
+   note(text: string): this {
+      this.tradeNote = text;
+      return this;
+   }
+
+   toPayload(): PendingTradeTransactionPayload {
+      return { transaction: this.buildTradeTransaction() };
    }
 
    private buildTradeTransaction(): PendingTradeTransactionPayload['transaction'] {

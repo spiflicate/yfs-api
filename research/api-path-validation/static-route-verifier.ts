@@ -1,13 +1,10 @@
 import { mkdir } from 'node:fs/promises';
 import { argv, stdin as input, stdout as output } from 'node:process';
 import { createInterface } from 'node:readline/promises';
-import { HttpClient } from '../../src/client/HttpClient.js';
-import { OAuth1Client } from '../../src/client/OAuth1Client.js';
-import {
-   OAuth2Client,
-   type OAuth2Tokens,
-} from '../../src/client/OAuth2Client.js';
-import { YahooApiError } from '../../src/types/errors.js';
+import { OAuth1Client } from '../../src/auth/oauth1.js';
+import { OAuth2Client, type OAuth2Tokens } from '../../src/auth/oauth2.js';
+import { YahooApiError } from '../../src/client/errors.js';
+import { HttpClient } from '../../src/client/http.js';
 import { API_BASE_URL } from '../../src/utils/constants.js';
 import { parseYahooXML } from '../../src/utils/xmlParser.js';
 import { staticRouteVerifierConfig } from './static-route-config.ts';
@@ -169,8 +166,10 @@ function requireConfigValue(value: string, path: string): string {
    return value;
 }
 
-function getRouteContext(): Record<string, string | undefined> {
-   return staticRouteVerifierConfig.routeContext;
+function getRouteContext(
+   mode: 'public' | 'private',
+): Record<string, string | undefined> {
+   return staticRouteVerifierConfig.routeContext[mode];
 }
 
 function parseMode(mode: RouteMode | 'all'): RouteMode | 'all' {
@@ -644,9 +643,14 @@ function hasReturnedData(response: unknown): boolean {
    return true;
 }
 
-async function runRoute(selectedRoute: SelectedRoute): Promise<RouteResult> {
+async function runRoute(
+   selectedRoute: SelectedRoute,
+): Promise<RouteResult> {
    const { route, routeSet } = selectedRoute;
-   const resolved = resolveTemplate(route.pathTemplate, getRouteContext());
+   const resolved = resolveTemplate(
+      route.pathTemplate,
+      getRouteContext(route.mode),
+   );
    if (!resolved.path) {
       return {
          confidence: route.confidence,
@@ -762,7 +766,7 @@ function printHeader(
    console.log('Static Yahoo API Route Verifier');
    console.log('='.repeat(72));
    console.log(`Mode: ${mode}`);
-    console.log(`Include invalid: ${includeInvalid ? 'yes' : 'no'}`);
+   console.log(`Include invalid: ${includeInvalid ? 'yes' : 'no'}`);
    console.log(`Routes selected: ${routes.length}`);
    console.log(`Invalid routes selected: ${invalidRoutes}`);
    console.log();
@@ -903,15 +907,10 @@ function isLeagueIdsExpectedFailure(note: string): boolean {
 }
 
 function getFallbackLeagueKey(mode: RouteMode): string | undefined {
-   const context = getRouteContext();
-
-   if (mode === 'public') {
-      return context.PUBLIC_LEAGUE_KEY;
-   }
-
+   const context = getRouteContext(mode);
    return (
-      context.PRIVATE_LEAGUE_KEY ??
-      context.PRIVATE_LEAGUE_KEYS?.split(',')
+      context.LEAGUE_KEY ??
+      context.LEAGUE_KEYS?.split(',')
          .map((value) => value.trim())
          .find(Boolean)
    );

@@ -1,12 +1,13 @@
 /**
- * Example: File-Based Token Storage
+ * Example: Token Storage Implementations
  *
- * This example shows how to implement secure file-based token storage
- * with encryption and proper error handling.
+ * This example shows multiple TokenStorage implementations,
+ * including encrypted file storage and OS keychain storage.
  *
  * Features:
- * - Encrypts tokens at rest using AES-256-GCM
+ * - Encrypts file-based tokens at rest using AES-256-GCM
  * - Persists an auto-generated recovery key in a sibling .key file
+ * - Stores tokens in the OS credential store via keytar
  * - Proper file permissions (readable only by current user)
  * - Atomic writes to prevent corruption
  * - Error handling and logging
@@ -17,6 +18,16 @@ import { existsSync, readFileSync } from 'node:fs';
 import { chmod, readFile, unlink, writeFile } from 'node:fs/promises';
 import type { OAuth2Tokens } from '../src/auth/oauth2.js';
 import type { TokenStorage } from '../src/client/yahoo.js';
+
+type KeytarModule = {
+   setPassword(
+      service: string,
+      account: string,
+      password: string,
+   ): Promise<void>;
+   getPassword(service: string, account: string): Promise<string | null>;
+   deletePassword(service: string, account: string): Promise<boolean>;
+};
 
 /**
  * Secure file-based token storage with encryption
@@ -261,6 +272,125 @@ export class FileTokenStorage implements TokenStorage {
       ]);
 
       return plaintext.toString('utf8');
+   }
+}
+
+/**
+ * OS keychain-backed storage via keytar
+ *
+ * Requires installing keytar in the consuming app:
+ * `bun add keytar` or `npm install keytar`
+ */
+export class KeytarTokenStorage implements TokenStorage {
+   private readonly service: string;
+   private readonly account: string;
+   private readonly debug: boolean;
+
+   constructor(
+      service = 'yfs-api',
+      account = 'oauth2-tokens',
+      debug = false,
+   ) {
+      this.service = service;
+      this.account = account;
+      this.debug = debug;
+   }
+
+   async save(tokens: OAuth2Tokens): Promise<void> {
+      try {
+         if (this.debug) {
+            console.log(
+               `[KeytarTokenStorage] Saving tokens for ${this.service}/${this.account}`,
+            );
+         }
+
+         const keytar = await this.loadKeytar();
+         await keytar.setPassword(
+            this.service,
+            this.account,
+            JSON.stringify(tokens),
+         );
+
+         if (this.debug) {
+            console.log('[KeytarTokenStorage] Tokens saved successfully');
+         }
+      } catch (error) {
+         console.error(
+            '[KeytarTokenStorage] Failed to save tokens:',
+            error,
+         );
+         throw error;
+      }
+   }
+
+   async load(): Promise<OAuth2Tokens | null> {
+      try {
+         if (this.debug) {
+            console.log(
+               `[KeytarTokenStorage] Loading tokens for ${this.service}/${this.account}`,
+            );
+         }
+
+         const keytar = await this.loadKeytar();
+         const serializedTokens = await keytar.getPassword(
+            this.service,
+            this.account,
+         );
+
+         if (!serializedTokens) {
+            if (this.debug) {
+               console.log('[KeytarTokenStorage] No tokens found');
+            }
+            return null;
+         }
+
+         const tokens = JSON.parse(serializedTokens) as OAuth2Tokens;
+
+         if (this.debug) {
+            console.log('[KeytarTokenStorage] Tokens loaded successfully');
+         }
+
+         return tokens;
+      } catch (error) {
+         console.error(
+            '[KeytarTokenStorage] Failed to load tokens:',
+            error,
+         );
+         return null;
+      }
+   }
+
+   async clear(): Promise<void> {
+      try {
+         if (this.debug) {
+            console.log(
+               `[KeytarTokenStorage] Clearing tokens for ${this.service}/${this.account}`,
+            );
+         }
+
+         const keytar = await this.loadKeytar();
+         await keytar.deletePassword(this.service, this.account);
+
+         if (this.debug) {
+            console.log('[KeytarTokenStorage] Tokens cleared successfully');
+         }
+      } catch (error) {
+         console.error(
+            '[KeytarTokenStorage] Failed to clear tokens:',
+            error,
+         );
+      }
+   }
+
+   private async loadKeytar(): Promise<KeytarModule> {
+      try {
+         const moduleName = 'keytar';
+         return (await import(moduleName)) as KeytarModule;
+      } catch {
+         throw new Error(
+            'keytar is not installed. Install it with `bun add keytar` or `npm install keytar` in the consuming app.',
+         );
+      }
    }
 }
 

@@ -1,13 +1,10 @@
 import { mkdir } from 'node:fs/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { createInterface } from 'node:readline/promises';
-import { HttpClient } from '../../src/client/HttpClient.js';
-import { OAuth1Client } from '../../src/client/OAuth1Client.js';
-import {
-   OAuth2Client,
-   type OAuth2Tokens,
-} from '../../src/client/OAuth2Client.js';
-import { YahooApiError } from '../../src/types/errors.js';
+import { OAuth1Client } from '../../src/auth/oauth1.js';
+import { OAuth2Client, type OAuth2Tokens } from '../../src/auth/oauth2.js';
+import { YahooApiError } from '../../src/client/errors.js';
+import { HttpClient } from '../../src/client/http.js';
 import { API_BASE_URL } from '../../src/utils/constants.js';
 import { parseYahooXML } from '../../src/utils/xmlParser.js';
 import { staticRouteVerifierConfig } from './static-route-config.ts';

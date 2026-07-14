@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Support Policy
+
+- `2.1.x` and newer are the supported API line.
+- All releases earlier than `2.1.0` are deprecated and unsupported.
+- Legacy entries remain below for historical reference only.
+
+## [2.1.0] - 2026-06-01
+
+### Overview
+Planned stable release for the `2.1+` line. This is the first version documented as the supported public API going forward.
+
+### Added
+- **Comprehensive Examples:** Added a wide range of examples covering all major API features, including authentication flows, client usage, request builder patterns, and token storage.
+- **Documentation Expansion:** Expanded the API guide with detailed sections on request builder usage, parameter handling, and response typing, along with updated guides for authentication and integration testing.
+- **Test Coverage:** Added comprehensive unit and integration test coverage for all request builder features, client methods, and edge cases.
+- **TypeScript Inference:** Improved TypeScript inference for request builder chains, including better error messages for invalid chaining and parameter usage.
+### Changed
+- **API Surface Finalization:** Finalized the public API surface for the request builder, including clearer method naming, consistent parameter handling, and more intuitive chaining patterns.
+- **Documentation Baseline:** Updated package documentation to target the `2.1+` API only and removed support framing for pre-`2.1` usage.
+- **Example Organization:** Reorganized examples into a more structured format, with dedicated sections for authentication, client usage, request builder patterns, and token storage.
+
+### Deprecated
+
+- **Pre-2.1 Releases:** All `2.0.0-beta.*`, `2.0.0-beta.0`, and `1.x` releases are deprecated and unsupported.
+- **Old API Guidance:** Legacy documentation and migration framing for pre-`2.1` surfaces are no longer maintained as current usage guidance.
+
+### Fixed
+- **Edge Case Handling:** Addressed edge cases in request builder chaining and parameter handling to prevent common mistakes and improve error messages.
+- **Test Stability:** Improved test stability and reliability, particularly for integration tests that interact with the live Yahoo API.
+
+### Notes
+- Use `2.1+` for all new integrations.
+- If you are running an older version, upgrade before relying on current docs or opening support requests.
+
+## Legacy Releases
+
+Entries below this heading are retained for history only. They do not represent the supported API line.
+
 ## [2.0.0-beta.4] - 2026-03-20
 
 ### Overview

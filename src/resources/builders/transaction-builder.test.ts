@@ -1,10 +1,48 @@
 import { describe, expect, it } from 'bun:test';
-import { TransactionBuilder } from './transaction-builder.js';
+import {
+   AddDropTransactionBuilder,
+   TradeTransactionBuilder,
+   TransactionBuilder,
+} from './transaction-builder.js';
 
-describe('TransactionBuilder', () => {
-   describe('add/drop transactions', () => {
+describe('transaction builders', () => {
+   describe('AddDropTransactionBuilder', () => {
       it('builds an add/drop payload with FAAB bid', () => {
-         const payload = new TransactionBuilder()
+         const payload = new AddDropTransactionBuilder()
+            .forTeam('423.l.12345.t.1')
+            .addPlayer('423.p.3333')
+            .dropPlayer('423.p.4444')
+            .bid(24)
+            .toPayload();
+
+         expect(payload).toEqual({
+            transaction: {
+               type: 'add/drop',
+               faab_bid: '24',
+               players: {
+                  player: [
+                     {
+                        player_key: '423.p.3333',
+                        transaction_data: {
+                           type: 'add',
+                           destination_team_key: '423.l.12345.t.1',
+                        },
+                     },
+                     {
+                        player_key: '423.p.4444',
+                        transaction_data: {
+                           type: 'drop',
+                           source_team_key: '423.l.12345.t.1',
+                        },
+                     },
+                  ],
+               },
+            },
+         });
+      });
+
+      it('builds an add/drop payload with FAAB bid using static newAddDrop method', () => {
+         const payload = TransactionBuilder.newAddDrop()
             .forTeam('423.l.12345.t.1')
             .addPlayer('423.p.3333')
             .dropPlayer('423.p.4444')
@@ -38,7 +76,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('builds an add-only payload', () => {
-         const payload = new TransactionBuilder()
+         const payload = new AddDropTransactionBuilder()
             .forTeam('423.l.12345.t.1')
             .addPlayer('423.p.3333')
             .toPayload();
@@ -58,7 +96,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('builds a drop-only payload', () => {
-         const payload = new TransactionBuilder()
+         const payload = new AddDropTransactionBuilder()
             .forTeam('423.l.12345.t.1')
             .dropPlayer('423.p.4444')
             .toPayload();
@@ -78,7 +116,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('serializes add/drop transactions to XML with correct structure', () => {
-         const builder = new TransactionBuilder()
+         const builder = new AddDropTransactionBuilder()
             .forTeam('423.l.12345.t.1')
             .addPlayer('423.p.3333')
             .dropPlayer('423.p.4444')
@@ -96,7 +134,9 @@ describe('TransactionBuilder', () => {
 
       it('throws if add/drop is missing forTeam()', () => {
          expect(() =>
-            new TransactionBuilder().addPlayer('423.p.3333').toPayload(),
+            new AddDropTransactionBuilder()
+               .addPlayer('423.p.3333')
+               .toPayload(),
          ).toThrow(
             'forTeam(teamKey) is required for add/drop transactions.',
          );
@@ -104,16 +144,63 @@ describe('TransactionBuilder', () => {
 
       it('throws if add/drop has no add or drop player', () => {
          expect(() =>
-            new TransactionBuilder().forTeam('423.l.12345.t.1').toPayload(),
+            new AddDropTransactionBuilder()
+               .forTeam('423.l.12345.t.1')
+               .toPayload(),
          ).toThrow(
             'At least one of addPlayer(playerKey) or dropPlayer(playerKey) is required.',
          );
       });
    });
 
-   describe('trade transactions', () => {
+   describe('TradeTransactionBuilder', () => {
       it('builds a pending trade payload for sent, received, and dropped players', () => {
-         const payload = new TransactionBuilder()
+         const payload = new TradeTransactionBuilder()
+            .fromTeam('423.l.12345.t.1')
+            .toTeam('423.l.12345.t.2')
+            .sendPlayers(['423.p.1111'])
+            .receivePlayers(['423.p.2222'])
+            .dropPlayers(['423.p.3333'])
+            .toPayload();
+
+         expect(payload).toEqual({
+            transaction: {
+               type: 'pending_trade',
+               trader_team_key: '423.l.12345.t.1',
+               tradee_team_key: '423.l.12345.t.2',
+               players: {
+                  player: [
+                     {
+                        player_key: '423.p.1111',
+                        transaction_data: {
+                           type: 'pending_trade',
+                           source_team_key: '423.l.12345.t.1',
+                           destination_team_key: '423.l.12345.t.2',
+                        },
+                     },
+                     {
+                        player_key: '423.p.2222',
+                        transaction_data: {
+                           type: 'pending_trade',
+                           source_team_key: '423.l.12345.t.2',
+                           destination_team_key: '423.l.12345.t.1',
+                        },
+                     },
+                     {
+                        player_key: '423.p.3333',
+                        transaction_data: {
+                           type: 'pending_trade',
+                           source_team_key: '423.l.12345.t.1',
+                        },
+                     },
+                  ],
+               },
+            },
+         });
+      });
+
+      it('builds a pending trade payload using static newTrade method', () => {
+         const payload = TransactionBuilder.newTrade()
             .fromTeam('423.l.12345.t.1')
             .toTeam('423.l.12345.t.2')
             .sendPlayers(['423.p.1111'])
@@ -158,7 +245,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('omits destination_team_key for dropped players in pending trades', () => {
-         const payload = new TransactionBuilder()
+         const payload = new TradeTransactionBuilder()
             .fromTeam('423.l.12345.t.1')
             .toTeam('423.l.12345.t.2')
             .sendPlayers(['423.p.1111'])
@@ -191,7 +278,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('includes trade_note for pending trade payloads when provided', () => {
-         const payload = new TransactionBuilder()
+         const payload = new TradeTransactionBuilder()
             .fromTeam('423.l.12345.t.1')
             .toTeam('423.l.12345.t.2')
             .sendPlayers(['423.p.1111'])
@@ -225,7 +312,7 @@ describe('TransactionBuilder', () => {
          const received = ['423.p.2222'];
          const dropped = ['423.p.3333'];
 
-         const builder = new TransactionBuilder()
+         const builder = new TradeTransactionBuilder()
             .fromTeam('423.l.12345.t.1')
             .toTeam('423.l.12345.t.2')
             .sendPlayers(sent)
@@ -249,7 +336,7 @@ describe('TransactionBuilder', () => {
       });
 
       it('serializes trade transactions to XML with correct structure', () => {
-         const builder = new TransactionBuilder()
+         const builder = new TradeTransactionBuilder()
             .fromTeam('423.l.12345.t.1')
             .toTeam('423.l.12345.t.2')
             .sendPlayers(['423.p.1111'])
@@ -276,7 +363,7 @@ describe('TransactionBuilder', () => {
 
       it('throws if trade is missing fromTeam() or toTeam()', () => {
          expect(() =>
-            new TransactionBuilder()
+            new TradeTransactionBuilder()
                .fromTeam('423.l.12345.t.1')
                .sendPlayers(['423.p.1111'])
                .toPayload(),
@@ -287,46 +374,12 @@ describe('TransactionBuilder', () => {
 
       it('throws if trade has no players to send or receive', () => {
          expect(() =>
-            new TransactionBuilder()
+            new TradeTransactionBuilder()
                .fromTeam('423.l.12345.t.1')
                .toTeam('423.l.12345.t.2')
                .toPayload(),
          ).toThrow(
             'At least one of sendPlayers() or receivePlayers() is required for trades.',
-         );
-      });
-   });
-
-   describe('mode inference', () => {
-      it('throws when no transaction details are provided', () => {
-         expect(() => new TransactionBuilder().toPayload()).toThrow(
-            'Cannot infer transaction type. Provide add/drop details or trade details.',
-         );
-      });
-
-      it('throws when add/drop and trade fields are mixed', () => {
-         expect(() =>
-            new TransactionBuilder()
-               .forTeam('423.l.12345.t.1')
-               // @ts-expect-error testing invalid combination of add/drop and trade fields
-               .fromTeam('423.l.12345.t.2')
-               .addPlayer('423.p.3333')
-               .toPayload(),
-         ).toThrow(
-            'Cannot mix add/drop and trade fields in the same transaction.',
-         );
-      });
-
-      it('throws when add/drop fields are mixed with trade note', () => {
-         expect(() =>
-            new TransactionBuilder()
-               .forTeam('423.l.12345.t.1')
-               .addPlayer('423.p.3333')
-               // @ts-expect-error testing invalid combination of add/drop fields with trade note
-               .note('Please accept')
-               .toPayload(),
-         ).toThrow(
-            'Cannot mix add/drop and trade fields in the same transaction.',
          );
       });
    });
