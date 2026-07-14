@@ -1,18 +1,25 @@
-import type { HttpClient as Transport } from '../client/http';
-import type { UsersResponse } from '../domain/responses';
-import { GamesCollection } from './game';
+import type { HttpClient as Transport } from '../client/http.js';
+import type { YahooLoggedInUsersResponseDto } from '../domain/normalized.js';
+import { GamesCollection } from './game.js';
 import {
    type CollectionParams,
-   // type BaseParams,
    type RequestState,
    Resource,
-} from './resource';
-import { TeamsCollection } from './team';
-import type { GameKeyLike } from './types';
+} from './resource.js';
+import type {
+   AppendResponsePath,
+   RequireResponsePath,
+} from './response-contract.js';
+import { TeamsCollection } from './team.js';
+import type { GameKeyLike } from './types.js';
 
+type UsersPath = readonly ['users'];
 type UsersCollectionParams = CollectionParams<never, never, 'users'>;
 
-export class UsersCollection extends Resource<UsersCollectionParams> {
+export class UsersCollection extends Resource<
+   UsersCollectionParams,
+   RequireResponsePath<YahooLoggedInUsersResponseDto, UsersPath>
+> {
    static create(
       transport: Transport,
       state: RequestState,
@@ -25,27 +32,45 @@ export class UsersCollection extends Resource<UsersCollectionParams> {
       });
    }
 
-   games(...keys: GameKeyLike[]): GamesCollection;
-   games(keys: GameKeyLike[]): GamesCollection;
-   games(...keys: GameKeyLike[] | [GameKeyLike[]]): GamesCollection {
-      const state = this.createChildState();
-      return GamesCollection.create(this._transport, state, keys.flat());
+   games(
+      ...keys: GameKeyLike[]
+   ): GamesCollection<
+      YahooLoggedInUsersResponseDto,
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
+   >;
+   games(
+      keys: GameKeyLike[],
+   ): GamesCollection<
+      YahooLoggedInUsersResponseDto,
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
+   >;
+   games(
+      ...keys: GameKeyLike[] | GameKeyLike[][]
+   ): GamesCollection<
+      YahooLoggedInUsersResponseDto,
+      AppendResponsePath<UsersPath, 'games'>,
+      AppendResponsePath<UsersPath, 'games'>,
+      'user'
+   > {
+      return GamesCollection.createForUser(
+         this._transport,
+         this.createChildState(),
+         keys.flat(),
+      );
    }
 
-   teams(): TeamsCollection {
-      const state = this.createChildState();
-      return TeamsCollection.create(this._transport, state, []);
-   }
-
-   leagues(): never {
-      throw new Error('Not implemented');
-   }
-
-   players(): never {
-      throw new Error('Not implemented');
-   }
-
-   override async get() {
-      return this.request<UsersResponse>('get');
+   teams(): TeamsCollection<
+      YahooLoggedInUsersResponseDto,
+      readonly ['users', 'teams']
+   > {
+      return TeamsCollection.create(
+         this._transport,
+         this.createChildState(),
+         [],
+      );
    }
 }

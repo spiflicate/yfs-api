@@ -11,7 +11,9 @@ import {
    DEFAULT_RETRY_DELAY,
    DEFAULT_TIMEOUT,
    HTTP_STATUS,
+   MAX_REQUESTS_PER_WINDOW,
    MAX_RETRY_DELAY,
+   RATE_LIMIT_WINDOW,
    RETRYABLE_STATUS_CODES,
 } from '../utils/constants.js';
 import { parseYahooXML } from '../utils/xmlParser.js';
@@ -19,6 +21,7 @@ import {
    AuthenticationError,
    NetworkError,
    NotFoundError,
+   ParseError,
    RateLimitError,
    YahooApiError,
    YahooFantasyError,
@@ -72,7 +75,15 @@ class RateLimiter {
    private readonly maxRequests: number;
    private readonly windowMs: number;
 
-   constructor(maxRequests = 20, windowMs = 1000) {
+   private admission = Promise.resolve();
+
+   constructor(
+      maxRequests = MAX_REQUESTS_PER_WINDOW,
+      windowMs = RATE_LIMIT_WINDOW,
+      private readonly now: () => number = Date.now,
+      private readonly sleep: (ms: number) => Promise<void> = (ms) =>
+         new Promise((resolve) => setTimeout(resolve, ms)),
+   ) {
       this.maxRequests = maxRequests;
       this.windowMs = windowMs;
    }
@@ -81,27 +92,33 @@ class RateLimiter {
     * Wait if necessary to comply with rate limits
     */
    async wait(): Promise<void> {
-      const now = Date.now();
+      const previous = this.admission;
+      let release!: () => void;
+      this.admission = new Promise<void>((resolve) => {
+         release = resolve;
+      });
 
-      // Remove requests outside the current window
-      this.requests = this.requests.filter(
-         (time) => now - time < this.windowMs,
-      );
+      await previous;
+      try {
+         while (true) {
+            const now = this.now();
+            this.requests = this.requests.filter(
+               (time) => now - time < this.windowMs,
+            );
 
-      if (this.requests.length >= this.maxRequests) {
-         // Wait until the oldest request expires
-         const oldestRequest = this.requests[0];
-         if (oldestRequest) {
-            const waitTime = this.windowMs - (now - oldestRequest);
-            if (waitTime > 0) {
-               await new Promise((resolve) =>
-                  setTimeout(resolve, waitTime),
-               );
+            if (this.requests.length < this.maxRequests) {
+               this.requests.push(now);
+               return;
             }
-         }
-      }
 
-      this.requests.push(Date.now());
+            const oldestRequest = this.requests[0];
+            await this.sleep(
+               Math.max(0, this.windowMs - (now - (oldestRequest ?? now))),
+            );
+         }
+      } finally {
+         release();
+      }
    }
 }
 
@@ -137,7 +154,9 @@ export class HttpClient {
    private timeout: number;
    private maxRetries: number;
    private debug: boolean;
-   private rawXml: boolean;
+   private refreshInFlight?: Promise<OAuth2Tokens>;
+   private readonly now: () => number;
+   private readonly sleepCallback: (ms: number) => Promise<void>;
 
    /**
     * Creates a new HTTP client
@@ -156,18 +175,27 @@ export class HttpClient {
          maxRetries?: number;
          debug?: boolean;
          oauth1Client?: OAuth1Client;
-         rawXml?: boolean;
+         now?: () => number;
+         sleep?: (ms: number) => Promise<void>;
       },
    ) {
       this.oauth2Client = oauth2Client;
       this.oauth1Client = options?.oauth1Client;
       this.tokenProvider = tokenProvider;
       this.tokenRefreshCallback = tokenRefreshCallback;
-      this.rateLimiter = new RateLimiter();
+      this.now = options?.now ?? Date.now;
+      this.sleepCallback =
+         options?.sleep ??
+         ((ms) => new Promise((resolve) => setTimeout(resolve, ms)));
+      this.rateLimiter = new RateLimiter(
+         MAX_REQUESTS_PER_WINDOW,
+         RATE_LIMIT_WINDOW,
+         this.now,
+         this.sleepCallback,
+      );
       this.timeout = options?.timeout ?? DEFAULT_TIMEOUT;
       this.maxRetries = options?.maxRetries ?? DEFAULT_MAX_RETRIES;
       this.debug = options?.debug ?? false;
-      this.rawXml = options?.rawXml ?? false;
    }
 
    /**
@@ -204,7 +232,10 @@ export class HttpClient {
       path: string,
       options?: RequestOptions,
    ): Promise<T> {
-      return this.request<T>(path, { ...options, method: 'GET' });
+      return this.request<T>(path, {
+         ...options,
+         method: 'GET',
+      }) as Promise<T>;
    }
 
    /**
@@ -226,7 +257,7 @@ export class HttpClient {
       path: string,
       body?: Record<string, unknown> | string,
       options?: RequestOptions,
-   ): Promise<T> {
+   ): Promise<T | undefined> {
       return this.request<T>(path, { ...options, method: 'POST', body });
    }
 
@@ -249,7 +280,7 @@ export class HttpClient {
       path: string,
       body?: Record<string, unknown> | string,
       options?: RequestOptions,
-   ): Promise<T> {
+   ): Promise<T | undefined> {
       return this.request<T>(path, { ...options, method: 'PUT', body });
    }
 
@@ -268,17 +299,39 @@ export class HttpClient {
    async delete<T = unknown>(
       path: string,
       options?: RequestOptions,
-   ): Promise<T> {
+   ): Promise<T | undefined> {
       return this.request<T>(path, { ...options, method: 'DELETE' });
+   }
+
+   /**
+    * Makes a request through the normal auth, rate-limit, retry, and error
+    * handling pipeline, but returns the successful response body unparsed.
+    */
+   async requestRawXml(
+      path: string,
+      options: RequestOptions = {},
+   ): Promise<string> {
+      return this.request(path, options, true);
    }
 
    /**
     * Makes an HTTP request with retry logic
     */
+   private request<T>(
+      path: string,
+      options?: RequestOptions,
+      rawXml?: false,
+   ): Promise<T | undefined>;
+   private request(
+      path: string,
+      options: RequestOptions,
+      rawXml: true,
+   ): Promise<string>;
    private async request<T>(
       path: string,
       options: RequestOptions = {},
-   ): Promise<T> {
+      rawXml = false,
+   ): Promise<T | string | undefined> {
       const {
          method = 'GET',
          body,
@@ -291,8 +344,9 @@ export class HttpClient {
 
       let lastError: Error | undefined;
       let unauthorizedRefreshAttempted = false;
+      const retries = method === 'GET' ? maxRetries : 0;
 
-      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      for (let attempt = 0; attempt <= retries; attempt++) {
          try {
             // Wait for rate limiter
             await this.rateLimiter.wait();
@@ -304,6 +358,7 @@ export class HttpClient {
             const requestHeaders: Record<string, string> = {
                ...headers,
             };
+            let dispatchedAccessToken: string | undefined;
 
             const hasExplicitContentType = Object.keys(headers).some(
                (key) => key.toLowerCase() === 'content-type',
@@ -348,7 +403,7 @@ export class HttpClient {
                               '[HttpClient] Token expired, refreshing...',
                            );
                         }
-                        currentTokens = await this.tokenRefreshCallback();
+                        currentTokens = await this.refreshTokens();
                      } else {
                         throw new AuthenticationError(
                            'Access token expired and no refresh callback available.',
@@ -363,6 +418,7 @@ export class HttpClient {
                   }
 
                   requestHeaders.Authorization = `Bearer ${currentTokens.accessToken}`;
+                  dispatchedAccessToken = currentTokens.accessToken;
                }
                // No auth client configured
                else {
@@ -394,11 +450,9 @@ export class HttpClient {
             // Handle rate limiting
             if (response.status === HTTP_STATUS.TOO_MANY_REQUESTS) {
                const retryAfter = response.headers.get('Retry-After');
-               const retrySeconds = retryAfter
-                  ? Number.parseInt(retryAfter, 10)
-                  : 60;
+               const retrySeconds = this.parseRetryAfter(retryAfter);
 
-               if (attempt < maxRetries) {
+               if (attempt < retries) {
                   if (this.debug) {
                      console.log(
                         `[HttpClient] Rate limited, retrying after ${retrySeconds}s`,
@@ -421,6 +475,7 @@ export class HttpClient {
                   !skipAuth &&
                   this.oauth2Client &&
                   this.tokenRefreshCallback &&
+                  method === 'GET' &&
                   !unauthorizedRefreshAttempted
                ) {
                   unauthorizedRefreshAttempted = true;
@@ -431,7 +486,11 @@ export class HttpClient {
                      );
                   }
 
-                  await this.tokenRefreshCallback();
+                  const latestAccessToken =
+                     this.tokenProvider?.()?.accessToken ?? undefined;
+                  if (latestAccessToken === dispatchedAccessToken) {
+                     await this.refreshTokens();
+                  }
                   attempt--;
                   continue;
                }
@@ -459,7 +518,7 @@ export class HttpClient {
                   RETRYABLE_STATUS_CODES.includes(
                      response.status as (typeof RETRYABLE_STATUS_CODES)[number],
                   ) &&
-                  attempt < maxRetries
+                  attempt < retries
                ) {
                   const delay = this.getRetryDelay(attempt);
                   if (this.debug) {
@@ -478,22 +537,47 @@ export class HttpClient {
                );
             }
 
+            if (
+               response.status === HTTP_STATUS.NO_CONTENT &&
+               method !== 'GET' &&
+               !rawXml
+            ) {
+               return undefined;
+            }
+
             // Parse response
             const rawResponse = await response.text();
 
-            // If rawXml mode, return the XML string directly
-            if (this.rawXml) {
+            if (rawXml) {
                if (this.debug) {
                   console.log(
                      `[HttpClient] Raw XML Response (first 500 chars):`,
                      rawResponse.substring(0, 500),
                   );
                }
-               return rawResponse as unknown as T;
+               return rawResponse;
+            }
+
+            if (!rawResponse.trim()) {
+               if (method !== 'GET') {
+                  return undefined;
+               }
+               throw new ParseError(
+                  'Yahoo API returned an empty response',
+                  rawResponse,
+               );
             }
 
             // Parse XML to object
-            const data = parseYahooXML<T>(rawResponse);
+            let data: T;
+            try {
+               data = parseYahooXML<T>(rawResponse);
+            } catch (error) {
+               throw new ParseError(
+                  `Failed to parse Yahoo API response: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                  rawResponse,
+               );
+            }
 
             if (this.debug) {
                console.log(`[HttpClient] Parsed Response:`, data);
@@ -515,7 +599,7 @@ export class HttpClient {
             }
 
             // Retry on network errors
-            if (attempt < maxRetries) {
+            if (attempt < retries) {
                const delay = this.getRetryDelay(attempt);
                if (this.debug) {
                   console.log(
@@ -573,6 +657,39 @@ export class HttpClient {
     * Sleep helper
     */
    private sleep(ms: number): Promise<void> {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+      return this.sleepCallback(ms);
+   }
+
+   private refreshTokens(): Promise<OAuth2Tokens> {
+      const refresh = this.tokenRefreshCallback;
+      if (!refresh) {
+         return Promise.reject(
+            new AuthenticationError('No token refresh callback available.'),
+         );
+      }
+      if (!this.refreshInFlight) {
+         this.refreshInFlight = (async () => {
+            try {
+               return await refresh();
+            } finally {
+               this.refreshInFlight = undefined;
+            }
+         })();
+      }
+      return this.refreshInFlight;
+   }
+
+   private parseRetryAfter(value: string | null): number {
+      if (value && /^\d+$/.test(value.trim())) {
+         const seconds = Number.parseInt(value, 10);
+         return Number.isFinite(seconds) ? seconds : 60;
+      }
+      if (value) {
+         const timestamp = Date.parse(value);
+         if (Number.isFinite(timestamp)) {
+            return Math.max(0, Math.ceil((timestamp - this.now()) / 1000));
+         }
+      }
+      return 60;
    }
 }

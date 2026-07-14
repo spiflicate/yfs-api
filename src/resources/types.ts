@@ -7,7 +7,7 @@ import type {
    TeamKey,
    TransactionKey,
    WaiverClaimKey,
-} from '../domain/common';
+} from '../domain/common.js';
 
 export type TypeLike<T extends string> = T | (string & {});
 

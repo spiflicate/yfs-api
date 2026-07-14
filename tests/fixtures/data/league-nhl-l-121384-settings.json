@@ -1,9 +1,9 @@
 {
-  "leagueKey": "465.l.121384",
-  "leagueId": 121384,
-  "name": "KKUPFL - T4 Jinesjö",
-  "url": "https://hockey.fantasysports.yahoo.com/hockey/121384",
-  "logoUrl": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/a303b55c56917158a5a53985ddeb1816b3651764eb495a487d6078228dd3e4bd.png",
+  "leagueKey": "465.l.90018",
+  "leagueId": 90018,
+  "name": "Synthetic League 001",
+  "url": "https://example.invalid/fantasy/league/465.l.90018",
+  "logoUrl": "https://example.invalid/league-logo/001.png",
   "draftStatus": "postdraft",
   "numTeams": 14,
   "editKey": "2025-11-24",
@@ -36,7 +36,7 @@
     "scoringType": "headpoint",
     "isHighscore": "",
     "invitePermission": "commissioner",
-    "persistentUrl": "https://hockey.fantasysports.yahoo.com/league/2526_t4_jinesjo",
+    "persistentUrl": "https://example.invalid/league/synthetic-league",
     "usesPlayoff": true,
     "hasPlayoffConsolationGames": true,
     "playoffStartWeek": 21,
@@ -60,7 +60,7 @@
     "cantCutList": "none",
     "draftTogether": false,
     "isPubliclyViewable": true,
-    "sendbirdChannelUrl": "2224c03fe59f56d3eacc7db5a1c956a7",
+    "sendbirdChannelUrl": "synthetic-chat-channel",
     "rosterPositions": [
       {
         "position": "C",

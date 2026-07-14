@@ -59,6 +59,28 @@ describe('OAuth2Client', () => {
          client = new OAuth2Client(clientId, clientSecret, redirectUri);
       });
 
+      test('creates unique authorization requests and validates their state', () => {
+         const first = client.createAuthorizationRequest();
+         const second = client.createAuthorizationRequest('fr-fr');
+
+         expect(first.state).not.toBe(second.state);
+         expect(new URL(first.url).searchParams.get('state')).toBe(
+            first.state,
+         );
+         expect(new URL(second.url).searchParams.get('language')).toBe(
+            'fr-fr',
+         );
+         expect(() =>
+            client.validateAuthorizationState(first.state, first.state),
+         ).not.toThrow();
+         expect(() =>
+            client.validateAuthorizationState(first.state, undefined),
+         ).toThrow(AuthenticationError);
+         expect(() =>
+            client.validateAuthorizationState(first.state, second.state),
+         ).toThrow(AuthenticationError);
+      });
+
       test('should generate authorization URL with default language', () => {
          const url = client.getAuthorizationUrl();
 
@@ -190,6 +212,34 @@ describe('OAuth2Client', () => {
          await expect(
             client.exchangeCodeForToken('test-code'),
          ).rejects.toThrow(AuthenticationError);
+      });
+
+      test('passes a timeout signal and retains timeout as the authentication error cause', async () => {
+         const timeout = Object.assign(new Error('timed out'), {
+            name: 'TimeoutError',
+         });
+         const fetchMock = mock((_url: string, options: RequestInit) => {
+            expect(options.signal).toBeInstanceOf(AbortSignal);
+            return Promise.reject(timeout);
+         });
+         global.fetch = fetchMock as any;
+         const timedClient = new OAuth2Client(
+            clientId,
+            clientSecret,
+            redirectUri,
+            25,
+         );
+
+         try {
+            await timedClient.exchangeCodeForToken('code');
+            throw new Error('expected timeout');
+         } catch (error) {
+            expect(error).toBeInstanceOf(AuthenticationError);
+            expect((error as Error).message).toBe(
+               'OAuth token request timed out',
+            );
+            expect((error as Error).cause).toBe(timeout);
+         }
       });
    });
 

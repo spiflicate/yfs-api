@@ -1,0 +1,47 @@
+name: Live Integration
+
+on:
+  workflow_dispatch:
+    inputs:
+      destructive:
+        description: Run destructive mutation probes
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bun run type-check:integration
+      - run: bun run test:integration
+        env:
+          YAHOO_CLIENT_ID: ${{ secrets.YAHOO_CLIENT_ID }}
+          YAHOO_CLIENT_SECRET: ${{ secrets.YAHOO_CLIENT_SECRET }}
+          YAHOO_ACCESS_TOKEN: ${{ secrets.YAHOO_ACCESS_TOKEN }}
+          YAHOO_REFRESH_TOKEN: ${{ secrets.YAHOO_REFRESH_TOKEN }}
+          YAHOO_TOKEN_EXPIRES_AT: ${{ secrets.YAHOO_TOKEN_EXPIRES_AT }}
+      - if: ${{ inputs.destructive }}
+        run: bun run test:integration:destructive
+        env:
+          YAHOO_CLIENT_ID: ${{ secrets.YAHOO_CLIENT_ID }}
+          YAHOO_CLIENT_SECRET: ${{ secrets.YAHOO_CLIENT_SECRET }}
+          YAHOO_ACCESS_TOKEN: ${{ secrets.YAHOO_ACCESS_TOKEN }}
+          YAHOO_REFRESH_TOKEN: ${{ secrets.YAHOO_REFRESH_TOKEN }}
+          YAHOO_TOKEN_EXPIRES_AT: ${{ secrets.YAHOO_TOKEN_EXPIRES_AT }}
+          TEST_LEAGUE_KEY: ${{ secrets.TEST_LEAGUE_KEY }}
+          TEST_TRADER_TEAM_KEY: ${{ secrets.TEST_TRADER_TEAM_KEY }}
+          TEST_TRADEE_TEAM_KEY: ${{ secrets.TEST_TRADEE_TEAM_KEY }}
+          TEST_SENT_PLAYER_KEY: ${{ secrets.TEST_SENT_PLAYER_KEY }}
+          TEST_DROPPED_PLAYER_KEY: ${{ secrets.TEST_DROPPED_PLAYER_KEY }}

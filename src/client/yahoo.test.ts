@@ -141,6 +141,34 @@ describe('YahooFantasyClient', () => {
             'league/423.l.12345',
          );
       });
+
+      test('should expose raw XML without changing typed API construction', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><game><game_key>465</game_key></game></fantasy_content>';
+         const originalFetch = global.fetch;
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         ) as any;
+         const client = new YahooFantasySportsClient({
+            ...config,
+            accessToken: 'synthetic-access',
+            refreshToken: 'synthetic-refresh',
+            expiresAt: Date.now() + 3_600_000,
+         });
+
+         try {
+            const result: string = await client.requestRawXml('/game/465');
+
+            expect(result).toBe(xmlResponse);
+            expect(client.api().game('465').toPath()).toBe('game/465');
+         } finally {
+            global.fetch = originalFetch;
+         }
+      });
    });
 
    describe('getAuthUrl', () => {
@@ -170,6 +198,18 @@ describe('YahooFantasyClient', () => {
          const authUrl = client.getAuthUrl(undefined, 'es-es');
 
          expect(authUrl).toContain('language=es-es');
+      });
+
+      test('forwards generated authorization requests and state validation', () => {
+         const client = new YahooFantasySportsClient(config);
+         const request = client.createAuthorizationRequest();
+
+         expect(new URL(request.url).searchParams.get('state')).toBe(
+            request.state,
+         );
+         expect(() =>
+            client.validateAuthorizationState(request.state, request.state),
+         ).not.toThrow();
       });
    });
 
@@ -357,6 +397,92 @@ describe('YahooFantasyClient', () => {
          if (savedTokens) {
             expect(savedTokens.accessToken).toBe('new-access-token');
          }
+      });
+
+      test('shares automatic and manual refresh and persists once', async () => {
+         let tokenRequests = 0;
+         let release!: () => void;
+         const gate = new Promise<void>((resolve) => {
+            release = resolve;
+         });
+         global.fetch = mock(async (url: string) => {
+            if (url.includes('/get_token')) {
+               tokenRequests++;
+               await gate;
+               return {
+                  ok: true,
+                  json: () =>
+                     Promise.resolve({
+                        access_token: 'renewed-access',
+                        token_type: 'bearer',
+                        expires_in: 3600,
+                        refresh_token: 'renewed-refresh',
+                     }),
+               };
+            }
+            return {
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            };
+         }) as any;
+         let saves = 0;
+         const storage: TokenStorage = {
+            save: () => {
+               saves++;
+            },
+            load: () => null,
+            clear: () => {},
+         };
+         const client = new YahooFantasySportsClient(
+            {
+               ...config,
+               accessToken: 'expired-access',
+               refreshToken: 'available-refresh',
+               expiresAt: 1,
+            },
+            storage,
+         );
+
+         const automatic = client.getHttpClient().get('/resource');
+         const manual = client.refreshToken();
+         await Promise.resolve();
+         release();
+         await Promise.all([automatic, manual]);
+         expect(tokenRequests).toBe(1);
+         expect(saves).toBe(1);
+      });
+
+      test('does not poison later refresh attempts after rejection', async () => {
+         let attempts = 0;
+         global.fetch = mock(() => {
+            attempts++;
+            if (attempts === 1)
+               return Promise.reject(new Error('unavailable'));
+            return Promise.resolve({
+               ok: true,
+               json: () =>
+                  Promise.resolve({
+                     access_token: 'renewed-access',
+                     token_type: 'bearer',
+                     expires_in: 3600,
+                     refresh_token: 'renewed-refresh',
+                  }),
+            });
+         }) as any;
+         const client = new YahooFantasySportsClient({
+            ...config,
+            accessToken: 'expired-access',
+            refreshToken: 'available-refresh',
+            expiresAt: 1,
+         });
+
+         await expect(client.refreshToken()).rejects.toThrow('unavailable');
+         await expect(client.refreshToken()).resolves.toBeUndefined();
+         expect(attempts).toBe(2);
       });
    });
 

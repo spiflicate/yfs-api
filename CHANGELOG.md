@@ -11,33 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All releases earlier than `2.1.0` are deprecated and unsupported.
 - Legacy entries remain below for historical reference only.
 
-## [2.1.0] - 2026-06-01
+## [2.1.0] - 2026-07-13
 
 ### Overview
-Planned stable release for the `2.1+` line. This is the first version documented as the supported public API going forward.
+Stable ESM release of the parent-preserving resource API.
 
 ### Added
-- **Comprehensive Examples:** Added a wide range of examples covering all major API features, including authentication flows, client usage, request builder patterns, and token storage.
-- **Documentation Expansion:** Expanded the API guide with detailed sections on request builder usage, parameter handling, and response typing, along with updated guides for authentication and integration testing.
-- **Test Coverage:** Added comprehensive unit and integration test coverage for all request builder features, client methods, and edge cases.
-- **TypeScript Inference:** Improved TypeScript inference for request builder chains, including better error messages for invalid chaining and parameter usage.
+- OAuth 1.0 and OAuth 2.0 clients and public types at the package root.
+- Normalized DTOs and common Yahoo key/scalar types.
+- OAuth authorization request state generation and validation.
+- Package-root examples for reads, token storage, roster confirmation, and raw XML.
 ### Changed
-- **API Surface Finalization:** Finalized the public API surface for the request builder, including clearer method naming, consistent parameter handling, and more intuitive chaining patterns.
-- **Documentation Baseline:** Updated package documentation to target the `2.1+` API only and removed support framing for pre-`2.1` usage.
-- **Example Organization:** Reorganized examples into a more structured format, with dedicated sections for authentication, client usage, request builder patterns, and token storage.
+- Native Node ESM output uses explicit `.js` relative specifiers and NodeNext declarations.
+- Nested reads preserve parent response hierarchy.
+- The package requires Node.js 18 or newer and no longer declares TypeScript as a peer dependency.
+- Release verification builds, packs, installs, imports, signs OAuth 1.0, and type-checks the exact tarball.
 
 ### Deprecated
 
-- **Pre-2.1 Releases:** All `2.0.0-beta.*`, `2.0.0-beta.0`, and `1.x` releases are deprecated and unsupported.
-- **Old API Guidance:** Legacy documentation and migration framing for pre-`2.1` surfaces are no longer maintained as current usage guidance.
+- All `2.0.0-beta.*` and `1.x` releases are historical and unsupported.
+- Transaction mutation builders/resources are not part of the stable root export surface.
 
 ### Fixed
-- **Edge Case Handling:** Addressed edge cases in request builder chaining and parameter handling to prevent common mistakes and improve error messages.
-- **Test Stability:** Improved test stability and reliability, particularly for integration tests that interact with the live Yahoo API.
+- OAuth 1.0 signing now uses native ESM `node:crypto` imports.
+- Strict integration tests follow selectors, parent hierarchy, expansions, and current OAuth behavior.
+- Token-file detection now uses the asynchronous storage contract.
 
 ### Notes
-- Use `2.1+` for all new integrations.
-- If you are running an older version, upgrade before relying on current docs or opening support requests.
+- Normal integration tests are read-only; destructive probes require a separate manual opt-in.
+- No publication or tag is created by repository release verification.
 
 ## Legacy Releases
 

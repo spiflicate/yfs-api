@@ -1,13 +1,13 @@
 {
-  "teamKey": "465.l.121384.t.14",
-  "teamId": 14,
-  "name": "Third Row Penalty Box",
+  "teamKey": "465.l.90018.t.23",
+  "teamId": 23,
+  "name": "Synthetic Team 037",
   "isOwnedByCurrentLogin": 1,
-  "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+  "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
   "teamLogos": [
     {
       "size": "large",
-      "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+      "url": "https://example.invalid/team-logo/035.png"
     }
   ],
   "waiverPriority": 1,
@@ -24,10 +24,10 @@
   "managers": [
     {
       "managerId": 9001,
-      "nickname": "Manager 001",
-      "guid": "SYNTHETICGUID000000000001",
+      "nickname": "Manager 016",
+      "guid": "SYNTHETICGUID000000000027",
       "isCurrentLogin": 1,
-      "imageUrl": "https://example.invalid/profile/001.png",
+      "imageUrl": "https://example.invalid/profile/004.png",
       "feloScore": 500,
       "feloTier": "bronze"
     }
@@ -42,31 +42,31 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.3",
+      "winnerTeamKey": "465.l.90018.t.25",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 11,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 19,
@@ -74,28 +74,28 @@
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         },
         {
           "statId": 27,
-          "winnerTeamKey": "465.l.121384.t.3"
+          "winnerTeamKey": "465.l.90018.t.25"
         }
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -112,10 +112,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -192,14 +192,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.3",
-          "teamId": 3,
-          "name": "Jullebest",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/3",
+          "teamKey": "465.l.90018.t.25",
+          "teamId": 25,
+          "name": "Synthetic Team 021",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.25",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/76a5ef4f8e5d3351250d3401f84bc36e874acf468e24027475a2a0318b265bbe.jpg"
+              "url": "https://example.invalid/team-logo/027.png"
             }
           ],
           "waiverPriority": 9,
@@ -216,10 +216,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 017",
+              "guid": "SYNTHETICGUID000000000022",
+              "email": "manager-014@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -306,15 +306,15 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.12",
+      "winnerTeamKey": "465.l.90018.t.21",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 11,
@@ -322,44 +322,44 @@
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 19,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         },
         {
           "statId": 27,
-          "winnerTeamKey": "465.l.121384.t.12"
+          "winnerTeamKey": "465.l.90018.t.21"
         }
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -376,10 +376,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -456,14 +456,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.12",
-          "teamId": 12,
-          "name": "Wookies",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/12",
+          "teamKey": "465.l.90018.t.21",
+          "teamId": 21,
+          "name": "Synthetic Team 040",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.21",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-puck-2-png_1721255021429.png"
+              "url": "https://example.invalid/team-logo/007.png"
             }
           ],
           "waiverPriority": 2,
@@ -480,10 +480,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 027",
+              "guid": "SYNTHETICGUID000000000024",
+              "email": "manager-027@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -570,15 +570,15 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.2",
+      "winnerTeamKey": "465.l.90018.t.24",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.2"
+          "winnerTeamKey": "465.l.90018.t.24"
         },
         {
           "statId": 11,
@@ -586,15 +586,15 @@
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.2"
+          "winnerTeamKey": "465.l.90018.t.24"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.2"
+          "winnerTeamKey": "465.l.90018.t.24"
         },
         {
           "statId": 19,
@@ -602,11 +602,11 @@
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.2"
+          "winnerTeamKey": "465.l.90018.t.24"
         },
         {
           "statId": 27,
@@ -615,15 +615,15 @@
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -640,10 +640,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -720,14 +720,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.2",
-          "teamId": 2,
-          "name": "DEZZZ",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/2",
+          "teamKey": "465.l.90018.t.24",
+          "teamId": 24,
+          "name": "Synthetic Team 010",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.24",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-slap-shot-png_1721256412735.png"
+              "url": "https://example.invalid/team-logo/008.png"
             }
           ],
           "waiverPriority": 10,
@@ -744,21 +744,21 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 023",
+              "guid": "SYNTHETICGUID000000000023",
+              "email": "manager-011@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             },
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 021",
+              "guid": "SYNTHETICGUID000000000013",
               "isCommissioner": true,
               "isComanager": true,
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "email": "manager-007@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -845,11 +845,11 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.14",
+      "winnerTeamKey": "465.l.90018.t.23",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 2,
@@ -857,48 +857,48 @@
         },
         {
           "statId": 11,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.5"
+          "winnerTeamKey": "465.l.90018.t.27"
         },
         {
           "statId": 19,
-          "winnerTeamKey": "465.l.121384.t.5"
+          "winnerTeamKey": "465.l.90018.t.27"
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.5"
+          "winnerTeamKey": "465.l.90018.t.27"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 27,
-          "winnerTeamKey": "465.l.121384.t.5"
+          "winnerTeamKey": "465.l.90018.t.27"
         }
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -915,10 +915,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -995,14 +995,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.5",
-          "teamId": 5,
-          "name": "The Flaming Moe’s**",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/5",
+          "teamKey": "465.l.90018.t.27",
+          "teamId": 27,
+          "name": "Synthetic Team 034",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.27",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/ee3b16220dde15e714dd4ccbc1c2a69925de2061f2c59117ac2805afdfb6de77.jpg"
+              "url": "https://example.invalid/team-logo/036.png"
             }
           ],
           "waiverPriority": 7,
@@ -1019,10 +1019,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 026",
+              "guid": "SYNTHETICGUID000000000007",
+              "email": "manager-023@example.invalid",
+              "imageUrl": "https://example.invalid/profile/002.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1109,15 +1109,15 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.14",
+      "winnerTeamKey": "465.l.90018.t.23",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 11,
@@ -1125,44 +1125,44 @@
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.6"
+          "winnerTeamKey": "465.l.90018.t.28"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.6"
+          "winnerTeamKey": "465.l.90018.t.28"
         },
         {
           "statId": 19,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.6"
+          "winnerTeamKey": "465.l.90018.t.28"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 27,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         }
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -1179,10 +1179,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1259,14 +1259,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.6",
-          "teamId": 6,
-          "name": "Giant Boy Detective",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/6",
+          "teamKey": "465.l.90018.t.28",
+          "teamId": 28,
+          "name": "Synthetic Team 014",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.28",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/02ccda7c76de583a03a3c58808e181e0232ec7dbba1c1ddb70764c674ab09826.png"
+              "url": "https://example.invalid/team-logo/012.png"
             }
           ],
           "waiverPriority": 6,
@@ -1283,10 +1283,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 014",
+              "guid": "SYNTHETICGUID000000000009",
+              "email": "manager-015@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1373,15 +1373,15 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.11",
+      "winnerTeamKey": "465.l.90018.t.20",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 11,
@@ -1389,27 +1389,27 @@
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 19,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.11"
+          "winnerTeamKey": "465.l.90018.t.20"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 27,
@@ -1418,15 +1418,15 @@
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -1443,10 +1443,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1523,14 +1523,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.11",
-          "teamId": 11,
-          "name": "Piggy Puckers",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/11",
+          "teamKey": "465.l.90018.t.20",
+          "teamId": 20,
+          "name": "Synthetic Team 028",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.20",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-hockey-player-emoji-png_1721256348578.png"
+              "url": "https://example.invalid/team-logo/004.png"
             }
           ],
           "waiverPriority": 13,
@@ -1547,10 +1547,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 006",
+              "guid": "SYNTHETICGUID000000000021",
+              "email": "manager-005@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1637,15 +1637,15 @@
       "isConsolation": false,
       "isMatchupOfTheWeek": false,
       "isTied": false,
-      "winnerTeamKey": "465.l.121384.t.14",
+      "winnerTeamKey": "465.l.90018.t.23",
       "statWinners": [
         {
           "statId": 1,
-          "winnerTeamKey": "465.l.121384.t.1"
+          "winnerTeamKey": "465.l.90018.t.18"
         },
         {
           "statId": 2,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 11,
@@ -1653,44 +1653,44 @@
         },
         {
           "statId": 14,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 31,
-          "winnerTeamKey": "465.l.121384.t.1"
+          "winnerTeamKey": "465.l.90018.t.18"
         },
         {
           "statId": 32,
-          "winnerTeamKey": "465.l.121384.t.1"
+          "winnerTeamKey": "465.l.90018.t.18"
         },
         {
           "statId": 19,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 22,
-          "winnerTeamKey": "465.l.121384.t.1"
+          "winnerTeamKey": "465.l.90018.t.18"
         },
         {
           "statId": 25,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         },
         {
           "statId": 27,
-          "winnerTeamKey": "465.l.121384.t.14"
+          "winnerTeamKey": "465.l.90018.t.23"
         }
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -1707,10 +1707,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1787,14 +1787,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.1",
-          "teamId": 1,
-          "name": "There's a Kraken My Ass",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/1",
+          "teamKey": "465.l.90018.t.18",
+          "teamId": 18,
+          "name": "Synthetic Team 036",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.18",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/9badc4982d9fa69aa24ab7c113b5cd26d12b74fc3537dd4cff3e8b01187af616.png"
+              "url": "https://example.invalid/team-logo/033.png"
             }
           ],
           "waiverPriority": 11,
@@ -1811,10 +1811,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 020",
+              "guid": "SYNTHETICGUID000000000011",
+              "email": "manager-021@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -1944,15 +1944,15 @@
       ],
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -1969,10 +1969,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2049,14 +2049,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.10",
-          "teamId": 10,
-          "name": "eddtillimdead",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/10",
+          "teamKey": "465.l.90018.t.19",
+          "teamId": 19,
+          "name": "Synthetic Team 013",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.19",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-7-png_1721253962065.png"
+              "url": "https://example.invalid/team-logo/003.png"
             }
           ],
           "waiverPriority": 14,
@@ -2073,10 +2073,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 008",
+              "guid": "SYNTHETICGUID000000000014",
+              "email": "manager-006@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2164,15 +2164,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -2189,10 +2189,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2269,14 +2269,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.13",
-          "teamId": 13,
-          "name": "TBay Flyers",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/13",
+          "teamKey": "465.l.90018.t.22",
+          "teamId": 22,
+          "name": "Synthetic Team 032",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.22",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/898337d743d9928a1ac201de46e39e5a4270ad210e332edf51f15ffda9441c78.png"
+              "url": "https://example.invalid/team-logo/029.png"
             }
           ],
           "waiverPriority": 12,
@@ -2293,10 +2293,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 024",
+              "guid": "SYNTHETICGUID000000000003",
+              "email": "manager-017@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2384,15 +2384,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -2409,10 +2409,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2489,14 +2489,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.7",
-          "teamId": 7,
-          "name": "Doc (Aires Tavares)",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/7",
+          "teamKey": "465.l.90018.t.29",
+          "teamId": 29,
+          "name": "Synthetic Team 011",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.29",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ba/images/c8d9f3c9bfc4057805c307f8d3a5dbbb3c85c0ac69daca19a9e7e4204943280d.png"
+              "url": "https://example.invalid/team-logo/001.png"
             }
           ],
           "waiverPriority": 5,
@@ -2513,10 +2513,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 009",
+              "guid": "SYNTHETICGUID000000000004",
+              "email": "manager-008@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2604,15 +2604,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -2629,10 +2629,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2709,14 +2709,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.8",
-          "teamId": 8,
-          "name": "ALZ",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/8",
+          "teamKey": "465.l.90018.t.30",
+          "teamId": 30,
+          "name": "Synthetic Team 004",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.30",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-hockey-trophy-png_1721254328590.png"
+              "url": "https://example.invalid/team-logo/005.png"
             }
           ],
           "waiverPriority": 4,
@@ -2733,10 +2733,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 002",
+              "guid": "SYNTHETICGUID000000000008",
+              "email": "manager-025@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2824,15 +2824,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -2849,10 +2849,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -2929,14 +2929,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.4",
-          "teamId": 4,
-          "name": "Bear Force One",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/4",
+          "teamKey": "465.l.90018.t.26",
+          "teamId": 26,
+          "name": "Synthetic Team 005",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.26",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/5260deadb8a8a7b6e905474324c4e8301bcecfba002d028d1d6f496e9ac4a0ae.jpg"
+              "url": "https://example.invalid/team-logo/020.png"
             }
           ],
           "waiverPriority": 8,
@@ -2953,10 +2953,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 013",
+              "guid": "SYNTHETICGUID000000000025",
+              "email": "manager-013@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3044,15 +3044,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -3069,10 +3069,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3149,14 +3149,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.9",
-          "teamId": 9,
-          "name": "Club de Sausage",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/9",
+          "teamKey": "465.l.90018.t.31",
+          "teamId": 31,
+          "name": "Synthetic Team 006",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.31",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/66fc146631cfbb9cdd7e9cae532f61bd9f3e265d75dbf81955d5d842db36455c.jpg"
+              "url": "https://example.invalid/team-logo/023.png"
             }
           ],
           "waiverPriority": 3,
@@ -3173,10 +3173,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 015",
+              "guid": "SYNTHETICGUID000000000006",
+              "email": "manager-018@example.invalid",
+              "imageUrl": "https://example.invalid/profile/005.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3264,15 +3264,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -3289,10 +3289,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3369,14 +3369,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.3",
-          "teamId": 3,
-          "name": "Jullebest",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/3",
+          "teamKey": "465.l.90018.t.25",
+          "teamId": 25,
+          "name": "Synthetic Team 021",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.25",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/76a5ef4f8e5d3351250d3401f84bc36e874acf468e24027475a2a0318b265bbe.jpg"
+              "url": "https://example.invalid/team-logo/027.png"
             }
           ],
           "waiverPriority": 9,
@@ -3393,10 +3393,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 017",
+              "guid": "SYNTHETICGUID000000000022",
+              "email": "manager-014@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3484,15 +3484,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -3509,10 +3509,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3589,14 +3589,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.12",
-          "teamId": 12,
-          "name": "Wookies",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/12",
+          "teamKey": "465.l.90018.t.21",
+          "teamId": 21,
+          "name": "Synthetic Team 040",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.21",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-puck-2-png_1721255021429.png"
+              "url": "https://example.invalid/team-logo/007.png"
             }
           ],
           "waiverPriority": 2,
@@ -3613,10 +3613,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 027",
+              "guid": "SYNTHETICGUID000000000024",
+              "email": "manager-027@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3704,15 +3704,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -3729,10 +3729,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3809,14 +3809,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.2",
-          "teamId": 2,
-          "name": "DEZZZ",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/2",
+          "teamKey": "465.l.90018.t.24",
+          "teamId": 24,
+          "name": "Synthetic Team 010",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.24",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-slap-shot-png_1721256412735.png"
+              "url": "https://example.invalid/team-logo/008.png"
             }
           ],
           "waiverPriority": 10,
@@ -3833,21 +3833,21 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 023",
+              "guid": "SYNTHETICGUID000000000023",
+              "email": "manager-011@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             },
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 021",
+              "guid": "SYNTHETICGUID000000000013",
               "isCommissioner": true,
               "isComanager": true,
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "email": "manager-007@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -3935,15 +3935,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -3960,10 +3960,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4040,14 +4040,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.5",
-          "teamId": 5,
-          "name": "The Flaming Moe’s**",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/5",
+          "teamKey": "465.l.90018.t.27",
+          "teamId": 27,
+          "name": "Synthetic Team 034",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.27",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/ee3b16220dde15e714dd4ccbc1c2a69925de2061f2c59117ac2805afdfb6de77.jpg"
+              "url": "https://example.invalid/team-logo/036.png"
             }
           ],
           "waiverPriority": 7,
@@ -4064,10 +4064,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 026",
+              "guid": "SYNTHETICGUID000000000007",
+              "email": "manager-023@example.invalid",
+              "imageUrl": "https://example.invalid/profile/002.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4155,15 +4155,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -4180,10 +4180,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4260,14 +4260,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.6",
-          "teamId": 6,
-          "name": "Giant Boy Detective",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/6",
+          "teamKey": "465.l.90018.t.28",
+          "teamId": 28,
+          "name": "Synthetic Team 014",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.28",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/02ccda7c76de583a03a3c58808e181e0232ec7dbba1c1ddb70764c674ab09826.png"
+              "url": "https://example.invalid/team-logo/012.png"
             }
           ],
           "waiverPriority": 6,
@@ -4284,10 +4284,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 014",
+              "guid": "SYNTHETICGUID000000000009",
+              "email": "manager-015@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4375,15 +4375,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -4400,10 +4400,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4480,14 +4480,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.11",
-          "teamId": 11,
-          "name": "Piggy Puckers",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/11",
+          "teamKey": "465.l.90018.t.20",
+          "teamId": 20,
+          "name": "Synthetic Team 028",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.20",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://s.yimg.com/ep/cx/blendr/v2/image-hockey-player-emoji-png_1721256348578.png"
+              "url": "https://example.invalid/team-logo/004.png"
             }
           ],
           "waiverPriority": 13,
@@ -4504,10 +4504,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 006",
+              "guid": "SYNTHETICGUID000000000021",
+              "email": "manager-005@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4595,15 +4595,15 @@
       "isMatchupOfTheWeek": false,
       "teams": [
         {
-          "teamKey": "465.l.121384.t.14",
-          "teamId": 14,
-          "name": "Third Row Penalty Box",
+          "teamKey": "465.l.90018.t.23",
+          "teamId": 23,
+          "name": "Synthetic Team 037",
           "isOwnedByCurrentLogin": 1,
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/14",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.23",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/c30cd971216ed969adbe18393870d2be5e4c211d65127287b953c214f1e7203f.png"
+              "url": "https://example.invalid/team-logo/035.png"
             }
           ],
           "waiverPriority": 1,
@@ -4620,10 +4620,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
+              "nickname": "Manager 016",
+              "guid": "SYNTHETICGUID000000000027",
               "isCurrentLogin": 1,
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "imageUrl": "https://example.invalid/profile/004.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }
@@ -4700,14 +4700,14 @@
           }
         },
         {
-          "teamKey": "465.l.121384.t.1",
-          "teamId": 1,
-          "name": "There's a Kraken My Ass",
-          "url": "https://hockey.fantasysports.yahoo.com/hockey/121384/1",
+          "teamKey": "465.l.90018.t.18",
+          "teamId": 18,
+          "name": "Synthetic Team 036",
+          "url": "https://example.invalid/fantasy/team/465.l.90018.t.18",
           "teamLogos": [
             {
               "size": "large",
-              "url": "https://yahoofantasysports-res.cloudinary.com/image/upload/t_s192sq/fantasy-logos/9badc4982d9fa69aa24ab7c113b5cd26d12b74fc3537dd4cff3e8b01187af616.png"
+              "url": "https://example.invalid/team-logo/033.png"
             }
           ],
           "waiverPriority": 11,
@@ -4724,10 +4724,10 @@
           "managers": [
             {
               "managerId": 9001,
-              "nickname": "Manager 001",
-              "guid": "SYNTHETICGUID000000000001",
-              "email": "manager@example.invalid",
-              "imageUrl": "https://example.invalid/profile/001.png",
+              "nickname": "Manager 020",
+              "guid": "SYNTHETICGUID000000000011",
+              "email": "manager-021@example.invalid",
+              "imageUrl": "https://example.invalid/profile/007.png",
               "feloScore": 500,
               "feloTier": "bronze"
             }

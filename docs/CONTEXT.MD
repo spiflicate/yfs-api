@@ -1,3 +1,5 @@
+# Domain Context
+
 ## Purpose
 
 This document defines a shared vocabulary for developers and domain experts working with the Yahoo Fantasy Sports API, including fantasy objects, API resources, and OAuth-based authentication. It is meant to standardize how you talk about games, leagues, teams, players, and how clients authenticate and retrieve data over XML or JSON.

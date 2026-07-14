@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http';
+import type { HttpClient as Transport } from '../client/http.js';
 
 type ResourceName = 'game' | 'league' | 'team' | 'player' | 'transaction';
 
@@ -10,9 +10,12 @@ type CollectionName =
    | 'players'
    | 'transactions';
 
-type SubResourceName = 'roster' | 'stats' | 'matchups';
-
-type ResponseScopeName = ResourceName | CollectionName | SubResourceName;
+type SubResourceName =
+   | 'roster'
+   | 'stats'
+   | 'matchups'
+   | 'ownership'
+   | 'percent_owned';
 
 type KeysParam<T extends string> = T extends `${infer Stem}s`
    ? `${Stem}_keys`
@@ -60,8 +63,6 @@ export type SubResourceParams<
  */
 export interface RequestState {
    segments: string[];
-   parts?: Array<ResourceParams | CollectionParams | SubResourceParams>;
-   responseScope?: ResponseScopeName[];
 }
 
 type Scalar = string | number | boolean;
@@ -76,6 +77,8 @@ type HttpMethod = 'get' | 'post' | 'put' | 'delete';
  */
 export abstract class Resource<
    TParams extends ResourceParams | CollectionParams | SubResourceParams,
+   TResponse,
+   TWriteResponse = never,
 > {
    protected constructor(
       protected readonly _transport: Transport,
@@ -89,7 +92,7 @@ export abstract class Resource<
             transport: Transport,
             state: RequestState,
             params: TParams,
-         ) => Resource<TParams>
+         ) => Resource<TParams, TResponse, TWriteResponse>
       )(this._transport, this._state, params) as this;
    }
 
@@ -118,81 +121,68 @@ export abstract class Resource<
 
    protected createChildState(): RequestState {
       return {
-         ...this._state,
          segments: [...this._state.segments, this.serialize()],
-         responseScope: this.getResponseScope(),
       };
    }
 
-   protected getResponseScope(): ResponseScopeName[] {
-      return [...(this._state.responseScope ?? []), this._params.name];
+   async get(): Promise<TResponse> {
+      return this.performRequest<TResponse>('get');
    }
 
-   protected resolveResponseScope<TResult>(response: unknown): TResult {
-      const responseScope = this.getResponseScope();
-      const terminalScope = responseScope.at(-1);
-
-      if (!terminalScope) {
-         return response as TResult;
-      }
-
-      const resolved = findScopedValue(response, responseScope);
-
-      if (resolved === undefined) {
-         return response as TResult;
-      }
-
-      return {
-         [terminalScope]: resolved,
-      } as TResult;
+   protected async post(
+      body?: Record<string, unknown> | string,
+   ): Promise<TWriteResponse | undefined> {
+      return this.performRequest<TWriteResponse>('post', body);
    }
 
-   async get(): Promise<unknown> {
-      return this.performRequest('get');
+   protected async put(
+      body?: Record<string, unknown> | string,
+   ): Promise<TWriteResponse | undefined> {
+      return this.performRequest<TWriteResponse>('put', body);
    }
 
-   async post(body?: Record<string, unknown> | string): Promise<unknown> {
-      return this.performRequest('post', body);
+   protected async delete(): Promise<TWriteResponse | undefined> {
+      return this.performRequest<TWriteResponse>('delete');
    }
 
-   async put(body?: Record<string, unknown> | string): Promise<unknown> {
-      return this.performRequest('put', body);
-   }
-
-   async delete(): Promise<unknown> {
-      return this.performRequest('delete');
-   }
-
+   protected request<TResult>(
+      method: 'get',
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult>;
+   protected request<TResult>(
+      method: Exclude<HttpMethod, 'get'>,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult | undefined>;
    protected async request<TResult>(
       method: HttpMethod,
       body?: Record<string, unknown> | string,
-   ): Promise<TResult> {
+   ): Promise<TResult | undefined> {
       return this.performRequest<TResult>(method, body);
    }
 
+   private performRequest<TResult>(
+      method: 'get',
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult>;
+   private performRequest<TResult>(
+      method: HttpMethod,
+      body?: Record<string, unknown> | string,
+   ): Promise<TResult | undefined>;
    private async performRequest<TResult>(
       method: HttpMethod,
       body?: Record<string, unknown> | string,
-   ): Promise<TResult> {
+   ): Promise<TResult | undefined> {
       const path = this.toPath();
 
       switch (method) {
          case 'get':
-            return this.resolveResponseScope<TResult>(
-               await this._transport.get(path),
-            );
+            return this._transport.get<TResult>(path);
          case 'post':
-            return this.resolveResponseScope<TResult>(
-               await this._transport.post(path, body),
-            );
+            return this._transport.post<TResult>(path, body);
          case 'put':
-            return this.resolveResponseScope<TResult>(
-               await this._transport.put(path, body),
-            );
+            return this._transport.put<TResult>(path, body);
          case 'delete':
-            return this.resolveResponseScope<TResult>(
-               await this._transport.delete(path),
-            );
+            return this._transport.delete<TResult>(path);
       }
    }
 
@@ -248,53 +238,4 @@ export abstract class Resource<
 
       return `;${enc(key)}=${enc(value)}`;
    }
-}
-
-function findScopedValue(
-   value: unknown,
-   scope: readonly string[],
-): unknown {
-   if (scope.length === 0) {
-      return value;
-   }
-
-   if (Array.isArray(value)) {
-      for (const item of value) {
-         const resolved = findScopedValue(item, scope);
-         if (resolved !== undefined) {
-            return resolved;
-         }
-      }
-      return undefined;
-   }
-
-   if (!isRecord(value)) {
-      return undefined;
-   }
-
-   const [current, ...rest] = scope;
-
-   if (!current) {
-      return value;
-   }
-
-   if (current in value) {
-      const resolved = findScopedValue(value[current], rest);
-      if (resolved !== undefined) {
-         return resolved;
-      }
-   }
-
-   for (const nestedValue of Object.values(value)) {
-      const resolved = findScopedValue(nestedValue, scope);
-      if (resolved !== undefined) {
-         return resolved;
-      }
-   }
-
-   return undefined;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-   return typeof value === 'object' && value !== null;
 }

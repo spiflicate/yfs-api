@@ -4,6 +4,7 @@ node_modules
 # output
 out
 dist
+.package-consumer
 *.tgz
 
 # code coverage
@@ -37,7 +38,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .env
 .env.test
 .oauth2-tokens.json
+.oauth2-tokens-server.json
 .test-tokens.json
+.tokens.json
 research/.oauth2-tokens.json
 research/tmp/*.json
 research/tmp/**/*.json

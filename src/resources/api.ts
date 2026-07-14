@@ -4,16 +4,11 @@ import { LeagueResource, LeaguesCollection } from './league.js';
 import { PlayerResource, PlayersCollection } from './player.js';
 import type { RequestState } from './resource.js';
 import { TeamResource, TeamsCollection } from './team.js';
-import {
-   TransactionResource,
-   TransactionsCollection,
-} from './transaction.js';
 import type {
    GameKeyLike,
    LeagueKeyLike,
    PlayerKeyLike,
    TeamKeyLike,
-   TransactionKeyLike,
 } from './types.js';
 import { UsersCollection } from './user.js';
 
@@ -38,13 +33,16 @@ export class ApiRoot {
       return GameResource.create(this.transport, createRootState(), key);
    }
 
-   games(...keys: GameKeyLike[]): GamesCollection;
-   games(keys: GameKeyLike[]): GamesCollection;
-   games(...keys: GameKeyLike[] | GameKeyLike[][]): GamesCollection {
+   games(key: GameKeyLike, ...keys: GameKeyLike[]): GamesCollection;
+   games(keys: readonly [GameKeyLike, ...GameKeyLike[]]): GamesCollection;
+   games(
+      keyOrKeys?: GameKeyLike | readonly GameKeyLike[],
+      ...keys: GameKeyLike[]
+   ): GamesCollection {
       return GamesCollection.create(
          this.transport,
          createRootState(),
-         keys.flat(),
+         requireRootKeys('game', keyOrKeys, keys),
       );
    }
 
@@ -52,15 +50,18 @@ export class ApiRoot {
       return LeagueResource.create(this.transport, createRootState(), key);
    }
 
-   leagues(...keys: LeagueKeyLike[]): LeaguesCollection;
-   leagues(keys: LeagueKeyLike[]): LeaguesCollection;
+   leagues(key: LeagueKeyLike, ...keys: LeagueKeyLike[]): LeaguesCollection;
    leagues(
-      ...keys: LeagueKeyLike[] | LeagueKeyLike[][]
+      keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]],
+   ): LeaguesCollection;
+   leagues(
+      keyOrKeys?: LeagueKeyLike | readonly LeagueKeyLike[],
+      ...keys: LeagueKeyLike[]
    ): LeaguesCollection {
       return LeaguesCollection.create(
          this.transport,
          createRootState(),
-         keys.flat(),
+         requireRootKeys('league', keyOrKeys, keys),
       );
    }
 
@@ -68,13 +69,16 @@ export class ApiRoot {
       return TeamResource.create(this.transport, createRootState(), key);
    }
 
-   teams(...keys: TeamKeyLike[]): TeamsCollection;
-   teams(keys: TeamKeyLike[]): TeamsCollection;
-   teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
+   teams(key: TeamKeyLike, ...keys: TeamKeyLike[]): TeamsCollection;
+   teams(keys: readonly [TeamKeyLike, ...TeamKeyLike[]]): TeamsCollection;
+   teams(
+      keyOrKeys?: TeamKeyLike | readonly TeamKeyLike[],
+      ...keys: TeamKeyLike[]
+   ): TeamsCollection {
       return TeamsCollection.create(
          this.transport,
          createRootState(),
-         keys.flat(),
+         requireRootKeys('team', keyOrKeys, keys),
       );
    }
 
@@ -82,37 +86,38 @@ export class ApiRoot {
       return PlayerResource.create(this.transport, createRootState(), key);
    }
 
-   players(...keys: PlayerKeyLike[]): PlayersCollection;
-   players(keys: PlayerKeyLike[]): PlayersCollection;
+   players(key: PlayerKeyLike, ...keys: PlayerKeyLike[]): PlayersCollection;
    players(
-      ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
+      keys: readonly [PlayerKeyLike, ...PlayerKeyLike[]],
+   ): PlayersCollection;
+   players(
+      keyOrKeys?: PlayerKeyLike | readonly PlayerKeyLike[],
+      ...keys: PlayerKeyLike[]
    ): PlayersCollection {
       return PlayersCollection.create(
          this.transport,
          createRootState(),
-         keys.flat(),
+         requireRootKeys('player', keyOrKeys, keys),
       );
+   }
+}
+
+function requireRootKeys<T>(
+   resource: string,
+   keyOrKeys: T | readonly T[] | undefined,
+   remainingKeys: readonly T[],
+): [T, ...T[]] {
+   const keys = Array.isArray(keyOrKeys)
+      ? [...keyOrKeys]
+      : keyOrKeys === undefined
+        ? []
+        : [keyOrKeys, ...remainingKeys];
+
+   if (keys.length === 0) {
+      throw new TypeError(`At least one ${resource} key is required.`);
    }
 
-   transaction(key: TransactionKeyLike): TransactionResource {
-      return TransactionResource.create(
-         this.transport,
-         createRootState(),
-         key,
-      );
-   }
-
-   transactions(...keys: TransactionKeyLike[]): TransactionsCollection;
-   transactions(keys: TransactionKeyLike[]): TransactionsCollection;
-   transactions(
-      ...keys: TransactionKeyLike[] | TransactionKeyLike[][]
-   ): TransactionsCollection {
-      return TransactionsCollection.create(
-         this.transport,
-         createRootState(),
-         keys.flat(),
-      );
-   }
+   return keys as [T, ...T[]];
 }
 
 export function createApi(transport: Transport): ApiRoot {

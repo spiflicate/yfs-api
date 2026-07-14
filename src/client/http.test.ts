@@ -18,6 +18,7 @@ import {
    AuthenticationError,
    NetworkError,
    NotFoundError,
+   ParseError,
    RateLimitError,
    YahooApiError,
 } from './errors.js';
@@ -122,6 +123,26 @@ describe('HttpClient', () => {
    });
 
    describe('get', () => {
+      test('should expose raw XML through a separately typed request path', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><data>raw</data></fantasy_content>';
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         ) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         const result: string = await client.requestRawXml('/test/path');
+
+         expect(result).toBe(xmlResponse);
+      });
+
       test('should make successful GET request', async () => {
          const xmlResponse =
             '<?xml version="1.0"?><fantasy_content><data>test-data</data></fantasy_content>';
@@ -732,9 +753,249 @@ describe('HttpClient', () => {
          expect(refreshCalls).toBe(1);
          expect(fetchMock).toHaveBeenCalledTimes(2);
       });
+
+      test('shares one refresh across concurrent expired requests', async () => {
+         const expired = { ...tokens, expiresAt: 0 };
+         const renewed = {
+            ...tokens,
+            accessToken: 'renewed',
+            expiresAt: Date.now() + 3_600_000,
+         };
+         let current = expired;
+         let release!: () => void;
+         const gate = new Promise<void>((resolve) => {
+            release = resolve;
+         });
+         const refresh = mock(async () => {
+            await gate;
+            current = renewed;
+            return renewed;
+         });
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         ) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            () => current,
+            refresh,
+         );
+
+         const requests = [client.get('/one'), client.get('/two')];
+         await Promise.resolve();
+         release();
+         await Promise.all(requests);
+         expect(refresh).toHaveBeenCalledTimes(1);
+      });
+
+      test('shares same-token 401 refresh and bypasses refresh for a stale 401', async () => {
+         const renewed = {
+            ...tokens,
+            accessToken: 'renewed',
+            expiresAt: Date.now() + 3_600_000,
+         };
+         let current = tokens;
+         let firstResponse!: (value: unknown) => void;
+         let dispatched!: () => void;
+         const didDispatch = new Promise<void>((resolve) => {
+            dispatched = resolve;
+         });
+         const first = new Promise((resolve) => {
+            firstResponse = resolve;
+         });
+         let calls = 0;
+         global.fetch = mock(() => {
+            calls++;
+            if (calls === 1) {
+               dispatched();
+               return first;
+            }
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            });
+         }) as any;
+         const refresh = mock(async () => renewed);
+         const client = new HttpClient(
+            oauth2Client,
+            () => current,
+            refresh,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         const request = client.get('/stale');
+         await didDispatch;
+         current = renewed;
+         firstResponse({
+            ok: false,
+            status: HTTP_STATUS.UNAUTHORIZED,
+            text: () => Promise.resolve('expired'),
+         });
+         await request;
+         expect(refresh).not.toHaveBeenCalled();
+         expect(calls).toBe(2);
+      });
+
+      test('joins one refresh for concurrent same-token GET 401 responses', async () => {
+         const renewed = {
+            ...tokens,
+            accessToken: 'renewed',
+            expiresAt: Date.now() + 3_600_000,
+         };
+         let current = tokens;
+         let releaseResponses!: () => void;
+         const responseGate = new Promise<void>((resolve) => {
+            releaseResponses = resolve;
+         });
+         let initialRequests = 0;
+         let bothDispatched!: () => void;
+         const dispatched = new Promise<void>((resolve) => {
+            bothDispatched = resolve;
+         });
+         global.fetch = mock(async (_url: string, options: RequestInit) => {
+            const authorization = (
+               options.headers as Record<string, string>
+            ).Authorization;
+            if (authorization?.includes(tokens.accessToken)) {
+               initialRequests++;
+               if (initialRequests === 2) bothDispatched();
+               await responseGate;
+               return {
+                  ok: false,
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  text: () => Promise.resolve('expired'),
+               };
+            }
+            return {
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            };
+         }) as any;
+         let releaseRefresh!: () => void;
+         const refreshGate = new Promise<void>((resolve) => {
+            releaseRefresh = resolve;
+         });
+         const refresh = mock(async () => {
+            await refreshGate;
+            current = renewed;
+            return renewed;
+         });
+         const client = new HttpClient(
+            oauth2Client,
+            () => current,
+            refresh,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         const requests = [client.get('/one'), client.get('/two')];
+         await dispatched;
+         releaseResponses();
+         await Promise.resolve();
+         releaseRefresh();
+         await Promise.all(requests);
+         expect(refresh).toHaveBeenCalledTimes(1);
+      });
+
+      test('clears a rejected refresh so a later request can recover', async () => {
+         const expired = { ...tokens, expiresAt: 0 };
+         const renewed = { ...tokens, expiresAt: Date.now() + 3_600_000 };
+         let current = expired;
+         let refreshCalls = 0;
+         const refresh = async () => {
+            refreshCalls++;
+            if (refreshCalls === 1) throw new Error('refresh failed');
+            current = renewed;
+            return renewed;
+         };
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            }),
+         ) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            () => current,
+            refresh,
+            {
+               maxRetries: 0,
+            },
+         );
+
+         await expect(client.get('/first')).rejects.toBeInstanceOf(
+            NetworkError,
+         );
+         await expect(client.get('/second')).resolves.toHaveProperty(
+            'result',
+         );
+         expect(refreshCalls).toBe(2);
+      });
    });
 
    describe('retry logic', () => {
+      for (const method of ['post', 'put', 'delete'] as const) {
+         for (const failure of [
+            'network',
+            'status',
+            'unauthorized',
+         ] as const) {
+            test(`${method.toUpperCase()} is not replayed after ${failure}`, async () => {
+               const fetchMock = mock(() => {
+                  if (failure === 'network') {
+                     return Promise.reject(new Error('disconnected'));
+                  }
+                  return Promise.resolve({
+                     ok: false,
+                     status:
+                        failure === 'status'
+                           ? HTTP_STATUS.INTERNAL_SERVER_ERROR
+                           : HTTP_STATUS.UNAUTHORIZED,
+                     statusText: 'failed',
+                     text: () => Promise.resolve('failed'),
+                  });
+               });
+               global.fetch = fetchMock as any;
+               const refresh = mock(async () => tokens);
+               const client = new HttpClient(
+                  oauth2Client,
+                  createTokenProvider(tokens),
+                  refresh,
+                  { maxRetries: 2, sleep: async () => {} },
+               );
+
+               const request =
+                  method === 'delete'
+                     ? client.delete('/test/path')
+                     : client[method]('/test/path', {});
+               await expect(request).rejects.toBeInstanceOf(Error);
+               expect(fetchMock).toHaveBeenCalledTimes(1);
+               expect(refresh).not.toHaveBeenCalled();
+            });
+         }
+      }
+
       test('should retry on retryable status codes', async () => {
          let attempts = 0;
          const fetchMock = mock(() => {
@@ -763,6 +1024,7 @@ describe('HttpClient', () => {
             undefined,
             {
                maxRetries: 1,
+               sleep: async () => {},
             },
          );
 
@@ -803,6 +1065,7 @@ describe('HttpClient', () => {
             undefined,
             {
                maxRetries: 1,
+               sleep: async () => {},
             },
          );
 
@@ -827,6 +1090,7 @@ describe('HttpClient', () => {
             undefined,
             {
                maxRetries: 2,
+               sleep: async () => {},
             },
          );
 
@@ -860,6 +1124,7 @@ describe('HttpClient', () => {
             undefined,
             {
                maxRetries: 1,
+               sleep: async () => {},
             },
          );
 
@@ -988,5 +1253,153 @@ describe('HttpClient', () => {
 
          expect(fetchMock.mock.calls?.length).toBe(3);
       });
+
+      test('serializes more than 40 concurrent admissions within the configured window', async () => {
+         let now = 0;
+         const admittedAt: number[] = [];
+         global.fetch = mock(() => {
+            admittedAt.push(now);
+            return Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () =>
+                  Promise.resolve(
+                     '<fantasy_content><result>ok</result></fantasy_content>',
+                  ),
+            });
+         }) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+            undefined,
+            {
+               now: () => now,
+               sleep: async (ms) => {
+                  now += ms;
+               },
+            },
+         );
+
+         await Promise.all(
+            Array.from({ length: 45 }, (_, index) =>
+               client.get(`/test/path${index}`),
+            ),
+         );
+
+         for (const admitted of admittedAt) {
+            expect(
+               admittedAt.filter(
+                  (timestamp) =>
+                     timestamp <= admitted && timestamp > admitted - 1000,
+               ).length,
+            ).toBeLessThanOrEqual(20);
+         }
+      });
+   });
+
+   describe('response semantics', () => {
+      test('wraps malformed typed XML in ParseError without refetching', async () => {
+         const fetchMock = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve('<not-yahoo />'),
+            }),
+         );
+         global.fetch = fetchMock as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         await expect(client.get('/test/path')).rejects.toBeInstanceOf(
+            ParseError,
+         );
+         expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+
+      test('returns malformed and empty raw XML unchanged', async () => {
+         const bodies = ['<not-yahoo />', ''];
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(bodies.shift()),
+            }),
+         ) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         expect(await client.requestRawXml('/malformed')).toBe(
+            '<not-yahoo />',
+         );
+         expect(await client.requestRawXml('/empty')).toBe('');
+      });
+
+      test('returns undefined for empty write successes and rejects empty typed GET', async () => {
+         const responses = [
+            { status: 204, body: '' },
+            { status: 200, body: '  \n ' },
+            { status: 200, body: '' },
+         ];
+         global.fetch = mock(() => {
+            const response = responses.shift();
+            if (!response) throw new Error('Unexpected fetch');
+            return Promise.resolve({
+               ok: true,
+               status: response.status,
+               text: () => Promise.resolve(response.body),
+            });
+         }) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         expect(await client.post('/post')).toBeUndefined();
+         expect(await client.put('/put')).toBeUndefined();
+         await expect(client.get('/get')).rejects.toBeInstanceOf(
+            ParseError,
+         );
+      });
+   });
+
+   describe('Retry-After', () => {
+      for (const [label, header, expected] of [
+         ['future date', 'Thu, 01 Jan 1970 00:00:02 GMT', 2],
+         ['past date', 'Wed, 31 Dec 1969 23:59:59 GMT', 0],
+         ['invalid value', 'eventually', 60],
+         ['missing value', null, 60],
+      ] as const) {
+         test(`normalizes ${label}`, async () => {
+            global.fetch = mock(() =>
+               Promise.resolve({
+                  ok: false,
+                  status: HTTP_STATUS.TOO_MANY_REQUESTS,
+                  headers: { get: () => header },
+                  text: () => Promise.resolve('limited'),
+               }),
+            ) as any;
+            const client = new HttpClient(
+               oauth2Client,
+               createTokenProvider(tokens),
+               undefined,
+               { maxRetries: 0, now: () => 0 },
+            );
+
+            try {
+               await client.get('/limited');
+               throw new Error('expected rate limit');
+            } catch (error) {
+               expect(error).toBeInstanceOf(RateLimitError);
+               expect((error as RateLimitError).retryAfter).toBe(expected);
+               expect(
+                  Number.isFinite((error as RateLimitError).retryAfter),
+               ).toBe(true);
+            }
+         });
+      }
    });
 });

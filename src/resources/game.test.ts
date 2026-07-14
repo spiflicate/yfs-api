@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
-import { GameResource, GamesCollection } from './game';
-import { LeaguesCollection } from './league';
-import { PlayersCollection } from './player';
+import { GameResource, GamesCollection } from './game.js';
+import { LeaguesCollection } from './league.js';
+import { PlayersCollection } from './player.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;
@@ -46,7 +46,7 @@ describe('GameResource', () => {
 
    it('should create a LeaguesCollection from a GameResource', () => {
       const gameKey = 'nfl';
-      const leagueKeys = ['nfl.l.12345', 'nfl.l.67890'];
+      const leagueKeys = ['nfl.l.12345', 'nfl.l.67890'] as const;
 
       const gameResource = GameResource.create(
          transport,
@@ -59,6 +59,21 @@ describe('GameResource', () => {
       expect(leaguesCollection.toPath()).toBe(
          'game/nfl/leagues;league_keys=nfl.l.12345,nfl.l.67890',
       );
+   });
+
+   it('rejects an empty keyed league traversal at runtime', () => {
+      const gameResource = GameResource.create(
+         transport,
+         emptyState,
+         'nfl',
+      );
+
+      expect(() =>
+         Reflect.apply(gameResource.leagues, gameResource, [[]]),
+      ).toThrow('At least one league key is required.');
+      expect(() =>
+         Reflect.apply(gameResource.leagues, gameResource, []),
+      ).toThrow('At least one league key is required.');
    });
 
    it('should create a PlayersCollection from a GameResource', () => {

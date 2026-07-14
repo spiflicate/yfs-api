@@ -1,58 +1,71 @@
-import type { HttpClient as Transport } from '../client/http';
-import type { TeamResponse, TeamsResponse } from '../domain/responses';
+import type { HttpClient as Transport } from '../client/http.js';
+import type {
+   YahooTeamResponseDto,
+   YahooTeamsResponseDto,
+} from '../domain/normalized.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
    type SubResourceParams,
-} from './resource';
-import { RosterResource } from './roster';
-import type { TeamKeyLike } from './types';
+} from './resource.js';
+import type {
+   AppendResponsePath,
+   RequireResponsePath,
+   ResponsePath,
+} from './response-contract.js';
+import { RosterResource } from './roster.js';
+import type { TeamKeyLike } from './types.js';
 
 export const teamSubResources = [
    'metadata',
    'roster',
    'matchups',
    'stats',
-   'standings',
-   'draftresults', // need to confirm this
 ] as const;
 
 type DateString = `${number}-${number}-${number}`;
 type StatsCoverageType = 'season' | 'date' | 'week';
-// `'lastmonth' | 'lastweek'` are not valid for team resources, only for players.
 type TeamSubResource = (typeof teamSubResources)[number];
+type TeamExpansionField<T extends TeamSubResource> = T extends 'stats'
+   ? 'teamStats'
+   : T extends 'roster' | 'matchups'
+     ? T
+     : never;
+type TeamExpansionPath<
+   TPath extends ResponsePath,
+   TSubResource extends TeamSubResource,
+> = TSubResource extends TSubResource
+   ? TeamExpansionField<TSubResource> extends infer TField extends string
+      ? AppendResponsePath<TPath, TField>
+      : never
+   : never;
 
-type TeamMatchupsFilters = {
-   weeks?: `${number}`[];
-};
-
+type TeamMatchupsFilters = { weeks?: `${number}`[] };
 type TeamStatsFilters = {
    week?: `${number}`;
    date?: DateString;
    type?: StatsCoverageType;
 };
-
 type TeamResourceParams = ResourceParams<TeamSubResource, TeamKeyLike>;
-
 type TeamsCollectionParams = CollectionParams<
    TeamSubResource,
    TeamKeyLike,
    'teams'
 >;
-
-type TeamStatsParams = SubResourceParams<
-   Extract<TeamSubResource, 'stats'>
-> &
-   TeamStatsFilters;
-
-type TeamMatchupsParams = SubResourceParams<
-   Extract<TeamSubResource, 'matchups'>
-> &
+type TeamStatsParams = SubResourceParams<'stats'> & TeamStatsFilters;
+type TeamMatchupsParams = SubResourceParams<'matchups'> &
    TeamMatchupsFilters;
 
-export class TeamResource extends Resource<TeamResourceParams> {
+export class TeamResource<
+   TRoot = YahooTeamResponseDto,
+   TPath extends ResponsePath = readonly ['team'],
+   TRequiredPath extends ResponsePath = TPath,
+> extends Resource<
+   TeamResourceParams,
+   RequireResponsePath<TRoot, TRequiredPath>
+> {
    static create(
       transport: Transport,
       state: RequestState,
@@ -66,45 +79,66 @@ export class TeamResource extends Resource<TeamResourceParams> {
       });
    }
 
-   roster(): RosterResource {
-      const state = this.createChildState();
-      return RosterResource.create(this._transport, state);
+   roster(): RosterResource<TRoot, AppendResponsePath<TPath, 'roster'>> {
+      return RosterResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   matchups(): TeamMatchupsResource {
-      const state = this.createChildState();
-
-      return TeamMatchupsResource.create(this._transport, state);
+   matchups(): TeamMatchupsResource<
+      TRoot,
+      AppendResponsePath<TPath, 'matchups'>
+   > {
+      return TeamMatchupsResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   stats(): TeamStatsResource {
-      const state = this.createChildState();
-
-      return TeamStatsResource.create(this._transport, state);
+   stats(): TeamStatsResource<
+      TRoot,
+      AppendResponsePath<TPath, 'teamStats'>
+   > {
+      return TeamStatsResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   standings(): this {
-      return this.include('standings');
-   }
-
-   include(...subResources: TeamResourceParams['out']): this {
+   include<const TSubResources extends readonly TeamSubResource[]>(
+      ...subResources: TSubResources
+   ): TeamResource<
+      TRoot,
+      TPath,
+      TRequiredPath | TeamExpansionPath<TPath, TSubResources[number]>
+   > {
       return this.cloneWith({
-         ...this._params,
          out: [...this._params.out, ...subResources],
-      });
-   }
-
-   override async get() {
-      return this.request<TeamResponse>('get');
+      }) as TeamResource<
+         TRoot,
+         TPath,
+         TRequiredPath | TeamExpansionPath<TPath, TSubResources[number]>
+      >;
    }
 }
 
-export class TeamsCollection extends Resource<TeamsCollectionParams> {
-   static create(
+export class TeamsCollection<
+   TRoot = YahooTeamsResponseDto,
+   TPath extends ResponsePath = readonly ['teams'],
+   TRequiredPath extends ResponsePath = TPath,
+> extends Resource<
+   TeamsCollectionParams,
+   RequireResponsePath<TRoot, TRequiredPath>
+> {
+   static create<
+      TRoot = YahooTeamsResponseDto,
+      TPath extends ResponsePath = readonly ['teams'],
+   >(
       transport: Transport,
       state: RequestState,
       keys?: TeamKeyLike[],
-   ): TeamsCollection {
+   ): TeamsCollection<TRoot, TPath> {
       return new TeamsCollection(transport, state, {
          kind: 'collection',
          name: 'teams',
@@ -113,44 +147,58 @@ export class TeamsCollection extends Resource<TeamsCollectionParams> {
       });
    }
 
-   roster(): RosterResource {
-      const state = this.createChildState();
-      return RosterResource.create(this._transport, state);
+   roster(): RosterResource<TRoot, AppendResponsePath<TPath, 'roster'>> {
+      return RosterResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   matchups(): TeamMatchupsResource {
-      const state = this.createChildState();
-
-      return TeamMatchupsResource.create(this._transport, state);
+   matchups(): TeamMatchupsResource<
+      TRoot,
+      AppendResponsePath<TPath, 'matchups'>
+   > {
+      return TeamMatchupsResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   stats(): TeamStatsResource {
-      const state = this.createChildState();
-
-      return TeamStatsResource.create(this._transport, state);
+   stats(): TeamStatsResource<
+      TRoot,
+      AppendResponsePath<TPath, 'teamStats'>
+   > {
+      return TeamStatsResource.create(
+         this._transport,
+         this.createChildState(),
+      );
    }
 
-   standings(): this {
-      return this.include('standings');
-   }
-
-   include(...subResources: TeamsCollectionParams['out']): this {
+   include<const TSubResources extends readonly TeamSubResource[]>(
+      ...subResources: TSubResources
+   ): TeamsCollection<
+      TRoot,
+      TPath,
+      TRequiredPath | TeamExpansionPath<TPath, TSubResources[number]>
+   > {
       return this.cloneWith({
-         ...this._params,
          out: [...this._params.out, ...subResources],
-      });
-   }
-
-   override async get() {
-      return this.request<TeamsResponse>('get');
+      }) as TeamsCollection<
+         TRoot,
+         TPath,
+         TRequiredPath | TeamExpansionPath<TPath, TSubResources[number]>
+      >;
    }
 }
 
-export class TeamMatchupsResource extends Resource<TeamMatchupsParams> {
-   static create(
+export class TeamMatchupsResource<
+   TRoot = YahooTeamResponseDto,
+   TPath extends ResponsePath = readonly ['team', 'matchups'],
+> extends Resource<TeamMatchupsParams, RequireResponsePath<TRoot, TPath>> {
+   static create<TRoot, TPath extends ResponsePath>(
       transport: Transport,
       state: RequestState,
-   ): TeamMatchupsResource {
+   ): TeamMatchupsResource<TRoot, TPath> {
       return new TeamMatchupsResource(transport, state, {
          kind: 'subResource',
          name: 'matchups',
@@ -158,47 +206,39 @@ export class TeamMatchupsResource extends Resource<TeamMatchupsParams> {
    }
 
    weeks(weeks: readonly (number | `${number}`)[]): this {
-      return this.clone({
-         ...this._params,
+      return this.cloneWith({
          weeks: weeks.map((week) => String(week) as `${number}`),
       });
    }
-   // FIXME: need to create a proper response type for this
-   override async get() {
-      return this.request<TeamsResponse>('get');
-   }
 }
 
-export class TeamStatsResource extends Resource<TeamStatsParams> {
-   static create(
+export class TeamStatsResource<
+   TRoot = YahooTeamResponseDto,
+   TPath extends ResponsePath = readonly ['team', 'teamStats'],
+> extends Resource<TeamStatsParams, RequireResponsePath<TRoot, TPath>> {
+   static create<TRoot, TPath extends ResponsePath>(
       transport: Transport,
       state: RequestState,
-   ): TeamStatsResource {
+   ): TeamStatsResource<TRoot, TPath> {
       return new TeamStatsResource(transport, state, {
          kind: 'subResource',
          name: 'stats',
       });
    }
 
-   week(week: number | `${number}`): Omit<TeamStatsResource, 'date'> {
-      return this.clone({
-         ...this._params,
+   week(week: number | `${number}`): Omit<this, 'date'> {
+      return this.cloneWith({
          type: 'week',
          week: String(week) as `${number}`,
          date: undefined,
       });
    }
 
-   date(date: DateString): Omit<TeamStatsResource, 'week'> {
-      return this.clone({
-         ...this._params,
+   date(date: DateString): Omit<this, 'week'> {
+      return this.cloneWith({
          type: 'date',
          date,
          week: undefined,
       });
-   }
-   // FIXME: need to create a proper response type for this
-   override async get() {
-      return this.request<TeamsResponse>('get');
    }
 }

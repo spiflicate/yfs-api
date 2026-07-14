@@ -4,6 +4,7 @@
  */
 
 import { AuthenticationError, ConfigError } from '../client/errors.js';
+import { DEFAULT_TIMEOUT } from '../utils/constants.js';
 
 /**
  * OAuth 2.0 endpoints for Yahoo
@@ -55,6 +56,11 @@ export interface OAuth2Tokens {
    yahooGuid?: string;
 }
 
+export interface OAuth2AuthorizationRequest {
+   url: string;
+   state: string;
+}
+
 /**
  * Token response from Yahoo OAuth 2.0 API
  */
@@ -100,6 +106,7 @@ export class OAuth2Client {
    private clientId: string;
    private clientSecret: string;
    private redirectUri?: string;
+   private timeout: number;
 
    /**
     * Creates a new OAuth 2.0 client
@@ -112,6 +119,7 @@ export class OAuth2Client {
       clientId: string,
       clientSecret: string,
       redirectUri?: string,
+      timeout = DEFAULT_TIMEOUT,
    ) {
       if (!clientId) {
          throw new ConfigError('OAuth client ID is required');
@@ -123,6 +131,7 @@ export class OAuth2Client {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
       this.redirectUri = redirectUri;
+      this.timeout = timeout;
    }
 
    /**
@@ -158,6 +167,29 @@ export class OAuth2Client {
       }
 
       return `${OAUTH2_ENDPOINTS.AUTHORIZE}?${params.toString()}`;
+   }
+
+   createAuthorizationRequest(
+      language = 'en-us',
+   ): OAuth2AuthorizationRequest {
+      const state = crypto.randomUUID();
+      return {
+         url: this.getAuthorizationUrl(state, language),
+         state,
+      };
+   }
+
+   validateAuthorizationState(
+      expected: string,
+      received: string | null | undefined,
+   ): void {
+      if (!expected || !received || expected !== received) {
+         throw new AuthenticationError(
+            !received
+               ? 'OAuth authorization state is missing'
+               : 'OAuth authorization state does not match',
+         );
+      }
    }
 
    /**
@@ -249,6 +281,7 @@ export class OAuth2Client {
                Authorization: `Basic ${encodedCredentials}`,
             },
             body: body.toString(),
+            signal: AbortSignal.timeout(this.timeout),
          });
 
          if (!response.ok) {
@@ -283,10 +316,20 @@ export class OAuth2Client {
          if (error instanceof AuthenticationError) {
             throw error;
          }
-         throw new AuthenticationError(
-            `OAuth token request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+         const timedOut =
+            error instanceof Error &&
+            (error.name === 'TimeoutError' || error.name === 'AbortError');
+         const authenticationError = new AuthenticationError(
+            timedOut
+               ? 'OAuth token request timed out'
+               : `OAuth token request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
             error,
          );
+         Object.defineProperty(authenticationError, 'cause', {
+            value: error,
+            enumerable: false,
+         });
+         throw authenticationError;
       }
    }
 

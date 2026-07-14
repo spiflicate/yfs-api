@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'bun:test';
-import { ApiRoot } from '../src/resources/api';
-import { LeagueResource } from '../src/resources/league';
-import { TeamResource } from '../src/resources/team';
-import { TransactionResource } from '../src/resources/transaction';
-import { UsersCollection } from '../src/resources/user';
+import { ApiRoot } from '../src/resources/api.js';
+import { LeagueResource } from '../src/resources/league.js';
+import { TeamResource } from '../src/resources/team.js';
+import { TransactionResource } from '../src/resources/transaction.js';
+import { UsersCollection } from '../src/resources/user.js';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;

@@ -72,9 +72,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
       describe('Game Resource - Public Endpoints', () => {
          test('should fetch game metadata by code', async () => {
             const client = new YahooFantasySportsClient(config);
-            const game = (
-               (await client.api().game('nhl').get()) as { game: any }
-            ).game;
+            const game = (await client.api().game('nhl').get()).game;
 
             expect(game).toBeDefined();
             expect(game.code).toBe('nhl');
@@ -86,14 +84,9 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          test('should fetch game metadata by game key', async () => {
             const client = new YahooFantasySportsClient(config);
             // NHL game key format: 427 (or similar)
-            const game = (
-               (await client.api().game('nhl').get()) as { game: any }
-            ).game;
-            const gameByKey = (
-               (await client.api().game(game.gameKey).get()) as {
-                  game: any;
-               }
-            ).game;
+            const game = (await client.api().game('nhl').get()).game;
+            const gameByKey = (await client.api().game(game.gameKey).get())
+               .game;
 
             expect(gameByKey).toBeDefined();
             expect(gameByKey.gameKey).toBe(game.gameKey);
@@ -102,11 +95,8 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
          test('should fetch multiple games', async () => {
             const client = new YahooFantasySportsClient(config);
-            const games = (
-               (await client.api().games(['nhl', 'nfl']).get()) as {
-                  games: any[];
-               }
-            ).games;
+            const games = (await client.api().games(['nhl', 'nfl']).get())
+               .games;
 
             expect(games).toBeDefined();
             expect(Array.isArray(games)).toBe(true);
@@ -116,14 +106,14 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             expect(gameCodes).toContain('nhl');
          });
 
-         test('should fetch available games', async () => {
+         test('should select available games explicitly', async () => {
             const client = new YahooFantasySportsClient(config);
             const games = (
-               (await client
+               await client
                   .api()
-                  .games()
+                  .games(['nhl', 'nfl', 'mlb', 'nba'])
                   .params({ is_available: '1' })
-                  .get()) as { games: any[] }
+                  .get()
             ).games;
 
             expect(games).toBeDefined();
@@ -143,11 +133,11 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
          test('should include game metadata with settings', async () => {
             const client = new YahooFantasySportsClient(config);
             const game = (
-               (await client
+               await client
                   .api()
                   .game('nhl')
                   .include('position_types', 'stat_categories')
-                  .get()) as { game: any }
+                  .get()
             ).game;
 
             expect(game).toBeDefined();
@@ -160,20 +150,20 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
       describe('Player Search - Public Endpoints', () => {
          test('should search for players by name', async () => {
             const client = new YahooFantasySportsClient(config);
-            const result = (await client
+            const result = await client
                .api()
                .game('nhl')
                .players()
                .search('McDavid')
                .count(5)
-               .get()) as { players: any[] };
+               .get();
 
             expect(result).toBeDefined();
-            expect(result.players).toBeDefined();
-            expect(Array.isArray(result.players)).toBe(true);
+            expect(result.game.players).toBeDefined();
+            expect(Array.isArray(result.game.players)).toBe(true);
 
-            if (result.players && result.players.length > 0) {
-               const firstPlayer = result.players[0];
+            if (result.game.players.length > 0) {
+               const firstPlayer = result.game.players[0];
                expect(firstPlayer?.name).toBeTruthy();
                expect(firstPlayer?.playerKey).toBeTruthy();
             }
@@ -181,62 +171,60 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
 
          test('should filter players by position', async () => {
             const client = new YahooFantasySportsClient(config);
-            const result = (await client
+            const result = await client
                .api()
                .game('nhl')
                .players()
                .position('C')
                .count(10)
-               .get()) as { players: any[] };
+               .get();
 
             expect(result).toBeDefined();
-            expect(result.players).toBeDefined();
+            expect(result.game.players).toBeDefined();
          });
 
          test('should sort players', async () => {
             const client = new YahooFantasySportsClient(config);
-            const result = (await client
+            const result = await client
                .api()
                .game('nhl')
                .players()
                .sort('NAME')
                .count(5)
-               .get()) as { players: any[] };
+               .get();
 
             expect(result).toBeDefined();
-            expect(result.players).toBeDefined();
+            expect(result.game.players).toBeDefined();
          });
 
          test('should handle pagination', async () => {
             const client = new YahooFantasySportsClient(config);
-            const firstPage = (await client
+            const firstPage = await client
                .api()
                .game('nhl')
                .players()
                .start(0)
                .count(10)
-               .get()) as { players: any[] };
+               .get();
 
-            const secondPage = (await client
+            const secondPage = await client
                .api()
                .game('nhl')
                .players()
                .start(10)
                .count(10)
-               .get()) as { players: any[] };
+               .get();
 
             expect(firstPage).toBeDefined();
             expect(secondPage).toBeDefined();
 
             // Results should be different pages
             if (
-               firstPage.players &&
-               firstPage.players.length > 0 &&
-               secondPage.players &&
-               secondPage.players.length > 0
+               firstPage.game.players.length > 0 &&
+               secondPage.game.players.length > 0
             ) {
-               expect(firstPage.players[0]?.playerKey).not.toBe(
-                  secondPage.players[0]?.playerKey,
+               expect(firstPage.game.players[0]?.playerKey).not.toBe(
+                  secondPage.game.players[0]?.playerKey,
                );
             }
          });
@@ -272,15 +260,15 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const client = new YahooFantasySportsClient(config);
 
             const requests = [
-               client.api().game('nhl').get() as Promise<{ game: any }>,
-               client.api().game('nfl').get() as Promise<{ game: any }>,
+               client.api().game('nhl').get(),
+               client.api().game('nfl').get(),
                client
                   .api()
                   .game('nhl')
                   .players()
                   .search('McDavid')
                   .count(5)
-                  .get() as Promise<{ players: any[] }>,
+                  .get(),
             ] as const;
 
             const results = await Promise.all(requests);
@@ -288,28 +276,24 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             expect(results).toHaveLength(3);
             expect(results[0].game.code).toBe('nhl');
             expect(results[1].game.code).toBe('nfl');
-            expect(results[2].players).toBeDefined();
+            expect(results[2].game.players).toBeDefined();
          });
 
          test('should handle sequential requests', async () => {
             const client = new YahooFantasySportsClient(config);
 
-            const nhlGame = (await client.api().game('nhl').get()) as {
-               game: any;
-            };
+            const nhlGame = await client.api().game('nhl').get();
             expect(nhlGame).toBeDefined();
 
-            const players = (await client
+            const players = await client
                .api()
                .game(nhlGame.game.gameKey)
                .players()
                .count(5)
-               .get()) as { players: any[] };
+               .get();
             expect(players).toBeDefined();
 
-            const nflGame = (await client.api().game('nfl').get()) as {
-               game: any;
-            };
+            const nflGame = await client.api().game('nfl').get();
             expect(nflGame.game).toBeDefined();
          });
       });

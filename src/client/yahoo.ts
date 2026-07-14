@@ -34,10 +34,14 @@
  */
 
 import { OAuth1Client } from '../auth/oauth1.js';
-import { OAuth2Client, type OAuth2Tokens } from '../auth/oauth2.js';
+import {
+   type OAuth2AuthorizationRequest,
+   OAuth2Client,
+   type OAuth2Tokens,
+} from '../auth/oauth2.js';
 import { type ApiRoot, createApi } from '../resources/api.js';
 import { ConfigError } from './errors.js';
-import { HttpClient } from './http.js';
+import { HttpClient, type RequestOptions } from './http.js';
 
 /**
  * Configuration options for Yahoo Fantasy Sports API client
@@ -110,14 +114,6 @@ export interface Config {
    debug?: boolean;
 
    /**
-    * Optional: Return raw XML responses instead of parsed objects
-    * Useful for debugging, inspecting response structure, or custom parsing
-    * When true, all API methods return raw XML strings instead of typed objects
-    * @default false
-    */
-   rawXml?: boolean;
-
-   /**
     * Optional: Request timeout in milliseconds
     * @default 30000
     */
@@ -182,7 +178,6 @@ export interface TokenStorage {
 export class YahooFantasySportsClient {
    private config: Config & {
       debug: boolean;
-      rawXml: boolean;
       timeout: number;
       maxRetries: number;
    };
@@ -192,6 +187,7 @@ export class YahooFantasySportsClient {
    private httpClient: HttpClient;
    private tokenStorage?: TokenStorage;
    private tokens?: OAuth2Tokens;
+   private refreshInFlight?: Promise<OAuth2Tokens>;
 
    /**
     * Creates a new Yahoo Fantasy Sports API client
@@ -267,7 +263,6 @@ export class YahooFantasySportsClient {
          refreshToken: config.refreshToken,
          expiresAt: config.expiresAt,
          debug: config.debug ?? false,
-         rawXml: config.rawXml ?? false,
          timeout: config.timeout ?? 30000,
          maxRetries: config.maxRetries ?? 3,
       };
@@ -289,6 +284,7 @@ export class YahooFantasySportsClient {
             this.config.clientId,
             this.config.clientSecret,
             redirectUri,
+            this.config.timeout,
          );
 
          // Build tokens if available in config
@@ -313,26 +309,11 @@ export class YahooFantasySportsClient {
       this.httpClient = new HttpClient(
          this.oauth2Client,
          () => this.tokens,
-         async () => {
-            if (!this.oauth2Client) {
-               throw new ConfigError(
-                  'OAuth 2.0 client is not available in public mode',
-               );
-            }
-            if (!this.tokens?.refreshToken) {
-               throw new ConfigError('No refresh token available');
-            }
-            const newTokens = await this.oauth2Client.refreshAccessToken(
-               this.tokens.refreshToken,
-            );
-            await this.setTokens(newTokens);
-            return newTokens;
-         },
+         () => this.refreshTokens(),
          {
             timeout: this.config.timeout,
             maxRetries: this.config.maxRetries,
             debug: this.config.debug,
-            rawXml: this.config.rawXml,
             oauth1Client: this.oauth1Client,
          },
       );
@@ -393,6 +374,11 @@ export class YahooFantasySportsClient {
       return createApi(this.httpClient);
    }
 
+   /** Returns an unparsed Yahoo XML response without changing typed API calls. */
+   requestRawXml(path: string, options?: RequestOptions): Promise<string> {
+      return this.httpClient.requestRawXml(path, options);
+   }
+
    /**
     * Gets the authorization URL for the OAuth 2.0 flow
     *
@@ -420,6 +406,29 @@ export class YahooFantasySportsClient {
          );
       }
       return this.oauth2Client.getAuthorizationUrl(state, language);
+   }
+
+   createAuthorizationRequest(
+      language = 'en-us',
+   ): OAuth2AuthorizationRequest {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'createAuthorizationRequest is not available in public mode',
+         );
+      }
+      return this.oauth2Client.createAuthorizationRequest(language);
+   }
+
+   validateAuthorizationState(
+      expected: string,
+      received: string | null | undefined,
+   ): void {
+      if (!this.oauth2Client) {
+         throw new ConfigError(
+            'validateAuthorizationState is not available in public mode',
+         );
+      }
+      this.oauth2Client.validateAuthorizationState(expected, received);
    }
 
    /**
@@ -552,10 +561,7 @@ export class YahooFantasySportsClient {
          );
       }
 
-      const newTokens = await this.oauth2Client.refreshAccessToken(
-         this.tokens.refreshToken,
-      );
-      await this.setTokens(newTokens);
+      await this.refreshTokens();
    }
 
    /**
@@ -662,6 +668,36 @@ export class YahooFantasySportsClient {
       if (this.tokenStorage) {
          await this.tokenStorage.save(tokens);
       }
+   }
+
+   private refreshTokens(): Promise<OAuth2Tokens> {
+      const oauth2Client = this.oauth2Client;
+      const refreshToken = this.tokens?.refreshToken;
+      if (!oauth2Client) {
+         return Promise.reject(
+            new ConfigError(
+               'OAuth 2.0 client is not available in public mode',
+            ),
+         );
+      }
+      if (!refreshToken) {
+         return Promise.reject(
+            new ConfigError('No refresh token available'),
+         );
+      }
+      if (!this.refreshInFlight) {
+         this.refreshInFlight = (async () => {
+            try {
+               const newTokens =
+                  await oauth2Client.refreshAccessToken(refreshToken);
+               await this.setTokens(newTokens);
+               return newTokens;
+            } finally {
+               this.refreshInFlight = undefined;
+            }
+         })();
+      }
+      return this.refreshInFlight;
    }
 
    /**

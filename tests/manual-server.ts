@@ -5,7 +5,7 @@ import {
    type OAuth2Tokens,
    type TokenStorage,
    YahooFantasyClient,
-} from '../src/index';
+} from '../src/index.js';
 
 const PORT = parseInt(process.env.PORT || '4567', 10);
 const TUNNEL_NAME = 'yahoo-callback';

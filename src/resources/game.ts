@@ -1,109 +1,109 @@
-import type { HttpClient as Transport } from '../client/http';
-import type { GameResponse, GamesResponse } from '../domain/responses';
-import { LeaguesCollection } from './league';
-import { PlayersCollection } from './player';
+import type { HttpClient as Transport } from '../client/http.js';
+import type {
+   YahooGameResponseDto,
+   YahooGamesResponseDto,
+} from '../domain/normalized.js';
+import { LeaguesCollection } from './league.js';
+import { PlayersCollection } from './player.js';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
    type ResourceParams,
-} from './resource';
-import { TeamsCollection } from './team';
+} from './resource.js';
+import type {
+   AppendResponsePath,
+   RequireResponsePath,
+   ResponsePath,
+} from './response-contract.js';
+import { TeamsCollection } from './team.js';
 import type {
    GameKeyLike,
    LeagueKeyLike,
    PlayerKeyLike,
    TeamKeyLike,
-} from './types';
+} from './types.js';
 
 const gameSubResources = [
-   'dates',
    'game_weeks',
    'metadata',
    'position_types',
-   'roster_positions',
    'stat_categories',
 ] as const;
 
 type GameSubResource = (typeof gameSubResources)[number];
+type GameExpansionField<TSubResource extends GameSubResource> =
+   TSubResource extends 'game_weeks'
+      ? 'gameWeeks'
+      : TSubResource extends 'position_types'
+        ? 'positionTypes'
+        : TSubResource extends 'stat_categories'
+          ? 'statCategories'
+          : never;
+type GameExpansionPath<
+   TPath extends ResponsePath,
+   TSubResource extends GameSubResource,
+> = TSubResource extends TSubResource
+   ? GameExpansionField<TSubResource> extends infer TField extends string
+      ? AppendResponsePath<TPath, TField>
+      : never
+   : never;
 
-const gameTypes = [
-   'full',
-   'pickem-group',
-   'pickem-team-list',
-   'pickem-team',
-] as const;
-
-type GameTypes = (typeof gameTypes)[number];
+type GameTypes =
+   | 'full'
+   | 'pickem-group'
+   | 'pickem-team-list'
+   | 'pickem-team';
 
 type GameFilters = {
-   /** Seasons (indicated by starting year) to filter by, e.g. ['2021', '2022'] */
    seasons?: `${number}`[];
-   /** Filter to only games that are in-season */
    is_available?: '1';
-   /** Types of games to filter by */
    game_types?: GameTypes[];
 };
 
 type GameResourceParams = ResourceParams<GameSubResource, GameKeyLike>;
-
 type GamesCollectionParams = CollectionParams<
    GameSubResource,
    GameKeyLike,
    'games'
 > &
    GameFilters;
+type GamesCollectionContext = 'root' | 'user';
+type GamesLeagueArguments<TContext extends GamesCollectionContext> =
+   TContext extends 'root'
+      ?
+           | [key: LeagueKeyLike, ...keys: LeagueKeyLike[]]
+           | [keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]]]
+      : LeagueKeyLike[] | [keys: LeagueKeyLike[]];
 
 abstract class GameBase<
    TParams extends GameResourceParams | GamesCollectionParams,
-> extends Resource<TParams> {
-   leagues(...keys: LeagueKeyLike[]): LeaguesCollection;
-   leagues(keys: LeagueKeyLike[]): LeaguesCollection;
-   leagues(
-      ...keys: LeagueKeyLike[] | LeagueKeyLike[][]
-   ): LeaguesCollection {
-      const state = this.createChildState();
-      return LeaguesCollection.create(this._transport, state, keys.flat());
-   }
-
-   players(...keys: PlayerKeyLike[]): PlayersCollection;
-   players(keys: PlayerKeyLike[]): PlayersCollection;
+   TRoot,
+   TPath extends ResponsePath,
+   TRequiredPath extends ResponsePath,
+> extends Resource<TParams, RequireResponsePath<TRoot, TRequiredPath>> {
+   players(
+      ...keys: PlayerKeyLike[]
+   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
+   players(
+      keys: PlayerKeyLike[],
+   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
    players(
       ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
-   ): PlayersCollection {
-      const state = this.createChildState();
-      return PlayersCollection.create(this._transport, state, keys.flat());
-   }
-
-   include(...subResources: GameSubResource[]): this {
-      return this.clone({
-         ...this._params,
-         out: [...this._params.out, ...subResources],
-      });
-   }
-
-   gameWeeks(): this {
-      return this.include('game_weeks');
-   }
-
-   dates(): this {
-      return this.include('dates');
-   }
-
-   positionTypes(): this {
-      return this.include('position_types');
-   }
-
-   rosterPositions(): this {
-      return this.include('roster_positions');
-   }
-
-   statCategories(): this {
-      return this.include('stat_categories');
+   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>> {
+      return PlayersCollection.create(
+         this._transport,
+         this.createChildState(),
+         keys.flat(),
+      );
    }
 }
 
-export class GameResource extends GameBase<GameResourceParams> {
+export class GameResource<
+   TRoot = YahooGameResponseDto,
+   TPath extends ResponsePath = readonly ['game'],
+   TRequiredPath extends ResponsePath = TPath,
+> extends GameBase<GameResourceParams, TRoot, TPath, TRequiredPath> {
    static create(
       transport: Transport,
       state: RequestState,
@@ -117,17 +117,77 @@ export class GameResource extends GameBase<GameResourceParams> {
       });
    }
 
-   override async get() {
-      return this.request<GameResponse>('get');
+   leagues(
+      key: LeagueKeyLike,
+      ...keys: LeagueKeyLike[]
+   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
+   leagues(
+      keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]],
+   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
+   leagues(
+      keyOrKeys: LeagueKeyLike | readonly LeagueKeyLike[],
+      ...keys: LeagueKeyLike[]
+   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
+      if (keyOrKeys === undefined) {
+         throw new TypeError('At least one league key is required.');
+      }
+      const leagueKeys = Array.isArray(keyOrKeys)
+         ? [...keyOrKeys]
+         : [keyOrKeys, ...keys];
+      if (leagueKeys.length === 0) {
+         throw new TypeError('At least one league key is required.');
+      }
+
+      return LeaguesCollection.create(
+         this._transport,
+         this.createChildState(),
+         leagueKeys,
+      );
+   }
+
+   include<const TSubResources extends readonly GameSubResource[]>(
+      ...subResources: TSubResources
+   ): GameResource<
+      TRoot,
+      TPath,
+      TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>
+   > {
+      return this.cloneWith({
+         out: [...this._params.out, ...subResources],
+      }) as GameResource<
+         TRoot,
+         TPath,
+         TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>
+      >;
+   }
+
+   gameWeeks() {
+      return this.include('game_weeks');
+   }
+
+   positionTypes() {
+      return this.include('position_types');
+   }
+
+   statCategories() {
+      return this.include('stat_categories');
    }
 }
 
-export class GamesCollection extends GameBase<GamesCollectionParams> {
-   static create(
+export class GamesCollection<
+   TRoot = YahooGamesResponseDto,
+   TPath extends ResponsePath = readonly ['games'],
+   TRequiredPath extends ResponsePath = TPath,
+   TContext extends GamesCollectionContext = 'root',
+> extends GameBase<GamesCollectionParams, TRoot, TPath, TRequiredPath> {
+   static create<
+      TRoot = YahooGamesResponseDto,
+      TPath extends ResponsePath = readonly ['games'],
+   >(
       transport: Transport,
       state: RequestState,
       keys?: GameKeyLike[],
-   ): GamesCollection {
+   ): GamesCollection<TRoot, TPath, TPath, 'root'> {
       return new GamesCollection(transport, state, {
          kind: 'collection',
          name: 'games',
@@ -136,14 +196,75 @@ export class GamesCollection extends GameBase<GamesCollectionParams> {
       });
    }
 
-   teams(...keys: TeamKeyLike[]): TeamsCollection;
-   teams(keys: TeamKeyLike[]): TeamsCollection;
-   teams(...keys: TeamKeyLike[] | TeamKeyLike[][]): TeamsCollection {
-      const state = this.createChildState();
-      return TeamsCollection.create(this._transport, state, keys.flat());
+   static createForUser<TRoot, TPath extends ResponsePath>(
+      transport: Transport,
+      state: RequestState,
+      keys?: GameKeyLike[],
+   ): GamesCollection<TRoot, TPath, TPath, 'user'> {
+      return new GamesCollection(transport, state, {
+         kind: 'collection',
+         name: 'games',
+         out: [],
+         ...(keys ? { game_keys: keys } : {}),
+      });
    }
 
-   override async get() {
-      return this.request<GamesResponse>('get');
+   leagues(
+      ...keys: GamesLeagueArguments<TContext>
+   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
+      return LeaguesCollection.create(
+         this._transport,
+         this.createChildState(),
+         keys.flat() as LeagueKeyLike[],
+      );
+   }
+
+   teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
+      ...keys: TeamKeyLike[]
+   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
+   teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
+      keys: TeamKeyLike[],
+   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
+   teams(
+      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
+      ...keys: TeamKeyLike[] | TeamKeyLike[][]
+   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>> {
+      return TeamsCollection.create(
+         this._transport,
+         this.createChildState(),
+         keys.flat(),
+      );
+   }
+
+   include<const TSubResources extends readonly GameSubResource[]>(
+      ...subResources: TSubResources
+   ): GamesCollection<
+      TRoot,
+      TPath,
+      TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>,
+      TContext
+   > {
+      return this.cloneWith({
+         out: [...this._params.out, ...subResources],
+      }) as GamesCollection<
+         TRoot,
+         TPath,
+         TRequiredPath | GameExpansionPath<TPath, TSubResources[number]>,
+         TContext
+      >;
+   }
+
+   gameWeeks() {
+      return this.include('game_weeks');
+   }
+
+   positionTypes() {
+      return this.include('position_types');
+   }
+
+   statCategories() {
+      return this.include('stat_categories');
    }
 }

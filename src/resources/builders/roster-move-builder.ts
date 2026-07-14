@@ -1,5 +1,5 @@
 import { XMLBuilder } from 'fast-xml-parser';
-import type { PlayerKeyLike } from '../types';
+import type { PlayerKeyLike } from '../types.js';
 
 export type DateString = `${number}-${number}-${number}`;
 
@@ -32,7 +32,7 @@ export type RosterMovePayload = {
         };
 };
 
-type CoverageDefaults = {
+export type RosterCoverageOptions = {
    week?: number | `${number}`;
    date?: DateString;
 };
@@ -67,7 +67,7 @@ export class RosterMoveBuilder {
       return this;
    }
 
-   toXml(defaults?: CoverageDefaults): string {
+   toXml(defaults?: RosterCoverageOptions): string {
       const xmlBuilder = new XMLBuilder({
          ignoreAttributes: false,
          format: false,
@@ -76,7 +76,7 @@ export class RosterMoveBuilder {
       return `<?xml version="1.0" encoding="UTF-8"?>${xmlBuilder.build({ fantasy_content: this.toPayload(defaults) })}`;
    }
 
-   toPayload(defaults?: CoverageDefaults): RosterMovePayload {
+   toPayload(defaults?: RosterCoverageOptions): RosterMovePayload {
       if (this.rosterMoves.length === 0) {
          throw new Error(
             'At least one roster move is required. Use movePlayer() or players().',
@@ -142,7 +142,7 @@ export class RosterMoveBuilder {
    }
 
    private validateCoverageDefaults(
-      defaults: CoverageDefaults | undefined,
+      defaults: RosterCoverageOptions | undefined,
       explicitCoverageType: 'week' | 'date',
    ): void {
       if (!defaults) {

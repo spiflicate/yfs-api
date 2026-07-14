@@ -1,15 +1,17 @@
 import { describe, expect, it } from 'bun:test';
-import type { HttpClient as Transport } from '../client/http';
-import { RosterMoveBuilder } from './builders/roster-move-builder';
-import { PlayersCollection } from './player';
-import { RosterResource } from './roster';
+import { YahooApiError } from '../client/errors.js';
+import type { HttpClient as Transport } from '../client/http.js';
+import { RosterMoveBuilder } from './builders/roster-move-builder.js';
+import { PlayersCollection } from './player.js';
+import { RosterResource } from './roster.js';
 
 const putRequests: Array<{ path: string; body: unknown }> = [];
+const confirmation = { confirmation: { status: 'success' as const } };
 
 const transport = {
    put(path: string, body: unknown) {
       putRequests.push({ path, body });
-      return Promise.resolve({ path, body });
+      return Promise.resolve(confirmation);
    },
 } as unknown as Transport;
 
@@ -49,12 +51,7 @@ describe('RosterResource', () => {
 
       await expect(
          roster.put(new RosterMoveBuilder().movePlayer('461.p.8332', 'WR')),
-      ).resolves.toEqual({
-         path: 'team/nfl.l.123.t.1/roster;week=13',
-         body: expect.stringContaining(
-            '<coverage_type>week</coverage_type>',
-         ),
-      });
+      ).resolves.toBe(confirmation);
 
       expect(putRequests).toHaveLength(1);
       expect(putRequests[0]?.path).toBe(
@@ -65,5 +62,39 @@ describe('RosterResource', () => {
          '<player_key>461.p.8332</player_key>',
       );
       expect(putRequests[0]?.body).toContain('<position>WR</position>');
+   });
+
+   it('propagates roster update HTTP errors', async () => {
+      const error = new YahooApiError('Roster update failed', 400);
+      const failingTransport = {
+         put: () => Promise.reject(error),
+      } as unknown as Transport;
+      const roster = RosterResource.create(failingTransport, {
+         segments: ['team', 'nfl.l.123.t.1'],
+      }).week(13);
+
+      await expect(
+         roster.put(new RosterMoveBuilder().movePlayer('461.p.8332', 'WR')),
+      ).rejects.toBe(error);
+   });
+
+   it('propagates empty write success without manufacturing confirmation', async () => {
+      let calls = 0;
+      const emptyTransport = {
+         put: () => {
+            calls++;
+            return Promise.resolve(undefined);
+         },
+      } as unknown as Transport;
+      const roster = RosterResource.create(emptyTransport, {
+         segments: ['team', 'nfl.l.123.t.1'],
+      }).week(13);
+
+      await expect(
+         roster.update(
+            new RosterMoveBuilder().movePlayer('461.p.8332', 'WR'),
+         ),
+      ).resolves.toBeUndefined();
+      expect(calls).toBe(1);
    });
 });
