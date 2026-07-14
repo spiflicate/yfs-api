@@ -46,6 +46,7 @@ research/.oauth2-tokens.json
 research/tmp/*.json
 research/tmp/**/*.json
 research/tmp/latest-run.txt
+research/api-path-validation/tmp/
 research/xml-vs-json-responses/data/
 tests/tmp/
 
