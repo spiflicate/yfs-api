@@ -37,7 +37,7 @@ import { OAuth1Client } from '../auth/oauth1.js';
 import { OAuth2Client, type OAuth2Tokens } from '../auth/oauth2.js';
 import { type ApiRoot, createApi } from '../resources/api.js';
 import { ConfigError } from './errors.js';
-import { HttpClient } from './http.js';
+import { HttpClient, type RequestOptions } from './http.js';
 
 /**
  * Configuration options for Yahoo Fantasy Sports API client
@@ -110,14 +110,6 @@ export interface Config {
    debug?: boolean;
 
    /**
-    * Optional: Return raw XML responses instead of parsed objects
-    * Useful for debugging, inspecting response structure, or custom parsing
-    * When true, all API methods return raw XML strings instead of typed objects
-    * @default false
-    */
-   rawXml?: boolean;
-
-   /**
     * Optional: Request timeout in milliseconds
     * @default 30000
     */
@@ -182,7 +174,6 @@ export interface TokenStorage {
 export class YahooFantasySportsClient {
    private config: Config & {
       debug: boolean;
-      rawXml: boolean;
       timeout: number;
       maxRetries: number;
    };
@@ -267,7 +258,6 @@ export class YahooFantasySportsClient {
          refreshToken: config.refreshToken,
          expiresAt: config.expiresAt,
          debug: config.debug ?? false,
-         rawXml: config.rawXml ?? false,
          timeout: config.timeout ?? 30000,
          maxRetries: config.maxRetries ?? 3,
       };
@@ -332,7 +322,6 @@ export class YahooFantasySportsClient {
             timeout: this.config.timeout,
             maxRetries: this.config.maxRetries,
             debug: this.config.debug,
-            rawXml: this.config.rawXml,
             oauth1Client: this.oauth1Client,
          },
       );
@@ -391,6 +380,11 @@ export class YahooFantasySportsClient {
     */
    api(): ApiRoot {
       return createApi(this.httpClient);
+   }
+
+   /** Returns an unparsed Yahoo XML response without changing typed API calls. */
+   requestRawXml(path: string, options?: RequestOptions): Promise<string> {
+      return this.httpClient.requestRawXml(path, options);
    }
 
    /**

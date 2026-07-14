@@ -137,7 +137,6 @@ export class HttpClient {
    private timeout: number;
    private maxRetries: number;
    private debug: boolean;
-   private rawXml: boolean;
 
    /**
     * Creates a new HTTP client
@@ -156,7 +155,6 @@ export class HttpClient {
          maxRetries?: number;
          debug?: boolean;
          oauth1Client?: OAuth1Client;
-         rawXml?: boolean;
       },
    ) {
       this.oauth2Client = oauth2Client;
@@ -167,7 +165,6 @@ export class HttpClient {
       this.timeout = options?.timeout ?? DEFAULT_TIMEOUT;
       this.maxRetries = options?.maxRetries ?? DEFAULT_MAX_RETRIES;
       this.debug = options?.debug ?? false;
-      this.rawXml = options?.rawXml ?? false;
    }
 
    /**
@@ -273,12 +270,34 @@ export class HttpClient {
    }
 
    /**
+    * Makes a request through the normal auth, rate-limit, retry, and error
+    * handling pipeline, but returns the successful response body unparsed.
+    */
+   async requestRawXml(
+      path: string,
+      options: RequestOptions = {},
+   ): Promise<string> {
+      return this.request(path, options, true);
+   }
+
+   /**
     * Makes an HTTP request with retry logic
     */
+   private request<T>(
+      path: string,
+      options?: RequestOptions,
+      rawXml?: false,
+   ): Promise<T>;
+   private request(
+      path: string,
+      options: RequestOptions,
+      rawXml: true,
+   ): Promise<string>;
    private async request<T>(
       path: string,
       options: RequestOptions = {},
-   ): Promise<T> {
+      rawXml = false,
+   ): Promise<T | string> {
       const {
          method = 'GET',
          body,
@@ -481,15 +500,14 @@ export class HttpClient {
             // Parse response
             const rawResponse = await response.text();
 
-            // If rawXml mode, return the XML string directly
-            if (this.rawXml) {
+            if (rawXml) {
                if (this.debug) {
                   console.log(
                      `[HttpClient] Raw XML Response (first 500 chars):`,
                      rawResponse.substring(0, 500),
                   );
                }
-               return rawResponse as unknown as T;
+               return rawResponse;
             }
 
             // Parse XML to object

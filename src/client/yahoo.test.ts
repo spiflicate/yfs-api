@@ -141,6 +141,34 @@ describe('YahooFantasyClient', () => {
             'league/423.l.12345',
          );
       });
+
+      test('should expose raw XML without changing typed API construction', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><game><game_key>465</game_key></game></fantasy_content>';
+         const originalFetch = global.fetch;
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         ) as any;
+         const client = new YahooFantasySportsClient({
+            ...config,
+            accessToken: 'synthetic-access',
+            refreshToken: 'synthetic-refresh',
+            expiresAt: Date.now() + 3_600_000,
+         });
+
+         try {
+            const result: string = await client.requestRawXml('/game/465');
+
+            expect(result).toBe(xmlResponse);
+            expect(client.api().game('465').toPath()).toBe('game/465');
+         } finally {
+            global.fetch = originalFetch;
+         }
+      });
    });
 
    describe('getAuthUrl', () => {

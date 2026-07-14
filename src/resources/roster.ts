@@ -1,4 +1,8 @@
 import type { HttpClient as Transport } from '../client/http';
+import type {
+   YahooRosterUpdateConfirmationDto,
+   YahooTeamResponseDto,
+} from '../domain/normalized';
 import {
    type DateString,
    RosterMoveBuilder,
@@ -9,20 +13,30 @@ import {
    Resource,
    type SubResourceParams,
 } from './resource';
+import type {
+   AppendResponsePath,
+   RequireResponsePath,
+   ResponsePath,
+} from './response-contract';
 import type { PlayerKeyLike } from './types';
 
-type RosterFilters = {
+type RosterParams = SubResourceParams<'roster'> & {
    week?: `${number}`;
    date?: DateString;
 };
 
-type RosterParams = SubResourceParams<'roster'> & RosterFilters;
-
-export class RosterResource extends Resource<RosterParams> {
-   static create(
+export class RosterResource<
+   TRoot = YahooTeamResponseDto,
+   TPath extends ResponsePath = readonly ['team', 'roster'],
+> extends Resource<
+   RosterParams,
+   RequireResponsePath<TRoot, TPath>,
+   YahooRosterUpdateConfirmationDto
+> {
+   static create<TRoot, TPath extends ResponsePath>(
       transport: Transport,
       state: RequestState,
-   ): RosterResource {
+   ): RosterResource<TRoot, TPath> {
       return new RosterResource(transport, state, {
          kind: 'subResource',
          name: 'roster',
@@ -30,37 +44,41 @@ export class RosterResource extends Resource<RosterParams> {
    }
 
    week(week: number | `${number}`): this {
-      return this.clone({
-         ...this._params,
+      return this.cloneWith({
          week: String(week) as `${number}`,
          date: undefined,
       });
    }
 
    date(date: DateString): this {
-      return this.clone({
-         ...this._params,
-         date,
-         week: undefined,
-      });
+      return this.cloneWith({ date, week: undefined });
    }
 
-   players(keys?: PlayerKeyLike[]): PlayersCollection {
-      const state = this.createChildState();
-      return PlayersCollection.create(this._transport, state, keys);
+   players(
+      keys?: PlayerKeyLike[],
+   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>> {
+      return PlayersCollection.create(
+         this._transport,
+         this.createChildState(),
+         keys,
+      );
    }
 
-   update(moves: RosterMoveBuilder): Promise<unknown> {
+   update(
+      moves: RosterMoveBuilder,
+   ): Promise<YahooRosterUpdateConfirmationDto> {
       return this.put(moves);
    }
 
-   setLineup(moves: RosterMoveBuilder): Promise<unknown> {
+   setLineup(
+      moves: RosterMoveBuilder,
+   ): Promise<YahooRosterUpdateConfirmationDto> {
       return this.put(moves);
    }
 
    override async put(
       body?: RosterMoveBuilder | Record<string, unknown> | string,
-   ): Promise<unknown> {
+   ): Promise<YahooRosterUpdateConfirmationDto> {
       return super.put(
          body instanceof RosterMoveBuilder
             ? body.toXml({

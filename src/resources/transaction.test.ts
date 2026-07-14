@@ -1,25 +1,10 @@
 import { describe, expect, it } from 'bun:test';
 import { ValidationError } from '../client/errors';
-import { TransactionResource, TransactionsCollection } from './transaction';
+import { TransactionsCollection } from './transaction';
 
 // biome-ignore lint/suspicious/noExplicitAny: transport is not being tested here
 const transport = {} as any;
 const emptyState = { segments: [] };
-
-describe('TransactionResource', () => {
-   it('creates a transaction resource and includes players', () => {
-      const resource = TransactionResource.create(
-         transport,
-         emptyState,
-         'nfl.l.123.tr.9',
-      );
-
-      expect(resource.toPath()).toBe('transaction/nfl.l.123.tr.9');
-      expect(resource.players().toPath()).toBe(
-         'transaction/nfl.l.123.tr.9;out=players',
-      );
-   });
-});
 
 describe('TransactionsCollection', () => {
    it('serializes transaction collection filters', () => {

@@ -183,18 +183,18 @@ export interface YahooLeaguesResponseDto {
    leagues: YahooLeagueDto[];
 }
 
-/** League endpoint variant with the requested settings nested on the league. */
-export interface YahooLeagueSettingsResponseDto extends YahooLeagueDto {
+/** League variant with the requested settings nested on the league. */
+export interface YahooLeagueWithSettingsDto extends YahooLeagueDto {
    settings: YahooLeagueSettingsDto;
 }
 
-/** League endpoint variant with the requested standings nested on the league. */
-export interface YahooLeagueStandingsResponseDto extends YahooLeagueDto {
+/** League variant with the requested standings nested on the league. */
+export interface YahooLeagueWithStandingsDto extends YahooLeagueDto {
    standings: YahooLeagueStandingsDto;
 }
 
-/** League endpoint variant with the requested scoreboard nested on the league. */
-export interface YahooLeagueScoreboardResponseDto extends YahooLeagueDto {
+/** League variant with the requested scoreboard nested on the league. */
+export interface YahooLeagueWithScoreboardDto extends YahooLeagueDto {
    scoreboard: YahooLeagueScoreboardDto;
 }
 
@@ -395,19 +395,19 @@ export interface YahooTeamsResponseDto {
    teams: YahooTeamDto[];
 }
 
-/** Team endpoint variant with a requested roster nested on the team. */
-export interface YahooTeamRosterResponseDto extends YahooTeamDto {
+/** Team variant with a requested roster nested on the team. */
+export interface YahooTeamWithRosterDto extends YahooTeamDto {
    roster: YahooTeamRosterDto;
 }
 
-/** Team endpoint variant containing season/date/week stats and points. */
-export interface YahooTeamStatsResponseDto extends YahooTeamDto {
+/** Team variant containing season/date/week stats and optional points. */
+export interface YahooTeamWithStatsDto extends YahooTeamDto {
    teamStats: YahooTeamStatsDto;
-   teamPoints: YahooTeamPointsDto;
+   teamPoints?: YahooTeamPointsDto;
 }
 
-/** Team endpoint variant with matchup history/current matchup data. */
-export interface YahooTeamMatchupsResponseDto extends YahooTeamDto {
+/** Team variant with matchup history/current matchup data. */
+export interface YahooTeamWithMatchupsDto extends YahooTeamDto {
    matchups: YahooMatchupDto[];
 }
 
@@ -666,14 +666,14 @@ export interface YahooPlayersResponseDto {
    players: YahooPlayerDto[];
 }
 
-/** Player endpoint variant with requested standard and optional advanced stats. */
-export interface YahooPlayerStatsResponseDto extends YahooPlayerDto {
+/** Player variant with requested standard and optional advanced stats. */
+export interface YahooPlayerWithStatsDto extends YahooPlayerDto {
    playerStats: YahooPlayerStatsDto;
    playerAdvancedStats?: YahooPlayerStatsDto;
 }
 
-/** Player endpoint variant with ownership; captured Yahoo response may contain `''`. */
-export interface YahooPlayerOwnershipResponseDto extends YahooPlayerDto {
+/** Player variant with ownership; captured Yahoo response may contain `''`. */
+export interface YahooPlayerWithOwnershipDto extends YahooPlayerDto {
    ownership: string | YahooPlayerOwnershipDto;
 }
 
@@ -681,7 +681,7 @@ export interface YahooPlayerOwnershipResponseDto extends YahooPlayerDto {
  * Provisional player percent-owned endpoint variant.
  * No captured fixture currently verifies this shape or field availability.
  */
-export interface YahooPlayerPercentOwnedResponseDto extends YahooPlayerDto {
+export interface YahooPlayerWithPercentOwnedDto extends YahooPlayerDto {
    percentOwned: YahooPlayerPercentOwnedDto;
 }
 
@@ -689,8 +689,7 @@ export interface YahooPlayerPercentOwnedResponseDto extends YahooPlayerDto {
  * Provisional player draft-analysis endpoint variant.
  * No captured fixture currently verifies this shape or field availability.
  */
-export interface YahooPlayerDraftAnalysisResponseDto
-   extends YahooPlayerDto {
+export interface YahooPlayerWithDraftAnalysisDto extends YahooPlayerDto {
    draftAnalysis: YahooPlayerDraftAnalysisDto;
 }
 
@@ -811,10 +810,6 @@ export interface YahooLoggedInUserDto {
    guid: string;
    /** Games returned by a logged-in-user games traversal. */
    games?: YahooGameDto[];
-   /** Teams returned directly by a user traversal, when requested. */
-   teams?: YahooTeamDto[];
-   /** Leagues returned directly by a user traversal, when requested. */
-   leagues?: YahooLeagueDto[];
 }
 
 /** Logged-in users wrapper after Yahoo's collection normalization. */
@@ -873,18 +868,18 @@ export interface YahooTransactionPlayerDto {
    };
 }
 
-/** Normalized singular-transaction wrapper retained for resource response typing. */
+/** Provisional singular-transaction root envelope; root routes are not stable. */
 export interface YahooTransactionResponseDto {
    transaction: YahooTransactionDto;
 }
 
-/** Normalized transaction collection after wrapper normalization. */
+/** Provisional transaction-collection root envelope; root routes are not stable. */
 export interface YahooTransactionsResponseDto {
    transactions: YahooTransactionDto[];
 }
 
-/** League endpoint variant with transaction reads nested on league metadata. */
-export interface YahooLeagueTransactionsResponseDto extends YahooLeagueDto {
+/** League variant with transaction reads nested on league metadata. */
+export interface YahooLeagueWithTransactionsDto extends YahooLeagueDto {
    transactions: YahooTransactionDto[];
 }
 

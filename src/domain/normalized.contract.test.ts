@@ -25,19 +25,19 @@ import userTeamsFixture from '../../tests/fixtures/data/user-teams.json';
 import type {
    YahooGameDto,
    YahooLeagueDto,
-   YahooLeagueScoreboardResponseDto,
-   YahooLeagueSettingsResponseDto,
-   YahooLeagueStandingsResponseDto,
-   YahooLeagueTransactionsResponseDto,
+   YahooLeagueWithScoreboardDto,
+   YahooLeagueWithSettingsDto,
+   YahooLeagueWithStandingsDto,
+   YahooLeagueWithTransactionsDto,
    YahooLoggedInUserDto,
    YahooPlayerDto,
-   YahooPlayerOwnershipResponseDto,
-   YahooPlayerStatsResponseDto,
+   YahooPlayerWithOwnershipDto,
+   YahooPlayerWithStatsDto,
    YahooRosterUpdateConfirmationDto,
    YahooTeamDto,
-   YahooTeamMatchupsResponseDto,
-   YahooTeamRosterResponseDto,
-   YahooTeamStatsResponseDto,
+   YahooTeamWithMatchupsDto,
+   YahooTeamWithRosterDto,
+   YahooTeamWithStatsDto,
 } from '../index.js';
 
 /*
@@ -95,13 +95,13 @@ describe('normalized Yahoo DTO fixture contracts', () => {
 
    test('preserves league subresources at their observed nesting', () => {
       const league = typed<YahooLeagueDto>(leagueFixture);
-      const settings = typed<YahooLeagueSettingsResponseDto>(
+      const settings = typed<YahooLeagueWithSettingsDto>(
          leagueSettingsFixture,
       );
-      const standings = typed<YahooLeagueStandingsResponseDto>(
+      const standings = typed<YahooLeagueWithStandingsDto>(
          leagueStandingsFixture,
       );
-      const scoreboard = typed<YahooLeagueScoreboardResponseDto>(
+      const scoreboard = typed<YahooLeagueWithScoreboardDto>(
          leagueScoreboardFixture,
       );
 
@@ -128,10 +128,9 @@ describe('normalized Yahoo DTO fixture contracts', () => {
 
    test('preserves team roster, stats, and matchup variants', () => {
       const team = typed<YahooTeamDto>(teamFixture);
-      const roster = typed<YahooTeamRosterResponseDto>(teamRosterFixture);
-      const stats = typed<YahooTeamStatsResponseDto>(teamStatsFixture);
-      const matchups =
-         typed<YahooTeamMatchupsResponseDto>(teamMatchupsFixture);
+      const roster = typed<YahooTeamWithRosterDto>(teamRosterFixture);
+      const stats = typed<YahooTeamWithStatsDto>(teamStatsFixture);
+      const matchups = typed<YahooTeamWithMatchupsDto>(teamMatchupsFixture);
 
       expect(team.managers).toBeArray();
       expect(team.hasDraftGrade).toBe(false);
@@ -141,7 +140,7 @@ describe('normalized Yahoo DTO fixture contracts', () => {
          roster.roster.players[0]?.eligiblePositions.position,
       ).toBeArray();
       expect(stats.teamStats.stats[0]?.value).toBeNumber();
-      expect(stats.teamPoints.stats?.[0]?.value).toBe('');
+      expect(stats.teamPoints?.stats?.[0]?.value).toBe('');
       expect(matchups.matchups).toBeArray();
       expect(matchups.matchups[0]?.teams).toHaveLength(2);
       expect(matchups.matchups[0]?.isTied).toBe(false);
@@ -149,8 +148,8 @@ describe('normalized Yahoo DTO fixture contracts', () => {
 
    test('preserves player metadata, mixed stat values, and empty ownership', () => {
       const player = typed<YahooPlayerDto>(playerFixture);
-      const stats = typed<YahooPlayerStatsResponseDto>(playerStatsFixture);
-      const ownership = typed<YahooPlayerOwnershipResponseDto>(
+      const stats = typed<YahooPlayerWithStatsDto>(playerStatsFixture);
+      const ownership = typed<YahooPlayerWithOwnershipDto>(
          playerOwnershipFixture,
       );
 
@@ -186,7 +185,7 @@ describe('normalized Yahoo DTO fixture contracts', () => {
    });
 
    test('preserves transaction collections nested on league reads', () => {
-      const league = typed<YahooLeagueTransactionsResponseDto>(
+      const league = typed<YahooLeagueWithTransactionsDto>(
          leagueTransactionsFixture,
       );
 

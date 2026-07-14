@@ -122,6 +122,26 @@ describe('HttpClient', () => {
    });
 
    describe('get', () => {
+      test('should expose raw XML through a separately typed request path', async () => {
+         const xmlResponse =
+            '<?xml version="1.0"?><fantasy_content><data>raw</data></fantasy_content>';
+         global.fetch = mock(() =>
+            Promise.resolve({
+               ok: true,
+               status: 200,
+               text: () => Promise.resolve(xmlResponse),
+            }),
+         ) as any;
+         const client = new HttpClient(
+            oauth2Client,
+            createTokenProvider(tokens),
+         );
+
+         const result: string = await client.requestRawXml('/test/path');
+
+         expect(result).toBe(xmlResponse);
+      });
+
       test('should make successful GET request', async () => {
          const xmlResponse =
             '<?xml version="1.0"?><fantasy_content><data>test-data</data></fantasy_content>';

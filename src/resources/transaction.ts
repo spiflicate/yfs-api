@@ -1,12 +1,16 @@
 import { ValidationError } from '../client/errors';
 import type { HttpClient as Transport } from '../client/http';
-import type { TransactionBuilder } from './builders/transaction-builder';
+import type { YahooTransactionsResponseDto } from '../domain/normalized';
 import {
    type CollectionParams,
    type RequestState,
    Resource,
-   type ResourceParams,
 } from './resource';
+import type {
+   AppendResponsePath,
+   RequireResponsePath,
+   ResponsePath,
+} from './response-contract';
 import type { TeamKeyLike, TransactionKeyLike } from './types';
 
 export const transactionCollectionParams = [
@@ -36,10 +40,12 @@ type TransactionType =
    | 'pending_trade'
    | 'waiver'
    | 'commish';
-
 type TransactionSubResource = 'metadata' | 'players';
-
-type TransactionCollectionFilters = {
+type TransactionsCollectionParams = CollectionParams<
+   TransactionSubResource,
+   TransactionKeyLike,
+   'transactions'
+> & {
    type?: TransactionType;
    types?: TransactionType[];
    team_key?: TeamKeyLike;
@@ -47,70 +53,58 @@ type TransactionCollectionFilters = {
    count?: number;
 };
 
-type TransactionResourceParams = ResourceParams<
-   TransactionSubResource,
-   TransactionKeyLike
->;
-
-type TransactionsCollectionParams = CollectionParams<
-   TransactionSubResource,
-   TransactionKeyLike,
-   'transactions'
-> &
-   TransactionCollectionFilters;
-
-abstract class TransactionBase<
-   TParams extends TransactionResourceParams | TransactionsCollectionParams,
-> extends Resource<TParams> {
-   players(): this {
-      return this.include('players');
-   }
-
-   include(...subResources: TransactionSubResource[]): this {
-      return this.cloneWith({
-         ...this._params,
-         out: [...this._params.out, ...subResources],
-      });
-   }
-}
-
-export class TransactionResource extends TransactionBase<TransactionResourceParams> {
-   static create(
-      transport: Transport,
-      state: RequestState,
-      key: TransactionKeyLike,
-   ): TransactionResource {
-      return new TransactionResource(transport, state, {
-         kind: 'resource',
-         name: 'transaction',
-         key,
-         out: [],
-      });
-   }
-
-   override async get() {
-      return super.get();
-   }
-   override async put(): Promise<void> {
-      throw new Error('PUT is not yet implemented for transactions.');
-   }
-   override async delete(): Promise<void> {
-      throw new Error('DELETE is not yet implemented for transactions.');
-   }
-}
-
-export class TransactionsCollection extends TransactionBase<TransactionsCollectionParams> {
-   static create(
+export class TransactionsCollection<
+   TRoot = YahooTransactionsResponseDto,
+   TPath extends ResponsePath = readonly ['transactions'],
+   TRequiredPath extends ResponsePath = TPath,
+> extends Resource<
+   TransactionsCollectionParams,
+   RequireResponsePath<TRoot, TRequiredPath>
+> {
+   static create<
+      TRoot = YahooTransactionsResponseDto,
+      TPath extends ResponsePath = readonly ['transactions'],
+   >(
       transport: Transport,
       state: RequestState,
       keys?: TransactionKeyLike[],
-   ): TransactionsCollection {
+   ): TransactionsCollection<TRoot, TPath> {
       return new TransactionsCollection(transport, state, {
          kind: 'collection',
          name: 'transactions',
          out: [],
          ...(keys ? { transaction_keys: keys } : {}),
       });
+   }
+
+   players(): TransactionsCollection<
+      TRoot,
+      TPath,
+      TRequiredPath | AppendResponsePath<TPath, 'players'>
+   > {
+      return this.include('players');
+   }
+
+   include<const TSubResources extends readonly TransactionSubResource[]>(
+      ...subResources: TSubResources
+   ): TransactionsCollection<
+      TRoot,
+      TPath,
+      | TRequiredPath
+      | (TSubResources[number] extends 'players'
+           ? AppendResponsePath<TPath, 'players'>
+           : never)
+   > {
+      return this.cloneWith({
+         out: [...this._params.out, ...subResources],
+      }) as TransactionsCollection<
+         TRoot,
+         TPath,
+         | TRequiredPath
+         | (TSubResources[number] extends 'players'
+              ? AppendResponsePath<TPath, 'players'>
+              : never)
+      >;
    }
 
    protected override serialize(): string {
@@ -136,19 +130,12 @@ export class TransactionsCollection extends TransactionBase<TransactionsCollecti
       return this.cloneWith({ count });
    }
 
-   createTransaction(transaction: TransactionBuilder): Promise<unknown> {
-      return this.post(transaction.toXml());
-   }
-
-   override async get() {
+   override async get(): Promise<
+      RequireResponsePath<TRoot, TRequiredPath>
+   > {
       this.validateSpecialTypeFilters();
       return super.get();
    }
-   // override async post(): Promise<void> {
-   //    throw new Error(
-   //       'POST is not yet implemented for transactions collection.',
-   //    );
-   // }
 
    private validateSpecialTypeFilters(): void {
       if (this._params.team_key) {
