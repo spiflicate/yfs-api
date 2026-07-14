@@ -15,7 +15,9 @@ with pull requests. Do not commit or open routine pull requests directly against
 
 `main` contains only known-good commits and release history. Promote `dev` to
 `main` with a pull request after CI passes and the complete package gate has
-been verified. Create release tags from `main` only.
+been verified. Merge promotion pull requests with a merge commit, then
+fast-forward `dev` to `main` before starting new work. Create release tags from
+`main` only.
 
 ## Local Gates
 
