@@ -13,6 +13,7 @@ coverage
 
 # logs
 logs
+*.log
 _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
@@ -45,6 +46,8 @@ research/.oauth2-tokens.json
 research/tmp/*.json
 research/tmp/**/*.json
 research/tmp/latest-run.txt
+research/xml-vs-json-responses/data/
+tests/tmp/
 
 # Debug and API response files
 scripts/data
