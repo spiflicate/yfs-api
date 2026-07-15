@@ -65,6 +65,14 @@ export interface RequestState {
    segments: string[];
 }
 
+export function copyKeys<T>(keys: readonly T[] | undefined): T[] {
+   if (!Array.isArray(keys)) {
+      throw new TypeError('Keys must be provided as an array.');
+   }
+
+   return [...keys];
+}
+
 type Scalar = string | number | boolean;
 type PathValue = Scalar | null | undefined | readonly Scalar[];
 type HttpMethod = 'get' | 'post' | 'put' | 'delete';

@@ -88,6 +88,9 @@ describe('GameResource', () => {
       expect(playersCollection.toPath()).toBe(
          'game/nfl/players;player_keys=nfl.p.1',
       );
+      expect(() =>
+         Reflect.apply(gameResource.players, gameResource, ['nfl.p.1']),
+      ).toThrow('Keys must be provided as an array.');
    });
 });
 

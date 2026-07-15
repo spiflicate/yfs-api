@@ -8,9 +8,9 @@ describe('UsersCollection', () => {
    test('exposes only validated direct user traversals', () => {
       const users = UsersCollection.create(transport, { segments: [] });
 
-      expect(users.games().toPath()).toBe('users;use_login=1/games');
+      expect(users.games([]).toPath()).toBe('users;use_login=1/games');
       expect(users.teams().toPath()).toBe('users;use_login=1/teams');
-      expect(users.games().teams().toPath()).toBe(
+      expect(users.games([]).teams([]).toPath()).toBe(
          'users;use_login=1/games/teams',
       );
       expect(users).not.toHaveProperty('leagues');

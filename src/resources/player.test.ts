@@ -71,15 +71,15 @@ describe('PlayersCollection', () => {
 
    it('builds ownership children for root and league-nested collections', () => {
       const api = createApi(transport);
-      const rootOwnership = api.players('nfl.p.1').ownership();
-      const rootPercentOwned = api.players('nfl.p.1').percentOwned();
+      const rootOwnership = api.players(['nfl.p.1']).ownership();
+      const rootPercentOwned = api.players(['nfl.p.1']).percentOwned();
       const leagueOwnership = api
          .league('nfl.l.123')
-         .players('nfl.p.1')
+         .players(['nfl.p.1'])
          .ownership();
       const leaguePercentOwned = api
          .league('nfl.l.123')
-         .players('nfl.p.1')
+         .players(['nfl.p.1'])
          .percentOwned();
 
       expect(rootOwnership).toBeInstanceOf(PlayerOwnershipResource);

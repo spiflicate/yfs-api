@@ -6,7 +6,7 @@ const client = new YahooFantasyClient({
    redirectUri: 'https://example.test/oauth/callback',
 });
 
-const response = await client.api().users().games(['nhl']).teams().get();
+const response = await client.api().users().games(['nhl']).teams([]).get();
 for (const user of response.users) {
    for (const game of user.games ?? []) {
       console.log(game.code, game.teams ?? []);

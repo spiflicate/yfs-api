@@ -143,7 +143,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
             // Get user's teams (if any)
             const teams = extractTeams(
-               await client.api().users().games(['nhl']).teams().get(),
+               await client.api().users().games(['nhl']).teams([]).get(),
             );
             expect(teams).toBeDefined();
             expect(Array.isArray(teams)).toBe(true);
@@ -156,7 +156,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
             // Get user's teams
             const teams = extractTeams(
-               await client.api().users().games(['nhl']).teams().get(),
+               await client.api().users().games(['nhl']).teams([]).get(),
             );
 
             if (teams && teams.length > 0) {
@@ -204,7 +204,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
             const searchResult = await client
                .api()
                .game(game.gameKey)
-               .players()
+               .players([])
                .search('McDavid')
                .count(5)
                .get();
@@ -229,7 +229,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
          test('should find free agents in league', async () => {
             // Get user's teams
             const teams = extractTeams(
-               await client.api().users().games(['nhl']).teams().get(),
+               await client.api().users().games(['nhl']).teams([]).get(),
             );
 
             if (teams && teams.length > 0) {
@@ -244,7 +244,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
                const freeAgents = await client
                   .api()
                   .league(leagueKey as `${number}.l.${number}`)
-                  .players()
+                  .players([])
                   .status('FA')
                   .position('C')
                   .sort('60')
@@ -262,7 +262,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
          test('should analyze league standings and matchups', async () => {
             // Get user's teams first
             const teams = extractTeams(
-               await client.api().users().games(['nhl']).teams().get(),
+               await client.api().users().games(['nhl']).teams([]).get(),
             );
 
             if (teams && teams.length > 0) {
@@ -315,7 +315,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasStoredTokens())(
 
             // Get user's teams
             const teams = extractTeams(
-               await client.api().users().games(['nhl']).teams().get(),
+               await client.api().users().games(['nhl']).teams([]).get(),
             );
 
             if (teams && teams.length > 0) {

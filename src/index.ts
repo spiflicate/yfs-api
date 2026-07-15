@@ -24,7 +24,7 @@
  * await client.authenticate(code);
  *
  * // Nested responses preserve users -> games -> teams.
- * const response = await client.api().users().games(['nhl']).teams().get();
+ * const response = await client.api().users().games(['nhl']).teams([]).get();
  * for (const user of response.users) {
  *   for (const game of user.games ?? []) console.log(game.teams ?? []);
  * }

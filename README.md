@@ -57,7 +57,7 @@ Responses preserve the selected parent hierarchy. For example, a nested user
 request returns `users -> games -> teams`, not a top-level teams array.
 
 ```ts
-const response = await client.api().users().games(['nhl']).teams().get();
+const response = await client.api().users().games(['nhl']).teams([]).get();
 
 for (const user of response.users) {
   for (const game of user.games ?? []) {
