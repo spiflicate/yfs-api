@@ -51,9 +51,13 @@ describe('route definition preflight', () => {
    });
 
    test('keeps guide audit route references executable', async () => {
-      const audit = await Bun.file(
-         new URL('GUIDE_AUDIT.md', import.meta.url),
-      ).text();
+      const audit = (
+         await Promise.all(
+            ['GUIDE_AUDIT.md', 'FOLLOW_UP_RUNS.md'].map((file) =>
+               Bun.file(new URL(file, import.meta.url)).text(),
+            ),
+         )
+      ).join('\n');
       const references = [...audit.matchAll(/`+route:([a-z0-9-]+)`+/g)].map(
          (match) => match[1],
       );

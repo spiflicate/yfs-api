@@ -100,6 +100,26 @@ Fixture matrix (sanitized in place):
 const typed = <T>(value: T): T => value;
 
 describe('normalized Yahoo DTO fixture contracts', () => {
+   test('represents live-verified game dates and roster positions', () => {
+      const metadata = typed<
+         Pick<YahooGameDto, 'dates' | 'rosterPositions'>
+      >({
+         dates: {
+            season: {
+               startDate: '2025-10-07',
+               endDate: '2026-04-16',
+            },
+         },
+         rosterPositions: [{}, { observedButUnverified: 'value' }],
+      });
+
+      expect(metadata.dates?.season).toEqual({
+         startDate: '2025-10-07',
+         endDate: '2026-04-16',
+      });
+      expect(metadata.rosterPositions).toHaveLength(2);
+   });
+
    test('covers singular and expanded games for all four sports', () => {
       const singular = [
          typed<YahooGameDto>(gameNhlFixture),

@@ -140,7 +140,7 @@ presenting removed APIs as current.
 
 Update current auth/token/integration guides. Mark obsolete design documents as
 historical and remove them from current navigation rather than preserving false
-instructions. Keep `docs/CONTEXT.MD` as the current domain glossary; it defines
+instructions. Keep `docs/CONTEXT.md` as the current domain glossary; it defines
 stable Yahoo terminology and is not an obsolete implementation guide. Ensure
 package-level JSDoc names and examples import `yfs-api`, not a prior package name.
 

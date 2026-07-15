@@ -52,6 +52,8 @@ These documented claims are the first expansion beyond the existing matrix. Resu
 
 ## Remaining Backlog
 
+Detailed run recipes and evidence gates are maintained in [FOLLOW_UP_RUNS.md](FOLLOW_UP_RUNS.md). Editorial consolidation and redundant-document cleanup are scheduled in [docs/DOCUMENTATION_CORRECTIONS.md](../../docs/DOCUMENTATION_CORRECTIONS.md).
+
 1. Add resource and collection `out` cases without assuming the generic rule works for children that require filters.
 2. Add bare/default team stats, roster, and matchups alongside explicit period variants.
 3. Add player weekly and date stats with NFL versus MLB/NBA/NHL applicability.

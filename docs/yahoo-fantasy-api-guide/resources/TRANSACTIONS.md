@@ -24,6 +24,8 @@ GET /leagues;league_keys={key1},{key2}/transactions
 
 The transaction resource defaults to `metadata` and `players`.
 
+**Current evidence**: `/league/{league_key}/transactions;count=5` passed for an NHL public league fixture. Direct transaction-key paths, keyed Transactions collections, and Leagues-collection descendants are official but lacked current concrete evidence. Cross-sport transaction keys are unavailable.
+
 Filters:
 
 | Filter | Meaning |
@@ -42,8 +44,6 @@ An unfiltered league feed contains completed transactions. Discover pending waiv
 ## Create
 
 `POST /league/{league_key}/transactions` with XML to add, drop, add/drop, or propose a trade. A claim for a player on waivers returns a pending waiver transaction rather than an immediate roster change. FAAB leagues accept `faab_bid` in the transaction body.
-
-Minimal add example:
 
 ```xml
 <fantasy_content>
@@ -68,4 +68,4 @@ Minimal add example:
 
 Mutation permissions and timing are league-dependent. Validate destructive workflows against a disposable league before automating them.
 
-Validation note: league-qualified transaction collections have passed live. Direct transaction-key paths and the top-level transactions collection are official but lacked current concrete keys in the latest route-validation set.
+Mutation implementations are intentionally not part of the stable package-root API. Transaction DTOs describe read responses only.

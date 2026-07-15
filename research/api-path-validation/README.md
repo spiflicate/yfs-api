@@ -145,6 +145,8 @@ The catalog is compared against Yahoo's current [Fantasy Sports API reference](h
 
 See [GUIDE_AUDIT.md](GUIDE_AUDIT.md) for the current source comparison, known contradictions, deterministic links to route definitions, and coverage backlog.
 
+See [FOLLOW_UP_RUNS.md](FOLLOW_UP_RUNS.md) for repeatable run queues and the evidence required before changing SDK or guide support claims.
+
 ## Result Meanings
 
 | Result | Meaning |

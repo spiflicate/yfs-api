@@ -1,6 +1,6 @@
 # Yahoo Fantasy API Path Reference
 
-This table combines Yahoo's live endpoint tables with successful route probes. See [ALLOWED_CHAIN_MATRIX.md](ALLOWED_CHAIN_MATRIX.md) for evidence boundaries.
+This table summarises resource children and filters. See [ALLOWED_CHAIN_MATRIX.md](ALLOWED_CHAIN_MATRIX.md) for evidence boundaries and [PATH_CHEAT_SHEET.md](PATH_CHEAT_SHEET.md) for copy-ready paths.
 
 | Node | Children | Parameters and filters |
 | --- | --- | --- |
@@ -29,9 +29,7 @@ This table combines Yahoo's live endpoint tables with successful route probes. S
 | `player_keys` | `players` | Full player keys |
 | `transaction_keys` | `transactions` | Full transaction keys |
 
-## Player Filters
-
-These are primarily league-context filters.
+## Player Filters (league context)
 
 | Filter | Values |
 | --- | --- |
@@ -39,7 +37,7 @@ These are primarily league-context filters.
 | `status` | `A`, `FA`, `W`, `T`, `K` |
 | `search` | Partial player name |
 | `sort` | Stat ID, `NAME`, `OR`, `AR`, `PTS` |
-| `sort_type` | `season`, `week`, `date`, `lastweek`, `lastmonth`, where sport-appropriate |
+| `sort_type` | `season`, `week`, `date`, `lastweek`, `lastmonth` |
 | `sort_season`, `sort_week`, `sort_date` | Coverage value for the sort |
 | `start`, `count` | Zero-based offset and positive page size |
 
@@ -49,7 +47,7 @@ These are primarily league-context filters.
 | --- | --- |
 | `type` | `add`, `drop`, `commish`, `trade`; `waiver` or `pending_trade` with `team_key` |
 | `types` | Comma-separated valid types |
-| `team_key` | Team in the league; required to discover relevant pending transactions |
+| `team_key` | Required to discover pending transactions |
 | `count` | Positive result limit |
 
 ## Coverage Filters
@@ -63,6 +61,6 @@ These are primarily league-context filters.
 
 ## Live-Observed Gaps
 
-- `?format=json` is implemented in the repository's format research although Yahoo's current Fantasy page only demonstrates XML; it is not covered by the static route suite.
-- `league_ids` and `team_ids` have worked on nested collection segments, but remain provisional; prefer full-key filters.
-- Roster PUT success can be a small `{ confirmation: { status: "success" } }` response; invalid moves can return errors such as `That position has already been filled.`
+- `?format=json` is observed-only; the current guide does not explain it.
+- `league_ids` and `team_ids` have worked on nested collection segments but remain provisional.
+- Roster PUT success returns a compact `{ confirmation: { status: "success" } }` response; invalid moves return errors such as `That position has already been filled.`

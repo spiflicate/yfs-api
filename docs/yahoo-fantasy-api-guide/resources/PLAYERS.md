@@ -4,11 +4,7 @@ Official source: [Player APIs](https://sports.yahoo.com/developer/docs/#player-a
 
 A player is an athlete in a game/season context.
 
-Player key:
-
-```text
-{game_key}.p.{player_id}
-```
+Player key: `{game_key}.p.{player_id}`
 
 ## Resource
 
@@ -33,6 +29,8 @@ GET /player/{player_key}
 
 Use league context when you need fantasy points, scoring interpretation, or ownership state.
 
+**Current evidence**: top-level player metadata by key passed four-sport. A composed game-to-league player search passed on the NHL fixture. Direct league player routes and player child routes were not exercised by the current run; private ownership and draft-analysis evidence is historical-private.
+
 ## Collection
 
 ```text
@@ -43,11 +41,20 @@ Use league context when you need fantasy points, scoring interpretation, or owne
 /players;player_keys={player_key1},{player_key2}
 ```
 
-Player children also apply beneath collections:
+Yahoo documents player-child inheritance beneath collections, but these forms were not exercised by the current route suite:
 
 ```text
 /players;player_keys={key1},{key2}/stats
 /league/{league_key}/players;player_keys={key}/ownership
+```
+
+### Search
+
+Game-context player `search` is **observed-only** — it passes live but Yahoo's current filter table only documents `search` in league context. For documented behavior, prefer keyed player access:
+
+```text
+/game/{game_key}/players;search=mahomes;count=5              # OBS
+/game/{game_key}/players;player_keys={key1},{key2}           # 4S documented
 ```
 
 ## Filters

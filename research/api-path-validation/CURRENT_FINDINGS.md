@@ -76,7 +76,7 @@ After authorization, private discovery will identify account teams, derive leagu
 - NFL, MLB, and NBA still need reproducible public league fixtures for cross-sport league comparisons.
 - Direct transaction and top-level keyed transaction routes need current private transaction fixtures.
 - Team `standings`, team `draftresults`, and player `draft_analysis` are in the new matrix but await refreshed private authorization.
-- `games;...;out=leagues` is a documented/runtime discrepancy: NFL, MLB, NBA, and NHL each returned `Bad Request: league ids expected` in dedicated run `2026-07-15T19-10-59-454Z`. It remains in the invalid/provisional probe set so a future runtime change is visible.
+- `games;game_codes=...;out=leagues,players` is a documented/runtime discrepancy: NFL, MLB, NBA, and NHL each returned `Bad Request: league ids expected` in dedicated run `2026-07-15T19-10-59-454Z`. It remains in the invalid/provisional probe set so a future runtime change is visible.
 - `/users;use_login=1/leagues` remains a known structural rejection; league discovery must pass through `games`.
 
 ## Evidence Policy

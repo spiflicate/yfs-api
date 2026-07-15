@@ -56,7 +56,7 @@ response model or route behavior.
 - Commit messages follow Conventional Commits, for example
   `feat(research): add test data for Yahoo fantasy leagues`.
 
-The domain vocabulary must remain consistent with `docs/CONTEXT.MD`: use
+The domain vocabulary must remain consistent with `docs/CONTEXT.md`: use
 resource, collection, sub-resource, parameter, response, public request, and
 private request as defined there.
 

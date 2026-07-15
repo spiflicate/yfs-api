@@ -2,12 +2,12 @@
 
 Working record for the 2026-07-15 review of Yahoo's live [Fantasy Sports API documentation](https://sports.yahoo.com/developer/docs/).
 
-This file records editorial and factual changes so future reviews can distinguish intentional simplification from accidental loss.
+This file records editorial and factual changes so future reviews can distinguish intentional simplification from accidental loss. The editorial schedule is maintained in [docs/DOCUMENTATION_CORRECTIONS.md](../DOCUMENTATION_CORRECTIONS.md); this file only records history.
 
 ## Sources Reviewed
 
 - Yahoo live Fantasy Sports page, scraped 2026-07-15; Firecrawl scrape ID `019f66c8-2246-75b1-b725-ca8a3f3b5984`.
-- Previous local capture in `docs/new-api-doc-page/sports-yahoo-com-docs.md`, generated 2026-05-14.
+- Archived local capture in [`docs/archive/yahoo-developer-docs-capture-2026-05-14.md`](../archive/yahoo-developer-docs-capture-2026-05-14.md), generated 2026-05-14.
 - Latest successful static route report in `research/api-path-validation/actionable-route-report.md`; counts are read from the generated report rather than duplicated here.
 - Known failures and provisional findings in `research/api-path-validation/CURRENT_FINDINGS.md`.
 - One-off live behavior notes in `research/api-path-validation/API_NOTES.md`.
@@ -44,7 +44,7 @@ The July live page has the same major API surface as the May capture. Most scrap
 | `/users;use_login=1/leagues` | Marked unsupported | Live structural rejection: `subresource leagues not supported` |
 | `/users;use_login=1;out=leagues` | Marked unsupported | Same direct structural rejection |
 | Unfiltered `/game/{key}/leagues` examples | Replaced with `leagues;league_keys=...` | Yahoo's own table uses keys; live unfiltered requests can return `league ids expected` |
-| Broad `games;...;out=leagues` promotion | Marked provisional | Repeated live failures despite generic official composition language |
+| Broad `games;game_codes=...;out=leagues,players` promotion | Marked as a documented/runtime discrepancy | Repeated live failures despite generic official composition language |
 | Claim that team children were only `roster`, `matchups`, `stats` | Expanded | Yahoo currently also lists `standings` and `draftresults` |
 | Claim that player children were only `stats`, `ownership`, `percent_owned` | Expanded | Yahoo currently lists `draft_analysis` |
 | Large copied XML samples | Removed | They were stale, duplicated Yahoo, and obscured route contracts |
@@ -59,10 +59,10 @@ These facts are useful but should remain labeled by evidence rather than present
 | Fact | Status | Evidence or caution |
 | --- | --- | --- |
 | `?format=json` alternate response path | Repository-supported; revalidation recommended | Used by repository OAuth/format research code; writes still use XML |
-| `/users;use_login=1/teams` works | Official elsewhere and validated | Yahoo's User table omits it, but the Teams table includes it |
+| `/users;use_login=1/teams` works | Historical-private | Yahoo's User table omits it, but the Teams table includes it |
 | Deep user chains such as `users/games/leagues/players` work | Validated | Generic composition plus successful private route probes |
 | Teams collection can descend through `roster/players` | Validated | Yahoo says team children inherit, while also saying only one roster period can be requested |
-| Players collections support `ownership` and `percent_owned` | Validated | Follows Yahoo's generic inheritance rule and passed live |
+| Players collections support `ownership` and `percent_owned` | Historical-private | Follows Yahoo's generic inheritance rule and passed in a prior private session |
 | Nested `league_ids` and `team_ids` filters can work | Provisional | Limited one-off evidence; full keys remain the documented, recommended form |
 | Roster players can expose deeper player children | Provisional | `roster/players/stats` worked in a probe; broader bounds are not established |
 | OAuth 1.0 signed public requests remain usable | Compatibility observation | Yahoo's current Fantasy page declares OAuth 2.0 required; do not infer long-term support |
@@ -75,15 +75,9 @@ These facts are useful but should remain labeled by evidence rather than present
 - Several current links have malformed braces, and sample responses still contain 2019/2020 data beneath 2025-oriented prose. Those literals are examples, not current fixtures.
 - Yahoo calls `metadata` a sub-resource while many examples obtain it by omitting `/metadata`. This guide treats metadata as the default representation.
 
-## Follow-Up Validation Queue
+## Follow-Up Ownership
 
-- Keep the passing four-sport `game/{key}/dates`, `stat_categories`, `position_types`, and `roster_positions` cases in the static route suite.
-- Extend current NHL evidence for `league/{key}/draftresults`; `team/{key}/standings` and `team/{key}/draftresults` still need refreshed private authorization.
-- Probe `player/{key}/draft_analysis` with a current-season player.
-- Refresh direct transaction and top-level transactions fixtures with a current transaction key.
-- Establish exact support boundaries for `roster/players/{player_child}`.
-- Preserve `games;...;out=leagues` as a documented/runtime discrepancy: the 2026-07-15 four-sport probe returned `league ids expected` for every sport.
-- Use `research/api-path-validation/GUIDE_AUDIT.md` as the route-level claim/evidence backlog and keep every referenced route ID executable.
+Validation work is scheduled in [`research/api-path-validation/FOLLOW_UP_RUNS.md`](../../research/api-path-validation/FOLLOW_UP_RUNS.md). Editorial work is scheduled in [`docs/DOCUMENTATION_CORRECTIONS.md`](../DOCUMENTATION_CORRECTIONS.md). This audit does not maintain a separate queue.
 
 ## Review Policy
 

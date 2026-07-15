@@ -44,6 +44,8 @@ What do you know?
    `- Involved players -> /transaction/{transaction_key}/players
 ```
 
+See [ALLOWED_CHAIN_MATRIX.md](ALLOWED_CHAIN_MATRIX.md) for evidence scope and [PATH_CHEAT_SHEET.md](PATH_CHEAT_SHEET.md) for copy-ready paths.
+
 ## Fast Rules
 
 - Start with `users` for "my" games or teams.

@@ -4,11 +4,9 @@ Official source: [Team APIs](https://sports.yahoo.com/developer/docs/#team-apis)
 
 A team belongs to one league and has one or more managers. A roster is that team's lineup for one scoring period.
 
-Team key:
+Team key: `{game_key}.l.{league_id}.t.{team_id}`
 
-```text
-{game_key}.l.{league_id}.t.{team_id}
-```
+**Current evidence**: `/league/{key}/teams`, keyed Leagues/Teams collections, and `/team/{key}/players` passed for an NHL public league. Other direct team children and user-scoped teams are historical-private (not refreshed in the current baseline).
 
 ## Team Resource
 
@@ -31,11 +29,9 @@ Yahoo also documents team-qualified player collections:
 /team/{team_key}/players
 ```
 
-Examples:
-
 ```text
 /team/{team_key}/standings
-/team/{team_key}/stats;type=week;week=2 # NFL
+/team/{team_key}/stats;type=week;week=2
 /team/{team_key}/matchups;weeks=1,3,6
 /team/{team_key}/draftresults
 /team/{team_key};out=roster,stats,matchups
@@ -50,8 +46,6 @@ Examples:
 /users;use_login=1/teams
 /users;use_login=1/games;game_keys={game_key}/teams
 ```
-
-Yahoo says team children apply beneath a teams collection. Core roster, stats, and matchup paths have passed live with `team_keys`.
 
 ## Roster Resource
 

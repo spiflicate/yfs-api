@@ -2,237 +2,60 @@
 
 This directory contains integration tests for the Yahoo Fantasy Sports API wrapper. These tests verify real API interactions and end-to-end workflows.
 
-## Directory Structure
+## Canonical Setup
+
+See [docs/INTEGRATION_TEST_SETUP.md](../../docs/INTEGRATION_TEST_SETUP.md) for the authoritative command reference, destructive-test gating policy, and credential requirements.
+
+## Suite Structure
 
 ```
 integration/
-├── auth/           # Authentication tests
-│   ├── oauth1.test.ts   # OAuth 1.0 (Public Mode) tests
-│   └── oauth2.test.ts   # OAuth 2.0 (User Auth) tests
-├── workflows/      # End-to-end workflow tests
-│   └── e2e.test.ts      # Complete user workflows
-│   └── trade-drop-semantics.test.ts # Opt-in write semantics probe
-└── helpers/        # Test utilities
-    ├── testConfig.ts    # Configuration helpers
-    └── testStorage.ts   # Token storage helpers
-```
-
-## Prerequisites
-
-Integration tests require valid Yahoo API credentials and (for user auth tests) valid access tokens.
-
-### Required Environment Variables
-
-#### For All Tests
-- `YAHOO_CLIENT_ID` - Your Yahoo Developer App Client ID
-- `YAHOO_CLIENT_SECRET` - Your Yahoo Developer App Client Secret
-
-#### For OAuth 2.0 User Auth Tests
-- `YAHOO_REDIRECT_URI` - OAuth redirect URI (optional, defaults to 'oob')
-- `YAHOO_ACCESS_TOKEN` - Valid access token
-- `YAHOO_REFRESH_TOKEN` - Valid refresh token
-- `YAHOO_TOKEN_EXPIRES_AT` - Token expiration timestamp (milliseconds)
-
-### Optional Environment Variables
-- `DEBUG=true` - Enable debug logging
-- `SKIP_INTEGRATION_TESTS=true` - Skip all integration tests
-- `RUN_TRADE_DROP_SEMANTICS_TESTS=true` - Enable live write test for trade/drop semantics
-- `TEST_TRADER_TEAM_KEY` - Team key proposing the trade (for write semantics test)
-- `TEST_TRADEE_TEAM_KEY` - Team key receiving the trade (for write semantics test)
-- `TEST_SENT_PLAYER_KEY` - Player key sent by trader (for write semantics test)
-- `TEST_DROPPED_PLAYER_KEY` - Player key dropped by trader in pending trade (for write semantics test)
-
-## Running the Tests
-
-### Run All Integration Tests
-```bash
-bun test tests/integration
-```
-
-### Run Specific Test Suites
-
-#### OAuth Tests
-```bash
-bun test tests/integration/auth/oauth1.test.ts  # Public mode
-bun test tests/integration/auth/oauth2.test.ts  # User auth mode
-```
-
-#### Workflow Tests
-```bash
-bun test tests/integration/workflows/e2e.test.ts
-bun test tests/integration/workflows/trade-drop-semantics.test.ts
+├── auth/              # Authentication tests (oauth1, oauth2)
+├── destructive/       # Mutation probes (never selected by normal command)
+│   └── trade-drop-semantics.test.ts
+├── workflows/         # End-to-end workflow tests
+│   └── e2e.test.ts
+└── helpers/           # Test utilities
+    ├── authFlow.ts    # Manual-test auth helper (see docs/AUTH_FLOW_HELPER.md)
+    ├── testConfig.ts  # Configuration helpers
+    └── testStorage.ts # Token storage helpers
 ```
 
 ## Test Categories
 
-### 1. Authentication Tests (`auth/`)
+### Authentication Tests (`auth/`)
 
-#### OAuth 1.0 (Public Mode) - `oauth1.test.ts`
-Tests public API access without user authorization:
-- ✓ Client configuration
-- ✓ Public endpoints (games, player search)
-- ✓ Multiple concurrent requests
-- ✓ Error handling
+- **OAuth 1.0** (`oauth1.test.ts`): public API access without user authorization.
+- **OAuth 2.0** (`oauth2.test.ts`): user authentication flow with token management.
 
-**Requirements:** `YAHOO_CLIENT_ID`, `YAHOO_CLIENT_SECRET`
+### Workflow Tests (`workflows/`)
 
-#### OAuth 2.0 (User Auth) - `oauth2.test.ts`
-Tests user authentication flow:
-- ✓ Authorization URL generation
-- ✓ Token management
-- ✓ Token refresh
-- ✓ Token storage integration
-- ✓ Authenticated API access
+- **End-to-end** (`e2e.test.ts`): complete user workflows for discovery, teams, players, and league analysis.
 
-**Requirements:** Valid OAuth tokens
+### Destructive Tests (`destructive/`)
 
-### 2. Workflow Tests (`workflows/`)
+- **Trade/drop semantics** (`trade-drop-semantics.test.ts`): opt-in write behavior probe, selected only by `test:integration:destructive`.
 
-#### End-to-End - `e2e.test.ts`
-Tests complete user workflows:
-- ✓ Authentication flow
-- ✓ User and league discovery
-- ✓ Team management
-- ✓ Player search and analysis
-- ✓ League analysis
-- ✓ Cross-resource data integrity
-- ✓ Error recovery
+### Helpers (`helpers/`)
 
-**Requirements:** Valid tokens, optional league/team keys
+See the [helper README](helpers/README.md) and [docs/AUTH_FLOW_HELPER.md](../../docs/AUTH_FLOW_HELPER.md) for auth helper policy.
 
-## Setting Up for Testing
+## Running Tests
 
-### 1. Create Yahoo Developer App
-1. Go to [Yahoo Developer Network](https://developer.yahoo.com/apps/)
-2. Create a new app
-3. Note your Client ID and Client Secret
-
-### 2. Get OAuth Tokens (for user auth tests)
-
-#### Option A: Use Example Scripts
 ```bash
-# Run authentication example
-YAHOO_CLIENT_ID=your_id \
-YAHOO_CLIENT_SECRET=your_secret \
-YAHOO_REDIRECT_URI=oob \
-bun run examples/hockey/01-authentication.ts
+# Normal read-only integration tests
+bun run test:integration
+
+# Destructive mutation tests (requires explicit opt-in)
+bun run test:integration:destructive
+
+# Type-check only (no network access required)
+bun run type-check:integration
 ```
-
-#### Option B: Use Test Token File
-Create a `.test-tokens.json` file (git-ignored):
-```json
-{
-  "accessToken": "your_access_token",
-  "refreshToken": "your_refresh_token",
-  "expiresAt": 1234567890123,
-  "tokenType": "bearer",
-  "expiresIn": 3600
-}
-```
-
-### 3. Set Environment Variables
-
-Create a `.env.test` file:
-```bash
-# Required for all tests
-YAHOO_CLIENT_ID=your_client_id
-YAHOO_CLIENT_SECRET=your_client_secret
-
-# Required for OAuth 2.0 tests
-YAHOO_ACCESS_TOKEN=your_access_token
-YAHOO_REFRESH_TOKEN=your_refresh_token
-YAHOO_TOKEN_EXPIRES_AT=1234567890123
-
-# Optional
-DEBUG=false
-SKIP_INTEGRATION_TESTS=false
-```
-
-Load environment variables:
-```bash
-source .env.test
-bun test tests/integration
-```
-
-## Test Behavior
-
-### Conditional Execution
-Tests automatically skip when:
-- `SKIP_INTEGRATION_TESTS=true` is set
-- Required credentials are missing
-- Specific resource keys are not provided
-
-### Network Requests
-Integration tests make real API calls to Yahoo Fantasy Sports:
-- **Rate Limiting:** Tests respect API rate limits
-- **Retries:** Failed requests are retried automatically
-- **Timeouts:** Default 30-second timeout per request
-
-### Token Management
-- Tests use real OAuth tokens
-- Tokens are automatically refreshed when expired
-- Token storage is tested with in-memory implementation
-
-## Troubleshooting
-
-### Tests Are Skipped
-- Verify all required environment variables are set
-- Check that tokens haven't expired
-- Ensure Yahoo API credentials are valid
-
-### Authentication Errors
-- Tokens may have expired - regenerate them
-- Check Client ID and Client Secret are correct
-- Verify redirect URI matches your app settings
-
-### API Errors
-- Check Yahoo Fantasy API status
-- Verify league/team keys are valid and accessible
-- Ensure your Yahoo app has appropriate permissions
-
-### Rate Limiting
-- Tests may be rate-limited by Yahoo API
-- Wait a few minutes and retry
-- Consider running fewer tests concurrently
 
 ## Best Practices
 
-1. **Don't commit credentials** - Use environment variables
-2. **Use test accounts** - Don't use production leagues for testing
-3. **Run periodically** - API behavior can change
-4. **Monitor failures** - Integration test failures may indicate API changes
-5. **Keep tokens fresh** - Regenerate test tokens regularly
-
-## CI/CD Integration
-
-For continuous integration:
-
-```yaml
-# Example GitHub Actions
-env:
-  YAHOO_CLIENT_ID: ${{ secrets.YAHOO_CLIENT_ID }}
-  YAHOO_CLIENT_SECRET: ${{ secrets.YAHOO_CLIENT_SECRET }}
-  YAHOO_ACCESS_TOKEN: ${{ secrets.YAHOO_ACCESS_TOKEN }}
-  YAHOO_REFRESH_TOKEN: ${{ secrets.YAHOO_REFRESH_TOKEN }}
-  YAHOO_TOKEN_EXPIRES_AT: ${{ secrets.YAHOO_TOKEN_EXPIRES_AT }}
-  
-steps:
-  - name: Run Integration Tests
-    run: bun test tests/integration
-```
-
-**Note:** Consider skipping integration tests in CI if tokens are unavailable:
-```yaml
-env:
-  SKIP_INTEGRATION_TESTS: true
-```
-
-## Contributing
-
-When adding new integration tests:
-1. Follow existing patterns for test organization
-2. Use `describe.skipIf()` for conditional execution
-3. Add appropriate documentation
-4. Handle missing credentials gracefully
-5. Clean up any test data created
-6. Update this README with new test information
+1. Do not commit credentials — use environment variables or `.env.test`.
+2. Use test leagues and disposable accounts.
+3. Run periodically to detect API drift.
+4. When adding tests, use `describe.skipIf()` for conditional execution and follow existing organization patterns.

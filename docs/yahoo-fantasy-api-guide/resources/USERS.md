@@ -4,7 +4,9 @@ Official source: [User APIs](https://sports.yahoo.com/developer/docs/#user-apis)
 
 Yahoo only exposes fantasy information for the authorized user. Use the Users collection with `use_login=1`; Yahoo does not document a usable direct `/user/{guid}` route.
 
-## Safe Paths
+**Current evidence**: user routes are historical-private. They were validated in a prior session with private OAuth credentials but were not refreshed in the current evidence baseline due to the authentication blocker.
+
+## Documented And Historical Paths
 
 ```text
 /users;use_login=1
@@ -32,4 +34,4 @@ Live requests received `subresource leagues not supported`. League discovery mus
 /users;use_login=1/games/leagues
 ```
 
-The direct `/users;use_login=1/teams` path is both listed in Yahoo's Teams collection table and live-validated, even though Yahoo's User sub-resource table only lists game-based paths.
+The direct `/users;use_login=1/teams` path is both listed in Yahoo's Teams collection table and passed in the prior private session, even though Yahoo's User sub-resource table only lists game-based paths.

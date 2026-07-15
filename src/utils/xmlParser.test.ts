@@ -79,6 +79,45 @@ describe('xmlParser', () => {
          expect(result.game.gameKey).toBe('406');
       });
 
+      test('should normalize game dates and roster positions', () => {
+         const xml = `
+				<fantasy_content>
+					<game>
+						<dates>
+							<season>
+								<start_date>2025-10-07</start_date>
+								<end_date>2026-04-16</end_date>
+							</season>
+						</dates>
+						<roster_positions>
+							<roster_position>
+								<position>C</position>
+								<position_type>P</position_type>
+								<count>2</count>
+							</roster_position>
+						</roster_positions>
+					</game>
+				</fantasy_content>
+			`;
+
+         const result = parseYahooXML<{
+            game: {
+               dates: {
+                  season: { startDate: string; endDate: string };
+               };
+               rosterPositions: Record<string, unknown>[];
+            };
+         }>(xml);
+
+         expect(result.game.dates?.season).toEqual({
+            startDate: '2025-10-07',
+            endDate: '2026-04-16',
+         });
+         expect(result.game.rosterPositions).toEqual([
+            { position: 'C', positionType: 'P', count: 2 },
+         ]);
+      });
+
       test('should unwrap repeated items into arrays', () => {
          const xml = `
 				<fantasy_content>
