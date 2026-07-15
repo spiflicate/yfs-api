@@ -42,6 +42,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .oauth2-tokens-server.json
 .test-tokens.json
 .tokens.json
+.yfs-tokens.json
 research/.oauth2-tokens.json
 research/tmp/*.json
 research/tmp/**/*.json
@@ -58,3 +59,4 @@ dev-docs
 kkupfl-scripts
 
 research/prior-art/
+.firecrawl

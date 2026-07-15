@@ -1,863 +1,1134 @@
-# Actionable Route Report
+# Cross-Sport Yahoo Route Report
 
-- Mode: all
-- Invalid definitions included: no
-- Routes selected: 84
-- Invalid routes selected: 0
-- Routes passed: 84
-- Routes failed: 0
-- Routes skipped: 0
+- Run: 2026-07-15T19-33-25-809Z
+- Sports: nfl, mlb, nba, nhl
+- Mode: public
+- Route IDs: all selected routes
+- Source revision: 89980fd831978c5b0fada0ee848fc0e11ab38f46 + working tree changes
+- Source fingerprint: sha256:5ed8734b495f37dbff80fcf926288e7e883fe3515e77c2ae80de20b6ac2df31c
+- Non-sensitive profile fingerprint: sha256:136bbe2ec664892c2139c4578809cd85204b40d1cba46f30daa850b40c90fcb1
+- Profile overrides: defaults only
+- Bun: 1.3.14
+- Strict shapes: true
+- Require complete: false
+- Include invalid: false
+- Non-interactive auth: false
+- Detailed artifacts: omitted from tracked summary
+- Scenarios: 120
+- Passed: 75
+- Failed: 0
+- Fixture unavailable: 45
+- Expected rejection: 0
 - Shape warnings: 0
 
-## Failure Split
-
-- Likely unsupported routes: 0
-- Likely bad test parameters or fixtures: 0
-- league_keys reprobe passed: 0
-- league_keys reprobe still failed: 0
-- Auth or scope blockers: 0
-- Empty-data probes: 0
-- Unknown failures: 0
-
-## Implementation Guidance
-
-### keep-as-supported
-
-Route succeeded live. Keep as supported in builder typing or docs.
-
-#### public-game-by-id
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /game/465
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/001-public-game-by-id-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-by-code
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /game/nhl
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/002-public-game-by-code-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/003-public-game-leagues-by-key-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-players
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /game/nhl/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/004-public-game-players-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-weeks
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /game/nhl/game_weeks
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/005-public-game-weeks-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-out
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /game/nhl;out=players,game_weeks
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/006-public-game-out-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-available
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /games;is_available=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/007-public-games-available-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-metadata
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /games;is_available=1/metadata
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/008-public-games-metadata-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-by-code-season
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /games;game_codes=nhl;seasons=2025
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/009-public-games-by-code-season-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-players
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /games;game_keys=nhl/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/010-public-games-players-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-leagues-by-key
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /games;game_codes=nhl;seasons=2025/leagues;league_keys=465.l.121384
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/011-public-games-leagues-by-key-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-teams
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/012-public-game-leagues-by-key-teams-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-players
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/013-public-game-leagues-by-key-players-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-transactions
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/transactions;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/014-public-game-leagues-by-key-transactions-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-leagues-by-key-teams
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /games;game_codes=nhl;seasons=2025/leagues;league_keys=465.l.121384/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/015-public-games-leagues-by-key-teams-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-metadata
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/016-public-league-metadata-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-settings
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/settings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/017-public-league-settings-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-standings
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/standings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/018-public-league-standings-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-scoreboard
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/scoreboard;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/019-public-league-scoreboard-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-teams
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/020-public-league-teams-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-players
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/021-public-league-players-response.json)
-- Request: request succeeded and returned data
-
-#### public-league-transactions
-
-- Status: route passed; shape passed
-- Route: public / explicit
-- Path: /league/465.l.121384/transactions;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/022-public-league-transactions-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-root
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/023-private-users-root-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1/games
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/024-private-users-games-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-filtered
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1/games;game_keys=nhl
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/025-private-users-games-filtered-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1/games;game_keys=nhl/leagues
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/026-private-users-games-leagues-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-teams
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1/games;game_keys=nhl/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/027-private-users-games-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /users;use_login=1/games;game_keys=nhl;out=leagues,teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/028-private-users-games-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-teams
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/029-private-users-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-teams
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/030-private-users-games-leagues-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/031-private-users-games-leagues-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-settings
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/settings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/032-private-users-games-leagues-settings-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/teams/roster
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/033-private-users-games-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-metadata
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/034-private-league-metadata-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-settings
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/settings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/035-private-league-settings-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-standings
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/standings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/036-private-league-standings-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-scoreboard
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/scoreboard;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/037-private-league-scoreboard-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-teams
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/038-private-league-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-status
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/players;status=FA;position=C;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/039-private-league-players-status-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-search
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/040-private-league-players-search-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-transactions
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/transactions;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/041-private-league-transactions-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-transactions-filtered
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/transactions;type=waiver;team_key=465.l.30702.t.9;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/042-private-league-transactions-filtered-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-transactions-types
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/transactions;types=add,trade;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/043-private-league-transactions-types-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702;out=settings,standings,scoreboard
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/044-private-league-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-root
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/045-private-leagues-root-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-settings
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/settings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/046-private-leagues-settings-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-standings
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/standings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/047-private-leagues-standings-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-teams
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/048-private-leagues-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-players
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/049-private-leagues-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-transactions
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/transactions;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/050-private-leagues-transactions-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-scoreboard
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702/scoreboard;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/051-private-leagues-scoreboard-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /leagues;league_keys=465.l.30702;out=settings,standings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/052-private-leagues-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /leagues;league_keys=465.l.30702/teams/roster;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/053-private-leagues-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-teams-roster-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /leagues;league_keys=465.l.30702/teams/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/054-private-leagues-teams-roster-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-metadata
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/055-private-team-metadata-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-roster
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9/roster
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/056-private-team-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-roster-players-week
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/057-private-team-roster-players-week-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-roster-players-date
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9/roster;date=2025-11-24/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/058-private-team-roster-players-date-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-matchups
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9/matchups;weeks=1,2
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/059-private-team-matchups-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-stats
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9/stats;type=season
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/060-private-team-stats-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-stats-date
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9;out=standings,stats;type=date;date=2025-11-24
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/061-private-team-stats-date-response.json)
-- Request: request succeeded and returned data
-
-#### private-team-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /team/465.l.30702.t.9;out=roster,stats,matchups
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/062-private-team-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-root
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/063-private-teams-root-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/roster;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/064-private-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-roster-players
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/065-private-teams-roster-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-matchups
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/matchups;weeks=1,2
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/066-private-teams-matchups-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-stats
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/stats;type=season
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/067-private-teams-stats-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9;out=roster,stats
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/068-private-teams-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-roster-date
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/roster;date=2025-11-24/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/069-private-teams-roster-date-response.json)
-- Request: request succeeded and returned data
-
-#### private-teams-stats-date
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /teams;team_keys=465.l.30702.t.9/stats;type=date;date=2025-11-24
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/070-private-teams-stats-date-response.json)
-- Request: request succeeded and returned data
-
-#### private-player-metadata
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /player/nhl.p.5431
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/071-private-player-metadata-response.json)
-- Request: request succeeded and returned data
-
-#### private-player-stats
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /player/nhl.p.5431/stats;type=season
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/072-private-player-stats-response.json)
-- Request: request succeeded and returned data
-
-#### private-player-ownership
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /player/nhl.p.5431/ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/073-private-player-ownership-response.json)
-- Request: request succeeded and returned data
-
-#### private-player-percent-owned
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /player/nhl.p.5431/percent_owned
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/074-private-player-percent-owned-response.json)
-- Request: request succeeded and returned data
-
-#### private-player-out
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /player/nhl.p.5431;out=stats,ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/075-private-player-out-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-root
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/076-private-players-root-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-stats
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431/stats
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/077-private-players-stats-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-ownership
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431/ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/078-private-players-ownership-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-percent-owned
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431/percent_owned
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/079-private-players-percent-owned-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/teams;team_keys=465.l.30702.t.9/roster;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/080-private-league-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-teams-roster-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/teams;team_keys=465.l.30702.t.9/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/081-private-league-teams-roster-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-stats
-
-- Status: route passed; shape passed
-- Route: private / explicit
-- Path: /league/465.l.30702/players;player_keys=nhl.p.8284,nhl.p.5431/stats
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/082-private-league-players-stats-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-ownership
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/players;player_keys=nhl.p.8284,nhl.p.5431/ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/083-private-league-players-ownership-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-percent-owned
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/players;player_keys=nhl.p.8284,nhl.p.5431/percent_owned
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/084-private-league-players-percent-owned-response.json)
-- Request: request succeeded and returned data
-
-## Decision Summary
-
-- Structural failures likely unsupported by Yahoo: 0
-- Failures likely caused by test parameters or stale fixtures: 0
-- league_keys reprobes that validated the original path shape: 0
-- league_keys reprobes that still failed after injection: 0
-- Explicit failures to review for doc mismatch: 0
-- Explicit failures that still need better parameters before judgment: 0
-- Explicit failures that look structurally unsupported: 0
-- Composed passes that may justify promotion into builder support: 19
-
-### Composed Passes
-
-#### public-game-leagues-by-key
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/003-public-game-leagues-by-key-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-leagues-by-key
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /games;game_codes=nhl;seasons=2025/leagues;league_keys=465.l.121384
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/011-public-games-leagues-by-key-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-teams
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/012-public-game-leagues-by-key-teams-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-players
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/013-public-game-leagues-by-key-players-response.json)
-- Request: request succeeded and returned data
-
-#### public-game-leagues-by-key-transactions
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /game/nhl/leagues;league_keys=465.l.121384/transactions;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/014-public-game-leagues-by-key-transactions-response.json)
-- Request: request succeeded and returned data
-
-#### public-games-leagues-by-key-teams
-
-- Status: route passed; shape passed
-- Route: public / composed
-- Path: /games;game_codes=nhl;seasons=2025/leagues;league_keys=465.l.121384/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/015-public-games-leagues-by-key-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-teams
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/029-private-users-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-teams
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/teams
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/030-private-users-games-leagues-teams-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/players;search=mcdavid;count=5
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/031-private-users-games-leagues-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-leagues-settings
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/leagues/settings
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/032-private-users-games-leagues-settings-response.json)
-- Request: request succeeded and returned data
-
-#### private-users-games-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /users;use_login=1/games;game_keys=nhl/teams/roster
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/033-private-users-games-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /leagues;league_keys=465.l.30702/teams/roster;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/053-private-leagues-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-leagues-teams-roster-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /leagues;league_keys=465.l.30702/teams/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/054-private-leagues-teams-roster-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-ownership
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431/ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/078-private-players-ownership-response.json)
-- Request: request succeeded and returned data
-
-#### private-players-percent-owned
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /players;player_keys=nhl.p.8284,nhl.p.5431/percent_owned
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/079-private-players-percent-owned-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-teams-roster
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/teams;team_keys=465.l.30702.t.9/roster;week=1
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/080-private-league-teams-roster-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-teams-roster-players
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/teams;team_keys=465.l.30702.t.9/roster;week=1/players
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/081-private-league-teams-roster-players-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-ownership
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/players;player_keys=nhl.p.8284,nhl.p.5431/ownership
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/083-private-league-players-ownership-response.json)
-- Request: request succeeded and returned data
-
-#### private-league-players-percent-owned
-
-- Status: route passed; shape passed
-- Route: private / composed
-- Path: /league/465.l.30702/players;player_keys=nhl.p.8284,nhl.p.5431/percent_owned
-- Dump: [response file](api-path-validation/tmp/2026-05-22T03-20-09-307Z/084-private-league-players-percent-owned-response.json)
-- Request: request succeeded and returned data
+## Sport Summary
+
+| Sport | Passed | Failed | Fixture unavailable | Expected rejection | Shape warnings |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| NFL | 15 | 0 | 15 | 0 | 0 |
+| MLB | 15 | 0 | 15 | 0 | 0 |
+| NBA | 15 | 0 | 15 | 0 | 0 |
+| NHL | 30 | 0 | 0 | 0 | 0 |
+
+## Discovery Facts
+
+- **NFL public passed** `/game/nfl`: current game metadata discovered; gameKey=470; code=nfl; season=2026; gameName=Football
+- **NFL public passed** `/game/nfl/players;search=mahomes;count=2`: public player fixtures discovered through observed game search behavior; gameKey=470; code=nfl; season=2026; week=11,6; gameName=Football
+- **MLB public passed** `/game/mlb`: current game metadata discovered; gameKey=469; code=mlb; season=2026; gameName=Baseball
+- **MLB public passed** `/game/mlb/players;search=judge;count=2`: public player fixtures discovered through observed game search behavior; gameKey=469; code=mlb; season=2026; gameName=Baseball
+- **NBA public passed** `/game/nba`: current game metadata discovered; gameKey=466; code=nba; season=2025; gameName=Basketball
+- **NBA public passed** `/game/nba/players;search=james;count=2`: public player fixtures discovered through observed game search behavior; gameKey=466; code=nba; season=2025; gameName=Basketball
+- **NHL public passed** `/game/nhl`: current game metadata discovered; gameKey=465; code=nhl; season=2025; gameName=Hockey
+- **NHL public passed** `/game/nhl/players;search=mcdavid;count=2`: public player fixtures discovered through observed game search behavior; gameKey=465; code=nhl; season=2025; gameName=Hockey
+- **NHL public passed** `/league/{fixture_key}/teams`: public team fixtures discovered from configured league; season=2025; coverageType=week; rosterType=date; scoringType=headpoint
+
+## NFL
+
+### Game metadata by sport code
+
+- ID: `nfl/game`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football
+- Notes: request succeeded and returned data
+
+### Game metadata child
+
+- ID: `nfl/game-metadata`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/metadata`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football
+- Notes: request succeeded and returned data
+
+### Game player search
+
+- ID: `nfl/game-players`
+- Evidence: public / explicit / observed-only / public
+- Status: passed; shape passed
+- Path: `/game/nfl/players;search=mahomes;count=5`
+- Facts: gameKey=470; code=nfl; season=2026; week=11,6; gameName=Football
+- Notes: request succeeded and returned data
+
+### Game players by key
+
+- ID: `nfl/game-players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/players;player_keys={fixture_key},{fixture_key}`
+- Facts: gameKey=470; code=nfl; season=2026; week=11,6; gameName=Football
+- Notes: request succeeded and returned data
+
+### Game dates
+
+- ID: `nfl/game-dates`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/dates`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football; seasonStartDate=2026-09-09; seasonEndDate=2027-01-10
+- Notes: request succeeded and returned data
+
+### Game weeks
+
+- ID: `nfl/game-weeks`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/game_weeks`
+- Facts: gameKey=470; code=nfl; season=2026; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Football; gameWeeksCount=18
+- Notes: request succeeded and returned data
+
+### Game stat categories
+
+- ID: `nfl/game-stat-categories`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/stat_categories`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football; statCategoriesCount=94
+- Notes: request succeeded and returned data
+
+### Game position types
+
+- ID: `nfl/game-position-types`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/position_types`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football; positionTypesCount=5
+- Notes: request succeeded and returned data
+
+### Game roster positions
+
+- ID: `nfl/game-roster-positions`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl/roster_positions`
+- Facts: gameKey=470; code=nfl; season=2026; gameName=Football; rosterPositionsCount=21
+- Notes: request succeeded and returned data
+
+### Game out expansion
+
+- ID: `nfl/game-out`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nfl;out=stat_categories,position_types,game_weeks`
+- Facts: gameKey=470; code=nfl; season=2026; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Football; gameWeeksCount=18; statCategoriesCount=94; positionTypesCount=5
+- Notes: request succeeded and returned data
+
+### Games collection by sport code
+
+- ID: `nfl/games-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nfl`
+- Facts: gameKey=49,50,53,57,79,101,124,153,175,199 (sample, max 10); code=nfl; season=2002,1999,2000,2001,2003,2004,2005,2006,2007,2008 (sample, max 10)
+- Notes: request succeeded and returned data
+
+### Games collection by sport and season
+
+- ID: `nfl/games-by-code-season`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nfl;seasons=2026`
+- Facts: gameKey=470; code=nfl; season=2026
+- Notes: request succeeded and returned data
+
+### Games collection by key
+
+- ID: `nfl/games-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_keys=470`
+- Facts: gameKey=470; code=nfl; season=2026
+- Notes: request succeeded and returned data
+
+### Available games by sport code
+
+- ID: `nfl/games-available-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nfl;is_available=1`
+- Facts: gameKey=470; code=nfl; season=2026
+- Notes: request succeeded and returned data
+
+### Players collection by key
+
+- ID: `nfl/players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/players;player_keys={fixture_key},{fixture_key}`
+- Facts: week=11,6
+- Notes: request succeeded and returned data
+
+### Game league by key
+
+- ID: `nfl/game-league-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league teams
+
+- ID: `nfl/game-league-teams`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league players
+
+- ID: `nfl/game-league-players`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league metadata
+
+- ID: `nfl/league`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection by key
+
+- ID: `nfl/leagues-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Public league settings
+
+- ID: `nfl/league-settings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league standings
+
+- ID: `nfl/league-standings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league scoreboard
+
+- ID: `nfl/league-scoreboard`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league current scoreboard
+
+- ID: `nfl/league-scoreboard-current`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league teams
+
+- ID: `nfl/league-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection teams
+
+- ID: `nfl/leagues-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Teams collection by key
+
+- ID: `nfl/teams-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEYS
+- Facts: none
+- Notes: missing fixtures: TEAM_KEYS
+
+### Public team players
+
+- ID: `nfl/team-players`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEY
+- Facts: none
+- Notes: missing fixtures: TEAM_KEY
+
+### Public league draft results
+
+- ID: `nfl/league-draftresults`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league transactions
+
+- ID: `nfl/league-transactions`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+
+## MLB
+
+### Game metadata by sport code
+
+- ID: `mlb/game`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball
+- Notes: request succeeded and returned data
+
+### Game metadata child
+
+- ID: `mlb/game-metadata`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/metadata`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball
+- Notes: request succeeded and returned data
+
+### Game player search
+
+- ID: `mlb/game-players`
+- Evidence: public / explicit / observed-only / public
+- Status: passed; shape passed
+- Path: `/game/mlb/players;search=judge;count=5`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball
+- Notes: request succeeded and returned data
+
+### Game players by key
+
+- ID: `mlb/game-players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/players;player_keys={fixture_key},{fixture_key}`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball
+- Notes: request succeeded and returned data
+
+### Game dates
+
+- ID: `mlb/game-dates`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/dates`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball; seasonStartDate=2026-03-25; seasonEndDate=2026-09-27
+- Notes: request succeeded and returned data
+
+### Game weeks
+
+- ID: `mlb/game-weeks`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/game_weeks`
+- Facts: gameKey=469; code=mlb; season=2026; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Baseball; gameWeeksCount=26
+- Notes: request succeeded and returned data
+
+### Game stat categories
+
+- ID: `mlb/game-stat-categories`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/stat_categories`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball; statCategoriesCount=92
+- Notes: request succeeded and returned data
+
+### Game position types
+
+- ID: `mlb/game-position-types`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/position_types`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball; positionTypesCount=2
+- Notes: request succeeded and returned data
+
+### Game roster positions
+
+- ID: `mlb/game-roster-positions`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb/roster_positions`
+- Facts: gameKey=469; code=mlb; season=2026; gameName=Baseball; rosterPositionsCount=19
+- Notes: request succeeded and returned data
+
+### Game out expansion
+
+- ID: `mlb/game-out`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/mlb;out=stat_categories,position_types,game_weeks`
+- Facts: gameKey=469; code=mlb; season=2026; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Baseball; gameWeeksCount=26; statCategoriesCount=92; positionTypesCount=2
+- Notes: request succeeded and returned data
+
+### Games collection by sport code
+
+- ID: `mlb/games-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=mlb`
+- Facts: gameKey=10,11,12,39,74,98,113,147,171,195 (sample, max 10); code=mlb; season=1999,2000,2001,2002,2003,2004,2005,2006,2007,2008 (sample, max 10)
+- Notes: request succeeded and returned data
+
+### Games collection by sport and season
+
+- ID: `mlb/games-by-code-season`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=mlb;seasons=2026`
+- Facts: gameKey=469; code=mlb; season=2026
+- Notes: request succeeded and returned data
+
+### Games collection by key
+
+- ID: `mlb/games-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_keys=469`
+- Facts: gameKey=469; code=mlb; season=2026
+- Notes: request succeeded and returned data
+
+### Available games by sport code
+
+- ID: `mlb/games-available-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=mlb;is_available=1`
+- Facts: gameKey=469; code=mlb; season=2026
+- Notes: request succeeded and returned data
+
+### Players collection by key
+
+- ID: `mlb/players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/players;player_keys={fixture_key},{fixture_key}`
+- Facts: none
+- Notes: request succeeded and returned data
+
+### Game league by key
+
+- ID: `mlb/game-league-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league teams
+
+- ID: `mlb/game-league-teams`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league players
+
+- ID: `mlb/game-league-players`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league metadata
+
+- ID: `mlb/league`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection by key
+
+- ID: `mlb/leagues-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Public league settings
+
+- ID: `mlb/league-settings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league standings
+
+- ID: `mlb/league-standings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league scoreboard
+
+- ID: `mlb/league-scoreboard`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league current scoreboard
+
+- ID: `mlb/league-scoreboard-current`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league teams
+
+- ID: `mlb/league-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection teams
+
+- ID: `mlb/leagues-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Teams collection by key
+
+- ID: `mlb/teams-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEYS
+- Facts: none
+- Notes: missing fixtures: TEAM_KEYS
+
+### Public team players
+
+- ID: `mlb/team-players`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEY
+- Facts: none
+- Notes: missing fixtures: TEAM_KEY
+
+### Public league draft results
+
+- ID: `mlb/league-draftresults`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league transactions
+
+- ID: `mlb/league-transactions`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+
+## NBA
+
+### Game metadata by sport code
+
+- ID: `nba/game`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball
+- Notes: request succeeded and returned data
+
+### Game metadata child
+
+- ID: `nba/game-metadata`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/metadata`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball
+- Notes: request succeeded and returned data
+
+### Game player search
+
+- ID: `nba/game-players`
+- Evidence: public / explicit / observed-only / public
+- Status: passed; shape passed
+- Path: `/game/nba/players;search=james;count=5`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball
+- Notes: request succeeded and returned data
+
+### Game players by key
+
+- ID: `nba/game-players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/players;player_keys={fixture_key},{fixture_key}`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball
+- Notes: request succeeded and returned data
+
+### Game dates
+
+- ID: `nba/game-dates`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/dates`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball; seasonStartDate=2025-10-21; seasonEndDate=2026-04-12
+- Notes: request succeeded and returned data
+
+### Game weeks
+
+- ID: `nba/game-weeks`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/game_weeks`
+- Facts: gameKey=466; code=nba; season=2025; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Basketball; gameWeeksCount=24
+- Notes: request succeeded and returned data
+
+### Game stat categories
+
+- ID: `nba/game-stat-categories`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/stat_categories`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball; statCategoriesCount=29
+- Notes: request succeeded and returned data
+
+### Game position types
+
+- ID: `nba/game-position-types`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/position_types`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball; positionTypesCount=1
+- Notes: request succeeded and returned data
+
+### Game roster positions
+
+- ID: `nba/game-roster-positions`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba/roster_positions`
+- Facts: gameKey=466; code=nba; season=2025; gameName=Basketball; rosterPositionsCount=12
+- Notes: request succeeded and returned data
+
+### Game out expansion
+
+- ID: `nba/game-out`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nba;out=stat_categories,position_types,game_weeks`
+- Facts: gameKey=466; code=nba; season=2025; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Basketball; gameWeeksCount=24; statCategoriesCount=29; positionTypesCount=1
+- Notes: request succeeded and returned data
+
+### Games collection by sport code
+
+- ID: `nba/games-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nba`
+- Facts: gameKey=16,22,26,67,95,112,131,165,187,211 (sample, max 10); code=nba; season=2001,1999,2000,2002,2003,2004,2005,2006,2007,2008 (sample, max 10)
+- Notes: request succeeded and returned data
+
+### Games collection by sport and season
+
+- ID: `nba/games-by-code-season`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nba;seasons=2025`
+- Facts: gameKey=466; code=nba; season=2025
+- Notes: request succeeded and returned data
+
+### Games collection by key
+
+- ID: `nba/games-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_keys=466`
+- Facts: gameKey=466; code=nba; season=2025
+- Notes: request succeeded and returned data
+
+### Available games by sport code
+
+- ID: `nba/games-available-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nba;is_available=1`
+- Facts: gameKey=466; code=nba; season=2025
+- Notes: request succeeded and returned data
+
+### Players collection by key
+
+- ID: `nba/players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/players;player_keys={fixture_key},{fixture_key}`
+- Facts: none
+- Notes: request succeeded and returned data
+
+### Game league by key
+
+- ID: `nba/game-league-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league teams
+
+- ID: `nba/game-league-teams`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Game league players
+
+- ID: `nba/game-league-players`
+- Evidence: public / composed / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league metadata
+
+- ID: `nba/league`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection by key
+
+- ID: `nba/leagues-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Public league settings
+
+- ID: `nba/league-settings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league standings
+
+- ID: `nba/league-standings`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league scoreboard
+
+- ID: `nba/league-scoreboard`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league current scoreboard
+
+- ID: `nba/league-scoreboard-current`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league teams
+
+- ID: `nba/league-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Leagues collection teams
+
+- ID: `nba/leagues-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEYS
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEYS
+
+### Teams collection by key
+
+- ID: `nba/teams-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEYS
+- Facts: none
+- Notes: missing fixtures: TEAM_KEYS
+
+### Public team players
+
+- ID: `nba/team-players`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: TEAM_KEY
+- Facts: none
+- Notes: missing fixtures: TEAM_KEY
+
+### Public league draft results
+
+- ID: `nba/league-draftresults`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+### Public league transactions
+
+- ID: `nba/league-transactions`
+- Evidence: public / explicit / documented-claim / public
+- Status: fixture-unavailable; shape not-run
+- Missing fixtures: LEAGUE_KEY
+- Facts: none
+- Notes: missing fixtures: LEAGUE_KEY
+
+
+## NHL
+
+### Game metadata by sport code
+
+- ID: `nhl/game`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game metadata child
+
+- ID: `nhl/game-metadata`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/metadata`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game player search
+
+- ID: `nhl/game-players`
+- Evidence: public / explicit / observed-only / public
+- Status: passed; shape passed
+- Path: `/game/nhl/players;search=mcdavid;count=5`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game players by key
+
+- ID: `nhl/game-players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/players;player_keys={fixture_key},{fixture_key}`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game dates
+
+- ID: `nhl/game-dates`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/dates`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey; seasonStartDate=2025-10-07; seasonEndDate=2026-04-16
+- Notes: request succeeded and returned data
+
+### Game weeks
+
+- ID: `nhl/game-weeks`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/game_weeks`
+- Facts: gameKey=465; code=nhl; season=2025; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Hockey; gameWeeksCount=24
+- Notes: request succeeded and returned data
+
+### Game stat categories
+
+- ID: `nhl/game-stat-categories`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/stat_categories`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey; statCategoriesCount=35
+- Notes: request succeeded and returned data
+
+### Game position types
+
+- ID: `nhl/game-position-types`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/position_types`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey; positionTypesCount=2
+- Notes: request succeeded and returned data
+
+### Game roster positions
+
+- ID: `nhl/game-roster-positions`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/roster_positions`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey; rosterPositionsCount=12
+- Notes: request succeeded and returned data
+
+### Game out expansion
+
+- ID: `nhl/game-out`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl;out=stat_categories,position_types,game_weeks`
+- Facts: gameKey=465; code=nhl; season=2025; week=1,2,3,4,5,6,7,8,9,10 (sample, max 10); gameName=Hockey; gameWeeksCount=24; statCategoriesCount=35; positionTypesCount=2
+- Notes: request succeeded and returned data
+
+### Games collection by sport code
+
+- ID: `nhl/games-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nhl`
+- Facts: gameKey=15,61,64,94,111,130,164,186,210,233 (sample, max 10); code=nhl; season=2001,2000,2002,2003,2004,2005,2006,2007,2008,2009 (sample, max 10)
+- Notes: request succeeded and returned data
+
+### Games collection by sport and season
+
+- ID: `nhl/games-by-code-season`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nhl;seasons=2025`
+- Facts: gameKey=465; code=nhl; season=2025
+- Notes: request succeeded and returned data
+
+### Games collection by key
+
+- ID: `nhl/games-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_keys=465`
+- Facts: gameKey=465; code=nhl; season=2025
+- Notes: request succeeded and returned data
+
+### Available games by sport code
+
+- ID: `nhl/games-available-by-code`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/games;game_codes=nhl;is_available=1`
+- Facts: gameKey=465; code=nhl; season=2025
+- Notes: request succeeded and returned data
+
+### Players collection by key
+
+- ID: `nhl/players-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/players;player_keys={fixture_key},{fixture_key}`
+- Facts: none
+- Notes: request succeeded and returned data
+
+### Game league by key
+
+- ID: `nhl/game-league-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/leagues;league_keys={fixture_key}`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game league teams
+
+- ID: `nhl/game-league-teams`
+- Evidence: public / composed / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/leagues;league_keys={fixture_key}/teams`
+- Facts: gameKey=465; code=nhl; season=2025; coverageType=week; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Game league players
+
+- ID: `nhl/game-league-players`
+- Evidence: public / composed / documented-claim / public
+- Status: passed; shape passed
+- Path: `/game/nhl/leagues;league_keys={fixture_key}/players;search=mcdavid;count=5`
+- Facts: gameKey=465; code=nhl; season=2025; gameName=Hockey
+- Notes: request succeeded and returned data
+
+### Public league metadata
+
+- ID: `nhl/league`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}`
+- Facts: season=2025; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Leagues collection by key
+
+- ID: `nhl/leagues-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/leagues;league_keys={fixture_key}`
+- Facts: season=2025
+- Notes: request succeeded and returned data
+
+### Public league settings
+
+- ID: `nhl/league-settings`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/settings`
+- Facts: season=2025; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Public league standings
+
+- ID: `nhl/league-standings`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/standings`
+- Facts: season=2025; coverageType=week,season; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Public league scoreboard
+
+- ID: `nhl/league-scoreboard`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/scoreboard;week=1`
+- Facts: season=2025; week=1; coverageType=week; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Public league current scoreboard
+
+- ID: `nhl/league-scoreboard-current`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/scoreboard`
+- Facts: season=2025; week=23; coverageType=week; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Public league teams
+
+- ID: `nhl/league-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/teams`
+- Facts: season=2025; coverageType=week; rosterType=date; scoringType=headpoint
+- Notes: request succeeded and returned data
+
+### Leagues collection teams
+
+- ID: `nhl/leagues-teams`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/leagues;league_keys={fixture_key}/teams`
+- Facts: season=2025; coverageType=week
+- Notes: request succeeded and returned data
+
+### Teams collection by key
+
+- ID: `nhl/teams-by-key`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/teams;team_keys={fixture_key},{fixture_key}`
+- Facts: coverageType=week
+- Notes: request succeeded and returned data
+
+### Public team players
+
+- ID: `nhl/team-players`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/team/{fixture_key}/players`
+- Facts: coverageType=week
+- Notes: request succeeded and returned data
+
+### Public league draft results
+
+- ID: `nhl/league-draftresults`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/draftresults`
+- Facts: season=2025; rosterType=date; scoringType=headpoint; draftResultsCount=252
+- Notes: request succeeded and returned data
+
+### Public league transactions
+
+- ID: `nhl/league-transactions`
+- Evidence: public / explicit / documented-claim / public
+- Status: passed; shape passed
+- Path: `/league/{fixture_key}/transactions;count=5`
+- Facts: season=2025; rosterType=date; scoringType=headpoint; transactionsCount=5
+- Notes: request succeeded and returned data

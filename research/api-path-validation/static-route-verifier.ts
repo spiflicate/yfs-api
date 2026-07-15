@@ -1,264 +1,208 @@
 import { mkdir } from 'node:fs/promises';
-import { argv, stdin as input, stdout as output } from 'node:process';
-import { createInterface } from 'node:readline/promises';
-import { OAuth1Client } from '../../src/auth/oauth1.js';
-import { OAuth2Client, type OAuth2Tokens } from '../../src/auth/oauth2.js';
-import { YahooApiError } from '../../src/client/errors.js';
-import { HttpClient } from '../../src/client/http.js';
-import { API_BASE_URL } from '../../src/utils/constants.js';
-import { parseYahooXML } from '../../src/utils/xmlParser.js';
-import { staticRouteVerifierConfig } from './static-route-config.ts';
+import { dirname, relative } from 'node:path';
 import {
+   redactFixtureKeys,
+   sanitizeReportFacts,
+   sanitizeReportNotes,
+} from './report-sanitization.js';
+import {
+   buildRequestUrl,
+   RequestRouteError,
+   requestRoute,
+} from './research-http.js';
+import {
+   buildScenarioContext,
+   instantiateScenarios,
+   type PlaceholderName,
+   parseSports,
+   type RouteScenario,
+   requiredFixturesForSport,
+   type SelectedRoute,
+   type SportProfile,
+   validateRouteDefinitions,
+   verifyKeyFixtures,
+} from './route-model.js';
+import { staticRouteVerifierConfig } from './static-route-config.js';
+import {
+   ALL_ROUTE_DEFINITIONS,
    type ExpectedValueType,
-   type RouteConfidence,
+   type FailureKind,
    type RouteDefinition,
    type RouteMode,
    type RouteSet,
+   type SportCode,
    STATIC_ROUTE_SETS,
 } from './static-route-definitions.js';
 
-interface SelectedRoute {
-   route: RouteDefinition;
-   routeSet: RouteSet;
+type RequestStatus =
+   | 'expected-rejection'
+   | 'failed'
+   | 'fixture-unavailable'
+   | 'passed';
+type ShapeStatus = 'not-run' | 'passed' | 'warning';
+interface CliOptions {
+   dryRun: boolean;
+   includeInvalid: boolean;
+   mode: RouteMode | 'all';
+   nonInteractive: boolean;
+   requireComplete: boolean;
+   routeIds: Set<string> | null;
+   sports: SportCode[];
+   strictShapes: boolean;
 }
-
-type RequestStatus = 'passed' | 'failed' | 'skipped';
-type ShapeStatus = 'passed' | 'warning' | 'not-run';
-type FailureKind =
-   | 'unsupported-route'
-   | 'invalid-test-parameters'
-   | 'auth-or-scope'
-   | 'empty-data'
-   | 'unknown-failure';
 
 interface FailureAssessment {
    confidence: 'high' | 'medium';
    kind: FailureKind;
-   nextStep: string;
    reason: string;
 }
 
-interface PublicAuthContext {
-   http: HttpClient;
-   mode: 'public';
+interface DiscoveryRecord {
+   facts: Record<string, string[]>;
+   mode: RouteMode;
+   notes: string[];
+   path: string;
+   sport: SportCode;
+   status: 'failed' | 'passed';
 }
-
-interface PrivateAuthContext {
-   http: HttpClient;
-   mode: 'private';
-   oauth2: OAuth2Client;
-   redirectUri: string;
-   storage: ResearchTokenStorage;
-   tokens: OAuth2Tokens | null;
-}
-
-type AuthContext = PublicAuthContext | PrivateAuthContext;
 
 interface RouteResult {
-   confidence: RouteConfidence;
+   confidence: RouteDefinition['confidence'];
    dumpFilePath?: string;
-   failureAssessment?: FailureAssessment;
+   facts: Record<string, string[]>;
+   failure?: FailureAssessment;
    id: string;
+   label: string;
+   missingFixtures: PlaceholderName[];
    mode: RouteMode;
+   notes: string[];
    path?: string;
+   provenance: RouteDefinition['provenance'];
    requestStatus: RequestStatus;
    routeSet: RouteSet;
-   retryProbe?: RetryProbe;
-   shapeStatus: ShapeStatus;
-   requestNotes: string[];
    shapeNotes: string[];
-   shapePreview?: string[];
+   shapeStatus: ShapeStatus;
+   sport: SportCode;
 }
 
-type RecommendationAction =
-   | 'keep-as-supported'
-   | 'league-keys-reprobe-passed'
-   | 'league-keys-reprobe-failed'
-   | 'fix-test-parameters-and-rerun'
-   | 'demote-or-remove'
-   | 'fix-shape-expectation'
-   | 'verify-auth-or-scope'
-   | 'review-empty-data'
-   | 'investigate-unknown-failure'
-   | 'fill-config-and-rerun';
+const runId = new Date().toISOString().replace(/[:.]/g, '-');
+let dumpSequence = 0;
 
-interface RecommendationBucket {
-   action: RecommendationAction;
-   reason: string;
-   results: RouteResult[];
+function printUsage(): never {
+   console.error(
+      'Usage: bun run research:routes -- [--mode public|private|all] [--sports nfl,mlb,nba,nhl] [--route-ids id1,id2] [--dry-run] [--strict-shapes] [--allow-incomplete] [--include-invalid] [--non-interactive]',
+   );
+   process.exit(1);
 }
 
-interface RequestExecution {
-   parsedResponse: unknown;
-   rawBody: string;
-   url: string;
-}
-
-interface RetryProbe {
-   attempts: RetryProbeAttempt[];
-   dumpFilePath?: string;
-   path: string;
-   requestNote: string;
-   requestStatus: 'passed' | 'failed';
-   trigger: 'league-ids-expected';
-}
-
-interface RetryProbeAttempt {
-   dumpFilePath?: string;
-   label: 'default' | 'parameter-order-variant';
-   path: string;
-   requestNote: string;
-   requestStatus: 'passed' | 'failed';
-}
-
-class RequestRouteError extends Error {
-   constructor(
-      message: string,
-      readonly rawBody: string,
-      readonly url: string,
-   ) {
-      super(message);
-      this.name = 'RequestRouteError';
+function parseMode(value: string): RouteMode | 'all' {
+   if (value === 'public' || value === 'private' || value === 'all') {
+      return value;
    }
+   throw new Error(`Unsupported mode: ${value}`);
 }
 
-class ResearchTokenStorage {
-   constructor(private readonly tokenPath = '.oauth2-tokens.json') {}
+function parseCliArgs(args: string[]): CliOptions {
+   const options: CliOptions = {
+      dryRun: false,
+      includeInvalid: false,
+      mode: staticRouteVerifierConfig.selection.mode,
+      nonInteractive: false,
+      requireComplete: true,
+      routeIds: staticRouteVerifierConfig.selection.routeIds
+         ? new Set(staticRouteVerifierConfig.selection.routeIds)
+         : null,
+      sports: staticRouteVerifierConfig.selection.sports,
+      strictShapes: false,
+   };
 
-   async save(tokens: OAuth2Tokens): Promise<void> {
-      await Bun.write(this.tokenPath, JSON.stringify(tokens, null, 2));
-   }
-
-   async load(): Promise<OAuth2Tokens | null> {
-      try {
-         const file = Bun.file(this.tokenPath);
-         if (!(await file.exists())) {
-            return null;
+   for (let index = 0; index < args.length; index += 1) {
+      const arg = args[index];
+      if (arg === '--dry-run') options.dryRun = true;
+      else if (arg === '--include-invalid') options.includeInvalid = true;
+      else if (arg === '--strict-shapes') options.strictShapes = true;
+      else if (arg === '--allow-incomplete')
+         options.requireComplete = false;
+      else if (arg === '--require-complete') options.requireComplete = true;
+      else if (arg === '--non-interactive') options.nonInteractive = true;
+      else if (arg === '--mode') {
+         const value = args[index + 1];
+         if (!value) printUsage();
+         options.mode = parseMode(value);
+         index += 1;
+      } else if (arg === '--sports') {
+         const value = args[index + 1];
+         if (!value) printUsage();
+         options.sports = parseSports(value);
+         index += 1;
+      } else if (arg === '--route-ids') {
+         const value = args[index + 1];
+         if (!value) printUsage();
+         options.routeIds = new Set(
+            value
+               .split(',')
+               .map((id) => id.trim())
+               .filter(Boolean),
+         );
+         if (!options.routeIds.size) {
+            throw new Error('At least one route id is required');
          }
-
-         const content = await file.text();
-         if (!content.trim()) {
-            return null;
-         }
-
-         return JSON.parse(content) as OAuth2Tokens;
-      } catch {
-         return null;
+         index += 1;
+      } else if (arg) {
+         printUsage();
       }
    }
 
-   async clear(): Promise<void> {
-      await Bun.write(this.tokenPath, '');
-   }
+   return options;
 }
 
-const authContextCache: Partial<Record<RouteMode, AuthContext>> = {};
-const runDumpFolderName = new Date().toISOString().replace(/[:.]/g, '-');
+function selectRoutes(options: CliOptions): SelectedRoute[] {
+   const modes: RouteMode[] =
+      options.mode === 'all' ? ['public', 'private'] : [options.mode];
+   const selected = modes.flatMap((mode) =>
+      STATIC_ROUTE_SETS[mode]
+         .filter((route) =>
+            options.routeIds ? options.routeIds.has(route.id) : true,
+         )
+         .map((route) => ({ route, routeSet: mode as RouteSet })),
+   );
 
-let dumpFileSequence = 0;
-
-function requireConfigValue(value: string, path: string): string {
-   if (!value) {
-      throw new Error(
-         `Missing required config value at staticRouteVerifierConfig.${path}`,
+   if (options.includeInvalid) {
+      selected.push(
+         ...STATIC_ROUTE_SETS.invalid
+            .filter((route) => modes.includes(route.mode))
+            .filter((route) =>
+               options.routeIds ? options.routeIds.has(route.id) : true,
+            )
+            .map((route) => ({ route, routeSet: 'invalid' as const })),
       );
    }
-   return value;
-}
 
-function getRouteContext(
-   mode: 'public' | 'private',
-): Record<string, string | undefined> {
-   return staticRouteVerifierConfig.routeContext[mode];
-}
-
-function parseMode(mode: RouteMode | 'all'): RouteMode | 'all' {
-   if (mode === 'public' || mode === 'private' || mode === 'all') {
-      return mode;
+   if (options.routeIds) {
+      const known = new Set(selected.map(({ route }) => route.id));
+      const unknown = [...options.routeIds].filter((id) => !known.has(id));
+      if (unknown.length) {
+         throw new Error(
+            `Unknown or unselected route ids: ${unknown.join(', ')}`,
+         );
+      }
    }
 
-   throw new Error(
-      `Unsupported config mode: ${mode}. Use public, private, or all.`,
-   );
-}
-
-function parseRouteIds(routeIds: string[] | undefined): Set<string> | null {
-   if (!routeIds?.length) {
-      return null;
+   if (!selected.length) {
+      throw new Error('Route selection produced no scenarios');
    }
 
-   return new Set(routeIds.map((value) => value.trim()).filter(Boolean));
-}
-
-function parseCliArgs(args: string[]): { includeInvalid: boolean } {
-   return {
-      includeInvalid: args.includes('--include-invalid'),
-   };
-}
-
-function selectRoutes(
-   mode: RouteMode | 'all',
-   routeIds: Set<string> | null,
-   includeInvalid: boolean,
-): SelectedRoute[] {
-   const modes: RouteMode[] =
-      mode === 'all' ? ['public', 'private'] : [mode];
-
-   const selectedRoutes = modes.flatMap((currentMode) =>
-      STATIC_ROUTE_SETS[currentMode]
-         .filter((route) => (routeIds ? routeIds.has(route.id) : true))
-         .map((route) => ({ route, routeSet: currentMode as RouteSet })),
-   );
-
-   if (!includeInvalid) {
-      return selectedRoutes;
-   }
-
-   const invalidRoutes = STATIC_ROUTE_SETS.invalid
-      .filter((route) => modes.includes(route.mode))
-      .filter((route) => (routeIds ? routeIds.has(route.id) : true))
-      .map((route) => ({ route, routeSet: 'invalid' as const }));
-
-   return [...selectedRoutes, ...invalidRoutes];
-}
-
-function resolveTemplate(
-   template: string,
-   context: Record<string, string | undefined>,
-): { path?: string; missing: string[] } {
-   const missing = new Set<string>();
-   const path = template.replaceAll(
-      /\{\{([A-Z0-9_]+)\}\}/g,
-      (_match, key) => {
-         const value = context[key];
-         if (!value) {
-            missing.add(key);
-            return `{{${key}}}`;
-         }
-         return value;
-      },
-   );
-
-   return missing.size > 0
-      ? { missing: [...missing] }
-      : { path, missing: [] };
+   return selected;
 }
 
 function getValueAtPath(root: unknown, path: string): unknown {
    return path.split('.').reduce<unknown>((current, segment) => {
-      if (current === null || current === undefined) {
-         return undefined;
-      }
-
+      if (current === null || current === undefined) return undefined;
       if (Array.isArray(current)) {
          const index = Number.parseInt(segment, 10);
          return Number.isNaN(index) ? undefined : current[index];
       }
-
-      if (typeof current !== 'object') {
-         return undefined;
-      }
-
+      if (typeof current !== 'object') return undefined;
       return (current as Record<string, unknown>)[segment];
    }, root);
 }
@@ -266,92 +210,12 @@ function getValueAtPath(root: unknown, path: string): unknown {
 function detectValueType(
    value: unknown,
 ): ExpectedValueType | 'null' | 'undefined' {
-   if (value === undefined) {
-      return 'undefined';
-   }
-   if (value === null) {
-      return 'null';
-   }
-   if (Array.isArray(value)) {
-      return 'array';
-   }
-
-   switch (typeof value) {
-      case 'boolean':
-         return 'boolean';
-      case 'number':
-         return 'number';
-      case 'object':
-         return 'object';
-      case 'string':
-         return 'string';
-      default:
-         return 'undefined';
-   }
-}
-
-function summarizeValue(value: unknown): string {
-   if (Array.isArray(value)) {
-      return `array(length=${value.length})`;
-   }
-
-   if (value && typeof value === 'object') {
-      const keys = Object.keys(value as Record<string, unknown>).slice(
-         0,
-         6,
-      );
-      return `object(keys=${keys.join(', ') || 'none'})`;
-   }
-
-   return JSON.stringify(value);
-}
-
-function collectShapePreview(
-   value: unknown,
-   currentPath = '$',
-   depth = 0,
-   maxDepth = 3,
-   lines: string[] = [],
-): string[] {
-   const valueType = detectValueType(value);
-
-   if (valueType === 'array') {
-      const items = value as unknown[];
-      lines.push(`${currentPath}: array(length=${items.length})`);
-      if (depth < maxDepth && items.length > 0) {
-         collectShapePreview(
-            items[0],
-            `${currentPath}[0]`,
-            depth + 1,
-            maxDepth,
-            lines,
-         );
-      }
-      return lines;
-   }
-
-   if (valueType === 'object') {
-      const objectValue = value as Record<string, unknown>;
-      const keys = Object.keys(objectValue);
-      lines.push(
-         `${currentPath}: object(keys=${keys.join(', ') || 'none'})`,
-      );
-      if (depth < maxDepth) {
-         for (const key of keys.slice(0, 8)) {
-            collectShapePreview(
-               objectValue[key],
-               `${currentPath}.${key}`,
-               depth + 1,
-               maxDepth,
-               lines,
-            );
-         }
-      }
-      return lines;
-   }
-
-   lines.push(`${currentPath}: ${valueType}`);
-   return lines;
+   if (value === undefined) return 'undefined';
+   if (value === null) return 'null';
+   if (Array.isArray(value)) return 'array';
+   return typeof value === 'function' || typeof value === 'symbol'
+      ? 'undefined'
+      : (typeof value as ExpectedValueType);
 }
 
 function verifyResponseShape(
@@ -359,1327 +223,1206 @@ function verifyResponseShape(
    response: unknown,
 ): string[] {
    const notes: string[] = [];
-   const expectations = route.expectations;
-
-   for (const path of expectations?.requiredPaths ?? []) {
-      const value = getValueAtPath(response, path);
-      if (value === undefined) {
+   for (const path of route.expectations?.requiredPaths ?? []) {
+      if (getValueAtPath(response, path) === undefined) {
          notes.push(`missing required path ${path}`);
       }
    }
-
-   for (const [path, expectedType] of Object.entries(
-      expectations?.typedPaths ?? {},
+   for (const [path, expected] of Object.entries(
+      route.expectations?.typedPaths ?? {},
    )) {
-      const value = getValueAtPath(response, path);
-      const actualType = detectValueType(value);
-      if (actualType !== expectedType) {
-         notes.push(
-            `expected ${path} to be ${expectedType}, got ${actualType}`,
-         );
+      const actual = detectValueType(getValueAtPath(response, path));
+      if (actual !== expected) {
+         notes.push(`expected ${path} to be ${expected}, got ${actual}`);
       }
    }
-
-   for (const path of expectations?.nonEmptyArrays ?? []) {
+   for (const path of route.expectations?.nonEmptyArrays ?? []) {
       const value = getValueAtPath(response, path);
-      if (!Array.isArray(value) || value.length === 0) {
+      if (!Array.isArray(value) || !value.length) {
          notes.push(`expected ${path} to be a non-empty array`);
       }
    }
-
-   for (const path of expectations?.samplePaths ?? []) {
-      const value = getValueAtPath(response, path);
-      if (value !== undefined) {
-         notes.push(`sample ${path}: ${summarizeValue(value)}`);
-      }
-   }
-
    return notes;
 }
 
-async function promptForAuthorizationCode(
-   authUrl: string,
-   redirectUri: string,
-   tokenFilePath: string,
-): Promise<string> {
-   console.log('\nOAuth2 authorization required.');
-   console.log('Open this URL in your browser:');
-   console.log(authUrl);
-   console.log();
-   console.log(`Redirect URI: ${redirectUri}`);
-   console.log(`Token file: ${tokenFilePath}`);
-   console.log(
-      'After Yahoo returns the authorization code, paste it below to finish authentication.',
+function hasShapeExpectations(route: RouteDefinition): boolean {
+   const expectations = route.expectations;
+   return Boolean(
+      expectations &&
+         ((expectations.requiredPaths?.length ?? 0) > 0 ||
+            Object.keys(expectations.typedPaths ?? {}).length > 0 ||
+            (expectations.nonEmptyArrays?.length ?? 0) > 0),
    );
-
-   const rl = createInterface({ input, output });
-   try {
-      const code = (await rl.question('Authorization code: ')).trim();
-      if (!code) {
-         throw new Error('No authorization code provided');
-      }
-      return code;
-   } finally {
-      rl.close();
-   }
-}
-
-function buildRequestUrl(path: string): string {
-   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-   const url = new URL(`${API_BASE_URL}${normalizedPath}`);
-   url.searchParams.set('format', 'xml');
-   return url.toString();
-}
-
-function sanitizeFileSegment(value: string): string {
-   return value.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-');
-}
-
-function getRunDumpDirectory(): string {
-   return `${staticRouteVerifierConfig.output.responseDumpDirPath}/${runDumpFolderName}`;
-}
-
-function getLatestRunMarkerPath(): string {
-   return `${staticRouteVerifierConfig.output.responseDumpDirPath}/latest-run.txt`;
-}
-
-function createDumpFilePath(
-   route: RouteDefinition,
-   suffix: string,
-): string {
-   dumpFileSequence += 1;
-   const sequence = String(dumpFileSequence).padStart(3, '0');
-   const filename = `${sequence}-${sanitizeFileSegment(route.id)}-${suffix}.json`;
-   return `${getRunDumpDirectory()}/${filename}`;
-}
-
-async function writeDumpFile(
-   route: RouteDefinition,
-   suffix: string,
-   payload: unknown,
-): Promise<string> {
-   const dumpFilePath = createDumpFilePath(route, suffix);
-   await Bun.write(dumpFilePath, JSON.stringify(payload, null, 2));
-   return dumpFilePath;
-}
-
-async function ensurePrivateTokens(
-   auth: PrivateAuthContext,
-): Promise<OAuth2Tokens> {
-   if (auth.tokens && !auth.oauth2.isTokenExpired(auth.tokens)) {
-      console.log('Using stored OAuth2 tokens.');
-      return auth.tokens;
-   }
-
-   if (auth.tokens?.refreshToken) {
-      try {
-         console.log('Refreshing stored OAuth2 tokens...');
-         auth.tokens = await auth.oauth2.refreshAccessToken(
-            auth.tokens.refreshToken,
-         );
-         await auth.storage.save(auth.tokens);
-         console.log(
-            'OAuth2 token refresh succeeded. Updated tokens saved.',
-         );
-         return auth.tokens;
-      } catch {
-         console.log(
-            'Stored OAuth2 token refresh failed. Falling back to interactive authentication.',
-         );
-         auth.tokens = null;
-      }
-   }
-
-   const code = await promptForAuthorizationCode(
-      auth.oauth2.getAuthorizationUrl(`research-${Date.now()}`),
-      auth.redirectUri,
-      staticRouteVerifierConfig.auth.private.tokenFilePath,
-   );
-   console.log('Exchanging authorization code for OAuth2 tokens...');
-   auth.tokens = await auth.oauth2.exchangeCodeForToken(code);
-   await auth.storage.save(auth.tokens);
-   console.log(
-      `OAuth2 authentication succeeded. Tokens saved to ${staticRouteVerifierConfig.auth.private.tokenFilePath}.`,
-   );
-   return auth.tokens;
-}
-
-async function getAuthContext(mode: RouteMode): Promise<AuthContext> {
-   const cached = authContextCache[mode];
-   if (cached) {
-      return cached;
-   }
-
-   if (mode === 'public') {
-      const clientId = requireConfigValue(
-         staticRouteVerifierConfig.auth.public.clientId,
-         'auth.public.clientId',
-      );
-      const clientSecret = requireConfigValue(
-         staticRouteVerifierConfig.auth.public.clientSecret,
-         'auth.public.clientSecret',
-      );
-      const oauth1 = new OAuth1Client(clientId, clientSecret);
-      const context: PublicAuthContext = {
-         http: new HttpClient(undefined, undefined, undefined, {
-            oauth1Client: oauth1,
-            rawXml: true,
-            timeout: staticRouteVerifierConfig.request.timeoutMs,
-         }),
-         mode: 'public',
-      };
-      authContextCache[mode] = context;
-      return context;
-   }
-
-   const clientId = requireConfigValue(
-      staticRouteVerifierConfig.auth.private.clientId,
-      'auth.private.clientId',
-   );
-   const clientSecret = requireConfigValue(
-      staticRouteVerifierConfig.auth.private.clientSecret,
-      'auth.private.clientSecret',
-   );
-   const redirectUri = requireConfigValue(
-      staticRouteVerifierConfig.auth.private.redirectUri,
-      'auth.private.redirectUri',
-   );
-   const storage = new ResearchTokenStorage(
-      staticRouteVerifierConfig.auth.private.tokenFilePath,
-   );
-   const oauth2 = new OAuth2Client(clientId, clientSecret, redirectUri);
-   const context = {
-      mode: 'private',
-      oauth2,
-      redirectUri,
-      storage,
-      tokens:
-         staticRouteVerifierConfig.auth.private.seedTokens ??
-         (await storage.load()),
-   } as PrivateAuthContext;
-
-   context.http = new HttpClient(
-      oauth2,
-      () => context.tokens,
-      async () => {
-         if (!context.tokens?.refreshToken) {
-            throw new Error('No refresh token available for refresh');
-         }
-
-         const refreshedTokens = await context.oauth2.refreshAccessToken(
-            context.tokens.refreshToken,
-         );
-         context.tokens = refreshedTokens;
-         await context.storage.save(refreshedTokens);
-         return refreshedTokens;
-      },
-      {
-         rawXml: true,
-         timeout: staticRouteVerifierConfig.request.timeoutMs,
-      },
-   );
-
-   if (!context.tokens) {
-      await ensurePrivateTokens(context);
-   }
-
-   authContextCache[mode] = context;
-   return context;
-}
-
-async function requestRoute(
-   mode: RouteMode,
-   path: string,
-): Promise<RequestExecution> {
-   const authContext = await getAuthContext(mode);
-   const url = buildRequestUrl(path);
-
-   if (authContext.mode === 'private') {
-      await ensurePrivateTokens(authContext);
-   }
-
-   try {
-      const body = await authContext.http.get<string>(path, {
-         headers: {
-            Accept: 'application/xml',
-         },
-      });
-
-      return {
-         parsedResponse: parseYahooXML(body),
-         rawBody: body,
-         url,
-      };
-   } catch (error) {
-      if (error instanceof YahooApiError) {
-         const rawBody =
-            typeof error.response === 'string'
-               ? error.response
-               : JSON.stringify(error.response, null, 2);
-         throw new RequestRouteError(error.message, rawBody, url);
-      }
-
-      if (error instanceof Error) {
-         throw new RequestRouteError(error.message, '', url);
-      }
-
-      throw new RequestRouteError(String(error), '', url);
-   }
 }
 
 function hasReturnedData(response: unknown): boolean {
-   if (response === null || response === undefined) {
-      return false;
-   }
-
-   if (Array.isArray(response)) {
-      return response.length > 0;
-   }
-
-   if (typeof response === 'object') {
-      return Object.keys(response as Record<string, unknown>).length > 0;
-   }
-
+   if (response === null || response === undefined) return false;
+   if (Array.isArray(response)) return response.length > 0;
+   if (typeof response === 'object')
+      return Object.keys(response).length > 0;
    return true;
 }
 
-async function runRoute(
-   selectedRoute: SelectedRoute,
-): Promise<RouteResult> {
-   const { route, routeSet } = selectedRoute;
-   const resolved = resolveTemplate(
-      route.pathTemplate,
-      getRouteContext(route.mode),
-   );
-   if (!resolved.path) {
-      return {
-         confidence: route.confidence,
-         dumpFilePath: undefined,
-         id: route.id,
-         mode: route.mode,
-         requestStatus: 'skipped',
-         routeSet,
-         shapeStatus: 'not-run',
-         requestNotes: [
-            `missing placeholder values: ${resolved.missing.join(', ')}`,
-         ],
-         shapeNotes: [],
-      };
-   }
-
-   try {
-      const execution = await requestRoute(route.mode, resolved.path);
-      const response = execution.parsedResponse;
-      const dumpFilePath = await writeDumpFile(route, 'response', {
-         mode: route.mode,
-         path: resolved.path,
-         rawBody: execution.rawBody,
-         response,
-         url: execution.url,
-      });
-
-      if (!hasReturnedData(response)) {
-         const requestNote = 'request succeeded but returned no data';
-         return {
-            confidence: route.confidence,
-            dumpFilePath,
-            failureAssessment: assessFailure(requestNote),
-            id: route.id,
-            mode: route.mode,
-            path: resolved.path,
-            requestStatus: 'failed',
-            routeSet,
-            shapeStatus: 'not-run',
-            requestNotes: [requestNote],
-            shapeNotes: [],
-            shapePreview: collectShapePreview(response),
-         };
-      }
-
-      const shapeNotes = verifyResponseShape(route, response);
-      const shapeFailures = shapeNotes.filter(
-         (note) => !note.startsWith('sample '),
-      );
-
-      return {
-         confidence: route.confidence,
-         dumpFilePath,
-         id: route.id,
-         mode: route.mode,
-         path: resolved.path,
-         requestStatus: 'passed',
-         routeSet,
-         shapeStatus: shapeFailures.length > 0 ? 'warning' : 'passed',
-         requestNotes: ['request succeeded and returned data'],
-         shapeNotes,
-         shapePreview: collectShapePreview(response),
-      };
-   } catch (error) {
-      const requestNote =
-         error instanceof Error ? error.message : String(error);
-      const retryProbeResult = isLeagueIdsExpectedFailure(requestNote)
-         ? await runLeagueKeyRetryProbe(route, resolved.path)
-         : null;
-      const retryProbe = retryProbeResult ?? undefined;
-      const dumpFilePath = await writeDumpFile(route, 'error', {
-         error:
-            error instanceof Error
-               ? {
-                    message: error.message,
-                    name: error.name,
-                 }
-               : { message: String(error), name: 'UnknownError' },
-         mode: route.mode,
-         path: resolved.path,
-         rawBody:
-            error instanceof RequestRouteError ? error.rawBody : undefined,
-         url: error instanceof RequestRouteError ? error.url : undefined,
-      });
-
-      return {
-         confidence: route.confidence,
-         dumpFilePath,
-         failureAssessment: assessFailure(requestNote, retryProbe),
-         id: route.id,
-         mode: route.mode,
-         path: resolved.path,
-         requestStatus: 'failed',
-         routeSet,
-         retryProbe,
-         shapeStatus: 'not-run',
-         requestNotes: [requestNote],
-         shapeNotes: [],
-      };
-   }
-}
-
-function printHeader(
-   routes: SelectedRoute[],
-   mode: RouteMode | 'all',
-   includeInvalid: boolean,
-): void {
-   const invalidRoutes = routes.filter(
-      (selectedRoute) => selectedRoute.routeSet === 'invalid',
-   ).length;
-
-   console.log('='.repeat(72));
-   console.log('Static Yahoo API Route Verifier');
-   console.log('='.repeat(72));
-   console.log(`Mode: ${mode}`);
-   console.log(`Include invalid: ${includeInvalid ? 'yes' : 'no'}`);
-   console.log(`Routes selected: ${routes.length}`);
-   console.log(`Invalid routes selected: ${invalidRoutes}`);
-   console.log();
-}
-
-function formatRouteDescriptor(
-   routeSet: RouteSet,
-   mode: RouteMode,
-   confidence: RouteConfidence,
-): string {
-   const scope = routeSet === 'invalid' ? `invalid via ${mode}` : routeSet;
-   return `${scope} / ${confidence}`;
-}
-
-function printResult(result: RouteResult): void {
-   const routePrefix =
-      result.requestStatus === 'passed'
-         ? 'PASS_ROUTE'
-         : result.requestStatus === 'failed'
-           ? 'FAIL_ROUTE'
-           : 'SKIP_ROUTE';
-   const shapePrefix =
-      result.shapeStatus === 'passed'
-         ? 'PASS_SHAPE'
-         : result.shapeStatus === 'warning'
-           ? 'WARN_SHAPE'
-           : 'SKIP_SHAPE';
-
-   console.log(
-      `[${routePrefix}] [${shapePrefix}] ${result.id} (${result.routeSet === 'invalid' ? `invalid via ${result.mode}` : result.mode})`,
-   );
-   console.log(
-      `  Route: ${formatRouteDescriptor(result.routeSet, result.mode, result.confidence)}`,
-   );
-   if (result.path) {
-      console.log(`  Path: ${result.path}`);
-   }
-   if (result.dumpFilePath) {
-      console.log(`  Dump: ${result.dumpFilePath}`);
-   }
-   for (const note of result.requestNotes) {
-      console.log(`  - request: ${note}`);
-   }
-   if (result.failureAssessment) {
-      console.log(
-         `  - classification: ${formatFailureKind(result.failureAssessment.kind)} (${result.failureAssessment.confidence})`,
-      );
-      console.log(`  - decision: ${result.failureAssessment.nextStep}`);
-   }
-   if (result.retryProbe) {
-      console.log(
-         `  - reprobe: ${result.retryProbe.trigger} -> ${result.retryProbe.requestStatus}`,
-      );
-      console.log(`  - reprobe path: ${result.retryProbe.path}`);
-      console.log(`  - reprobe note: ${result.retryProbe.requestNote}`);
-      if (result.retryProbe.dumpFilePath) {
-         console.log(`  - reprobe dump: ${result.retryProbe.dumpFilePath}`);
-      }
-   }
-   for (const note of result.shapeNotes) {
-      console.log(`  - ${note}`);
-   }
-   if (result.shapePreview?.length) {
-      console.log('  Shape preview:');
-      for (const line of result.shapePreview.slice(
-         0,
-         staticRouteVerifierConfig.output.shapePreviewLines,
-      )) {
-         console.log(`    ${line}`);
-      }
-   }
-   console.log();
-}
-
-function printSummary(results: RouteResult[]): void {
-   const routePassed = results.filter(
-      (result) => result.requestStatus === 'passed',
-   ).length;
-   const routeFailed = results.filter(
-      (result) => result.requestStatus === 'failed',
-   ).length;
-   const routeSkipped = results.filter(
-      (result) => result.requestStatus === 'skipped',
-   ).length;
-   const shapePassed = results.filter(
-      (result) => result.shapeStatus === 'passed',
-   ).length;
-   const shapeWarnings = results.filter(
-      (result) => result.shapeStatus === 'warning',
-   ).length;
-   const shapeSkipped = results.filter(
-      (result) => result.shapeStatus === 'not-run',
-   ).length;
-
-   console.log('='.repeat(72));
-   console.log('Summary');
-   console.log('='.repeat(72));
-   console.log(`Routes passed: ${routePassed}`);
-   console.log(`Routes failed: ${routeFailed}`);
-   console.log(`Routes skipped: ${routeSkipped}`);
-   console.log(`Shapes passed: ${shapePassed}`);
-   console.log(`Shapes warned: ${shapeWarnings}`);
-   console.log(`Shapes skipped: ${shapeSkipped}`);
-}
-
-function summarizeFailure(note: string): string {
-   if (note.startsWith('API request failed: ')) {
-      return note.slice('API request failed: '.length).slice(0, 200);
-   }
-
-   if (note.startsWith('Authentication failed.')) {
-      return note.slice(0, 200);
-   }
-
-   if (note.includes('subresource')) {
-      return note.slice(0, 200);
-   }
-
-   if (note.startsWith('HTTP 400')) {
-      return 'HTTP 400 from Yahoo';
-   }
-
-   if (note.includes('returned no data')) {
-      return 'Request returned no data';
-   }
-
-   if (note.includes('missing placeholder values')) {
-      return note;
-   }
-
-   return note.slice(0, 200);
-}
-
-function isLeagueIdsExpectedFailure(note: string): boolean {
-   return summarizeFailure(note)
-      .toLowerCase()
-      .includes('league ids expected');
-}
-
-function getFallbackLeagueKey(mode: RouteMode): string | undefined {
-   const context = getRouteContext(mode);
-   return (
-      context.LEAGUE_KEY ??
-      context.LEAGUE_KEYS?.split(',')
-         .map((value) => value.trim())
-         .find(Boolean)
-   );
-}
-
-function buildLeagueKeyFallbackPath(
-   mode: RouteMode,
-   path: string,
-): string | null {
-   const leagueKey = getFallbackLeagueKey(mode);
-   if (!leagueKey) {
-      return null;
-   }
-
-   if (path.includes('league_keys=')) {
-      return null;
-   }
-
-   const leaguesSegmentIndex = path.indexOf('/leagues');
-   if (leaguesSegmentIndex !== -1) {
-      const insertionIndex = leaguesSegmentIndex + '/leagues'.length;
-      return `${path.slice(0, insertionIndex)};league_keys=${leagueKey}${path.slice(insertionIndex)}`;
-   }
-
-   const outSegmentIndex = path.indexOf(';out=');
-   if (outSegmentIndex === -1) {
-      return null;
-   }
-
-   const requestedOut = path
-      .slice(outSegmentIndex + ';out='.length)
-      .split(',')
-      .map((value) => value.trim())
-      .filter(Boolean);
-
-   if (!requestedOut.includes('leagues')) {
-      return null;
-   }
-
-   return `${path};league_keys=${leagueKey}`;
-}
-
-function buildLeagueKeyOrderVariantPath(path: string): string | null {
-   if (!path.includes(';out=') || !path.includes(';league_keys=')) {
-      return null;
-   }
-
-   const leagueKeysMatch = path.match(/;league_keys=([^;/]+)/);
-   if (!leagueKeysMatch) {
-      return null;
-   }
-
-   const leagueKeysSegment = `;league_keys=${leagueKeysMatch[1]}`;
-   const pathWithoutLeagueKeys = path.replace(leagueKeysSegment, '');
-   const outIndex = pathWithoutLeagueKeys.indexOf(';out=');
-   if (outIndex === -1) {
-      return null;
-   }
-
-   return `${pathWithoutLeagueKeys.slice(0, outIndex)}${leagueKeysSegment}${pathWithoutLeagueKeys.slice(outIndex)}`;
-}
-
-async function executeRetryProbeAttempt(
+function emptyRequiredArrays(
    route: RouteDefinition,
-   failedPath: string,
-   retryPath: string,
-   label: RetryProbeAttempt['label'],
-): Promise<RetryProbeAttempt> {
-   try {
-      const execution = await requestRoute(route.mode, retryPath);
-      const hasData = hasReturnedData(execution.parsedResponse);
-      const requestNote = hasData
-         ? 'league-key fallback succeeded and returned data'
-         : 'league-key fallback succeeded but returned no data';
-      const dumpFilePath = await writeDumpFile(
-         route,
-         label === 'default'
-            ? 'league-key-fallback-response'
-            : 'league-key-fallback-order-variant-response',
-         {
-            fallbackPath: retryPath,
-            label,
-            mode: route.mode,
-            originalPath: failedPath,
-            rawBody: execution.rawBody,
-            response: execution.parsedResponse,
-            trigger: 'league-ids-expected',
-            url: execution.url,
-         },
-      );
-
-      return {
-         dumpFilePath,
-         label,
-         path: retryPath,
-         requestNote,
-         requestStatus: 'passed',
-      };
-   } catch (error) {
-      const requestNote =
-         error instanceof Error ? error.message : String(error);
-      const dumpFilePath = await writeDumpFile(
-         route,
-         label === 'default'
-            ? 'league-key-fallback-error'
-            : 'league-key-fallback-order-variant-error',
-         {
-            error:
-               error instanceof Error
-                  ? {
-                       message: error.message,
-                       name: error.name,
-                    }
-                  : { message: String(error), name: 'UnknownError' },
-            fallbackPath: retryPath,
-            label,
-            mode: route.mode,
-            originalPath: failedPath,
-            rawBody:
-               error instanceof RequestRouteError
-                  ? error.rawBody
-                  : undefined,
-            trigger: 'league-ids-expected',
-            url: error instanceof RequestRouteError ? error.url : undefined,
-         },
-      );
-
-      return {
-         dumpFilePath,
-         label,
-         path: retryPath,
-         requestNote,
-         requestStatus: 'failed',
-      };
-   }
+   response: unknown,
+): string[] {
+   if (route.allowEmpty) return [];
+   const typedArrays = Object.entries(route.expectations?.typedPaths ?? {})
+      .filter(([, type]) => type === 'array')
+      .map(([path]) => path);
+   const paths = new Set([
+      ...typedArrays,
+      ...(route.expectations?.nonEmptyArrays ?? []),
+   ]);
+   return [...paths].filter((path) => {
+      const value = getValueAtPath(response, path);
+      return Array.isArray(value) && value.length === 0;
+   });
 }
 
-async function runLeagueKeyRetryProbe(
-   route: RouteDefinition,
-   failedPath: string,
-): Promise<RetryProbe | null> {
-   const retryPath = buildLeagueKeyFallbackPath(route.mode, failedPath);
-   if (!retryPath || retryPath === failedPath) {
-      return null;
+function collectValuesByKey(
+   value: unknown,
+   keys: ReadonlySet<string>,
+   target: Record<string, string[]> = {},
+): Record<string, string[]> {
+   if (Array.isArray(value)) {
+      for (const item of value) collectValuesByKey(item, keys, target);
+      return target;
    }
+   if (!value || typeof value !== 'object') return target;
 
-   const attempts: RetryProbeAttempt[] = [];
-   const defaultAttempt = await executeRetryProbeAttempt(
-      route,
-      failedPath,
-      retryPath,
-      'default',
-   );
-   attempts.push(defaultAttempt);
-
-   const orderVariantPath =
-      defaultAttempt.requestStatus === 'failed'
-         ? buildLeagueKeyOrderVariantPath(retryPath)
-         : null;
-
-   if (orderVariantPath && orderVariantPath !== retryPath) {
-      const variantAttempt = await executeRetryProbeAttempt(
-         route,
-         failedPath,
-         orderVariantPath,
-         'parameter-order-variant',
-      );
-      attempts.push(variantAttempt);
+   for (const [key, child] of Object.entries(value)) {
+      if (
+         keys.has(key) &&
+         (typeof child === 'string' || typeof child === 'number')
+      ) {
+         target[key] ??= [];
+         const values = target[key];
+         const text = String(child);
+         if (!values.includes(text) && values.length < 10)
+            values.push(text);
+      }
+      collectValuesByKey(child, keys, target);
    }
+   return target;
+}
 
-   const successfulAttempt = attempts.find(
-      (attempt) => attempt.requestStatus === 'passed',
-   );
-   const finalAttempt = successfulAttempt ?? attempts.at(-1);
+const FACT_KEYS = new Set([
+   'code',
+   'coverageType',
+   'date',
+   'gameKey',
+   'leagueKey',
+   'playerKey',
+   'season',
+   'teamKey',
+   'transactionKey',
+   'week',
+]);
 
-   if (!finalAttempt) {
-      return null;
-   }
-
-   return {
-      attempts,
-      dumpFilePath: finalAttempt.dumpFilePath,
-      path: finalAttempt.path,
-      requestNote: finalAttempt.requestNote,
-      requestStatus: finalAttempt.requestStatus,
-      trigger: 'league-ids-expected',
+function extractFacts(response: unknown): Record<string, string[]> {
+   const facts = collectValuesByKey(response, FACT_KEYS);
+   const add = (key: string, value: unknown): void => {
+      if (typeof value === 'string' || typeof value === 'number') {
+         facts[key] = [String(value)];
+      }
    };
-}
+   const object =
+      response && typeof response === 'object'
+         ? (response as Record<string, unknown>)
+         : {};
+   const game =
+      object.game && typeof object.game === 'object'
+         ? (object.game as Record<string, unknown>)
+         : undefined;
+   const league =
+      object.league && typeof object.league === 'object'
+         ? (object.league as Record<string, unknown>)
+         : undefined;
 
-function assessFailure(
-   note: string,
-   retryProbe?: RetryProbe,
-): FailureAssessment {
-   const summary = summarizeFailure(note);
-   const normalizedSummary = summary.toLowerCase();
-
-   if (isLeagueIdsExpectedFailure(note)) {
-      if (retryProbe?.requestStatus === 'passed') {
-         return {
-            confidence: 'high',
-            kind: 'invalid-test-parameters',
-            nextStep:
-               'Use concrete league keys for this family or treat the original game-to-leagues chain as a discovery-only probe.',
-            reason:
-               'The original path asked Yahoo for league ids, and the explicit league-key reprobe succeeded.',
-         };
-      }
-
-      if (retryProbe?.requestStatus === 'failed') {
-         const retrySummary = summarizeFailure(retryProbe.requestNote);
-         const normalizedRetrySummary = retrySummary.toLowerCase();
-
-         if (
-            normalizedRetrySummary.includes('subresource') &&
-            normalizedRetrySummary.includes('not supported')
-         ) {
-            return {
-               confidence: 'high',
-               kind: 'unsupported-route',
-               nextStep:
-                  'Demote this route family. Even the explicit league-key reprobe was rejected as unsupported.',
-               reason:
-                  'Yahoo still rejected the route after replacing the game-derived chain with a concrete league key.',
-            };
-         }
-
-         return {
-            confidence: 'medium',
-            kind: 'invalid-test-parameters',
-            nextStep:
-               'Keep this route provisional and inspect the fallback dump to tighten the concrete league-key probe.',
-            reason:
-               'The original route needed league ids, and the explicit league-key reprobe still failed for a non-structural reason.',
-         };
-      }
+   if (game) {
+      add('gameName', game.name);
+      add(
+         'gameWeeksCount',
+         Array.isArray(game.gameWeeks) ? game.gameWeeks.length : undefined,
+      );
+      const statCategories = game.statCategories as
+         | Record<string, unknown>
+         | undefined;
+      add(
+         'statCategoriesCount',
+         Array.isArray(statCategories?.stats)
+            ? statCategories.stats.length
+            : undefined,
+      );
+      add(
+         'positionTypesCount',
+         Array.isArray(game.positionTypes)
+            ? game.positionTypes.length
+            : undefined,
+      );
+      add(
+         'rosterPositionsCount',
+         Array.isArray(game.rosterPositions)
+            ? game.rosterPositions.length
+            : undefined,
+      );
+      const dates = game.dates as Record<string, unknown> | undefined;
+      const seasonDates = dates?.season as
+         | Record<string, unknown>
+         | undefined;
+      add('seasonStartDate', seasonDates?.startDate);
+      add('seasonEndDate', seasonDates?.endDate);
    }
 
+   if (league) {
+      add('leagueName', league.name);
+      add('rosterType', league.rosterType);
+      add('scoringType', league.scoringType);
+      add(
+         'transactionsCount',
+         Array.isArray(league.transactions)
+            ? league.transactions.length
+            : undefined,
+      );
+      const draftResults = league.draftResults as
+         | Record<string, unknown>
+         | undefined;
+      add(
+         'draftResultsCount',
+         Array.isArray(draftResults?.draftResult)
+            ? draftResults.draftResult.length
+            : undefined,
+      );
+   }
+
+   return facts;
+}
+
+function assessFailure(note: string): FailureAssessment {
+   const normalized = note.toLowerCase();
    if (
-      normalizedSummary.includes('authentication failed') ||
-      normalizedSummary.includes('unauthorized') ||
-      normalizedSummary.includes('forbidden') ||
-      normalizedSummary.includes('access token') ||
-      normalizedSummary.includes('insufficient scope')
+      normalized.includes('unauthorized') ||
+      normalized.includes('forbidden') ||
+      normalized.includes('access token') ||
+      normalized.includes('authentication') ||
+      normalized.includes('authorization is required')
    ) {
       return {
          confidence: 'high',
          kind: 'auth-or-scope',
-         nextStep:
-            'Refresh credentials or widen scopes, then rerun before judging the route.',
-         reason:
-            'Yahoo rejected the request at the auth or access-control layer.',
+         reason: 'Yahoo rejected authentication, authorization, or scope.',
       };
    }
-
-   if (normalizedSummary.includes('returned no data')) {
-      return {
-         confidence: 'medium',
-         kind: 'empty-data',
-         nextStep:
-            'Rerun with a different league, week, date, or search term before treating the route as unsupported.',
-         reason:
-            'The request completed, but the chosen fixtures did not produce payload data.',
-      };
-   }
-
    if (
-      normalizedSummary.includes('subresource') &&
-      normalizedSummary.includes('not supported')
+      normalized.includes('too many requests') ||
+      normalized.includes('429') ||
+      normalized.includes('timeout') ||
+      normalized.includes('timed out') ||
+      normalized.includes('503') ||
+      normalized.includes('temporary problem')
+   ) {
+      return {
+         confidence: 'high',
+         kind: 'rate-limited-or-transient',
+         reason:
+            'The request hit a rate limit, timeout, or transient service error.',
+      };
+   }
+   if (
+      normalized.includes('subresource') &&
+      normalized.includes('not supported')
    ) {
       return {
          confidence: 'high',
          kind: 'unsupported-route',
-         nextStep:
-            'Treat this as a structural route failure unless the docs show a materially different path shape.',
-         reason:
-            'Yahoo explicitly rejected the requested subresource chain.',
+         reason: 'Yahoo explicitly rejected the subresource path.',
       };
    }
-
    if (
-      normalizedSummary.includes('ids expected') ||
-      normalizedSummary.includes('does not exist') ||
-      normalizedSummary.includes('invalid ') ||
-      normalizedSummary.includes('expected.') ||
-      normalizedSummary.includes('expected,')
+      normalized.includes('ids expected') ||
+      normalized.includes('does not exist') ||
+      normalized.includes('invalid') ||
+      normalized.includes('not found')
    ) {
       return {
          confidence: 'high',
-         kind: 'invalid-test-parameters',
-         nextStep:
-            'Keep the route provisional and rerun with valid concrete ids, transaction keys, or filter values.',
+         kind: 'fixture-invalid',
          reason:
-            'Yahoo rejected the supplied identifiers or filter parameters rather than the route shape itself.',
+            'Yahoo rejected a concrete key, period, or filter fixture.',
       };
    }
-
+   if (
+      normalized.includes('returned no data') ||
+      normalized.includes('required arrays were empty')
+   ) {
+      return {
+         confidence: 'medium',
+         kind: 'empty-data',
+         reason: 'The route responded but the selected fixture was empty.',
+      };
+   }
+   if (
+      normalized.includes('parse') ||
+      normalized.includes('unexpected token')
+   ) {
+      return {
+         confidence: 'medium',
+         kind: 'parser-failure',
+         reason:
+            'The response could not be interpreted by the repository parser.',
+      };
+   }
    return {
       confidence: 'medium',
       kind: 'unknown-failure',
-      nextStep:
-         'Inspect the raw dump and rerun with a narrower probe before deciding whether to demote the route.',
       reason:
-         'The error message does not clearly separate route support from bad test inputs.',
+         'The error does not isolate route support from fixture behavior.',
    };
 }
 
-function formatFailureKind(kind: FailureKind): string {
-   switch (kind) {
-      case 'unsupported-route':
-         return 'likely unsupported route';
-      case 'invalid-test-parameters':
-         return 'likely invalid test parameters';
-      case 'auth-or-scope':
-         return 'auth or scope issue';
-      case 'empty-data':
-         return 'empty-data result';
-      case 'unknown-failure':
-         return 'unknown failure';
-   }
+function cloneProfiles(sports: SportCode[]): SportProfile[] {
+   return staticRouteVerifierConfig.profiles
+      .filter((profile) => sports.includes(profile.code))
+      .map((profile) => ({
+         ...profile,
+         context: { ...profile.context },
+         privateContext: { ...profile.privateContext },
+         publicContext: { ...profile.publicContext },
+      }));
 }
 
-function toReportDumpLink(dumpFilePath: string | undefined): string | null {
-   if (!dumpFilePath) {
-      return null;
-   }
-
-   if (dumpFilePath.startsWith('research/')) {
-      return dumpFilePath.slice('research/'.length);
-   }
-
-   return dumpFilePath;
+function firstFact(
+   facts: Record<string, string[]>,
+   key: string,
+): string | undefined {
+   return facts[key]?.[0];
 }
 
-function formatStatusLabel(result: RouteResult): string {
-   const routeLabel =
-      result.requestStatus === 'passed'
-         ? 'route passed'
-         : result.requestStatus === 'failed'
-           ? 'route failed'
-           : 'route skipped';
-   const shapeLabel =
-      result.shapeStatus === 'passed'
-         ? 'shape passed'
-         : result.shapeStatus === 'warning'
-           ? 'shape warning'
-           : 'shape not run';
-
-   return `${routeLabel}; ${shapeLabel}`;
+function valuesForSport(
+   facts: Record<string, string[]>,
+   key: string,
+   gameKey?: string,
+): string[] {
+   const values = facts[key] ?? [];
+   return gameKey
+      ? values.filter(
+           (value) => value.startsWith(`${gameKey}.`) || value === gameKey,
+        )
+      : values;
 }
 
-function formatResultBlock(result: RouteResult): string[] {
-   const lines = [`#### ${result.id}`, ''];
-   const dumpLink = toReportDumpLink(result.dumpFilePath);
+async function discoverProfile(
+   profile: SportProfile,
+   mode: RouteMode | 'all',
+   publicFixtures: ReadonlySet<PlaceholderName>,
+   privateFixtures: ReadonlySet<PlaceholderName>,
+): Promise<DiscoveryRecord[]> {
+   const records: DiscoveryRecord[] = [];
+   const discoveryMode: RouteMode = 'public';
+   profile.publicContext ??= {};
+   const publicContext = profile.publicContext;
 
-   lines.push(`- Status: ${formatStatusLabel(result)}`);
-   lines.push(
-      `- Route: ${formatRouteDescriptor(result.routeSet, result.mode, result.confidence)}`,
+   const publicContextBeforeDiscovery = buildScenarioContext(
+      profile,
+      'public',
    );
-   lines.push(`- Path: ${result.path ?? '(missing path)'}`);
+   const privateContextBeforeDiscovery = buildScenarioContext(
+      profile,
+      'private',
+   );
+   const needsGameDiscovery = [
+      'GAME_KEY',
+      'LEAGUE_KEY',
+      'LEAGUE_KEYS',
+      'PLAYER_KEY',
+      'PLAYER_KEYS',
+      'SEASON',
+      'TEAM_KEY',
+      'TEAM_KEYS',
+      'TRANSACTION_KEY',
+      'TRANSACTION_KEYS',
+   ].some(
+      (fixture) =>
+         (publicFixtures.has(fixture as PlaceholderName) &&
+            !publicContextBeforeDiscovery[fixture as PlaceholderName]) ||
+         (privateFixtures.has(fixture as PlaceholderName) &&
+            !privateContextBeforeDiscovery[fixture as PlaceholderName]),
+   );
 
-   if (dumpLink) {
-      lines.push(`- Dump: [response file](${dumpLink})`);
-   }
+   if (needsGameDiscovery)
+      try {
+         const execution = await requestRoute(
+            discoveryMode,
+            `/game/${profile.code}`,
+         );
+         const facts = extractFacts(execution.parsedResponse);
+         const gameKey = firstFact(facts, 'gameKey');
+         const season = firstFact(facts, 'season');
+         if (gameKey) profile.context.GAME_KEY ??= gameKey;
+         if (season) profile.context.SEASON ??= season;
+         const complete = Boolean(gameKey && season);
+         if (
+            gameKey &&
+            publicContext.LEAGUE_KEY &&
+            !publicContext.LEAGUE_KEY.startsWith(`${gameKey}.`)
+         ) {
+            delete publicContext.LEAGUE_KEY;
+            delete publicContext.LEAGUE_KEYS;
+            delete publicContext.TEAM_KEY;
+            delete publicContext.TEAM_KEYS;
+         }
+         records.push({
+            facts,
+            mode: discoveryMode,
+            notes: [
+               complete
+                  ? 'current game metadata discovered'
+                  : 'game discovery omitted required gameKey or season facts',
+            ],
+            path: `/game/${profile.code}`,
+            sport: profile.code,
+            status: complete ? 'passed' : 'failed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: discoveryMode,
+            notes: [error instanceof Error ? error.message : String(error)],
+            path: `/game/${profile.code}`,
+            sport: profile.code,
+            status: 'failed',
+         });
+      }
 
-   if (result.requestNotes.length > 0) {
-      const [firstRequestNote] = result.requestNotes;
-      if (firstRequestNote) {
-         lines.push(`- Request: ${summarizeFailure(firstRequestNote)}`);
+   if (
+      mode !== 'private' &&
+      (publicFixtures.has('PLAYER_KEY') ||
+         publicFixtures.has('PLAYER_KEYS')) &&
+      !publicContext.PLAYER_KEY
+   ) {
+      const search = profile.context.PLAYER_SEARCH;
+      const path = `/game/${profile.code}/players;search=${encodeURIComponent(search ?? '')};count=2`;
+      try {
+         const execution = await requestRoute('public', path);
+         const facts = extractFacts(execution.parsedResponse);
+         const playerKeys = valuesForSport(
+            facts,
+            'playerKey',
+            profile.context.GAME_KEY,
+         );
+         if (playerKeys[0]) {
+            publicContext.PLAYER_KEY = playerKeys[0];
+            publicContext.PLAYER_KEYS = playerKeys.slice(0, 2).join(',');
+         }
+         records.push({
+            facts,
+            mode: 'public',
+            notes: [
+               playerKeys.length
+                  ? 'public player fixtures discovered through observed game search behavior'
+                  : 'game search returned no player fixture',
+            ],
+            path,
+            sport: profile.code,
+            status: playerKeys.length ? 'passed' : 'failed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: 'public',
+            notes: [error instanceof Error ? error.message : String(error)],
+            path,
+            sport: profile.code,
+            status: 'failed',
+         });
       }
    }
 
-   if (result.failureAssessment) {
-      lines.push(
-         `- Classification: ${formatFailureKind(result.failureAssessment.kind)} (${result.failureAssessment.confidence} confidence)`,
-      );
-      lines.push(`- Why: ${result.failureAssessment.reason}`);
-      lines.push(`- Next step: ${result.failureAssessment.nextStep}`);
+   if (
+      mode !== 'private' &&
+      publicContext.LEAGUE_KEY &&
+      publicFixtures.has('LEAGUE_KEYS')
+   ) {
+      publicContext.LEAGUE_KEYS ??= publicContext.LEAGUE_KEY;
    }
 
-   if (result.retryProbe) {
-      lines.push(
-         `- Reprobe: ${result.retryProbe.trigger} -> ${result.retryProbe.requestStatus}`,
-      );
-      lines.push(`- Reprobe path: ${result.retryProbe.path}`);
-      lines.push(
-         `- Reprobe note: ${summarizeFailure(result.retryProbe.requestNote)}`,
-      );
-      if (result.retryProbe.dumpFilePath) {
-         const retryDumpLink = toReportDumpLink(
-            result.retryProbe.dumpFilePath,
-         );
-         if (retryDumpLink) {
-            lines.push(`- Reprobe dump: [response file](${retryDumpLink})`);
+   if (
+      mode !== 'private' &&
+      publicContext.LEAGUE_KEY &&
+      (publicFixtures.has('TEAM_KEY') || publicFixtures.has('TEAM_KEYS'))
+   ) {
+      if (!publicContext.TEAM_KEY) {
+         const path = `/league/${publicContext.LEAGUE_KEY}/teams`;
+         try {
+            const execution = await requestRoute('public', path);
+            const facts = extractFacts(execution.parsedResponse);
+            const teamKeys = valuesForSport(
+               facts,
+               'teamKey',
+               profile.context.GAME_KEY,
+            );
+            if (teamKeys[0]) {
+               publicContext.TEAM_KEY = teamKeys[0];
+               publicContext.TEAM_KEYS = teamKeys.slice(0, 2).join(',');
+            }
+            records.push({
+               facts,
+               mode: 'public',
+               notes: [
+                  teamKeys.length
+                     ? 'public team fixtures discovered from configured league'
+                     : 'configured public league returned no team fixture',
+               ],
+               path,
+               sport: profile.code,
+               status: teamKeys.length ? 'passed' : 'failed',
+            });
+         } catch (error) {
+            records.push({
+               facts: {},
+               mode: 'public',
+               notes: [
+                  error instanceof Error ? error.message : String(error),
+               ],
+               path,
+               sport: profile.code,
+               status: 'failed',
+            });
          }
       }
+   }
 
-      if (result.retryProbe.attempts.length > 1) {
-         for (const attempt of result.retryProbe.attempts) {
-            lines.push(
-               `- Reprobe attempt (${attempt.label}): ${attempt.requestStatus}`,
-            );
-            lines.push(`- Reprobe attempt path: ${attempt.path}`);
-            lines.push(
-               `- Reprobe attempt note: ${summarizeFailure(attempt.requestNote)}`,
-            );
-            if (attempt.dumpFilePath) {
-               const attemptDumpLink = toReportDumpLink(
-                  attempt.dumpFilePath,
-               );
-               if (attemptDumpLink) {
-                  lines.push(
-                     `- Reprobe attempt dump: [response file](${attemptDumpLink})`,
-                  );
-               }
+   if (mode === 'public') return records;
+
+   profile.privateContext ??= {};
+   const privateContext = profile.privateContext;
+   if (
+      privateFixtures.has('DATE') &&
+      profile.code !== 'nfl' &&
+      !privateContext.DATE
+   ) {
+      const path = `/game/${profile.code}/dates`;
+      try {
+         const execution = await requestRoute('public', path);
+         const facts = extractFacts(execution.parsedResponse);
+         const startDate = firstFact(facts, 'seasonStartDate');
+         const endDate = firstFact(facts, 'seasonEndDate');
+         const today = new Date().toISOString().slice(0, 10);
+         if (startDate && endDate) {
+            privateContext.DATE =
+               today < startDate
+                  ? startDate
+                  : today > endDate
+                    ? endDate
+                    : today;
+         }
+         records.push({
+            facts,
+            mode: 'public',
+            notes: [
+               privateContext.DATE
+                  ? 'daily coverage date derived within season bounds'
+                  : 'game dates did not provide season bounds',
+            ],
+            path,
+            sport: profile.code,
+            status: 'passed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: 'public',
+            notes: [error instanceof Error ? error.message : String(error)],
+            path,
+            sport: profile.code,
+            status: 'failed',
+         });
+      }
+   }
+   const gameKey = profile.context.GAME_KEY;
+   const effectivePrivateContext = buildScenarioContext(profile, 'private');
+   const needsPrivateTeam = [
+      'LEAGUE_KEY',
+      'LEAGUE_KEYS',
+      'PLAYER_KEY',
+      'PLAYER_KEYS',
+      'TEAM_KEY',
+      'TEAM_KEYS',
+      'TRANSACTION_KEY',
+      'TRANSACTION_KEYS',
+   ].some(
+      (fixture) =>
+         privateFixtures.has(fixture as PlaceholderName) &&
+         !effectivePrivateContext[fixture as PlaceholderName],
+   );
+   if (needsPrivateTeam)
+      try {
+         const teamPath = `/users;use_login=1/games;game_keys=${profile.code}/teams`;
+         const execution = await requestRoute('private', teamPath);
+         const facts = extractFacts(execution.parsedResponse);
+         const teamKey = valuesForSport(facts, 'teamKey', gameKey)[0];
+         if (teamKey) {
+            privateContext.TEAM_KEY ??= teamKey;
+            privateContext.TEAM_KEYS ??= teamKey;
+            const leagueKey = teamKey.split('.t.')[0];
+            if (leagueKey) {
+               privateContext.LEAGUE_KEY ??= leagueKey;
+               privateContext.LEAGUE_KEYS ??= leagueKey;
             }
          }
+         records.push({
+            facts,
+            mode: 'private',
+            notes: [
+               teamKey
+                  ? 'private team and league fixtures discovered'
+                  : 'authorized account has no team fixture for this sport',
+            ],
+            path: teamPath,
+            sport: profile.code,
+            status: 'passed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: 'private',
+            notes: [error instanceof Error ? error.message : String(error)],
+            path: `/users;use_login=1/games;game_keys=${profile.code}/teams`,
+            sport: profile.code,
+            status: 'failed',
+         });
+      }
+
+   if (
+      privateContext.TEAM_KEY &&
+      !privateContext.PLAYER_KEY &&
+      (privateFixtures.has('PLAYER_KEY') ||
+         privateFixtures.has('PLAYER_KEYS'))
+   ) {
+      try {
+         const path = `/team/${privateContext.TEAM_KEY}/roster/players`;
+         const execution = await requestRoute('private', path);
+         const facts = extractFacts(execution.parsedResponse);
+         const playerKeys = facts.playerKey ?? [];
+         if (playerKeys[0]) {
+            privateContext.PLAYER_KEY = playerKeys[0];
+            privateContext.PLAYER_KEYS = playerKeys.slice(0, 2).join(',');
+         }
+         privateContext.DATE ??= firstFact(facts, 'date');
+         privateContext.WEEK ??= firstFact(facts, 'week');
+         records.push({
+            facts,
+            mode: 'private',
+            notes: ['roster period and player fixtures discovered'],
+            path,
+            sport: profile.code,
+            status: 'passed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: 'private',
+            notes: [error instanceof Error ? error.message : String(error)],
+            path: `/team/${privateContext.TEAM_KEY}/roster/players`,
+            sport: profile.code,
+            status: 'failed',
+         });
       }
    }
 
-   if (result.shapeStatus === 'warning' && result.shapeNotes.length > 0) {
-      const [firstShapeNote] = result.shapeNotes;
-      if (firstShapeNote) {
-         lines.push(`- Shape: ${firstShapeNote}`);
+   if (
+      privateContext.LEAGUE_KEY &&
+      !privateContext.TRANSACTION_KEY &&
+      (privateFixtures.has('TRANSACTION_KEY') ||
+         privateFixtures.has('TRANSACTION_KEYS'))
+   ) {
+      try {
+         const path = `/league/${privateContext.LEAGUE_KEY}/transactions;count=5`;
+         const execution = await requestRoute('private', path);
+         const facts = extractFacts(execution.parsedResponse);
+         const keys = facts.transactionKey ?? [];
+         if (keys[0]) {
+            privateContext.TRANSACTION_KEY = keys[0];
+            privateContext.TRANSACTION_KEYS = keys.slice(0, 2).join(',');
+         }
+         records.push({
+            facts,
+            mode: 'private',
+            notes: [
+               keys.length
+                  ? 'transaction fixtures discovered'
+                  : 'league returned no current transaction fixture',
+            ],
+            path,
+            sport: profile.code,
+            status: 'passed',
+         });
+      } catch (error) {
+         records.push({
+            facts: {},
+            mode: 'private',
+            notes: [error instanceof Error ? error.message : String(error)],
+            path: `/league/${privateContext.LEAGUE_KEY}/transactions;count=5`,
+            sport: profile.code,
+            status: 'failed',
+         });
       }
    }
 
-   return [...lines, ''];
+   return records;
 }
 
-function classifyResults(results: RouteResult[]): RecommendationBucket[] {
-   const buckets: RecommendationBucket[] = [
-      {
-         action: 'keep-as-supported',
-         reason:
-            'Route succeeded live. Keep as supported in builder typing or docs.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'passed' &&
-               result.shapeStatus === 'passed',
-         ),
-      },
-      {
-         action: 'fix-shape-expectation',
-         reason:
-            'Route succeeded live but current shape expectation does not match parsed output.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'passed' &&
-               result.shapeStatus === 'warning',
-         ),
-      },
-      {
-         action: 'league-keys-reprobe-passed',
-         reason:
-            'These routes initially failed with league ids expected, but the same path shape succeeded once league_keys was injected.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.retryProbe?.requestStatus === 'passed',
-         ),
-      },
-      {
-         action: 'league-keys-reprobe-failed',
-         reason:
-            'These routes still failed after injecting league_keys. Review the reprobe attempts before treating them as supported.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.retryProbe?.requestStatus === 'failed',
-         ),
-      },
-      {
-         action: 'fix-test-parameters-and-rerun',
-         reason:
-            'Yahoo rejected the supplied ids or filters, so the route may still be real but the probe needs better concrete parameters.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.failureAssessment?.kind ===
-                  'invalid-test-parameters' &&
-               !result.retryProbe,
-         ),
-      },
-      {
-         action: 'demote-or-remove',
-         reason:
-            'Yahoo explicitly rejected the route shape or subresource chain. Demote docs confidence or remove from the safe builder surface.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.failureAssessment?.kind === 'unsupported-route',
-         ),
-      },
-      {
-         action: 'verify-auth-or-scope',
-         reason:
-            'These failures are blocked by auth or access-control, so route support is still unknown until credentials are corrected.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.failureAssessment?.kind === 'auth-or-scope',
-         ),
-      },
-      {
-         action: 'review-empty-data',
-         reason:
-            'The route returned an empty payload, which is weaker evidence than an explicit rejection and usually needs a better fixture set.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.failureAssessment?.kind === 'empty-data',
-         ),
-      },
-      {
-         action: 'investigate-unknown-failure',
-         reason:
-            'These failures are not yet distinguishable from the current Yahoo error text. Inspect the dump before making support decisions.',
-         results: results.filter(
-            (result) =>
-               result.requestStatus === 'failed' &&
-               result.failureAssessment?.kind === 'unknown-failure',
-         ),
-      },
-      {
-         action: 'fill-config-and-rerun',
-         reason:
-            'Route was not exercised because required concrete keys were missing from config.',
-         results: results.filter(
-            (result) => result.requestStatus === 'skipped',
-         ),
-      },
-   ];
-
-   return buckets.filter((bucket) => bucket.results.length > 0);
+function sanitize(value: string): string {
+   return value.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/-+/g, '-');
 }
 
-function buildActionableReport(
+function runDirectory(): string {
+   return `${staticRouteVerifierConfig.output.responseDumpDirPath}/${runId}`;
+}
+
+async function writeDump(
+   scenario: RouteScenario,
+   suffix: string,
+   payload: unknown,
+): Promise<string> {
+   dumpSequence += 1;
+   const file = `${String(dumpSequence).padStart(3, '0')}-${scenario.sport}-${sanitize(scenario.route.id)}-${suffix}.json`;
+   const path = `${runDirectory()}/${file}`;
+   await Bun.write(path, JSON.stringify(payload, null, 2));
+   return path;
+}
+
+async function runScenario(scenario: RouteScenario): Promise<RouteResult> {
+   if (!scenario.path) {
+      return {
+         confidence: scenario.route.confidence,
+         facts: {},
+         id: scenario.id,
+         label: scenario.route.label,
+         missingFixtures: scenario.missingFixtures,
+         mode: scenario.route.mode,
+         notes: [
+            `missing fixtures: ${scenario.missingFixtures.join(', ')}`,
+         ],
+         provenance: scenario.route.provenance,
+         requestStatus: 'fixture-unavailable',
+         routeSet: scenario.routeSet,
+         shapeNotes: [],
+         shapeStatus: 'not-run',
+         sport: scenario.sport,
+      };
+   }
+
+   try {
+      const execution = await requestRoute(
+         scenario.route.mode,
+         scenario.path,
+      );
+      const facts = extractFacts(execution.parsedResponse);
+      const hasData = hasReturnedData(execution.parsedResponse);
+      const emptyArrays = emptyRequiredArrays(
+         scenario.route,
+         execution.parsedResponse,
+      );
+      const shapeNotes = verifyResponseShape(
+         scenario.route,
+         execution.parsedResponse,
+      );
+      const keyNotes = verifyKeyFixtures(
+         scenario.route,
+         facts,
+         scenario.context,
+      );
+      const dumpFilePath = await writeDump(scenario, 'response', {
+         facts,
+         mode: scenario.route.mode,
+         path: scenario.path,
+         rawBody: execution.rawBody,
+         response: execution.parsedResponse,
+         sport: scenario.sport,
+         url: execution.url,
+      });
+
+      if (keyNotes.length) {
+         return {
+            confidence: scenario.route.confidence,
+            dumpFilePath,
+            facts,
+            failure: {
+               confidence: 'high',
+               kind: 'response-mismatch',
+               reason:
+                  'Yahoo returned keys that did not match the requested fixture set.',
+            },
+            id: scenario.id,
+            label: scenario.route.label,
+            missingFixtures: [],
+            mode: scenario.route.mode,
+            notes: keyNotes,
+            path: scenario.path,
+            provenance: scenario.route.provenance,
+            requestStatus: 'failed',
+            routeSet: scenario.routeSet,
+            shapeNotes,
+            shapeStatus: 'not-run',
+            sport: scenario.sport,
+         };
+      }
+
+      if ((!hasData && !scenario.route.allowEmpty) || emptyArrays.length) {
+         const note = emptyArrays.length
+            ? `request succeeded but required arrays were empty: ${emptyArrays.join(', ')}`
+            : 'request succeeded but returned no data';
+         return {
+            confidence: scenario.route.confidence,
+            dumpFilePath,
+            facts,
+            failure: assessFailure(note),
+            id: scenario.id,
+            label: scenario.route.label,
+            missingFixtures: [],
+            mode: scenario.route.mode,
+            notes: [note],
+            path: scenario.path,
+            provenance: scenario.route.provenance,
+            requestStatus: 'failed',
+            routeSet: scenario.routeSet,
+            shapeNotes,
+            shapeStatus: 'not-run',
+            sport: scenario.sport,
+         };
+      }
+
+      return {
+         confidence: scenario.route.confidence,
+         dumpFilePath,
+         facts,
+         id: scenario.id,
+         label: scenario.route.label,
+         missingFixtures: [],
+         mode: scenario.route.mode,
+         notes: [
+            scenario.routeSet === 'invalid'
+               ? 'unexpectedly accepted known-invalid or provisional path'
+               : hasData
+                 ? 'request succeeded and returned data'
+                 : 'request succeeded with an allowed empty payload',
+         ],
+         path: scenario.path,
+         provenance: scenario.route.provenance,
+         requestStatus: 'passed',
+         routeSet: scenario.routeSet,
+         shapeNotes,
+         shapeStatus: hasShapeExpectations(scenario.route)
+            ? shapeNotes.length
+               ? 'warning'
+               : 'passed'
+            : 'not-run',
+         sport: scenario.sport,
+      };
+   } catch (error) {
+      const note = error instanceof Error ? error.message : String(error);
+      const failure = assessFailure(note);
+      const dumpFilePath = await writeDump(scenario, 'error', {
+         error: note,
+         mode: scenario.route.mode,
+         path: scenario.path,
+         rawBody:
+            error instanceof RequestRouteError ? error.rawBody : undefined,
+         sport: scenario.sport,
+         url:
+            error instanceof RequestRouteError
+               ? error.url
+               : buildRequestUrl(scenario.path),
+      });
+      return {
+         confidence: scenario.route.confidence,
+         dumpFilePath,
+         facts: {},
+         failure,
+         id: scenario.id,
+         label: scenario.route.label,
+         missingFixtures: [],
+         mode: scenario.route.mode,
+         notes: [note],
+         path: scenario.path,
+         provenance: scenario.route.provenance,
+         requestStatus:
+            scenario.routeSet === 'invalid' &&
+            scenario.route.expectedFailureKinds?.includes(failure.kind)
+               ? 'expected-rejection'
+               : 'failed',
+         routeSet: scenario.routeSet,
+         shapeNotes: [],
+         shapeStatus: 'not-run',
+         sport: scenario.sport,
+      };
+   }
+}
+
+function countStatus(
    results: RouteResult[],
-   mode: RouteMode | 'all',
-   includeInvalid: boolean,
+   status: RequestStatus,
+): number {
+   return results.filter((result) => result.requestStatus === status)
+      .length;
+}
+
+function reportLink(reportPath: string, targetPath: string): string {
+   return relative(dirname(reportPath), targetPath);
+}
+
+function renderFacts(facts: Record<string, string[]>): string {
+   const entries = Object.entries(facts);
+   if (!entries.length) return 'none';
+   return entries
+      .map(
+         ([key, values]) =>
+            `${key}=${values.join(',')}${values.length >= 10 ? ' (sample, max 10)' : ''}`,
+      )
+      .join('; ');
+}
+
+function sourceRevision(): string {
+   const result = Bun.spawnSync(['git', 'rev-parse', 'HEAD']);
+   if (result.exitCode !== 0) return 'unknown';
+   const revision = new TextDecoder().decode(result.stdout).trim();
+   if (!revision) return 'unknown';
+   const status = Bun.spawnSync(['git', 'status', '--porcelain']);
+   const dirty = new TextDecoder().decode(status.stdout).trim().length > 0;
+   return `${revision}${dirty ? ' + working tree changes' : ''}`;
+}
+
+async function sourceFingerprint(): Promise<string> {
+   const files = [
+      '../../bun.lock',
+      '../../package.json',
+      '../../src/auth/oauth1.ts',
+      '../../src/auth/oauth2.ts',
+      '../../src/client/errors.ts',
+      '../../src/client/http.ts',
+      '../../src/utils/constants.ts',
+      '../../src/utils/xmlParser.ts',
+      'path-probe.ts',
+      'report-sanitization.ts',
+      'research-http.ts',
+      'route-model.ts',
+      'static-route-config.ts',
+      'static-route-definitions.ts',
+      'static-route-verifier.ts',
+   ];
+   const hasher = new Bun.CryptoHasher('sha256');
+   for (const file of files) {
+      hasher.update(file);
+      hasher.update(await Bun.file(new URL(file, import.meta.url)).text());
+   }
+   return hasher.digest('hex');
+}
+
+function profileFingerprint(
+   profiles: SportProfile[],
+   includeSensitive: boolean,
 ): string {
-   const routePassed = results.filter(
-      (result) => result.requestStatus === 'passed',
-   ).length;
-   const routeFailed = results.filter(
-      (result) => result.requestStatus === 'failed',
-   ).length;
-   const routeSkipped = results.filter(
-      (result) => result.requestStatus === 'skipped',
-   ).length;
-   const shapeWarnings = results.filter(
-      (result) => result.shapeStatus === 'warning',
-   ).length;
-   const unsupportedFailures = results.filter(
-      (result) => result.failureAssessment?.kind === 'unsupported-route',
-   ).length;
-   const invalidParameterFailures = results.filter(
-      (result) =>
-         result.failureAssessment?.kind === 'invalid-test-parameters',
-   ).length;
-   const leagueKeysReprobePassed = results.filter(
-      (result) => result.retryProbe?.requestStatus === 'passed',
-   ).length;
-   const leagueKeysReprobeFailed = results.filter(
-      (result) => result.retryProbe?.requestStatus === 'failed',
-   ).length;
-   const authOrScopeFailures = results.filter(
-      (result) => result.failureAssessment?.kind === 'auth-or-scope',
-   ).length;
-   const emptyDataFailures = results.filter(
-      (result) => result.failureAssessment?.kind === 'empty-data',
-   ).length;
-   const unknownFailures = results.filter(
-      (result) => result.failureAssessment?.kind === 'unknown-failure',
-   ).length;
-   const invalidRoutesSelected = results.filter(
-      (result) => result.routeSet === 'invalid',
-   ).length;
+   const fingerprintProfiles = includeSensitive
+      ? profiles
+      : profiles.map((profile) => ({
+           ...profile,
+           context: nonSensitiveContext(profile.context),
+           privateContext: nonSensitiveContext(profile.privateContext),
+           publicContext: nonSensitiveContext(profile.publicContext),
+        }));
+   const hasher = new Bun.CryptoHasher('sha256');
+   hasher.update(JSON.stringify(fingerprintProfiles));
+   return hasher.digest('hex');
+}
 
-   const lines: string[] = [
-      '# Actionable Route Report',
+function nonSensitiveContext(
+   context: SportProfile['context'] | undefined,
+): SportProfile['context'] {
+   return Object.fromEntries(
+      Object.entries(context ?? {}).filter(
+         ([key]) => !key.endsWith('_KEY') && !key.endsWith('_KEYS'),
+      ),
+   );
+}
+
+function buildReport(
+   reportPath: string,
+   options: CliOptions,
+   discoveries: DiscoveryRecord[],
+   results: RouteResult[],
+   includeArtifacts: boolean,
+   redactFixtures: boolean,
+   fingerprint: string,
+   profilesFingerprint: string,
+): string {
+   const displayText = redactFixtures
+      ? redactFixtureKeys
+      : (value: string) => value;
+   const displayFacts = redactFixtures
+      ? sanitizeReportFacts
+      : (value: Record<string, string[]>) => value;
+   const lines = [
+      '# Cross-Sport Yahoo Route Report',
       '',
-      `- Mode: ${mode}`,
-      `- Invalid definitions included: ${includeInvalid ? 'yes' : 'no'}`,
-      `- Routes selected: ${results.length}`,
-      `- Invalid routes selected: ${invalidRoutesSelected}`,
-      `- Routes passed: ${routePassed}`,
-      `- Routes failed: ${routeFailed}`,
-      `- Routes skipped: ${routeSkipped}`,
-      `- Shape warnings: ${shapeWarnings}`,
+      `- Run: ${runId}`,
+      `- Sports: ${options.sports.join(', ')}`,
+      `- Mode: ${options.mode}`,
+      `- Route IDs: ${options.routeIds ? [...options.routeIds].join(', ') : 'all selected routes'}`,
+      `- Source revision: ${sourceRevision()}`,
+      `- Source fingerprint: sha256:${fingerprint}`,
+      `- Non-sensitive profile fingerprint: sha256:${profilesFingerprint}`,
+      `- Profile overrides: ${process.env.YAHOO_ROUTE_PROFILES_JSON ? 'environment override set' : 'defaults only'}`,
+      `- Bun: ${Bun.version}`,
+      `- Strict shapes: ${options.strictShapes}`,
+      `- Require complete: ${options.requireComplete}`,
+      `- Include invalid: ${options.includeInvalid}`,
+      `- Non-interactive auth: ${options.nonInteractive}`,
+      `- Detailed artifacts: ${includeArtifacts ? 'local links below' : 'omitted from tracked summary'}`,
+      `- Scenarios: ${results.length}`,
+      `- Passed: ${countStatus(results, 'passed')}`,
+      `- Failed: ${countStatus(results, 'failed')}`,
+      `- Fixture unavailable: ${countStatus(results, 'fixture-unavailable')}`,
+      `- Expected rejection: ${countStatus(results, 'expected-rejection')}`,
+      `- Shape warnings: ${results.filter((result) => result.shapeStatus === 'warning').length}`,
       '',
-      '## Failure Split',
+      '## Sport Summary',
       '',
-      `- Likely unsupported routes: ${unsupportedFailures}`,
-      `- Likely bad test parameters or fixtures: ${invalidParameterFailures}`,
-      `- league_keys reprobe passed: ${leagueKeysReprobePassed}`,
-      `- league_keys reprobe still failed: ${leagueKeysReprobeFailed}`,
-      `- Auth or scope blockers: ${authOrScopeFailures}`,
-      `- Empty-data probes: ${emptyDataFailures}`,
-      `- Unknown failures: ${unknownFailures}`,
-      '',
-      '## Implementation Guidance',
-      '',
+      '| Sport | Passed | Failed | Fixture unavailable | Expected rejection | Shape warnings |',
+      '| --- | ---: | ---: | ---: | ---: | ---: |',
    ];
 
-   for (const bucket of classifyResults(results)) {
-      lines.push(`### ${bucket.action}`);
-      lines.push('');
-      lines.push(bucket.reason);
-      lines.push('');
-      for (const result of bucket.results) {
-         lines.push(...formatResultBlock(result));
-      }
-   }
-
-   const explicitFailures = results.filter(
-      (result) =>
-         result.requestStatus === 'failed' &&
-         result.confidence === 'explicit',
-   );
-   const explicitUnsupportedFailures = explicitFailures.filter(
-      (result) => result.failureAssessment?.kind === 'unsupported-route',
-   );
-   const explicitParameterFailures = explicitFailures.filter(
-      (result) =>
-         result.failureAssessment?.kind === 'invalid-test-parameters',
-   );
-   const explicitParameterFailuresWithPassedReprobe =
-      explicitParameterFailures.filter(
-         (result) => result.retryProbe?.requestStatus === 'passed',
+   for (const sport of options.sports) {
+      const sportResults = results.filter(
+         (result) => result.sport === sport,
       );
-   const explicitParameterFailuresWithFailedReprobe =
-      explicitParameterFailures.filter(
-         (result) => result.retryProbe?.requestStatus === 'failed',
+      lines.push(
+         `| ${sport.toUpperCase()} | ${countStatus(sportResults, 'passed')} | ${countStatus(sportResults, 'failed')} | ${countStatus(sportResults, 'fixture-unavailable')} | ${countStatus(sportResults, 'expected-rejection')} | ${sportResults.filter((result) => result.shapeStatus === 'warning').length} |`,
       );
-   const explicitParameterFailuresWithoutReprobe =
-      explicitParameterFailures.filter((result) => !result.retryProbe);
-   const composedPasses = results.filter(
-      (result) =>
-         result.requestStatus === 'passed' &&
-         result.confidence === 'composed',
-   );
+   }
 
-   lines.push('## Decision Summary');
-   lines.push('');
-   lines.push(
-      `- Structural failures likely unsupported by Yahoo: ${unsupportedFailures}`,
-   );
-   lines.push(
-      `- Failures likely caused by test parameters or stale fixtures: ${invalidParameterFailures}`,
-   );
-   lines.push(
-      `- league_keys reprobes that validated the original path shape: ${leagueKeysReprobePassed}`,
-   );
-   lines.push(
-      `- league_keys reprobes that still failed after injection: ${leagueKeysReprobeFailed}`,
-   );
-   lines.push(
-      `- Explicit failures to review for doc mismatch: ${explicitFailures.length}`,
-   );
-   lines.push(
-      `- Explicit failures that still need better parameters before judgment: ${explicitParameterFailures.length}`,
-   );
-   lines.push(
-      `- Explicit failures that look structurally unsupported: ${explicitUnsupportedFailures.length}`,
-   );
-   lines.push(
-      `- Composed passes that may justify promotion into builder support: ${composedPasses.length}`,
-   );
+   lines.push('', '## Discovery Facts', '');
+   for (const record of discoveries) {
+      lines.push(
+         `- **${record.sport.toUpperCase()} ${record.mode} ${record.status}** \`${displayText(record.path)}\`: ${redactFixtures ? sanitizeReportNotes(record.mode, record.status === 'failed', record.notes) : record.notes.join('; ')}; ${renderFacts(displayFacts(record.facts))}`,
+      );
+   }
 
-   if (explicitUnsupportedFailures.length > 0) {
-      lines.push('');
-      lines.push('### Explicit Unsupported Failures');
-      lines.push('');
-      for (const result of explicitUnsupportedFailures) {
-         lines.push(...formatResultBlock(result));
+   for (const sport of options.sports) {
+      lines.push('', `## ${sport.toUpperCase()}`, '');
+      for (const result of results.filter(
+         (candidate) => candidate.sport === sport,
+      )) {
+         lines.push(
+            `### ${result.label}`,
+            '',
+            `- ID: \`${result.id}\``,
+            `- Evidence: ${result.mode} / ${result.confidence} / ${result.provenance} / ${result.routeSet}`,
+            `- Status: ${result.requestStatus}; shape ${result.shapeStatus}`,
+         );
+         if (result.path) {
+            lines.push(`- Path: \`${displayText(result.path)}\``);
+         }
+         if (includeArtifacts && result.dumpFilePath) {
+            lines.push(
+               `- Dump: [response artifact](${reportLink(reportPath, result.dumpFilePath)})`,
+            );
+         }
+         if (result.missingFixtures.length) {
+            lines.push(
+               `- Missing fixtures: ${result.missingFixtures.join(', ')}`,
+            );
+         }
+         if (result.failure) {
+            lines.push(
+               `- Classification: ${result.failure.kind} (${result.failure.confidence})`,
+               `- Reason: ${displayText(result.failure.reason)}`,
+            );
+         }
+         lines.push(
+            `- Facts: ${renderFacts(displayFacts(result.facts))}`,
+            `- Notes: ${redactFixtures ? sanitizeReportNotes(result.mode, Boolean(result.failure), [...result.notes, ...result.shapeNotes]) : [...result.notes, ...result.shapeNotes].join('; ') || 'none'}`,
+            '',
+         );
       }
    }
 
-   if (explicitParameterFailures.length > 0) {
-      lines.push('');
-      lines.push('### Explicit Parameter-Dependent Failures');
-      lines.push('');
-      if (explicitParameterFailuresWithPassedReprobe.length > 0) {
-         lines.push('#### league_keys reprobe passed');
-         lines.push('');
-         for (const result of explicitParameterFailuresWithPassedReprobe) {
-            lines.push(...formatResultBlock(result));
-         }
-      }
-
-      if (explicitParameterFailuresWithFailedReprobe.length > 0) {
-         lines.push('#### league_keys reprobe still failed');
-         lines.push('');
-         for (const result of explicitParameterFailuresWithFailedReprobe) {
-            lines.push(...formatResultBlock(result));
-         }
-      }
-
-      if (explicitParameterFailuresWithoutReprobe.length > 0) {
-         lines.push('#### No league_keys reprobe applied');
-         lines.push('');
-         for (const result of explicitParameterFailuresWithoutReprobe) {
-            lines.push(...formatResultBlock(result));
-         }
-      }
-   }
-
-   if (composedPasses.length > 0) {
-      lines.push('');
-      lines.push('### Composed Passes');
-      lines.push('');
-      for (const result of composedPasses) {
-         lines.push(...formatResultBlock(result));
-      }
-   }
-
-   return lines.join('\n');
+   return `${lines.join('\n').trimEnd()}\n`;
 }
 
-async function writeActionableReport(
+function printDryRun(scenarios: RouteScenario[]): void {
+   console.log('Cross-sport Yahoo route verifier dry run');
+   for (const scenario of scenarios) {
+      console.log(
+         `${scenario.path ? 'READY' : 'FIXTURE'} ${scenario.id} ${scenario.path ?? scenario.missingFixtures.join(',')}`,
+      );
+   }
+   console.log(`Scenarios: ${scenarios.length}`);
+   console.log(
+      `Ready: ${scenarios.filter((scenario) => scenario.path).length}`,
+   );
+   console.log(
+      `Fixture unavailable: ${scenarios.filter((scenario) => !scenario.path).length}`,
+   );
+}
+
+function hasBlockingResults(
    results: RouteResult[],
-   mode: RouteMode | 'all',
-   includeInvalid: boolean,
-): Promise<void> {
-   const report = buildActionableReport(results, mode, includeInvalid);
-   const reportPath = staticRouteVerifierConfig.output.reportFilePath;
-   await Bun.write(reportPath, report);
-   console.log();
-   console.log(`Actionable report written to ${reportPath}`);
-}
-
-async function ensureOutputDirectories(): Promise<void> {
-   await Bun.write(
-      `${staticRouteVerifierConfig.output.responseDumpDirPath}/.gitkeep`,
-      '',
+   discoveries: DiscoveryRecord[],
+   options: CliOptions,
+): boolean {
+   if (discoveries.some((record) => record.status === 'failed')) {
+      return true;
+   }
+   if (results.some((result) => result.requestStatus === 'failed')) {
+      return true;
+   }
+   if (
+      results.some(
+         (result) =>
+            result.routeSet === 'invalid' &&
+            result.requestStatus === 'passed',
+      )
+   ) {
+      return true;
+   }
+   if (
+      options.requireComplete &&
+      results.some(
+         (result) => result.requestStatus === 'fixture-unavailable',
+      )
+   ) {
+      return true;
+   }
+   return (
+      options.strictShapes &&
+      results.some((result) => result.shapeStatus === 'warning')
    );
-   await mkdir(getRunDumpDirectory(), { recursive: true });
-   await Bun.write(getLatestRunMarkerPath(), `${getRunDumpDirectory()}\n`);
 }
 
 async function main(): Promise<void> {
-   const cliArgs = parseCliArgs(argv.slice(2));
-   const mode = parseMode(staticRouteVerifierConfig.selection.mode);
-   const routeIds = parseRouteIds(
-      staticRouteVerifierConfig.selection.routeIds,
-   );
-   const routes = selectRoutes(mode, routeIds, cliArgs.includeInvalid);
-
-   if (routes.length === 0) {
+   const options = parseCliArgs(process.argv.slice(2));
+   if (options.nonInteractive) {
+      process.env.YAHOO_RESEARCH_NON_INTERACTIVE = '1';
+   }
+   const definitionErrors = validateRouteDefinitions(ALL_ROUTE_DEFINITIONS);
+   if (definitionErrors.length) {
       throw new Error(
-         'No routes selected. Check staticRouteVerifierConfig.selection.',
+         `Route definition preflight failed:\n- ${definitionErrors.join('\n- ')}`,
       );
    }
 
-   await ensureOutputDirectories();
-   printHeader(routes, mode, cliArgs.includeInvalid);
+   const selected = selectRoutes(options);
+   const profiles = cloneProfiles(options.sports);
 
-   const results: RouteResult[] = [];
-   for (const route of routes) {
-      const result = await runRoute(route);
-      results.push(result);
-      printResult(result);
+   if (options.dryRun) {
+      const scenarios = instantiateScenarios(selected, profiles);
+      printDryRun(scenarios);
+      if (
+         options.requireComplete &&
+         scenarios.some((scenario) => !scenario.path)
+      ) {
+         process.exitCode = 1;
+      }
+      return;
    }
 
-   printSummary(results);
-   await writeActionableReport(results, mode, cliArgs.includeInvalid);
+   await mkdir(runDirectory(), { recursive: true });
+   const discoveries: DiscoveryRecord[] = [];
+   for (const profile of profiles) {
+      const publicFixtures = requiredFixturesForSport(
+         selected.filter(({ route }) => route.mode === 'public'),
+         profile.code,
+      );
+      const privateFixtures = requiredFixturesForSport(
+         selected.filter(({ route }) => route.mode === 'private'),
+         profile.code,
+      );
+      discoveries.push(
+         ...(await discoverProfile(
+            profile,
+            options.mode,
+            publicFixtures,
+            privateFixtures,
+         )),
+      );
+   }
 
-   if (results.some((result) => result.requestStatus === 'failed')) {
+   const scenarios = instantiateScenarios(selected, profiles);
+   const results: RouteResult[] = [];
+   for (const scenario of scenarios) {
+      const result = await runScenario(scenario);
+      results.push(result);
+      console.log(
+         `${result.requestStatus.toUpperCase()} ${result.id}${result.failure ? ` (${result.failure.kind})` : ''}`,
+      );
+      if (staticRouteVerifierConfig.request.delayMs > 0) {
+         await Bun.sleep(staticRouteVerifierConfig.request.delayMs);
+      }
+   }
+
+   const reportPath = `${runDirectory()}/report.md`;
+   const fingerprint = await sourceFingerprint();
+   const profilesFingerprint = profileFingerprint(profiles, false);
+   const localProfilesFingerprint = profileFingerprint(profiles, true);
+   const report = buildReport(
+      reportPath,
+      options,
+      discoveries,
+      results,
+      true,
+      false,
+      fingerprint,
+      profilesFingerprint,
+   );
+   const latestReport = buildReport(
+      staticRouteVerifierConfig.output.latestReportFilePath,
+      options,
+      discoveries,
+      results,
+      false,
+      true,
+      fingerprint,
+      profilesFingerprint,
+   );
+   await Bun.write(reportPath, report);
+   await Bun.write(
+      `${runDirectory()}/results.json`,
+      JSON.stringify(
+         {
+            discoveries,
+            options: {
+               ...options,
+               routeIds: options.routeIds ? [...options.routeIds] : null,
+            },
+            results,
+            runId,
+            profiles,
+            profilesFingerprint,
+            localProfilesFingerprint,
+            sourceFingerprint: fingerprint,
+         },
+         null,
+         2,
+      ),
+   );
+   await Bun.write(
+      staticRouteVerifierConfig.output.latestReportFilePath,
+      latestReport,
+   );
+   await Bun.write(
+      `${staticRouteVerifierConfig.output.responseDumpDirPath}/latest-run.txt`,
+      `${runDirectory()}\n`,
+   );
+
+   console.log(`Report: ${reportPath}`);
+   console.log(
+      `Passed ${countStatus(results, 'passed')}; failed ${countStatus(results, 'failed')}; fixture unavailable ${countStatus(results, 'fixture-unavailable')}.`,
+   );
+
+   if (hasBlockingResults(results, discoveries, options)) {
       process.exitCode = 1;
    }
 }

@@ -8,7 +8,7 @@ This file records editorial and factual changes so future reviews can distinguis
 
 - Yahoo live Fantasy Sports page, scraped 2026-07-15; Firecrawl scrape ID `019f66c8-2246-75b1-b725-ca8a3f3b5984`.
 - Previous local capture in `docs/new-api-doc-page/sports-yahoo-com-docs.md`, generated 2026-05-14.
-- Latest successful static route report in `research/api-path-validation/actionable-route-report.md` (84 passing routes).
+- Latest successful static route report in `research/api-path-validation/actionable-route-report.md`; counts are read from the generated report rather than duplicated here.
 - Known failures and provisional findings in `research/api-path-validation/CURRENT_FINDINGS.md`.
 - One-off live behavior notes in `research/api-path-validation/API_NOTES.md`.
 
@@ -77,12 +77,13 @@ These facts are useful but should remain labeled by evidence rather than present
 
 ## Follow-Up Validation Queue
 
-- Probe `game/{key}/dates`, `stat_categories`, `position_types`, and `roster_positions` and add them to the static route suite.
-- Probe `league/{key}/draftresults`, `team/{key}/standings`, and `team/{key}/draftresults`.
+- Keep the passing four-sport `game/{key}/dates`, `stat_categories`, `position_types`, and `roster_positions` cases in the static route suite.
+- Extend current NHL evidence for `league/{key}/draftresults`; `team/{key}/standings` and `team/{key}/draftresults` still need refreshed private authorization.
 - Probe `player/{key}/draft_analysis` with a current-season player.
 - Refresh direct transaction and top-level transactions fixtures with a current transaction key.
 - Establish exact support boundaries for `roster/players/{player_child}`.
-- Recheck whether `games;...;out=leagues` ever succeeds with a current known league and whether parameter order matters.
+- Preserve `games;...;out=leagues` as a documented/runtime discrepancy: the 2026-07-15 four-sport probe returned `league ids expected` for every sport.
+- Use `research/api-path-validation/GUIDE_AUDIT.md` as the route-level claim/evidence backlog and keep every referenced route ID executable.
 
 ## Review Policy
 
