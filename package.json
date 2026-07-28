@@ -91,7 +91,7 @@
       "undici": "^8.7.0"
    },
    "dependencies": {
-      "fast-xml-parser": "^5.10.0"
+      "fast-xml-parser": "^5.10.1"
    },
    "engines": {
       "node": ">=18.0.0"
