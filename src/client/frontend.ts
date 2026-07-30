@@ -37,6 +37,7 @@ export interface FrontendApiClientOptions {
 }
 
 export interface FrontendRequestOptions {
+   access?: 'public' | 'private';
    params?: Record<string, string | number | boolean | undefined>;
    headers?: Record<string, string>;
    body?: Record<string, unknown> | string;
@@ -56,6 +57,10 @@ const V2_ROUTE =
    /^\/fantasy\/v2\/(?:game|league|player|team|user)(?:[/?;]|$)/;
 const V3_ROUTE =
    /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[/?]|$)/;
+const V2_READ_WRITE_ROUTE =
+   /^\/fantasy\/v2\/league\/[^/]+\/teams(?:[/?;]|$)/;
+const V2_ROSTER_WRITE_ROUTE =
+   /^\/fantasy\/v2\/team\/[^/]+\/roster(?:[/?;]|$)/;
 
 export class FrontendApiError extends Error {
    readonly status?: number;
@@ -85,8 +90,14 @@ function routeHost(
    pathname: string,
 ): FrontendApiHost {
    if (V3_ROUTE.test(pathname)) return 'neutral';
-   if (V2_ROUTE.test(pathname)) {
-      return method === 'GET' ? 'readOnly' : 'readWrite';
+   if (method === 'GET' && V2_READ_WRITE_ROUTE.test(pathname)) {
+      return 'readWrite';
+   }
+   if (method === 'GET' && V2_ROUTE.test(pathname)) {
+      return 'readOnly';
+   }
+   if (method === 'PUT' && V2_ROSTER_WRITE_ROUTE.test(pathname)) {
+      return 'readWrite';
    }
    throw new FrontendApiError(
       'Route is not in the observed Yahoo frontend API allowlist',
@@ -121,6 +132,10 @@ function validateCookieHeader(cookieHeader: string): void {
    if (!cookieHeader.trim() || /[\r\n]/.test(cookieHeader)) {
       throw new Error('Browser session cookie header is invalid');
    }
+}
+
+function hasHeader(headers: Record<string, string>, name: string): boolean {
+   return Object.keys(headers).some((key) => key.toLowerCase() === name);
 }
 
 export class YahooFrontendApiClient {
@@ -190,6 +205,15 @@ export class YahooFrontendApiClient {
             route,
          );
       }
+      if (
+         this.authentication === 'public' &&
+         options.access === 'private'
+      ) {
+         throw new FrontendApiError(
+            'Private frontend reads require browser-session authentication',
+            route,
+         );
+      }
 
       const resolved = resolveFrontendRoute(method, route);
       const url = new URL(resolved.path, resolved.origin);
@@ -201,8 +225,26 @@ export class YahooFrontendApiClient {
          Accept: 'application/json',
          ...options.headers,
       };
+      if (hasHeader(headers, 'authorization')) {
+         throw new FrontendApiError(
+            'OAuth bearer tokens are not supported by the frontend adapter',
+            resolved.path,
+         );
+      }
+      if (
+         this.authentication === 'public' &&
+         hasHeader(headers, 'cookie')
+      ) {
+         throw new FrontendApiError(
+            'Public frontend requests cannot include browser cookies',
+            resolved.path,
+         );
+      }
       if (this.session) headers.Cookie = this.session.cookieHeader;
-      if (options.body !== undefined && !headers['Content-Type']) {
+      if (
+         options.body !== undefined &&
+         !hasHeader(headers, 'content-type')
+      ) {
          headers['Content-Type'] =
             typeof options.body === 'string'
                ? 'application/xml'

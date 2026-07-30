@@ -10,13 +10,13 @@ client and does not claim that these routes are a supported third-party API.
   OAuth1, or cookies.
 - `browser-session` requires an explicitly supplied, user-managed Cookie header.
   It is the only mode that permits writes and is also required when reading
-  private league data.
+  private league data. Mark a private read with `access: 'private'`.
 - Observed v2 `GET` routes use `pub-api-ro`.
-- Observed v2 `POST`, `PUT`, and `DELETE` routes use `pub-api-rw`.
+- The observed v2 league-to-teams read and roster `PUT` use `pub-api-rw`.
 - Observed v3 routes use the neutral `pub-api` host.
 
-The adapter never exchanges bearer tokens for cookies or manufactures browser
-credentials from client secrets.
+The adapter rejects OAuth bearer headers, never exchanges bearer tokens for
+cookies, and never manufactures browser credentials from client secrets.
 
 ## Response envelopes
 
@@ -27,6 +27,8 @@ type V2 = FrontendV2Response<MyPayload>;
 type V3 = FrontendV3Response<MyPayload>;
 ```
 
-The route allowlist currently covers the v2 `game`, `league`, `player`, `team`,
-and `user` resources plus the observed v3 `getCrumb`, `suggested_players`, and
-`user/subscriptions` routes. Unknown routes fail before a request is sent.
+The route allowlist currently covers observed v2 reads for the `game`, `league`,
+`player`, `team`, and `user` resources, the league-to-teams read, the roster
+`PUT`, and the observed v3 `getCrumb`, `suggested_players`, and
+`user/subscriptions` routes. Unknown and unobserved write routes fail before a
+request is sent.
