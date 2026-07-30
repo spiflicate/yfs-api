@@ -2,7 +2,7 @@
 
 This matrix separates what Yahoo documents from what the API has accepted in this repository's live route probes. Evidence is scoped by sport, auth level, and run provenance.
 
-Current public evidence comes from `research/api-path-validation/actionable-route-report.md`, run `2026-07-15T19-33-25-809Z`. Historical-private rows were not refreshed in that run.
+The last successful public route matrix is `research/api-path-validation/actionable-route-report.md`, run `2026-07-15T19-33-25-809Z`. It could not be refreshed on 2026-07-30 because Yahoo rejected all previously known API credentials. The 2026-07-30 private run is recorded as an access blocker in `research/api-path-validation/private-access-baseline.md`; it is not route evidence.
 
 > This is a manually maintained summary of the generated route report. Executable route definitions and generated reports remain authoritative until matrix generation is implemented.
 
@@ -14,6 +14,7 @@ Evidence classes:
 - **Observed-only**: live behavior without matching current Yahoo docs
 - **Fixture-unavailable**: not run (missing league/team key for that sport)
 - **Historical-private**: passed in a prior session with private credentials, not refreshed
+- **Access-blocked**: refresh attempted, but Yahoo rejected available credentials or required an unavailable session
 
 | Parent | Child | Official | Live evidence | Scope | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -44,6 +45,10 @@ Evidence classes:
 | `players` | keyed metadata | yes | passed | four-sport | Root collection tested only with `player_keys` |
 | `players` | `stats`, `ownership`, `percent_owned` | generic composition | not current | historical-private | Do not infer these children from the current keyed-metadata pass |
 | `transaction` | `players` | yes | not current | historical-private | Concrete transaction fixtures were stale |
+
+## Frontend API Boundary
+
+The Yahoo web frontend also uses `pub-api-ro`, `pub-api-rw`, and `pub-api` v3 routes. The observed public game reads are externally reachable without credentials. Private league reads and write requests require browser-session cookies. These routes are documented in [the investigation findings](../../research/yahoo-api-investigation/FINDINGS.md), but remain a separate experimental surface until request contracts and cookie-session handling are implemented and tested.
 
 ## `out` Evidence
 

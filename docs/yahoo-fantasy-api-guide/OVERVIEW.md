@@ -2,7 +2,7 @@
 
 This is a concise companion to Yahoo's live [Fantasy Sports API documentation](https://sports.yahoo.com/developer/docs/). It corrects ambiguities with live API evidence collected in this repository.
 
-Reviewed: **2026-07-15**
+Reviewed: **2026-07-30**
 
 ## Evidence Labels
 
@@ -11,6 +11,7 @@ Reviewed: **2026-07-15**
 - **Documented/runtime discrepancy**: current Yahoo documentation and a reproducible live result disagree.
 - **Fixture-unavailable**: route not tested because a required league or team key is missing for that sport.
 - **Historical-private**: passed in a prior session with private credentials, not refreshed in the current evidence baseline.
+- **Access-blocked**: the route could not be refreshed because Yahoo rejected the available credentials or requires an unavailable session.
 
 ## Entry Points
 
@@ -31,13 +32,21 @@ Resource detail pages:
 
 ## Authentication
 
-Yahoo's current documentation requires **OAuth 2.0** and recommends the Authorization Code flow for user-delegated access. Keep the client secret and refresh tokens server-side. See [OAUTH2_IMPLEMENTATION.md](../OAUTH2_IMPLEMENTATION.md) for SDK details.
+Yahoo's documented Fantasy API requires **OAuth 2.0** and recommends the Authorization Code flow for user-delegated access. The repository's previously working API credentials are currently rejected, and no valid OAuth2 authorization is available for a new private baseline. The latest private run is therefore an authentication blocker, not evidence that private resource routes are unsupported. See [OAUTH2_IMPLEMENTATION.md](../OAUTH2_IMPLEMENTATION.md) for the existing SDK flow.
 
-Gap note: Yahoo still publishes public-request samples and the API accepts signed OAuth 1.0 requests. That is useful compatibility behavior, but OAuth 2.0 is the only version the current Fantasy Sports page declares required.
+The Yahoo frontend exposes a separate API surface. Unauthenticated requests to observed `pub-api-ro` and `pub-api-rw` v2 game routes can serve public data, while private league data and write requests require a Yahoo browser-session cookie. Observed v3 routes use the neutral `pub-api` host and JSON `service` envelopes. These frontend routes are not OAuth2-compatible by evidence currently available and must not be presented as a replacement for the documented OAuth2 API.
+
+The current direction is a separate frontend API adapter: support unauthenticated public-league reads first, then support explicitly user-managed cookie sessions for private reads and writes. Do not manufacture cookies from client secrets or OAuth2 tokens.
 
 ## Endpoint And Formats
 
 Base URL: `https://fantasysports.yahooapis.com/fantasy/v2`
+
+Observed frontend base URLs:
+
+- `https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2` for read-oriented frontend requests.
+- `https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2` for frontend reads and browser-session writes.
+- `https://pub-api.fantasysports.yahoo.com/fantasy/v3` for observed JSON frontend services.
 
 - XML is the default response format and the format used in Yahoo's examples.
 - `?format=json` is observed-only; the current guide does not explain it.

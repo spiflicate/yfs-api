@@ -4,6 +4,11 @@
       "noEmit": true,
       "rootDir": "."
    },
-   "include": ["research/api-path-validation/**/*.ts", "src/**/*.ts"],
+   "include": [
+      "research/api-path-validation/**/*.ts",
+      "research/openid/**/*.ts",
+      "research/yahoo-api-investigation/**/*.ts",
+      "src/**/*.ts"
+   ],
    "exclude": ["node_modules", "dist"]
 }

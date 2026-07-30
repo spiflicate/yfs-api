@@ -30,6 +30,7 @@ This index maps documentation to its audience. Each file has a single canonical 
 - [Guide audit](../research/api-path-validation/GUIDE_AUDIT.md) — claim provenance and discrepancies
 - [Follow-up runs](../research/api-path-validation/FOLLOW_UP_RUNS.md) — evidence-producing run queue
 - [Route report](../research/api-path-validation/actionable-route-report.md) — current concrete evidence
+- [Yahoo API investigation](../research/yahoo-api-investigation/README.md) — HAR-based web API findings
 
 ## Archived Material
 
