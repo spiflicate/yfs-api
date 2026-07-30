@@ -8,18 +8,22 @@
  * - YAHOO_OAUTH_SCOPE (optional; defaults to `openid profile email`)
  *
  * The authorization code is pasted after Yahoo redirects back to the
- * configured URI. Tokens are saved to the ignored .yfs-tokens.json file.
+ * configured URI. Tokens are saved to the shared ignored .oauth2-tokens.json
+ * file used by the private route probe.
  */
 
 import { writeFile } from 'node:fs/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { createInterface } from 'node:readline/promises';
+import { fileURLToPath } from 'node:url';
 import { OAuth2Client } from '../../src/auth/oauth2.js';
 
 const authorizationEndpoint =
    'https://api.login.yahoo.com/oauth2/request_auth';
 const userInfoEndpoint = 'https://api.login.yahoo.com/openid/v1/userinfo';
-const tokenFile = '.yfs-tokens.json';
+const tokenFile = fileURLToPath(
+   new URL('../api-path-validation/.oauth2-tokens.json', import.meta.url),
+);
 
 function required(name: string): string {
    const value = process.env[name];
@@ -56,14 +60,15 @@ function extractAuthorizationCode(
    value: string,
    expectedState: string,
 ): string {
-   if (!value.startsWith('http://') && !value.startsWith('https://')) {
-      return value;
-   }
-
    const callback = new URL(value);
+   if (callback.protocol !== 'http:' && callback.protocol !== 'https:') {
+      throw new Error(
+         'Authorization input must be an HTTP(S) redirect URL',
+      );
+   }
    const code = callback.searchParams.get('code');
    const receivedState = callback.searchParams.get('state');
-   if (receivedState && receivedState !== expectedState) {
+   if (receivedState !== expectedState) {
       throw new Error('OAuth authorization state does not match');
    }
    if (!code)
@@ -85,7 +90,7 @@ async function main(): Promise<void> {
    console.log('Open this Yahoo authorization URL:');
    console.log(buildAuthorizationUrl(clientId, redirectUri, state, scope));
    console.log(
-      'After authorization, paste the code or the complete redirect URL.',
+      'After authorization, paste the complete HTTP(S) redirect URL.',
    );
 
    const code = extractAuthorizationCode(

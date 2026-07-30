@@ -96,10 +96,8 @@ function domainMatches(cookie: BrowserCookie, hostname: string): boolean {
 function pathMatches(cookiePath: string, requestPath: string): boolean {
    if (cookiePath === '/') return true;
    if (requestPath === cookiePath) return true;
-   if (!requestPath.startsWith(`${cookiePath}/`)) return false;
-   return (
-      cookiePath.endsWith('/') || requestPath[cookiePath.length] === '/'
-   );
+   const prefix = cookiePath.endsWith('/') ? cookiePath : `${cookiePath}/`;
+   return requestPath.startsWith(prefix);
 }
 
 function cookieIsUsable(
@@ -262,7 +260,16 @@ export class BrowserCookieClient {
                response.status,
             );
          }
-         return (await response.json()) as T;
+         try {
+            return (await response.json()) as T;
+         } catch {
+            throw new BrowserCookieError(
+               'route-failure',
+               'Yahoo response body was not valid JSON',
+               routeForError,
+               response.status,
+            );
+         }
       } catch (error) {
          if (error instanceof BrowserCookieError) throw error;
          throw new BrowserCookieError(

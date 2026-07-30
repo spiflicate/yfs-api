@@ -32,6 +32,18 @@ describe('Yahoo frontend API adapter', () => {
          host: 'neutral',
          origin: 'https://pub-api.fantasysports.yahoo.com',
       });
+      expect(() =>
+         resolveFrontendRoute('GET', '/fantasy/v3/getCrumb/unknown'),
+      ).toThrow(FrontendApiError);
+      expect(() =>
+         resolveFrontendRoute(
+            'PUT',
+            '/fantasy/v2/team/223.l.1.t.1/roster/unknown',
+         ),
+      ).toThrow(FrontendApiError);
+      expect(() =>
+         resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/players'),
+      ).toThrow(FrontendApiError);
    });
 
    test('allows unauthenticated public reads without OAuth headers', async () => {

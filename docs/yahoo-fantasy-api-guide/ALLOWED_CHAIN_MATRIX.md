@@ -48,7 +48,7 @@ Evidence classes:
 
 ## Frontend API Boundary
 
-The Yahoo web frontend also uses `pub-api-ro`, `pub-api-rw`, and `pub-api` v3 routes. The observed public game reads are externally reachable without credentials. Private league reads and write requests require browser-session cookies. These routes are documented in [the investigation findings](../../research/yahoo-api-investigation/FINDINGS.md), but remain a separate experimental surface until request contracts and cookie-session handling are implemented and tested.
+The Yahoo web frontend also uses `pub-api-ro`, `pub-api-rw`, and `pub-api` v3 routes. The observed public game reads are externally reachable without credentials. Private league reads and write requests require browser-session cookies. These routes are documented in [the investigation findings](../../research/yahoo-api-investigation/FINDINGS.md) and supported by the separate experimental adapter, within those observed route and browser-session boundaries.
 
 ## `out` Evidence
 

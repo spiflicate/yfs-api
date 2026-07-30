@@ -59,9 +59,19 @@ function authHeaders(auth: ProbeAuth): Record<string, string> {
    return {};
 }
 
-function classify(status: number, body: unknown): ProbeStatus {
+function classify(
+   status: number,
+   body: unknown,
+   redirected = false,
+): ProbeStatus {
    if (status === 401 || status === 403) return 'auth-required';
    if (status === 400) return 'invalid-request-or-fixture';
+   if (
+      redirected ||
+      (status >= 200 && status < 300 && body === undefined)
+   ) {
+      return 'invalid-request-or-fixture';
+   }
    if (body && typeof body === 'object' && 'error' in body) {
       return 'api-error';
    }
@@ -113,7 +123,11 @@ async function probe(request: ProbeRequest): Promise<ProbeResult> {
          route: request.reportRoute ?? request.route,
          auth: request.auth,
          status: response.status,
-         classification: classify(response.status, body),
+         classification: classify(
+            response.status,
+            body,
+            response.redirected,
+         ),
          contentType,
          ...bodyShape(body),
       };

@@ -55,13 +55,15 @@ export interface ResolvedFrontendRoute {
 type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 
 const V2_ROUTE =
-   /^\/fantasy\/v2\/(?:game|league|player|team|user)(?:[/?;]|$)/;
+   /^\/fantasy\/v2\/(?:game|league|player|team|user)(?:\/[^/?;]+)?(?:[?;]|$)/;
+const V2_NESTED_READ_ROUTE =
+   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats))(?:[?;]|$)/;
 const V3_ROUTE =
-   /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[/?]|$)/;
+   /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[?]|$)/;
 const V2_READ_WRITE_ROUTE =
-   /^\/fantasy\/v2\/league\/[^/]+\/teams(?:[/?;]|$)/;
+   /^\/fantasy\/v2\/league\/[^/?;]+\/teams(?:[?;]|$)/;
 const V2_ROSTER_WRITE_ROUTE =
-   /^\/fantasy\/v2\/team\/[^/]+\/roster(?:[/?;]|$)/;
+   /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:[?;]|$)/;
 
 export class FrontendApiError extends Error {
    readonly status?: number;
@@ -95,6 +97,9 @@ function routeHost(
       return 'readWrite';
    }
    if (method === 'GET' && V2_ROUTE.test(pathname)) {
+      return 'readOnly';
+   }
+   if (method === 'GET' && V2_NESTED_READ_ROUTE.test(pathname)) {
       return 'readOnly';
    }
    if (method === 'PUT' && V2_ROSTER_WRITE_ROUTE.test(pathname)) {

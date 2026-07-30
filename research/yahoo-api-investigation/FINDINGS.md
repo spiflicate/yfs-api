@@ -216,7 +216,7 @@ parameter.
    without mutations, to classify validation errors.
 4. Request `getCrumb` with OAuth 2.0, then compare a harmless roster-read or
    preflight behavior before considering any write test.
-5. Do not add v3 SDK methods until bearer-token authentication and response
-   contracts are independently confirmed. If added, use a separate JSON
-   response path because the current HTTP client always appends `format=xml`
-   and parses responses as XML.
+5. Do not claim OAuth2 bearer-token compatibility for v3 until it is
+   independently confirmed. The separate experimental browser-session adapter
+   supports the observed v3 JSON routes without replacing the canonical OAuth2
+   client.

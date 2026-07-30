@@ -40,6 +40,28 @@ describe('browser cookie tooling', () => {
       expect(header).toBe('session=secret');
    });
 
+   test('matches cookie paths with trailing slashes at directory boundaries', () => {
+      const jar = parseStorageState({
+         cookies: [
+            {
+               name: 'session',
+               value: 'secret',
+               domain: '.yahoo.com',
+               path: '/fantasy/',
+            },
+         ],
+      });
+
+      expect(
+         cookieHeaderForUrl(
+            jar,
+            new URL(
+               'https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2/game',
+            ),
+         ),
+      ).toBe('session=secret');
+   });
+
    test('rejects malformed storage state', () => {
       expect(() =>
          parseStorageState({ cookies: [{ name: 'missing' }] }),
@@ -89,6 +111,21 @@ describe('browser cookie tooling', () => {
          });
          expect((error as Error).message).not.toContain('private response');
       }
+   });
+
+   test('classifies invalid JSON separately from network failures', async () => {
+      const client = new BrowserCookieClient({
+         cookies: { cookieHeader: 'session=secret' },
+         fetch: async () => new Response('<xml />', { status: 200 }),
+      });
+
+      await expect(
+         client.get('/fantasy/v2/game/nhl'),
+      ).rejects.toMatchObject({
+         kind: 'route-failure',
+         status: 200,
+         message: 'Yahoo response body was not valid JSON',
+      });
    });
 
    test('rejects writes and unapproved hosts before fetch', async () => {
