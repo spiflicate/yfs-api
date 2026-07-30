@@ -5,7 +5,8 @@ import {
    YahooFrontendApiClient,
 } from './frontend.js';
 
-const V2_GAME_FIXTURE = { fantasy_content: { game: { game_key: 'nhl' } } };
+const V2_GAME_FIXTURE =
+   '<fantasy_content><game><game_key>nhl</game_key></game></fantasy_content>';
 const V3_CRUMB_FIXTURE = { service: { crumb: null } };
 
 describe('Yahoo frontend API adapter', () => {
@@ -40,18 +41,20 @@ describe('Yahoo frontend API adapter', () => {
          fetch: async (url, init) => {
             requestUrl = url;
             requestHeaders = init?.headers;
-            return Response.json(V2_GAME_FIXTURE);
+            return new Response(V2_GAME_FIXTURE, {
+               headers: { 'content-type': 'application/xml' },
+            });
          },
       });
 
-      await expect(
-         client.get('/fantasy/v2/game/nhl', { params: { format: 'json' } }),
-      ).resolves.toEqual(V2_GAME_FIXTURE);
+      await expect(client.get('/fantasy/v2/game/nhl')).resolves.toEqual({
+         game: { gameKey: 'nhl' },
+      });
       expect(requestUrl?.origin).toBe(
          'https://pub-api-ro.fantasysports.yahoo.com',
       );
-      expect(requestUrl?.search).toBe('?format=json');
-      expect(requestHeaders).toEqual({ Accept: 'application/json' });
+      expect(requestUrl?.search).toBe('');
+      expect(requestHeaders).toEqual({ Accept: 'application/xml' });
    });
 
    test('keeps the v3 service envelope on the neutral host', async () => {
@@ -73,20 +76,21 @@ describe('Yahoo frontend API adapter', () => {
          fetch: async (url, init) => {
             requestUrl = url;
             requestHeaders = init?.headers;
-            return Response.json({
-               fantasy_content: { confirmation: 'ok' },
-            });
+            return new Response(
+               '<fantasy_content><confirmation><status>success</status></confirmation></fantasy_content>',
+               { headers: { 'content-type': 'application/xml' } },
+            );
          },
       });
 
       await expect(
          client.put('/fantasy/v2/team/223.l.1.t.1/roster', '<roster />'),
-      ).resolves.toEqual({ fantasy_content: { confirmation: 'ok' } });
+      ).resolves.toEqual({ confirmation: { status: 'success' } });
       expect(requestUrl?.origin).toBe(
          'https://pub-api-rw.fantasysports.yahoo.com',
       );
       expect(requestHeaders).toMatchObject({
-         Accept: 'application/json',
+         Accept: 'application/xml',
          Cookie: 'session=secret',
          'Content-Type': 'application/xml',
       });

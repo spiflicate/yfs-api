@@ -6,6 +6,8 @@
  * layer.
  */
 
+import { parseYahooXML } from '../utils/xmlParser.js';
+
 export const FRONTEND_API_ORIGINS = {
    readOnly: 'https://pub-api-ro.fantasysports.yahoo.com',
    readWrite: 'https://pub-api-rw.fantasysports.yahoo.com',
@@ -16,9 +18,8 @@ export type FrontendApiHost = keyof typeof FRONTEND_API_ORIGINS;
 export type FrontendAuthentication = 'public' | 'browser-session';
 export type FrontendHttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-export interface FrontendV2Response<T = unknown> {
-   fantasy_content: T;
-}
+/** Parsed v2 XML response, normalized by the existing Yahoo XML parser. */
+export type FrontendV2Response<T = unknown> = T;
 
 export interface FrontendV3Response<T = unknown> {
    service: T;
@@ -222,7 +223,10 @@ export class YahooFrontendApiClient {
       }
 
       const headers: Record<string, string> = {
-         Accept: 'application/json',
+         Accept:
+            resolved.host === 'neutral'
+               ? 'application/json'
+               : 'application/xml',
          ...options.headers,
       };
       if (hasHeader(headers, 'authorization')) {
@@ -283,6 +287,10 @@ export class YahooFrontendApiClient {
       if (response.status === 204) return undefined;
 
       try {
+         const contentType = response.headers.get('content-type') ?? '';
+         if (contentType.includes('xml')) {
+            return parseYahooXML<T>(await response.text());
+         }
          return (await response.json()) as T;
       } catch (error) {
          throw new FrontendApiError(

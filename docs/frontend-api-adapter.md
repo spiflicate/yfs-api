@@ -18,12 +18,15 @@ client and does not claim that these routes are a supported third-party API.
 The adapter rejects OAuth bearer headers, never exchanges bearer tokens for
 cookies, and never manufactures browser credentials from client secrets.
 
-## Response envelopes
+## Response formats
 
-v2 and v3 responses are JSON and should be modeled separately:
+The observed v2 routes return XML without a `format` query parameter. The
+adapter requests that default and passes the response through the existing
+`parseYahooXML` normalizer, so v2 results use the same shape as the canonical
+client. The observed v3 routes return JSON and are modeled separately:
 
 ```ts
-type V2 = FrontendV2Response<MyPayload>;
+type V2 = FrontendV2Response<MyParsedPayload>;
 type V3 = FrontendV3Response<MyPayload>;
 ```
 
