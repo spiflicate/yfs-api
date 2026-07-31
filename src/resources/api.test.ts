@@ -51,6 +51,9 @@ describe('ApiRoot', () => {
          expect(() => Reflect.apply(method, api, [[]])).toThrow(
             'At least one',
          );
+         expect(() => Reflect.apply(method, api, ['key'])).toThrow(
+            'Keys must be provided as an array.',
+         );
       }
    });
 
@@ -59,27 +62,27 @@ describe('ApiRoot', () => {
       const gameIncludes = api
          .game('465')
          .include('game_weeks', 'stat_categories', 'position_types');
-      const leagueTeams = api.game('465').leagues('465.l.1').teams();
+      const leagueTeams = api.game('465').leagues(['465.l.1']).teams([]);
       const directUserTeams = api.users().teams();
       const nestedUserTeams = api
          .users()
-         .games()
-         .teams()
+         .games([])
+         .teams([])
          .roster()
-         .players();
-      const userGameLeagues = api.users().games().leagues();
-      const leagueRoster = api.leagues('465.l.1').teams().roster();
+         .players([]);
+      const userGameLeagues = api.users().games([]).leagues([]);
+      const leagueRoster = api.leagues(['465.l.1']).teams([]).roster();
       const playerIncludes = api
          .player('465.p.1')
          .include('stats', 'ownership');
       const playerPercentOwned = api.player('465.p.1').percentOwned();
-      const playersOwnership = api.players('465.p.1').ownership();
+      const playersOwnership = api.players(['465.p.1']).ownership();
       const leaguePlayerPercentOwned = api
          .league('465.l.1')
-         .players('465.p.1')
+         .players(['465.p.1'])
          .percentOwned();
-      const teamStats = api.teams('465.l.1.t.1').stats();
-      const playerStats = api.players('465.p.1').stats();
+      const teamStats = api.teams(['465.l.1.t.1']).stats();
+      const playerStats = api.players(['465.p.1']).stats();
 
       type GameActual = Awaited<ReturnType<typeof gameIncludes.get>>;
       type GameExpected = RequireResponsePath<
@@ -224,38 +227,70 @@ describe('ApiRoot', () => {
 
    it('enforces collection keys and game traversal capabilities at compile time', () => {
       const api = createApi(transport as HttpClient);
-      const rootGames = api.games('465');
-      const userGames = api.users().games();
+      const rootGames = api.games(['465']);
+      const userGames = api.users().games([]);
 
-      userGames.teams();
-      userGames.leagues();
-      rootGames.leagues('465.l.1');
+      userGames.teams([]);
+      userGames.leagues([]);
+      rootGames.leagues(['465.l.1']);
 
       const compileInvalidRoutes = () => {
+         // @ts-expect-error top-level game collections accept an array only
+         api.games('465');
          // @ts-expect-error top-level game collections require keys
          api.games();
          // @ts-expect-error top-level game collections reject empty arrays
          api.games([]);
          // @ts-expect-error top-level league collections require keys
          api.leagues();
+         // @ts-expect-error top-level league collections accept an array only
+         api.leagues('465.l.1');
          // @ts-expect-error top-level league collections reject empty arrays
          api.leagues([]);
          // @ts-expect-error top-level team collections require keys
          api.teams();
+         // @ts-expect-error top-level team collections accept an array only
+         api.teams('465.l.1.t.1');
          // @ts-expect-error top-level team collections reject empty arrays
          api.teams([]);
          // @ts-expect-error top-level player collections require keys
          api.players();
+         // @ts-expect-error top-level player collections accept an array only
+         api.players('465.p.1');
          // @ts-expect-error top-level player collections reject empty arrays
          api.players([]);
          // @ts-expect-error root game collections cannot traverse teams
          rootGames.teams();
          // @ts-expect-error root game-to-league traversal requires keys
          rootGames.leagues();
+         // @ts-expect-error game-to-league traversal accepts an array only
+         rootGames.leagues('465.l.1');
          // @ts-expect-error root game-to-league traversal rejects empty arrays
          rootGames.leagues([]);
          // @ts-expect-error singular game-to-league traversal rejects empty arrays
          api.game('465').leagues([]);
+         // @ts-expect-error player traversal accepts an array only
+         api.game('465').players('465.p.1');
+         // @ts-expect-error unfiltered player traversal requires an explicit array
+         api.game('465').players();
+         // @ts-expect-error unfiltered user games require an explicit array
+         api.users().games();
+         // @ts-expect-error unfiltered user game teams require an explicit array
+         userGames.teams();
+         // @ts-expect-error unfiltered user game leagues require an explicit array
+         userGames.leagues();
+         // @ts-expect-error nested team traversal accepts an array only
+         api.league('465.l.1').teams('465.l.1.t.1');
+         // @ts-expect-error unfiltered nested teams require an explicit array
+         api.league('465.l.1').teams();
+         // @ts-expect-error nested transactions accept an array only
+         api.league('465.l.1').transactions('465.l.1.tr.1');
+         // @ts-expect-error unfiltered nested transactions require an explicit array
+         api.league('465.l.1').transactions();
+         // @ts-expect-error roster player traversal accepts an array only
+         api.team('465.l.1.t.1').roster().players('465.p.1');
+         // @ts-expect-error unfiltered roster players require an explicit array
+         api.team('465.l.1.t.1').roster().players();
          // @ts-expect-error percent-owned is a child route, not an expansion
          api.player('465.p.1').include('percent_owned');
       };

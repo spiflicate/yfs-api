@@ -24,7 +24,7 @@
  * await client.authenticate(code);
  *
  * // Nested responses preserve users -> games -> teams.
- * const response = await client.api().users().games(['nhl']).teams().get();
+ * const response = await client.api().users().games(['nhl']).teams([]).get();
  * for (const user of response.users) {
  *   for (const game of user.games ?? []) console.log(game.teams ?? []);
  * }
@@ -64,7 +64,26 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './client/errors.js';
-export type { RequestOptions } from './client/http.js';
+export type {
+   BrowserSession,
+   FrontendApiClientOptions,
+   FrontendApiHost,
+   FrontendAuthentication,
+   FrontendHttpMethod,
+   FrontendRequestOptions,
+   FrontendResourceApiOptions,
+   FrontendV2Response,
+   FrontendV3Response,
+   ResolvedFrontendRoute,
+} from './client/frontend.js';
+export {
+   createFrontendApi,
+   FRONTEND_API_ORIGINS,
+   FrontendApiError,
+   resolveFrontendRoute,
+   YahooFrontendApiClient,
+} from './client/frontend.js';
+export type { HttpTransport, RequestOptions } from './client/http.js';
 export type { Config, TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasySportsClient as YahooFantasyClient } from './client/yahoo.js';

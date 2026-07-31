@@ -1,136 +1,171 @@
-# Research Scripts
+# Cross-Sport API Path Validation
 
-## Static Route Verifier
+This research suite probes Yahoo's raw Fantasy Sports API independently of the SDK request builder. It records route support, response facts, shape warnings, fixture gaps, and failures separately for NFL, MLB, NBA, and NHL.
 
-Run a fixed set of raw Yahoo API paths and verify that each route still exists and still returns the expected high-level shape.
+## What It Prevents
 
-This script bypasses `YahooFantasyClient` and the request builder entirely. It uses the shared `HttpClient`, manages OAuth directly, requests raw API paths, and then parses the returned XML.
+- A successful NHL route is no longer generalized to every sport.
+- Missing keys are reported as `fixture-unavailable`, not silently skipped.
+- Route templates are checked for unknown placeholders before any request.
+- Weekly NFL routes are not applied to daily MLB/NBA/NHL coverage.
+- Empty account membership or stale transaction fixtures are not classified as unsupported routes.
+- Each run keeps local immutable Markdown and JSON reports with working artifact links.
+- The tracked latest summary omits private fixture identifiers and local-only links.
 
-The editable route matrix lives in `research/api-path-validation/static-route-definitions.ts`.
-The runtime config lives in `research/api-path-validation/static-route-config.ts`.
+## Commands
 
-The route matrix is derived from:
-
-- `docs/yahoo-fantasy-api-guide/PATH_REFERENCE_TABLE.md`
-- `docs/yahoo-fantasy-api-guide/PATH_DECISION_TREE.md`
-- `docs/yahoo-fantasy-api-guide/PATH_CHEAT_SHEET.md`
-- `docs/yahoo-fantasy-api-guide/ALLOWED_CHAIN_MATRIX.md`
-
-Each route definition is tagged with:
-
-- `mode`: `public` or `private`
-- `confidence`: `explicit` or `composed`
-
-The definitions are also split into three route sets:
-
-- `public`: public routes included by default
-- `private`: private routes included by default
-- `invalid`: known failing probes excluded by default but still preserved for repro runs
-
-### Configure It
-
-Edit `research/static-route-config.ts` and set:
-
-- `selection.mode` to `public`, `private`, or `all` (`all` is the default)
-- `selection.routeIds` if you want a subset
-- `auth.public` and `auth.private` credentials directly in TS
-- `routeContext` placeholder values for the keys, filters, and date/week values used by the docs-derived paths
-
-Important route context fields:
-
-- `PUBLIC_GAME_KEY`, `PUBLIC_GAME_CODE`, `PUBLIC_LEAGUE_KEY`
-- `PRIVATE_LEAGUE_KEY`, `PRIVATE_LEAGUE_KEYS`
-- `PRIVATE_TEAM_KEY`, `PRIVATE_TEAM_KEYS`
-- `PRIVATE_PLAYER_KEY`, `PRIVATE_PLAYER_KEYS`
-- `PRIVATE_TRANSACTION_KEY`, `PRIVATE_TRANSACTION_KEYS`
-- `GAME_KEY_FILTER`, `SEASON`, `WEEK`, `ALT_WEEK`, `DATE`, `COUNT_SMALL`
-
-For OAuth2:
-
-- `auth.private.tokenFilePath` controls persisted token storage
-- `auth.private.seedTokens` can preload tokens in code
-- If no valid token exists, the script prints the Yahoo auth URL, waits for the authorization code on stdin, exchanges it, and stores the resulting tokens in `tokenFilePath`
-- If stored tokens exist but are expired, the script first tries refresh and writes the refreshed tokens back to `tokenFilePath`
-
-### Run It
+Deterministic matrix inspection, with no credentials or network:
 
 ```bash
-cd research/api-path-validation && bun run static-route-verifier.ts
+bun run research:routes -- --dry-run --mode all --sports nfl,mlb,nba,nhl --allow-incomplete
 ```
 
-To include the known failing probes as well:
+Public cross-sport validation:
 
 ```bash
-cd research/api-path-validation && bun run static-route-verifier.ts --include-invalid
+bun run research:routes -- --mode public --sports nfl,mlb,nba,nhl --allow-incomplete
 ```
 
-## One-Off Path Probe
-
-Run a single raw Yahoo API path from the terminal without editing the static route matrix.
-
-Use this when you want to quickly test one path, inspect the returned shape, or see whether a failure looks structural versus parameter-related.
+Private validation for sports available to the authorized account:
 
 ```bash
-cd research/api-path-validation && bun run path-probe.ts --mode public "/game/465"
+bun run research:routes -- --mode private --sports nfl,mlb,nba,nhl
 ```
+
+Strict regression run:
 
 ```bash
-bun run research:path-probe -- --mode private "/league/465.l.30702/transactions;count=5"
+bun run research:routes -- --mode all --strict-shapes --require-complete
 ```
 
-Notes:
+Known-invalid and provisional probes:
 
-- `--mode public` uses OAuth1 credentials from `static-route-config.ts`
-- `--mode private` uses the same OAuth2 token flow and persisted token file as the verifier
-- the path can be passed as a raw Yahoo API path like `/game/465` or as a full Yahoo API URL
-- each probe writes a JSON artifact under `research/api-path-validation/tmp/<timestamp>/`
-- failures are classified using the same heuristic buckets as the batch verifier
+```bash
+bun run research:routes -- --mode all --include-invalid
+```
 
-### Route Validation Priority
+One route:
 
-The script treats route validation as the primary concern:
+```bash
+bun run research:path-probe -- --mode public "/game/nfl/dates"
+```
 
-- HTTP failures, bad paths, auth failures, and empty responses are reported as route failures
-- Shape validation runs only after a route successfully returns data
-- Shape mismatches are reported as warnings, not route failures
-- `explicit` versus `composed` is printed for every result so you can compare docs confidence with live behavior
+Quality checks:
 
-Routes with unresolved placeholders are skipped instead of failing the whole run.
+```bash
+bun run type-check:research
+bun run lint:research
+bun run test:research
+bun run check:research
+```
 
-### Actionable Report
+## CLI Options
 
-Each run also writes a Markdown report to `output.reportFilePath`.
+| Option | Meaning |
+| --- | --- |
+| `--mode public|private|all` | Select authentication and route families |
+| `--sports nfl,mlb,nba,nhl` | Select sports |
+| `--route-ids id1,id2` | Run named definitions only |
+| `--dry-run` | Resolve the matrix without credentials or requests |
+| `--strict-shapes` | Fail when a route passes but its expected shape changes |
+| `--allow-incomplete` | Permit a successful exit when scenarios lack required fixtures |
+| `--require-complete` | Explicitly retain the default behavior of failing on fixture gaps |
+| `--include-invalid` | Reprobe known-invalid or provisional paths |
+| `--non-interactive` | Fail instead of prompting when OAuth2 authorization is required |
 
-The report groups results into implementation actions:
+Normal live runs fail on discovery failures, route failures, and fixture gaps. Use `--allow-incomplete` for exploratory matrices where fixture gaps are expected. A known-invalid route is successful evidence only when its definition explicitly permits the observed failure class; acceptance remains a regression.
 
-- `keep-as-supported`
-- `fix-shape-expectation`
-- `demote-or-remove`
-- `fill-config-and-rerun`
+## Discovery
 
-It also highlights:
+Before executing the selected matrix, the verifier discovers:
 
-- explicit routes that failed live and may indicate doc mismatch
-- composed routes that passed live and may be strong candidates for promotion into builder support
+1. Current game key and season from `/game/{sport}`.
+2. Authorized teams from `/users;use_login=1/games;game_keys={sport}/teams`.
+3. League keys from discovered team keys.
+4. Player and coverage-period fixtures from the selected team's roster.
+5. Current transaction keys from the selected league's transaction feed.
 
-### Response Dumps
+An account may not participate in every sport. Those private scenarios remain `fixture-unavailable` while public game-level coverage still runs across all selected sports.
 
-Each run creates a timestamped subdirectory under `output.responseDumpDirPath`, which defaults to `research/api-path-validation/tmp`.
+## Explicit Fixture Overrides
 
-Within that run folder, each exercised route writes a numbered JSON file.
+Set `YAHOO_ROUTE_PROFILES_JSON` when a reproducible public league or private fixture is preferred over discovery. Values merge into the defaults by sport.
 
-The verifier also updates `research/api-path-validation/tmp/latest-run.txt` with the path to the newest run folder.
+```json
+{
+  "nfl": {
+    "code": "nfl",
+    "context": {
+      "PLAYER_SEARCH": "mahomes",
+      "WEEK": "1"
+    },
+    "publicContext": {
+      "LEAGUE_KEY": "{public-league-key}"
+    },
+    "privateContext": {
+      "LEAGUE_KEY": "{private-league-key}",
+      "TEAM_KEY": "{private-team-key}",
+      "PLAYER_KEY": "{player-key}",
+      "DATE": "YYYY-MM-DD"
+    }
+  }
+}
+```
 
-Successful route dumps include:
+Canonical placeholders are defined in `route-model.ts`. Unknown placeholders fail preflight rather than becoming skipped routes.
 
-- request URL
-- route path
-- raw XML body
-- parsed response object
+## Credentials
 
-Failed route dumps include:
+The local `.env` file in this directory may provide:
 
-- request URL when available
-- route path
-- error metadata
-- raw Yahoo error body when available
+```text
+YAHOO_CLIENT_ID=...
+YAHOO_CLIENT_SECRET=...
+```
+
+- Public probes use OAuth 1.0 compatibility signing.
+- Private probes use OAuth 2.0 and persist refreshable tokens in `.oauth2-tokens.json`.
+- Both files are ignored by Git.
+
+## Outputs
+
+Each live run writes under `tmp/{timestamp}/`:
+
+- `report.md`: human-readable per-sport evidence.
+- `results.json`: machine-readable discovery and route results.
+- One raw response or error dump per scenario.
+
+The latest sanitized summary is copied to `actionable-route-report.md`, and `tmp/latest-run.txt` points to the immutable local run directory. The tracked summary redacts league, team, player, and transaction fixtures and does not link to ignored artifacts.
+
+Raw private dumps may contain account, league, and team information. Keep `tmp/` private.
+
+## Route Sources
+
+The catalog is compared against Yahoo's current [Fantasy Sports API reference](https://sports.yahoo.com/developer/docs/) and [access guide](https://developer.yahoo.com/fantasysports/guide/), reviewed on 2026-07-15. Yahoo documentation is recorded as a claim, not accepted as proof. Route definitions distinguish documented claims, observed-only behavior, and documented/runtime discrepancies; only live results provide evidence for a concrete sport and fixture.
+
+See [GUIDE_AUDIT.md](GUIDE_AUDIT.md) for the current source comparison, known contradictions, deterministic links to route definitions, and coverage backlog.
+
+See [FOLLOW_UP_RUNS.md](FOLLOW_UP_RUNS.md) for repeatable run queues and the evidence required before changing SDK or guide support claims.
+
+## Result Meanings
+
+| Result | Meaning |
+| --- | --- |
+| `passed` | Yahoo accepted the route; facts and shape evidence were recorded |
+| `failed` | The request failed and was classified for follow-up |
+| `fixture-unavailable` | The sport/account lacked a required concrete key or period |
+| `expected-rejection` | A known-invalid/provisional route was rejected as expected |
+| Shape `warning` | Route worked but the parsed response missed an expected path/type |
+
+Failure classes separate structural rejection, bad fixtures, auth/scope, empty data, parser failures, and transient/rate-limit errors.
+
+## Extending Coverage
+
+1. Add one definition to `static-route-definitions.ts`.
+2. Use only canonical placeholders from `route-model.ts`.
+3. Restrict sport-specific routes with `sports`.
+4. Mark legitimately empty collections with `allowEmpty`.
+5. Add expectations when the parsed response contract is known.
+6. Run preflight tests and a dry run before making live requests.
+
+`simple-routes.ts` and its generated JSON were removed because they formed a second, malformed route catalog that the verifier never consumed.

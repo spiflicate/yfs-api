@@ -26,6 +26,10 @@ export interface YahooGameDto {
    isLiveDraftLobbyActive?: boolean;
    /** Alternate registration deadline, observed in `YYYY-MM-DD` form. */
    alternateStartDeadline?: string;
+   /** Season boundaries included by Yahoo's dates subresource. */
+   dates?: YahooGameDatesDto;
+   /** Game-level roster slots included by Yahoo's roster-positions subresource. */
+   rosterPositions?: YahooGameRosterPositionDto[];
    /** Players included by a players subresource/expansion. */
    players?: YahooPlayerDto[];
    /** Stat definitions included by the stat-categories subresource. */
@@ -49,6 +53,19 @@ export interface YahooGameResponseDto {
 export interface YahooGamesResponseDto {
    games: YahooGameDto[];
 }
+
+/** Date ranges returned by a game's dates subresource. */
+export interface YahooGameDatesDto {
+   season: {
+      /** Observed season start in `YYYY-MM-DD` form. */
+      startDate: string;
+      /** Observed season end in `YYYY-MM-DD` form. */
+      endDate: string;
+   };
+}
+
+/** A game-level roster slot whose item fields are not live-contract verified. */
+export type YahooGameRosterPositionDto = Record<string, unknown>;
 
 /** A Yahoo game week or scoring period. This shape is not fixture-covered here. */
 export interface YahooGameWeekDto {

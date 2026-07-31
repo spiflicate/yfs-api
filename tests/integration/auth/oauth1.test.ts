@@ -153,7 +153,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const result = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .search('McDavid')
                .count(5)
                .get();
@@ -174,7 +174,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const result = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .position('C')
                .count(10)
                .get();
@@ -188,7 +188,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const result = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .sort('NAME')
                .count(5)
                .get();
@@ -202,7 +202,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const firstPage = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .start(0)
                .count(10)
                .get();
@@ -210,7 +210,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const secondPage = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .start(10)
                .count(10)
                .get();
@@ -246,7 +246,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const result = await client
                .api()
                .game('nhl')
-               .players()
+               .players([])
                .search('')
                .count(5)
                .get();
@@ -265,7 +265,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
                client
                   .api()
                   .game('nhl')
-                  .players()
+                  .players([])
                   .search('McDavid')
                   .count(5)
                   .get(),
@@ -288,7 +288,7 @@ describe.skipIf(shouldSkipIntegrationTests() || !hasValidCredentials())(
             const players = await client
                .api()
                .game(nhlGame.game.gameKey)
-               .players()
+               .players([])
                .count(5)
                .get();
             expect(players).toBeDefined();

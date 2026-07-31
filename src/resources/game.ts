@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type {
    YahooGameResponseDto,
    YahooGamesResponseDto,
@@ -7,6 +7,7 @@ import { LeaguesCollection } from './league.js';
 import { PlayersCollection } from './player.js';
 import {
    type CollectionParams,
+   copyKeys,
    type RequestState,
    Resource,
    type ResourceParams,
@@ -69,12 +70,10 @@ type GamesCollectionParams = CollectionParams<
 > &
    GameFilters;
 type GamesCollectionContext = 'root' | 'user';
-type GamesLeagueArguments<TContext extends GamesCollectionContext> =
+type GamesLeagueKeys<TContext extends GamesCollectionContext> =
    TContext extends 'root'
-      ?
-           | [key: LeagueKeyLike, ...keys: LeagueKeyLike[]]
-           | [keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]]]
-      : LeagueKeyLike[] | [keys: LeagueKeyLike[]];
+      ? readonly [LeagueKeyLike, ...LeagueKeyLike[]]
+      : readonly LeagueKeyLike[];
 
 abstract class GameBase<
    TParams extends GameResourceParams | GamesCollectionParams,
@@ -83,18 +82,12 @@ abstract class GameBase<
    TRequiredPath extends ResponsePath,
 > extends Resource<TParams, RequireResponsePath<TRoot, TRequiredPath>> {
    players(
-      ...keys: PlayerKeyLike[]
-   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
-   players(
-      keys: PlayerKeyLike[],
-   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
-   players(
-      ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
+      keys: readonly PlayerKeyLike[],
    ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>> {
       return PlayersCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 }
@@ -118,25 +111,12 @@ export class GameResource<
    }
 
    leagues(
-      key: LeagueKeyLike,
-      ...keys: LeagueKeyLike[]
-   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
-   leagues(
       keys: readonly [LeagueKeyLike, ...LeagueKeyLike[]],
-   ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>>;
-   leagues(
-      keyOrKeys: LeagueKeyLike | readonly LeagueKeyLike[],
-      ...keys: LeagueKeyLike[]
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
-      if (keyOrKeys === undefined) {
+      if (keys === undefined || keys.length === 0) {
          throw new TypeError('At least one league key is required.');
       }
-      const leagueKeys = Array.isArray(keyOrKeys)
-         ? [...keyOrKeys]
-         : [keyOrKeys, ...keys];
-      if (leagueKeys.length === 0) {
-         throw new TypeError('At least one league key is required.');
-      }
+      const leagueKeys = copyKeys(keys);
 
       return LeaguesCollection.create(
          this._transport,
@@ -210,31 +190,23 @@ export class GamesCollection<
    }
 
    leagues(
-      ...keys: GamesLeagueArguments<TContext>
+      keys: GamesLeagueKeys<TContext>,
    ): LeaguesCollection<TRoot, AppendResponsePath<TPath, 'leagues'>> {
       return LeaguesCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat() as LeagueKeyLike[],
+         copyKeys(keys),
       );
    }
 
    teams(
       this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
-      ...keys: TeamKeyLike[]
-   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
-   teams(
-      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
-      keys: TeamKeyLike[],
-   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
-   teams(
-      this: GamesCollection<TRoot, TPath, TRequiredPath, 'user'>,
-      ...keys: TeamKeyLike[] | TeamKeyLike[][]
+      keys: readonly TeamKeyLike[],
    ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>> {
       return TeamsCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 

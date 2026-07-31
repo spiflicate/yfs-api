@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 
 type ResourceName = 'game' | 'league' | 'team' | 'player' | 'transaction';
 
@@ -63,6 +63,14 @@ export type SubResourceParams<
  */
 export interface RequestState {
    segments: string[];
+}
+
+export function copyKeys<T>(keys: readonly T[] | undefined): T[] {
+   if (!Array.isArray(keys)) {
+      throw new TypeError('Keys must be provided as an array.');
+   }
+
+   return [...keys];
 }
 
 type Scalar = string | number | boolean;

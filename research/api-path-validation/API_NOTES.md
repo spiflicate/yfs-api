@@ -16,18 +16,18 @@ Current interpretation from testing:
 - The same collection-style parameters do not currently appear to be supported on resource-shaped routes.
 - Treat these ID collections as collection-only until a direct resource-form probe succeeds.
 
-## Roster may expose a nested players collection
+## Roster exposes a nested players collection
 
-Yahoo appears to accept a `players` collection directly under the `roster` resource, even though that shape is not clearly documented.
+Yahoo accepts a `players` collection directly under the `roster` resource. The current API reference now explicitly documents this base route and identifies players as the roster's default subresource.
 
 Observed working example:
 
-- `/team/nhl.l.121384.t.14/roster;type=week;week=1/players/stats;type=week;week=12`
+- `/team/nhl.l.121384.t.14/roster;week=1/players/stats;type=week;week=12`
 
 Current interpretation from testing:
 
-- `roster/players` appears to be a valid nested collection shape.
-- This may mean Yahoo supports additional players collection subresources under `roster`, not just `stats`.
+- `roster/players` is a documented nested collection shape.
+- The deeper `roster/players/stats` composition is observed behavior beyond the documented base route.
 - Initial testing suggests multiple subresources combined in the `out` path may not work for this shape.
 - Treat broader `roster/players/...` support and any `out`-path expansion behavior as provisional until more direct probes confirm the boundaries.
 

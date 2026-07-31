@@ -1,175 +1,67 @@
-# Yahoo Fantasy Sports API – Games
+# Games
 
-This document summarizes the **Game resource** and **Games collection** from the official Yahoo Fantasy Sports API guide.
+Official source: [Game APIs](https://sports.yahoo.com/developer/docs/#game-apis)
 
-## Contents
-- [Game Resource](#game-resource)
-  - [Description](#description)
-  - [Game Keys](#game-keys)
-  - [HTTP Operations](#http-operations)
-  - [URIs](#uris)
-  - [Sub-resources](#sub-resources)
-  - [Sample Response](#sample-response)
-- [Games Collection](#games-collection)
-  - [Description](#description-1)
-  - [HTTP Operations](#http-operations-1)
-  - [URIs](#uris-1)
-  - [Filters](#filters)
-  - [Sub-resources](#sub-resources-1)
+A game identifies a sport and season. A numeric `game_id` is season-specific; a code such as `nfl` resolves to the current season and is converted to a numeric ID in response keys.
 
----
+Evidence badges: **4S** = four-sport passed, **OBS** = observed-only, **NHL** = NHL-only fixture, **DRD** = documented/runtime discrepancy.
 
-## Game Resource
-
-### Description
-
-The **Game** resource describes a specific fantasy game (sport + season), such as:
-- Fantasy Football (NFL)
-- Fantasy Baseball (MLB)
-- Fantasy Basketball (NBA)
-- Fantasy Hockey (NHL)
-
-It exposes metadata such as:
-- Human‑readable name
-- Game code
-- Game ID
-- Game type (full, pickem, etc.)
-- Game URL
-- Season year
-
-### Game Keys
-
-A game is identified by a **game key**, which can be either:
-- `game_id` – numeric per season, e.g. `222`, `223`, `257`, etc.
-- `game_code` – stable identifier for the game across seasons, e.g. `nfl`, `mlb`.
-
-Key behavior:
-- Using a `game_code` as the `game_key` returns the **current season** for that game.
-  - Example: `game_key = nfl` during 2011 season is equivalent to numeric `game_id` `257`.
-- The documentation includes a table of historical `game_id` values per sport and season.
-- When you pass a `game_code` in the URI, the API converts it internally to a `game_id`. All keys in the XML response will use the numeric `game_id`.
-
-Examples:
-- Game code: `nfl`, `pnfl` (legacy plus/free distinction), `mlb`, `nhl`, etc.
-- Game ID: `257` (NFL 2011), `253` (MLB 2011), etc.
-
-### HTTP Operations
-
-- Supported: `GET`
-
-There are no documented `POST`/`PUT`/`DELETE` operations on the `game` resource in the public guide.
-
-### URIs
-
-Base format:
+## Resource
 
 ```text
-https://fantasysports.yahooapis.com/fantasy/v2/game/{game_key}
+GET /game/{game_key}
 ```
 
-Examples:
-- `GET https://fantasysports.yahooapis.com/fantasy/v2/game/nfl`
-- `GET https://fantasysports.yahooapis.com/fantasy/v2/game/257`
-
-Sub‑resources are appended:
+| Child | Purpose | Evidence |
+| --- | --- | --- |
+| `metadata` | Key, code, name, URL, type, and season; default child | 4S |
+| `leagues;league_keys=...` | Selected leagues in the game | NHL |
+| `players` | Players in the game | 4S (by key), OBS (search) |
+| `dates` | Key game dates | 4S |
+| `game_weeks` | Week start and end dates | 4S |
+| `stat_categories` | Available game stat definitions | 4S |
+| `position_types` | Player position types | 4S |
+| `roster_positions` | Available fantasy roster slots | 4S |
 
 ```text
-https://fantasysports.yahooapis.com/fantasy/v2/game/{game_key}/{sub_resource}
+/game/nfl
+/game/{game_key}/players;player_keys={player_key1},{player_key2}
+/game/{game_key}/stat_categories
+/game/nfl;out=stat_categories,position_types,game_weeks
 ```
 
-Multiple sub‑resources using `out`:
+Live note: direct game-to-leagues requests have required `league_keys` in testing. Omitting it can return `league ids expected`.
+
+## Collection
 
 ```text
-https://fantasysports.yahooapis.com/fantasy/v2/game/{game_key};out={sub_resource_1},{sub_resource_2}
+GET /games;game_keys={key1},{key2}
 ```
 
-### Sub-resources
-
-The guide lists `metadata` as the **default sub‑resource**. Additional game‑level sub‑resources (summarized from the Yahoo docs) typically include:
-
-- `metadata` – game meta info (default)
-- `leagues` – leagues for this game
-- `players` – players in this game
-- `game_weeks` – schedule of weeks
-
-Supported sub‑resources can vary by sport and game type, but any sub‑resource valid at `game` level is also valid beneath the `games` collection.
-
-### Sample Response
-
-Example `GET /fantasy/v2/game/nfl` (simplified):
-
-```xml
-<fantasy_content>
-  <game>
-    <game_key>257</game_key>
-    <game_id>257</game_id>
-    <name>Football</name>
-    <code>nfl</code>
-    <type>full</type>
-    <url>https://football.fantasysports.yahoo.com/f1</url>
-    <season>2011</season>
-  </game>
-</fantasy_content>
-```
-
----
-
-## Games Collection
-
-### Description
-
-The **Games** collection lets you work with **multiple game resources at once** and filter them by code, type, season, or availability.
-
-Each element under `<games>` in the response is a `<game>` resource as described above.
-
-### HTTP Operations
-
-- Supported: `GET`
-
-### URIs
-
-The guide uses shorthand URIs under the `/fantasy/v2` root; when fully qualified, the patterns are:
+| Filter | Meaning |
+| --- | --- |
+| `game_keys` | Specific game IDs or codes |
+| `is_available=1` | Currently available games |
+| `game_types` | Game format, such as `full` or `pickem-team` |
+| `game_codes` | Sport/game codes |
+| `seasons` | Season years |
 
 ```text
-GET https://fantasysports.yahooapis.com/fantasy/v2/games/{sub_resource}
-GET https://fantasysports.yahooapis.com/fantasy/v2/games;game_keys={game_key1},{game_key2}/{sub_resource}
+/games;game_codes=nfl;is_available=1
+/games;game_codes=nfl;seasons=2025
+/games;game_keys=nfl,mlb
 ```
 
-You can also request games directly (no trailing sub‑resource) to only retrieve game metadata.
+### Collection Children
 
-Examples:
+Yahoo says game resource children carry over to the games collection. Evidence status:
 
-- All games (optionally filtered):
-  - `/fantasy/v2/games;game_codes=nfl,mlb;seasons=2011`
-- Games plus sub‑resources:
-  - `/fantasy/v2/games;is_available=1/metadata`
-  - `/fantasy/v2/games;game_keys=nfl,mlb;out=leagues`
+| Child | Evidence | Notes |
+| --- | --- | --- |
+| `metadata` (via keys) | 4S | `/games;game_keys=...` |
+| `teams` (user-scoped) | HP | `/users;use_login=1/games/teams` |
+| `leagues` child | official claim, not in suite | No current route tests a direct child beneath a Games collection |
+| `players` | official claim, not in suite | Yahoo documents collection-level players; not tested in current route suite |
+| `out=leagues,players` | DRD | `/games;game_codes=...;out=leagues,players` returned `league ids expected` in a dedicated four-sport run |
 
-### Filters
-
-The **games** collection supports several filters that can be combined:
-
-| Filter       | Values / Meaning                                     | Example                                      |
-|--------------|------------------------------------------------------|----------------------------------------------|
-| `is_available` | `1` = only games currently in season                 | `/games;is_available=1`                      |
-| `game_types` | `full`, `pickem-team`, `pickem-group`, `pickem-team-list` | `/games;game_types=full,pickem-team`         |
-| `game_codes` | Any valid game codes                                 | `/games;game_codes=nfl,mlb`                 |
-| `seasons`    | Any valid season years                               | `/games;seasons=2011,2012`                  |
-
-Filters can be combined, e.g.:
-
-```text
-/games;seasons=2011;game_codes=nfl
-```
-
-### Sub-resources
-
-In addition to the sub‑resources valid for a single `game` resource, the **games** collection supports collection‑level sub‑resources that are equivalent to resource‑level ones applied to each game:
-
-- Any valid `game` sub‑resource is also valid under `games`.
-
-Examples:
-
-- `/games/leagues` – leagues for all games in the collection.
-- `/games;game_keys=nfl,mlb/players` – players across NFL and MLB games.
-- `/games;out=leagues,players` – attach both leagues and players as `out` expansions for the selected games.
+Prefer the singular game resource for player access. Collection-level `players` and `transactions` forms are not yet validated; the tested `out=leagues,players` form is a documented/runtime discrepancy.

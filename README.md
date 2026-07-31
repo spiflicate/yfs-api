@@ -14,7 +14,7 @@ npm install yfs-api
 
 ## Public Reads
 
-Public mode uses two-legged OAuth 1.0 signing.
+Public mode uses OAuth 1.0 request signing as an observed SDK compatibility path. Yahoo's current Fantasy Sports documentation requires OAuth 2.0, so do not treat public OAuth 1.0 support as a long-term Yahoo contract.
 
 ```ts
 import { YahooFantasyClient } from 'yfs-api';
@@ -57,7 +57,7 @@ Responses preserve the selected parent hierarchy. For example, a nested user
 request returns `users -> games -> teams`, not a top-level teams array.
 
 ```ts
-const response = await client.api().users().games(['nhl']).teams().get();
+const response = await client.api().users().games(['nhl']).teams([]).get();
 
 for (const user of response.users) {
   for (const game of user.games ?? []) {
@@ -125,9 +125,11 @@ Live integration tests are manual. Destructive tests require the separate
 
 ## Documentation
 
-- [Domain glossary](docs/CONTEXT.MD)
+- [Documentation index](docs/) — start here for all docs
+- [Domain glossary](docs/CONTEXT.md) — fantasy vocabulary
+- [Yahoo API overview](docs/yahoo-fantasy-api-guide/OVERVIEW.md) — protocol reference
 - [OAuth 2.0](docs/OAUTH2_IMPLEMENTATION.md)
-- [Token storage](docs/TOKEN_FILE_GUIDE.md)
+- [Token storage contract](docs/TOKEN_FILE_GUIDE.md)
 - [Integration tests](docs/INTEGRATION_TEST_SETUP.md)
 
 ## Release History

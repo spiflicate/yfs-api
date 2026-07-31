@@ -1,8 +1,9 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type { YahooLoggedInUsersResponseDto } from '../domain/normalized.js';
 import { GamesCollection } from './game.js';
 import {
    type CollectionParams,
+   copyKeys,
    type RequestState,
    Resource,
 } from './resource.js';
@@ -33,23 +34,7 @@ export class UsersCollection extends Resource<
    }
 
    games(
-      ...keys: GameKeyLike[]
-   ): GamesCollection<
-      YahooLoggedInUsersResponseDto,
-      AppendResponsePath<UsersPath, 'games'>,
-      AppendResponsePath<UsersPath, 'games'>,
-      'user'
-   >;
-   games(
-      keys: GameKeyLike[],
-   ): GamesCollection<
-      YahooLoggedInUsersResponseDto,
-      AppendResponsePath<UsersPath, 'games'>,
-      AppendResponsePath<UsersPath, 'games'>,
-      'user'
-   >;
-   games(
-      ...keys: GameKeyLike[] | GameKeyLike[][]
+      keys: readonly GameKeyLike[],
    ): GamesCollection<
       YahooLoggedInUsersResponseDto,
       AppendResponsePath<UsersPath, 'games'>,
@@ -59,7 +44,7 @@ export class UsersCollection extends Resource<
       return GamesCollection.createForUser(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 

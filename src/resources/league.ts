@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type {
    YahooLeagueResponseDto,
    YahooLeaguesResponseDto,
@@ -6,6 +6,7 @@ import type {
 import { PlayersCollection } from './player.js';
 import {
    type CollectionParams,
+   copyKeys,
    type RequestState,
    Resource,
    type ResourceParams,
@@ -58,51 +59,27 @@ abstract class LeagueBase<
    TRequiredPath extends ResponsePath,
 > extends Resource<TParams, RequireResponsePath<TRoot, TRequiredPath>> {
    teams(
-      ...keys: TeamKeyLike[]
-   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
-   teams(
-      keys: TeamKeyLike[],
-   ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>>;
-   teams(
-      ...keys: TeamKeyLike[] | TeamKeyLike[][]
+      keys: readonly TeamKeyLike[],
    ): TeamsCollection<TRoot, AppendResponsePath<TPath, 'teams'>> {
       return TeamsCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 
    players(
-      ...keys: PlayerKeyLike[]
-   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
-   players(
-      keys: PlayerKeyLike[],
-   ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>>;
-   players(
-      ...keys: PlayerKeyLike[] | PlayerKeyLike[][]
+      keys: readonly PlayerKeyLike[],
    ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>> {
       return PlayersCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 
    transactions(
-      ...keys: TransactionKeyLike[]
-   ): TransactionsCollection<
-      TRoot,
-      AppendResponsePath<TPath, 'transactions'>
-   >;
-   transactions(
-      keys: TransactionKeyLike[],
-   ): TransactionsCollection<
-      TRoot,
-      AppendResponsePath<TPath, 'transactions'>
-   >;
-   transactions(
-      ...keys: TransactionKeyLike[] | TransactionKeyLike[][]
+      keys: readonly TransactionKeyLike[],
    ): TransactionsCollection<
       TRoot,
       AppendResponsePath<TPath, 'transactions'>
@@ -110,7 +87,7 @@ abstract class LeagueBase<
       return TransactionsCollection.create(
          this._transport,
          this.createChildState(),
-         keys.flat(),
+         copyKeys(keys),
       );
    }
 }

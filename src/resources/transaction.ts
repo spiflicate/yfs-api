@@ -1,5 +1,5 @@
 import { ValidationError } from '../client/errors.js';
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type { YahooTransactionsResponseDto } from '../domain/normalized.js';
 import {
    type CollectionParams,

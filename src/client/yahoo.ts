@@ -172,7 +172,7 @@ export interface TokenStorage {
  *
  * // Use the resource builders
  * const league = await yfs.api().league('423.l.12345').get();
- * const teams = await yfs.api().league('423.l.12345').teams().get();
+ * const teams = await yfs.api().league('423.l.12345').teams([]).get();
  * ```
  */
 export class YahooFantasySportsClient {
@@ -339,7 +339,7 @@ export class YahooFantasySportsClient {
     * ```typescript
     * const players = await yfs.api()
     *   .league('423.l.12345')
-    *   .players()
+    *   .players([])
     *   .position('C')
     *   .status('FA')
     *   .count(25)
@@ -366,7 +366,7 @@ export class YahooFantasySportsClient {
     * ```typescript
     * const userGames = await yfs.api()
     *   .users()
-    *   .games()
+    *   .games([])
     *   .get();
     * ```
     */

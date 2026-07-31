@@ -1,6 +1,20 @@
+export type SportCode = 'nfl' | 'mlb' | 'nba' | 'nhl';
 export type RouteMode = 'public' | 'private';
 export type RouteSet = RouteMode | 'invalid';
-export type RouteConfidence = 'explicit' | 'composed';
+export type RouteConfidence = 'explicit' | 'composed' | 'provisional';
+export type RouteProvenance =
+   | 'documented-claim'
+   | 'documented-runtime-discrepancy'
+   | 'observed-only';
+export type FailureKind =
+   | 'auth-or-scope'
+   | 'empty-data'
+   | 'fixture-invalid'
+   | 'parser-failure'
+   | 'rate-limited-or-transient'
+   | 'response-mismatch'
+   | 'unknown-failure'
+   | 'unsupported-route';
 
 export type ExpectedValueType =
    | 'array'
@@ -8,965 +22,872 @@ export type ExpectedValueType =
    | 'number'
    | 'object'
    | 'string';
+export type KeyFact =
+   | 'gameKey'
+   | 'leagueKey'
+   | 'playerKey'
+   | 'teamKey'
+   | 'transactionKey';
+export type KeyFixture =
+   | 'GAME_KEY'
+   | 'LEAGUE_KEY'
+   | 'LEAGUE_KEYS'
+   | 'PLAYER_KEY'
+   | 'PLAYER_KEYS'
+   | 'TEAM_KEY'
+   | 'TEAM_KEYS'
+   | 'TRANSACTION_KEY'
+   | 'TRANSACTION_KEYS';
 
 export interface RouteExpectation {
+   keyFixtures?: Partial<Record<KeyFact, KeyFixture>>;
+   nonEmptyArrays?: readonly string[];
    requiredPaths?: readonly string[];
    typedPaths?: Readonly<Record<string, ExpectedValueType>>;
-   nonEmptyArrays?: readonly string[];
-   samplePaths?: readonly string[];
 }
 
 export interface RouteDefinition {
+   allowEmpty?: boolean;
+   confidence: RouteConfidence;
+   description: string;
+   expectations?: RouteExpectation;
+   expectedFailureKinds?: readonly FailureKind[];
    id: string;
    label: string;
    mode: RouteMode;
-   confidence: RouteConfidence;
    pathTemplate: string;
-   description?: string;
-   expectations?: RouteExpectation;
+   provenance: RouteProvenance;
+   sports?: readonly SportCode[];
 }
 
-function defineRoute(
+interface RouteOptions {
+   allowEmpty?: boolean;
+   confidence?: RouteConfidence;
+   expectations?: RouteExpectation;
+   expectedFailureKinds?: readonly FailureKind[];
+   provenance?: RouteProvenance;
+   sports?: readonly SportCode[];
+}
+
+function route(
    id: string,
    label: string,
    mode: RouteMode,
-   confidence: RouteConfidence,
    pathTemplate: string,
    description: string,
-   expectations?: RouteExpectation,
+   options: RouteOptions = {},
 ): RouteDefinition {
    return {
       id,
       label,
       mode,
-      confidence,
       pathTemplate,
       description,
-      expectations,
+      confidence: options.confidence ?? 'explicit',
+      provenance: options.provenance ?? 'documented-claim',
+      ...options,
+   };
+}
+
+const gameExpectation: RouteExpectation = {
+   requiredPaths: ['game.gameKey', 'game.code', 'game.season'],
+   typedPaths: {
+      'game.code': 'string',
+      'game.gameKey': 'string',
+      'game.season': 'number',
+   },
+};
+
+function gameChildExpectation(
+   path: string,
+   type: ExpectedValueType,
+): RouteExpectation {
+   return {
+      ...gameExpectation,
+      requiredPaths: [...(gameExpectation.requiredPaths ?? []), path],
+      typedPaths: { ...gameExpectation.typedPaths, [path]: type },
+   };
+}
+
+const leagueExpectation: RouteExpectation = {
+   keyFixtures: { leagueKey: 'LEAGUE_KEY' },
+   requiredPaths: ['league.leagueKey'],
+   typedPaths: { 'league.leagueKey': 'string' },
+};
+
+const usersExpectation: RouteExpectation = {
+   requiredPaths: ['users'],
+   typedPaths: { users: 'array' },
+};
+
+const teamExpectation: RouteExpectation = {
+   keyFixtures: { teamKey: 'TEAM_KEY' },
+   requiredPaths: ['team.teamKey'],
+   typedPaths: { 'team.teamKey': 'string' },
+};
+
+function teamChildExpectation(
+   path: string,
+   type?: ExpectedValueType,
+): RouteExpectation {
+   return {
+      ...teamExpectation,
+      requiredPaths: [...(teamExpectation.requiredPaths ?? []), path],
+      typedPaths: {
+         ...teamExpectation.typedPaths,
+         ...(type ? { [path]: type } : {}),
+      },
+   };
+}
+
+const playerExpectation: RouteExpectation = {
+   keyFixtures: { playerKey: 'PLAYER_KEY' },
+   requiredPaths: ['player.playerKey'],
+   typedPaths: { 'player.playerKey': 'string' },
+};
+
+function playerChildExpectation(
+   path: string,
+   type?: ExpectedValueType,
+): RouteExpectation {
+   return {
+      ...playerExpectation,
+      requiredPaths: [...(playerExpectation.requiredPaths ?? []), path],
+      typedPaths: {
+         ...playerExpectation.typedPaths,
+         ...(type ? { [path]: type } : {}),
+      },
+   };
+}
+
+function leagueChildExpectation(
+   path: string,
+   type: ExpectedValueType,
+): RouteExpectation {
+   return {
+      ...leagueExpectation,
+      requiredPaths: [...(leagueExpectation.requiredPaths ?? []), path],
+      typedPaths: { ...leagueExpectation.typedPaths, [path]: type },
+   };
+}
+
+function collectionExpectation(path: string): RouteExpectation {
+   return {
+      requiredPaths: [path],
+      typedPaths: { [path]: 'array' },
    };
 }
 
 const publicRoutes: RouteDefinition[] = [
-   defineRoute(
-      'public-game-by-id',
-      'Game metadata by numeric key',
+   route(
+      'game',
+      'Game metadata by sport code',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_KEY}}',
-      'Documented game root resource.',
+      '/game/{{SPORT_CODE}}',
+      'Current game metadata for each sport.',
+      { expectations: gameExpectation },
+   ),
+   route(
+      'game-metadata',
+      'Game metadata child',
+      'public',
+      '/game/{{SPORT_CODE}}/metadata',
+      'Explicit metadata child for each sport.',
+      { expectations: gameExpectation },
+   ),
+   route(
+      'game-players',
+      'Game player search',
+      'public',
+      '/game/{{SPORT_CODE}}/players;search={{PLAYER_SEARCH}};count={{COUNT_SMALL}}',
+      'Player collection with a sport-specific search fixture.',
       {
-         requiredPaths: ['game.gameKey', 'game.code', 'game.season'],
-         typedPaths: {
-            'game.gameKey': 'string',
-            'game.season': 'number',
-         },
-         samplePaths: ['game.name', 'game.code', 'game.season'],
+         allowEmpty: true,
+         expectations: gameChildExpectation('game.players', 'array'),
+         provenance: 'observed-only',
       },
    ),
-   defineRoute(
-      'public-game-by-code',
-      'Game metadata by game code',
+   route(
+      'game-players-by-key',
+      'Game players by key',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_CODE}}',
-      'Documented game root resource using sport code.',
+      '/game/{{SPORT_CODE}}/players;player_keys={{PLAYER_KEYS}}',
+      'Documented keyed player collection beneath a game.',
       {
-         requiredPaths: ['game.gameKey', 'game.code', 'game.season'],
-         typedPaths: {
-            'game.gameKey': 'string',
-            'game.season': 'number',
+         expectations: {
+            ...gameChildExpectation('game.players', 'array'),
+            keyFixtures: { playerKey: 'PLAYER_KEYS' },
          },
-         samplePaths: ['game.name', 'game.code', 'game.season'],
       },
    ),
-   defineRoute(
-      'public-game-leagues',
-      'Game leagues collection',
+   route(
+      'game-dates',
+      'Game dates',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues',
-      'Safe explicit chain from the allowed chain matrix.',
+      '/game/{{SPORT_CODE}}/dates',
+      'Official key dates subresource added in the current Yahoo docs.',
+      { expectations: gameChildExpectation('game.dates', 'object') },
    ),
-   defineRoute(
-      'public-game-leagues-by-key',
-      'Game leagues collection scoped by league key',
+   route(
+      'game-weeks',
+      'Game weeks',
       'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}',
-      'Research-derived adjustment for game.leagues that succeeds with an explicit league key.',
+      '/game/{{SPORT_CODE}}/game_weeks',
+      'Week boundaries exposed by each game.',
+      {
+         allowEmpty: true,
+         expectations: gameChildExpectation('game.gameWeeks', 'array'),
+      },
    ),
-   defineRoute(
-      'public-game-players',
-      'Game players collection',
+   route(
+      'game-stat-categories',
+      'Game stat categories',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_CODE}}/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Documented game players search path.',
+      '/game/{{SPORT_CODE}}/stat_categories',
+      'Official stat category definitions.',
+      {
+         expectations: gameChildExpectation(
+            'game.statCategories',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'public-game-weeks',
-      'Game weeks collection',
+   route(
+      'game-position-types',
+      'Game position types',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_CODE}}/game_weeks',
-      'Documented game week structure path.',
+      '/game/{{SPORT_CODE}}/position_types',
+      'Official player position type definitions.',
+      {
+         expectations: gameChildExpectation('game.positionTypes', 'array'),
+      },
    ),
-   defineRoute(
-      'public-game-out',
+   route(
+      'game-roster-positions',
+      'Game roster positions',
+      'public',
+      '/game/{{SPORT_CODE}}/roster_positions',
+      'Official fantasy roster position definitions.',
+      {
+         expectations: gameChildExpectation(
+            'game.rosterPositions',
+            'array',
+         ),
+      },
+   ),
+   route(
+      'game-out',
       'Game out expansion',
       'public',
-      'explicit',
-      '/game/{{PUBLIC_GAME_CODE}};out=players,game_weeks',
-      'Documented use of out on game root.',
-   ),
-   defineRoute(
-      'public-games-available',
-      'Available games collection',
-      'public',
-      'explicit',
-      '/games;is_available=1',
-      'Documented games collection filtered by availability.',
-   ),
-   defineRoute(
-      'public-games-metadata',
-      'Available games metadata collection',
-      'public',
-      'explicit',
-      '/games;is_available=1/metadata',
-      'Documented explicit metadata sub-resource on the games collection.',
-   ),
-   defineRoute(
-      'public-games-by-code-season',
-      'Games collection by code and season',
-      'public',
-      'explicit',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}',
-      'Documented games collection with game_codes and seasons.',
-   ),
-   defineRoute(
-      'public-games-players',
-      'Games players collection',
-      'public',
-      'explicit',
-      '/games;game_keys={{GAME_KEY_FILTER}}/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Documented players collection under games.',
-   ),
-   defineRoute(
-      'public-games-leagues',
-      'Games leagues collection',
-      'public',
-      'explicit',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues',
-      'Documented leagues collection under games.',
-   ),
-   defineRoute(
-      'public-games-leagues-by-key',
-      'Games leagues collection scoped by league key',
-      'public',
-      'composed',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}',
-      'Research-derived adjustment for games.leagues that succeeds with an explicit league key.',
-   ),
-   defineRoute(
-      'public-games-out',
-      'Games out expansion',
-      'public',
-      'explicit',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}};out=leagues,players',
-      'Documented use of out on the games collection.',
-   ),
-   defineRoute(
-      'public-games-out-by-key',
-      'Games out expansion by game key',
-      'public',
-      'explicit',
-      '/games;game_keys={{GAME_KEY_FILTER}};out=leagues',
-      'Documented games out expansion using explicit game_keys selection.',
-   ),
-   defineRoute(
-      'public-games-out-by-key-players',
-      'Games out expansion by game key with players',
-      'public',
-      'explicit',
-      '/games;game_keys={{GAME_KEY_FILTER}};out=leagues,players',
-      'Documented games out expansion using explicit game_keys selection with multiple sub-resources.',
-   ),
-   defineRoute(
-      'public-game-leagues-teams',
-      'Game leagues teams chain',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues/teams',
-      'Composed chain from game.leagues to teams.',
-   ),
-   defineRoute(
-      'public-game-leagues-by-key-teams',
-      'Game leagues teams chain scoped by league key',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/teams',
-      'Research-derived adjustment for game.leagues.teams that succeeds with an explicit league key.',
-   ),
-   defineRoute(
-      'public-game-leagues-players',
-      'Game leagues players chain',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Composed chain from game.leagues to players.',
-   ),
-   defineRoute(
-      'public-game-leagues-by-key-players',
-      'Game leagues players chain scoped by league key',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Research-derived adjustment for game.leagues.players that succeeds with an explicit league key.',
-   ),
-   defineRoute(
-      'public-game-leagues-transactions',
-      'Game leagues transactions chain',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues/transactions;count={{COUNT_SMALL}}',
-      'Composed chain from game.leagues to transactions.',
-   ),
-   defineRoute(
-      'public-game-leagues-by-key-transactions',
-      'Game leagues transactions chain scoped by league key',
-      'public',
-      'composed',
-      '/game/{{PUBLIC_GAME_CODE}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
-      'Research-derived adjustment for game.leagues.transactions that succeeds with an explicit league key.',
-   ),
-   defineRoute(
-      'public-games-leagues-teams',
-      'Games leagues teams chain',
-      'public',
-      'composed',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues/teams',
-      'Composed chain from games.leagues to teams.',
-   ),
-   defineRoute(
-      'public-games-leagues-by-key-teams',
-      'Games leagues teams chain scoped by league key',
-      'public',
-      'composed',
-      '/games;game_codes={{PUBLIC_GAME_CODE}};seasons={{SEASON}}/leagues;league_keys={{PUBLIC_LEAGUE_KEY}}/teams',
-      'Research-derived adjustment for games.leagues.teams that succeeds with an explicit league key.',
-   ),
-   defineRoute(
-      'public-games-leagues-players',
-      'Games leagues players chain',
-      'public',
-      'composed',
-      '/games;game_codes={{PUBLIC_GAME_CODE}}/leagues/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Composed chain from games.leagues to players.',
-   ),
-   defineRoute(
-      'public-games-leagues-transactions',
-      'Games leagues transactions chain',
-      'public',
-      'composed',
-      '/games;game_codes={{PUBLIC_GAME_CODE}}/leagues/transactions;count={{COUNT_SMALL}}',
-      'Composed chain from games.leagues to transactions.',
-   ),
-   defineRoute(
-      'public-league-metadata',
-      'Public league metadata',
-      'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}',
-      'Optional public league metadata probe.',
-   ),
-   defineRoute(
-      'public-league-settings',
-      'Public league settings',
-      'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/settings',
-      'Optional public league settings probe.',
+      '/game/{{SPORT_CODE}};out=stat_categories,position_types,game_weeks',
+      'One-level game expansion used by the SDK request schema.',
       {
-         requiredPaths: ['league.leagueKey', 'league.settings'],
-         typedPaths: {
-            'league.settings': 'object',
+         expectations: {
+            ...gameExpectation,
+            requiredPaths: [
+               ...(gameExpectation.requiredPaths ?? []),
+               'game.statCategories',
+               'game.positionTypes',
+               'game.gameWeeks',
+            ],
          },
-         samplePaths: [
-            'league.name',
-            'league.season',
-            'league.settings.rosterPositions',
-         ],
       },
    ),
-   defineRoute(
-      'public-league-standings',
+   route(
+      'games-by-code',
+      'Games collection by sport code',
+      'public',
+      '/games;game_codes={{SPORT_CODE}}',
+      'All available seasons for a sport code.',
+      {
+         expectations: {
+            requiredPaths: ['games'],
+            typedPaths: { games: 'array' },
+         },
+      },
+   ),
+   route(
+      'games-by-code-season',
+      'Games collection by sport and season',
+      'public',
+      '/games;game_codes={{SPORT_CODE}};seasons={{SEASON}}',
+      'Specific season when a profile supplies a discovered or fixed season.',
+      {
+         expectations: {
+            requiredPaths: ['games'],
+            typedPaths: { games: 'array' },
+         },
+      },
+   ),
+   route(
+      'games-by-key',
+      'Games collection by key',
+      'public',
+      '/games;game_keys={{GAME_KEY}}',
+      'Documented root Games collection key filter.',
+      {
+         expectations: {
+            ...collectionExpectation('games'),
+            keyFixtures: { gameKey: 'GAME_KEY' },
+         },
+      },
+   ),
+   route(
+      'games-available-by-code',
+      'Available games by sport code',
+      'public',
+      '/games;game_codes={{SPORT_CODE}};is_available=1',
+      'Documented Games availability filter combined with sport code.',
+      {
+         allowEmpty: true,
+         expectations: collectionExpectation('games'),
+      },
+   ),
+   route(
+      'players-by-key',
+      'Players collection by key',
+      'public',
+      '/players;player_keys={{PLAYER_KEYS}}',
+      'Documented root Players collection key filter.',
+      {
+         expectations: {
+            ...collectionExpectation('players'),
+            keyFixtures: { playerKey: 'PLAYER_KEYS' },
+         },
+      },
+   ),
+   route(
+      'game-league-by-key',
+      'Game league by key',
+      'public',
+      '/game/{{SPORT_CODE}}/leagues;league_keys={{LEAGUE_KEY}}',
+      'Public league fixture scoped to the matching sport.',
+      {
+         expectations: {
+            ...gameChildExpectation('game.leagues', 'array'),
+            keyFixtures: { leagueKey: 'LEAGUE_KEY' },
+         },
+      },
+   ),
+   route(
+      'game-league-teams',
+      'Game league teams',
+      'public',
+      '/game/{{SPORT_CODE}}/leagues;league_keys={{LEAGUE_KEY}}/teams',
+      'Validated composed public league chain.',
+      {
+         confidence: 'composed',
+         expectations: {
+            ...gameChildExpectation('game.leagues.0.teams', 'array'),
+            keyFixtures: { leagueKey: 'LEAGUE_KEY' },
+         },
+      },
+   ),
+   route(
+      'game-league-players',
+      'Game league players',
+      'public',
+      '/game/{{SPORT_CODE}}/leagues;league_keys={{LEAGUE_KEY}}/players;search={{PLAYER_SEARCH}};count={{COUNT_SMALL}}',
+      'Validated composed league-context player chain.',
+      {
+         confidence: 'composed',
+         allowEmpty: true,
+         expectations: {
+            ...gameChildExpectation('game.leagues.0.players', 'array'),
+            keyFixtures: { leagueKey: 'LEAGUE_KEY' },
+         },
+      },
+   ),
+   route(
+      'league',
+      'Public league metadata',
+      'public',
+      '/league/{{LEAGUE_KEY}}',
+      'Public league metadata fixture.',
+      { expectations: leagueExpectation },
+   ),
+   route(
+      'leagues-by-key',
+      'Leagues collection by key',
+      'public',
+      '/leagues;league_keys={{LEAGUE_KEYS}}',
+      'Documented root Leagues collection key filter.',
+      {
+         expectations: {
+            ...collectionExpectation('leagues'),
+            keyFixtures: { leagueKey: 'LEAGUE_KEYS' },
+         },
+      },
+   ),
+   route(
+      'league-settings',
+      'Public league settings',
+      'public',
+      '/league/{{LEAGUE_KEY}}/settings',
+      'League rules and scoring configuration.',
+      {
+         expectations: leagueChildExpectation('league.settings', 'object'),
+      },
+   ),
+   route(
+      'league-standings',
       'Public league standings',
       'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/standings',
-      'Optional public league standings probe.',
+      '/league/{{LEAGUE_KEY}}/standings',
+      'League standings.',
+      {
+         expectations: leagueChildExpectation('league.standings', 'object'),
+      },
    ),
-   defineRoute(
-      'public-league-scoreboard',
+   route(
+      'league-scoreboard',
       'Public league scoreboard',
       'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/scoreboard;week={{WEEK}}',
-      'Optional public league scoreboard probe.',
+      '/league/{{LEAGUE_KEY}}/scoreboard;week={{WEEK}}',
+      'League matchup week.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.scoreboard',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'public-league-teams',
+   route(
+      'league-scoreboard-current',
+      'Public league current scoreboard',
+      'public',
+      '/league/{{LEAGUE_KEY}}/scoreboard',
+      'Documented scoreboard form that defaults to the current week.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.scoreboard',
+            'object',
+         ),
+      },
+   ),
+   route(
+      'league-teams',
       'Public league teams',
       'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/teams',
-      'Optional public league teams probe.',
+      '/league/{{LEAGUE_KEY}}/teams',
+      'Documented Teams collection beneath a league.',
+      {
+         expectations: leagueChildExpectation('league.teams', 'array'),
+      },
    ),
-   defineRoute(
-      'public-league-players',
-      'Public league players',
+   route(
+      'leagues-teams',
+      'Leagues collection teams',
       'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/players;search={{PUBLIC_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Optional public league-context players probe.',
+      '/leagues;league_keys={{LEAGUE_KEYS}}/teams',
+      'Documented Teams collection beneath keyed leagues.',
+      {
+         expectations: {
+            ...collectionExpectation('leagues.0.teams'),
+            keyFixtures: { leagueKey: 'LEAGUE_KEYS' },
+         },
+      },
    ),
-   defineRoute(
-      'public-league-transactions',
+   route(
+      'teams-by-key',
+      'Teams collection by key',
+      'public',
+      '/teams;team_keys={{TEAM_KEYS}}',
+      'Documented root Teams collection key filter.',
+      {
+         expectations: {
+            ...collectionExpectation('teams'),
+            keyFixtures: { teamKey: 'TEAM_KEYS' },
+         },
+      },
+   ),
+   route(
+      'team-players',
+      'Public team players',
+      'public',
+      '/team/{{TEAM_KEY}}/players',
+      'Documented Players collection directly beneath a team.',
+      {
+         expectations: {
+            ...teamChildExpectation('team.players', 'array'),
+            keyFixtures: { teamKey: 'TEAM_KEY' },
+         },
+      },
+   ),
+   route(
+      'league-draftresults',
+      'Public league draft results',
+      'public',
+      '/league/{{LEAGUE_KEY}}/draftresults',
+      'Official route added by the documentation audit.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.draftResults',
+            'object',
+         ),
+      },
+   ),
+   route(
+      'league-transactions',
       'Public league transactions',
       'public',
-      'explicit',
-      '/league/{{PUBLIC_LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
-      'Optional public league transactions probe.',
+      '/league/{{LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
+      'Completed public league transactions.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.transactions',
+            'array',
+         ),
+      },
    ),
 ];
 
 const privateRoutes: RouteDefinition[] = [
-   defineRoute(
-      'private-users-root',
-      'Authenticated user root',
+   route(
+      'user',
+      'Authorized user metadata',
       'private',
-      'explicit',
       '/users;use_login=1',
-      'Minimal OAuth2 sanity check for user scope.',
-      {
-         samplePaths: ['guid', 'users.0.guid', 'users.guid'],
-      },
+      'Documented logged-in Users collection entry point.',
+      { expectations: usersExpectation },
    ),
-   defineRoute(
-      'private-users-games',
-      'Authenticated user games',
+   route(
+      'user-teams',
+      'Authorized user teams directly',
       'private',
-      'explicit',
-      '/users;use_login=1/games',
-      'Documented user discovery path for games.',
-   ),
-   defineRoute(
-      'private-users-games-filtered',
-      'Authenticated user games filtered',
-      'private',
-      'explicit',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}',
-      'Documented user games filter path.',
-   ),
-   defineRoute(
-      'private-users-games-leagues',
-      'Authenticated user game leagues',
-      'private',
-      'explicit',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/leagues',
-      'Documented user discovery path for leagues by game.',
-   ),
-   defineRoute(
-      'private-users-games-teams',
-      'Authenticated user game teams',
-      'private',
-      'explicit',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/teams',
-      'Documented user discovery path for teams by game.',
-   ),
-   defineRoute(
-      'private-users-games-out',
-      'Authenticated user games out expansion',
-      'private',
-      'explicit',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}};out=leagues,teams',
-      'Documented user games out expansion.',
-   ),
-   defineRoute(
-      'private-users-leagues',
-      'Authenticated user leagues root',
-      'private',
-      'composed',
-      '/users;use_login=1/leagues',
-      'Composed users.leagues chain from allowed chain matrix.',
-   ),
-   defineRoute(
-      'private-users-out-leagues',
-      'Authenticated user leagues root via out expansion',
-      'private',
-      'composed',
-      '/users;use_login=1;out=leagues',
-      'Research-derived out expansion variant for users.leagues.',
-   ),
-   defineRoute(
-      'private-users-teams',
-      'Authenticated user teams root',
-      'private',
-      'composed',
       '/users;use_login=1/teams',
-      'Composed users.teams chain from allowed chain matrix.',
+      'Documented direct logged-in user Teams collection.',
+      { allowEmpty: true, expectations: usersExpectation },
    ),
-   defineRoute(
-      'private-users-games-leagues-teams',
-      'Authenticated user game leagues teams',
+   route(
+      'user-games',
+      'Authorized user games',
       'private',
-      'composed',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/leagues/teams',
-      'Composed users.games.leagues.teams chain.',
+      '/users;use_login=1/games;game_keys={{SPORT_CODE}}',
+      'Whether the authorized account participates in the sport.',
+      { allowEmpty: true, expectations: usersExpectation },
    ),
-   defineRoute(
-      'private-users-games-leagues-players',
-      'Authenticated user game leagues players',
+   route(
+      'user-game-leagues',
+      'Authorized user leagues',
       'private',
-      'composed',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/leagues/players;search={{PRIVATE_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Composed users.games.leagues.players chain.',
+      '/users;use_login=1/games;game_keys={{SPORT_CODE}}/leagues',
+      'League discovery through the required games segment.',
+      { allowEmpty: true, expectations: usersExpectation },
    ),
-   defineRoute(
-      'private-users-games-leagues-settings',
-      'Authenticated user game leagues settings',
+   route(
+      'user-game-teams',
+      'Authorized user teams',
       'private',
-      'composed',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/leagues/settings',
-      'Composed users.games.leagues.settings chain.',
+      '/users;use_login=1/games;game_keys={{SPORT_CODE}}/teams',
+      'Team discovery for a sport.',
+      { allowEmpty: true, expectations: usersExpectation },
    ),
-   defineRoute(
-      'private-users-games-teams-roster',
-      'Authenticated user game teams roster',
-      'private',
-      'composed',
-      '/users;use_login=1/games;game_keys={{GAME_KEY_FILTER}}/teams/roster',
-      'Composed users.games.teams.roster chain.',
-   ),
-   defineRoute(
-      'private-league-metadata',
+   route(
+      'private-league',
       'Private league metadata',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}',
-      'Documented league metadata path.',
+      '/league/{{LEAGUE_KEY}}',
+      'Private league fixture.',
+      { expectations: leagueExpectation },
    ),
-   defineRoute(
+   route(
       'private-league-settings',
       'Private league settings',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/settings',
-      'Documented league settings path.',
+      '/league/{{LEAGUE_KEY}}/settings',
+      'Private league rules.',
       {
-         requiredPaths: ['league.leagueKey', 'league.settings'],
-         typedPaths: {
-            'league.settings': 'object',
-         },
-         samplePaths: [
-            'league.name',
-            'league.season',
-            'league.settings.rosterPositions',
-         ],
+         expectations: leagueChildExpectation('league.settings', 'object'),
       },
    ),
-   defineRoute(
+   route(
       'private-league-standings',
       'Private league standings',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/standings',
-      'Documented league standings path.',
+      '/league/{{LEAGUE_KEY}}/standings',
+      'Private league standings.',
+      {
+         expectations: leagueChildExpectation('league.standings', 'object'),
+      },
    ),
-   defineRoute(
+   route(
       'private-league-scoreboard',
       'Private league scoreboard',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/scoreboard;week={{WEEK}}',
-      'Documented league scoreboard path.',
+      '/league/{{LEAGUE_KEY}}/scoreboard;week={{WEEK}}',
+      'Private league matchup week.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.scoreboard',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'private-league-teams',
-      'Private league teams',
+   route(
+      'private-league-players',
+      'Private league player filters',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/teams',
-      'Documented league teams path.',
+      '/league/{{LEAGUE_KEY}}/players;status=FA;position={{PLAYER_POSITION}};count={{COUNT_SMALL}}',
+      'Sport-specific availability and position filter.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation('league.players', 'array'),
+      },
    ),
-   defineRoute(
-      'private-league-players-status',
-      'Private league available players',
+   route(
+      'private-league-draftresults',
+      'Private league draft results',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;status=FA;position={{PRIVATE_PLAYER_POSITION}};count={{COUNT_SMALL}}',
-      'Documented league players path with availability filters.',
+      '/league/{{LEAGUE_KEY}}/draftresults',
+      'Official draft results route.',
+      {
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.draftResults',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'private-league-players-search',
-      'Private league player search',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;search={{PRIVATE_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Documented league players search path.',
-   ),
-   defineRoute(
-      'private-league-players-sorted',
-      'Private league players sorted view',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;status=FA;position={{PRIVATE_PLAYER_POSITION}};sort=PTS;sort_type=season;sort_season={{SEASON}};start=0;count={{COUNT_SMALL}}',
-      'Documented league players path combining status, position, sorting, and pagination filters.',
-   ),
-   defineRoute(
+   route(
       'private-league-transactions',
       'Private league transactions',
       'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
-      'Documented league transactions path.',
-   ),
-   defineRoute(
-      'private-league-transactions-filtered',
-      'Private league transactions filtered',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;type={{PRIVATE_TRANSACTION_TYPE}};team_key={{PRIVATE_TEAM_KEY}};count={{COUNT_SMALL}}',
-      'Documented league transactions path with team and type filters.',
-   ),
-   defineRoute(
-      'private-league-transactions-by-keys',
-      'Private league transactions by keys',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;transaction_keys={{PRIVATE_TRANSACTION_KEYS}}',
-      'Documented keyed transaction collection under league transactions.',
-   ),
-   defineRoute(
-      'private-league-transactions-out',
-      'Private league transactions out expansion',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;transaction_keys={{PRIVATE_TRANSACTION_KEYS}};out=players',
-      'Documented use of out on a keyed transaction collection.',
-   ),
-   defineRoute(
-      'private-league-transactions-types',
-      'Private league transactions by multiple types',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;types=add,trade;count={{COUNT_SMALL}}',
-      'Documented league transactions path using the multi-type filter.',
-   ),
-   defineRoute(
-      'private-league-transactions-players',
-      'Private league transaction players',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/transactions;transaction_keys={{PRIVATE_TRANSACTION_KEYS}}/players',
-      'Safe explicit chain for transaction players.',
-   ),
-   defineRoute(
-      'private-league-out',
-      'Private league out expansion',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}};out=settings,standings,scoreboard',
-      'Documented use of out on league root.',
-   ),
-   defineRoute(
-      'private-leagues-root',
-      'Private leagues collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}',
-      'Documented leagues collection by key.',
-   ),
-   defineRoute(
-      'private-leagues-settings',
-      'Private leagues settings collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/settings',
-      'Documented leagues.settings collection path.',
-   ),
-   defineRoute(
-      'private-leagues-standings',
-      'Private leagues standings collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/standings',
-      'Documented leagues.standings collection path.',
-   ),
-   defineRoute(
-      'private-leagues-teams',
-      'Private leagues teams collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/teams',
-      'Documented leagues.teams collection path.',
-   ),
-   defineRoute(
-      'private-leagues-players',
-      'Private leagues players collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/players;search={{PRIVATE_PLAYER_SEARCH}};count={{COUNT_SMALL}}',
-      'Documented leagues.players collection path.',
-   ),
-   defineRoute(
-      'private-leagues-transactions',
-      'Private leagues transactions collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/transactions;count={{COUNT_SMALL}}',
-      'Documented leagues.transactions collection path.',
-   ),
-   defineRoute(
-      'private-leagues-scoreboard',
-      'Private leagues scoreboard collection',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/scoreboard;week={{WEEK}}',
-      'Documented leagues.scoreboard collection path.',
-   ),
-   defineRoute(
-      'private-leagues-out',
-      'Private leagues out expansion',
-      'private',
-      'explicit',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}};out=settings,standings',
-      'Documented use of out on the leagues collection.',
-   ),
-   defineRoute(
-      'private-leagues-teams-roster',
-      'Private leagues teams roster chain',
-      'private',
-      'composed',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/teams/roster;week={{WEEK}}',
-      'Composed leagues.teams.roster chain.',
-   ),
-   defineRoute(
-      'private-leagues-teams-roster-players',
-      'Private leagues teams roster players chain',
-      'private',
-      'composed',
-      '/leagues;league_keys={{PRIVATE_LEAGUE_KEYS}}/teams/roster;week={{WEEK}}/players',
-      'Composed leagues.teams.roster.players chain.',
-   ),
-   defineRoute(
-      'private-team-metadata',
-      'Private team metadata',
-      'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}',
-      'Documented team metadata path.',
-   ),
-   defineRoute(
-      'private-team-roster',
-      'Private team roster',
-      'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}/roster',
-      'Documented team roster path.',
+      '/league/{{LEAGUE_KEY}}/transactions;count={{COUNT_SMALL}}',
+      'Completed private league transactions.',
       {
-         requiredPaths: [
-            'team.teamKey',
-            'team.roster',
-            'team.roster.players',
-         ],
-         typedPaths: {
-            'team.roster': 'object',
-            'team.roster.players': 'array',
-         },
-         samplePaths: [
-            'team.name',
-            'team.roster.date',
-            'team.roster.players.0.name.full',
-         ],
+         allowEmpty: true,
+         expectations: leagueChildExpectation(
+            'league.transactions',
+            'array',
+         ),
       },
    ),
-   defineRoute(
-      'private-team-roster-players-week',
-      'Private team roster players by week',
+   route(
+      'private-team',
+      'Private team metadata',
       'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}/roster;week={{WEEK}}/players',
-      'Documented team roster players week path.',
+      '/team/{{TEAM_KEY}}',
+      'Private team fixture.',
+      { expectations: teamExpectation },
    ),
-   defineRoute(
-      'private-team-roster-players-date',
-      'Private team roster players by date',
+   route(
+      'private-team-standings',
+      'Private team standings',
       'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}/roster;date={{DATE}}/players',
-      'Documented team roster players date path.',
+      '/team/{{TEAM_KEY}}/standings',
+      'Official team standings route added by the audit.',
+      {
+         expectations: teamChildExpectation('team.teamStandings', 'object'),
+      },
    ),
-   defineRoute(
+   route(
+      'private-team-draftresults',
+      'Private team draft results',
+      'private',
+      '/team/{{TEAM_KEY}}/draftresults',
+      'Official team draft results route added by the audit.',
+      {
+         allowEmpty: true,
+         expectations: teamChildExpectation('team.draftResults', 'object'),
+      },
+   ),
+   route(
       'private-team-matchups',
       'Private team matchups',
       'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}/matchups;weeks={{WEEK}},{{ALT_WEEK}}',
-      'Documented team matchups path.',
+      '/team/{{TEAM_KEY}}/matchups;weeks={{WEEK}},{{ALT_WEEK}}',
+      'Team matchup weeks.',
+      {
+         allowEmpty: true,
+         expectations: teamChildExpectation('team.matchups', 'array'),
+      },
    ),
-   defineRoute(
-      'private-team-stats',
-      'Private team stats',
+   route(
+      'private-team-stats-season',
+      'Private team season stats',
       'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}}/stats;type=season',
-      'Documented team stats path.',
+      '/team/{{TEAM_KEY}}/stats;type=season',
+      'Season stats for every sport.',
+      {
+         expectations: teamChildExpectation('team.teamStats', 'object'),
+      },
    ),
-   defineRoute(
+   route(
+      'private-team-roster-week',
+      'Private NFL roster by week',
+      'private',
+      '/team/{{TEAM_KEY}}/roster;week={{WEEK}}/players',
+      'NFL weekly roster coverage.',
+      {
+         sports: ['nfl'],
+         expectations: teamChildExpectation('team.roster.players', 'array'),
+      },
+   ),
+   route(
+      'private-team-stats-week',
+      'Private NFL team stats by week',
+      'private',
+      '/team/{{TEAM_KEY}}/stats;type=week;week={{WEEK}}',
+      'NFL weekly stats coverage.',
+      {
+         sports: ['nfl'],
+         allowEmpty: true,
+         expectations: teamChildExpectation('team.teamStats', 'object'),
+      },
+   ),
+   route(
+      'private-team-roster-date',
+      'Private daily roster by date',
+      'private',
+      '/team/{{TEAM_KEY}}/roster;date={{DATE}}/players',
+      'MLB, NBA, and NHL daily roster coverage.',
+      {
+         sports: ['mlb', 'nba', 'nhl'],
+         expectations: teamChildExpectation('team.roster.players', 'array'),
+      },
+   ),
+   route(
       'private-team-stats-date',
-      'Private team stats by date',
+      'Private daily team stats by date',
       'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}};out=standings,stats;type=date;date={{DATE}}',
-      'Documented team stats path with date coverage.',
+      '/team/{{TEAM_KEY}}/stats;type=date;date={{DATE}}',
+      'MLB, NBA, and NHL daily stats coverage.',
+      {
+         sports: ['mlb', 'nba', 'nhl'],
+         allowEmpty: true,
+         expectations: teamChildExpectation('team.teamStats', 'object'),
+      },
    ),
-   defineRoute(
-      'private-team-out',
-      'Private team out expansion',
-      'private',
-      'explicit',
-      '/team/{{PRIVATE_TEAM_KEY}};out=roster,stats,matchups',
-      'Documented use of out on team root.',
-   ),
-   defineRoute(
-      'private-teams-root',
-      'Private teams collection',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}',
-      'Documented teams collection by key.',
-   ),
-   defineRoute(
-      'private-teams-roster',
-      'Private teams roster collection',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/roster;week={{WEEK}}',
-      'Documented teams.roster collection path.',
-   ),
-   defineRoute(
-      'private-teams-roster-players',
-      'Private teams roster players collection',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/roster;week={{WEEK}}/players',
-      'Documented teams.roster.players collection path.',
-   ),
-   defineRoute(
-      'private-teams-matchups',
-      'Private teams matchups collection',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/matchups;weeks={{WEEK}},{{ALT_WEEK}}',
-      'Documented teams.matchups collection path.',
-   ),
-   defineRoute(
-      'private-teams-stats',
-      'Private teams stats collection',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/stats;type=season',
-      'Documented teams.stats collection path.',
-   ),
-   defineRoute(
-      'private-teams-out',
-      'Private teams out expansion',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}};out=roster,stats',
-      'Documented use of out on the teams collection.',
-   ),
-   defineRoute(
-      'private-teams-roster-date',
-      'Private teams roster players by date',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/roster;date={{DATE}}/players',
-      'Documented teams.roster.players collection path with date coverage.',
-   ),
-   defineRoute(
-      'private-teams-stats-date',
-      'Private teams stats collection by date',
-      'private',
-      'explicit',
-      '/teams;team_keys={{PRIVATE_TEAM_KEYS}}/stats;type=date;date={{DATE}}',
-      'Documented teams.stats collection path with date coverage.',
-   ),
-   defineRoute(
-      'private-player-metadata',
+   route(
+      'private-player',
       'Private player metadata',
       'private',
-      'explicit',
-      '/player/{{PRIVATE_PLAYER_KEY}}',
-      'Documented player metadata path.',
+      '/player/{{PLAYER_KEY}}',
+      'Player fixture for the sport.',
+      { expectations: playerExpectation },
    ),
-   defineRoute(
+   route(
       'private-player-stats',
-      'Private player stats',
+      'Private player season stats',
       'private',
-      'explicit',
-      '/player/{{PRIVATE_PLAYER_KEY}}/stats;type=season',
-      'Documented player stats path.',
+      '/player/{{PLAYER_KEY}}/stats;type=season',
+      'Player season stats.',
+      {
+         expectations: playerChildExpectation(
+            'player.playerStats',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'private-player-ownership',
-      'Private player ownership',
-      'private',
-      'explicit',
-      '/player/{{PRIVATE_PLAYER_KEY}}/ownership',
-      'Documented player ownership path.',
-   ),
-   defineRoute(
+   route(
       'private-player-percent-owned',
       'Private player percent owned',
       'private',
-      'explicit',
-      '/player/{{PRIVATE_PLAYER_KEY}}/percent_owned',
-      'Documented player percent owned path.',
+      '/player/{{PLAYER_KEY}}/percent_owned',
+      'Game-wide ownership prevalence.',
+      {
+         expectations: playerChildExpectation(
+            'player.percentOwned',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'private-player-out',
-      'Private player out expansion',
+   route(
+      'private-player-draft-analysis',
+      'Private player draft analysis',
       'private',
-      'explicit',
-      '/player/{{PRIVATE_PLAYER_KEY}};out=stats,ownership',
-      'Documented use of out on player root.',
+      '/player/{{PLAYER_KEY}}/draft_analysis',
+      'Official draft analysis route added by the audit.',
+      {
+         allowEmpty: true,
+         expectations: playerChildExpectation(
+            'player.draftAnalysis',
+            'object',
+         ),
+      },
    ),
-   defineRoute(
-      'private-players-root',
-      'Private players collection',
+   route(
+      'private-player-ownership',
+      'League-context player ownership',
       'private',
-      'explicit',
-      '/players;player_keys={{PRIVATE_PLAYER_KEYS}}',
-      'Documented players collection by key.',
+      '/league/{{LEAGUE_KEY}}/players;player_keys={{PLAYER_KEY}}/ownership',
+      'Ownership state in a league.',
+      {
+         expectations: leagueChildExpectation('league.players', 'array'),
+      },
    ),
-   defineRoute(
-      'private-players-stats',
-      'Private players stats collection',
+   route(
+      'private-transactions-by-key',
+      'Transactions collection by key',
       'private',
-      'explicit',
-      '/players;player_keys={{PRIVATE_PLAYER_KEYS}}/stats',
-      'Safe explicit players.stats chain.',
+      '/transactions;transaction_keys={{TRANSACTION_KEYS}}',
+      'Official top-level keyed transaction collection.',
+      {
+         allowEmpty: true,
+         expectations: {
+            keyFixtures: { transactionKey: 'TRANSACTION_KEYS' },
+            requiredPaths: ['transactions'],
+            typedPaths: { transactions: 'array' },
+         },
+      },
    ),
-   defineRoute(
-      'private-players-ownership',
-      'Private players ownership collection',
+   route(
+      'private-transaction',
+      'Transaction metadata',
       'private',
-      'composed',
-      '/players;player_keys={{PRIVATE_PLAYER_KEYS}}/ownership',
-      'Composed players.ownership chain.',
-   ),
-   defineRoute(
-      'private-players-percent-owned',
-      'Private players percent owned collection',
-      'private',
-      'composed',
-      '/players;player_keys={{PRIVATE_PLAYER_KEYS}}/percent_owned',
-      'Composed players.percent_owned chain.',
-   ),
-   defineRoute(
-      'private-transaction-metadata',
-      'Private transaction metadata',
-      'private',
-      'explicit',
-      '/transaction/{{PRIVATE_TRANSACTION_KEY}}',
-      'Documented transaction metadata path.',
-   ),
-   defineRoute(
-      'private-transaction-players',
-      'Private transaction players chain',
-      'private',
-      'explicit',
-      '/transaction/{{PRIVATE_TRANSACTION_KEY}}/players',
-      'Explicit transaction.players chain from the allowed chain matrix.',
-   ),
-   defineRoute(
-      'private-league-teams-roster',
-      'Private league teams roster chain',
-      'private',
-      'composed',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/teams;team_keys={{PRIVATE_TEAM_KEYS}}/roster;week={{WEEK}}',
-      'Composed league.teams.roster chain.',
-   ),
-   defineRoute(
-      'private-league-teams-roster-players',
-      'Private league teams roster players chain',
-      'private',
-      'composed',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/teams;team_keys={{PRIVATE_TEAM_KEYS}}/roster;week={{WEEK}}/players',
-      'Composed league.teams.roster.players chain.',
-   ),
-   defineRoute(
-      'private-league-players-stats',
-      'Private league players stats chain',
-      'private',
-      'explicit',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;player_keys={{PRIVATE_PLAYER_KEYS}}/stats',
-      'Explicit league.players.stats chain.',
-   ),
-   defineRoute(
-      'private-league-players-ownership',
-      'Private league players ownership chain',
-      'private',
-      'composed',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;player_keys={{PRIVATE_PLAYER_KEYS}}/ownership',
-      'Composed league.players.ownership chain.',
-   ),
-   defineRoute(
-      'private-league-players-percent-owned',
-      'Private league players percent owned chain',
-      'private',
-      'composed',
-      '/league/{{PRIVATE_LEAGUE_KEY}}/players;player_keys={{PRIVATE_PLAYER_KEYS}}/percent_owned',
-      'Composed league.players.percent_owned chain.',
+      '/transaction/{{TRANSACTION_KEY}}',
+      'Official direct transaction route.',
+      {
+         expectations: {
+            keyFixtures: { transactionKey: 'TRANSACTION_KEY' },
+            requiredPaths: ['transaction.transactionKey'],
+            typedPaths: { 'transaction.transactionKey': 'string' },
+         },
+      },
    ),
 ];
 
-const INVALID_ROUTE_IDS = new Set<string>([
-   'public-game-leagues',
-   'public-games-leagues',
-   'public-games-out',
-   'public-games-out-by-key',
-   'public-games-out-by-key-players',
-   'public-game-leagues-teams',
-   'public-game-leagues-players',
-   'public-game-leagues-transactions',
-   'public-games-leagues-teams',
-   'public-games-leagues-players',
-   'public-games-leagues-transactions',
-   'private-users-leagues',
-   'private-users-out-leagues',
-   'private-league-players-sorted',
-   'private-league-transactions-by-keys',
-   'private-league-transactions-out',
-   'private-league-transactions-players',
-   'private-transaction-metadata',
-   'private-transaction-players',
-]);
+const invalidRoutes: RouteDefinition[] = [
+   route(
+      'invalid-user-leagues',
+      'Unsupported direct user leagues',
+      'private',
+      '/users;use_login=1/leagues',
+      'Known structural rejection retained for regression evidence.',
+      {
+         confidence: 'provisional',
+         expectedFailureKinds: ['unsupported-route'],
+         provenance: 'observed-only',
+      },
+   ),
+   route(
+      'invalid-games-out-leagues',
+      'Provisional games leagues expansion',
+      'public',
+      '/games;game_codes={{SPORT_CODE}};out=leagues,players',
+      'Official generic composition that has failed in prior probes.',
+      {
+         confidence: 'provisional',
+         expectedFailureKinds: ['fixture-invalid', 'unsupported-route'],
+         provenance: 'documented-runtime-discrepancy',
+      },
+   ),
+];
 
-function isInvalidRoute(route: RouteDefinition): boolean {
-   return INVALID_ROUTE_IDS.has(route.id);
-}
-
-// Docs-derived testing surface from PATH_REFERENCE_TABLE, PATH_DECISION_TREE,
-// PATH_CHEAT_SHEET, and ALLOWED_CHAIN_MATRIX, split into default supported
-// routes plus known failing probes kept for explicit reproduction runs.
 export const STATIC_ROUTE_SETS: Record<RouteSet, RouteDefinition[]> = {
-   public: publicRoutes.filter((route) => !isInvalidRoute(route)),
-   private: privateRoutes.filter((route) => !isInvalidRoute(route)),
-   invalid: [
-      ...publicRoutes.filter((route) => isInvalidRoute(route)),
-      ...privateRoutes.filter((route) => isInvalidRoute(route)),
-   ],
+   public: publicRoutes,
+   private: privateRoutes,
+   invalid: invalidRoutes,
 };
+
+export const ALL_ROUTE_DEFINITIONS = [
+   ...publicRoutes,
+   ...privateRoutes,
+   ...invalidRoutes,
+];

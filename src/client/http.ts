@@ -67,6 +67,20 @@ export interface RequestOptions {
    skipAuth?: boolean;
 }
 
+/** The transport surface required by the fluent resource builders. */
+export interface HttpTransport {
+   get<T = unknown>(path: string): Promise<T>;
+   post<T = unknown>(
+      path: string,
+      body?: Record<string, unknown> | string,
+   ): Promise<T | undefined>;
+   put<T = unknown>(
+      path: string,
+      body?: Record<string, unknown> | string,
+   ): Promise<T | undefined>;
+   delete<T = unknown>(path: string): Promise<T | undefined>;
+}
+
 /**
  * Rate limiter to prevent hitting API limits
  */

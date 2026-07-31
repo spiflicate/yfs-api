@@ -1,55 +1,107 @@
+import { fileURLToPath } from 'node:url';
 import type { OAuth2Tokens } from '../../src/auth/oauth2.js';
-import type { RouteMode } from './static-route-definitions.js';
+import type { SportProfile } from './route-model.js';
+import type { RouteMode, SportCode } from './static-route-definitions.js';
+
+const researchDirectory = fileURLToPath(new URL('.', import.meta.url));
 
 export interface StaticRouteVerifierConfig {
-   selection: {
-      mode: RouteMode | 'all';
-      routeIds?: string[];
-   };
    auth: {
-      public: {
-         clientId: string;
-         clientSecret: string;
-      };
       private: {
          clientId: string;
          clientSecret: string;
          redirectUri: string;
-         tokenFilePath: string;
          seedTokens?: OAuth2Tokens;
+         tokenFilePath: string;
+      };
+      public: {
+         clientId: string;
+         clientSecret: string;
       };
    };
-   routeContext: Record<
-      'public' | 'private',
-      Partial<{
-         ALT_WEEK: string;
-         COUNT_SMALL: string;
-         DATE: string;
-         GAME_CODE: string;
-         GAME_KEYS: string;
-         GAME_KEY: string;
-         LEAGUE_KEYS: string;
-         LEAGUE_KEY: string;
-         PLAYER_KEYS: string;
-         PLAYER_KEY: string;
-         PLAYER_POSITION: string;
-         PLAYER_SEARCH: string;
-         SEASON: string;
-         TEAM_KEYS: string;
-         TEAM_KEY: string;
-         TRANSACTION_KEYS: string;
-         TRANSACTION_KEY: string;
-         TRANSACTION_TYPE: string;
-         WEEK: string;
-      }>
-   >;
-   request: {
-      timeoutMs: number;
-   };
    output: {
-      reportFilePath: string;
+      latestReportFilePath: string;
       responseDumpDirPath: string;
       shapePreviewLines: number;
+   };
+   profiles: SportProfile[];
+   request: {
+      delayMs: number;
+      timeoutMs: number;
+   };
+   selection: {
+      mode: RouteMode | 'all';
+      routeIds?: string[];
+      sports: SportCode[];
+   };
+}
+
+const profileDefaults: Record<SportCode, Pick<SportProfile, 'context'>> = {
+   nfl: {
+      context: {
+         ALT_WEEK: '2',
+         PLAYER_POSITION: 'QB',
+         PLAYER_SEARCH: 'mahomes',
+         WEEK: '1',
+      },
+   },
+   mlb: {
+      context: {
+         ALT_WEEK: '2',
+         PLAYER_POSITION: 'OF',
+         PLAYER_SEARCH: 'judge',
+         WEEK: '1',
+      },
+   },
+   nba: {
+      context: {
+         ALT_WEEK: '2',
+         PLAYER_POSITION: 'PG',
+         PLAYER_SEARCH: 'james',
+         WEEK: '1',
+      },
+   },
+   nhl: {
+      context: {
+         ALT_WEEK: '2',
+         PLAYER_POSITION: 'C',
+         PLAYER_SEARCH: 'mcdavid',
+         WEEK: '1',
+      },
+   },
+};
+
+function loadProfileOverrides(): Partial<Record<SportCode, SportProfile>> {
+   const raw = process.env.YAHOO_ROUTE_PROFILES_JSON;
+   if (!raw) {
+      return {};
+   }
+
+   const parsed = JSON.parse(raw) as Partial<
+      Record<SportCode, SportProfile>
+   >;
+   return parsed;
+}
+
+const overrides = loadProfileOverrides();
+
+const profiles: SportProfile[] = (
+   ['nfl', 'mlb', 'nba', 'nhl'] as const
+).map((code) => ({
+   code,
+   context: {
+      ...profileDefaults[code].context,
+      ...overrides[code]?.context,
+   },
+   privateContext: overrides[code]?.privateContext,
+   publicContext: overrides[code]?.publicContext,
+}));
+
+const nhlProfile = profiles.find((profile) => profile.code === 'nhl');
+if (nhlProfile && !nhlProfile.publicContext?.LEAGUE_KEY) {
+   nhlProfile.publicContext = {
+      ...nhlProfile.publicContext,
+      LEAGUE_KEY: '465.l.121384',
    };
 }
 
@@ -57,6 +109,7 @@ export const staticRouteVerifierConfig: StaticRouteVerifierConfig = {
    selection: {
       mode: 'all',
       routeIds: undefined,
+      sports: ['nfl', 'mlb', 'nba', 'nhl'],
    },
    auth: {
       public: {
@@ -67,50 +120,20 @@ export const staticRouteVerifierConfig: StaticRouteVerifierConfig = {
          clientId: process.env.YAHOO_CLIENT_ID || '',
          clientSecret: process.env.YAHOO_CLIENT_SECRET || '',
          redirectUri: 'oob',
-         tokenFilePath: new URL('.oauth2-tokens.json', import.meta.url)
-            .pathname,
+         tokenFilePath: fileURLToPath(
+            new URL('.oauth2-tokens.json', import.meta.url),
+         ),
          seedTokens: undefined,
       },
    },
-   routeContext: {
-      public: {
-         GAME_CODE: 'nhl',
-         GAME_KEY: '465',
-         LEAGUE_KEY: '465.l.121384',
-         PLAYER_KEY: 'nhl.p.5431',
-         SEASON: '2025',
-         TEAM_KEY: '465.l.121384.t.14',
-         WEEK: '1',
-      },
-      private: {
-         ALT_WEEK: '2',
-         COUNT_SMALL: '5',
-         DATE: '2025-10-26',
-         GAME_CODE: 'nhl',
-         GAME_KEYS: '465',
-         GAME_KEY: '465',
-         LEAGUE_KEYS: '465.l.30702',
-         LEAGUE_KEY: '465.l.30702',
-         PLAYER_KEYS: 'nhl.p.8284,nhl.p.5431',
-         PLAYER_KEY: 'nhl.p.5431',
-         PLAYER_POSITION: 'C',
-         PLAYER_SEARCH: 'mcdavid',
-         SEASON: '2025',
-         TEAM_KEYS: '465.l.30702.t.9',
-         TEAM_KEY: '465.l.30702.t.9',
-         TRANSACTION_KEYS: '465.l.30702.tr.1326,465.l.30702.tr.1334',
-         TRANSACTION_KEY: '465.l.30702.tr.1334',
-         TRANSACTION_TYPE: 'waiver',
-         WEEK: '1',
-      },
-   },
+   profiles,
    request: {
+      delayMs: 100,
       timeoutMs: 30000,
    },
    output: {
-      reportFilePath:
-         'research/api-path-validation/actionable-route-report.md',
-      responseDumpDirPath: 'research/api-path-validation/tmp',
+      latestReportFilePath: `${researchDirectory}actionable-route-report.md`,
+      responseDumpDirPath: `${researchDirectory}tmp`,
       shapePreviewLines: 14,
    },
 };

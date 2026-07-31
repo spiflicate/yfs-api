@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type {
    YahooRosterUpdateConfirmationDto,
    YahooTeamResponseDto,
@@ -9,6 +9,7 @@ import {
 } from './builders/roster-move-builder.js';
 import { PlayersCollection } from './player.js';
 import {
+   copyKeys,
    type RequestState,
    Resource,
    type SubResourceParams,
@@ -55,12 +56,12 @@ export class RosterResource<
    }
 
    players(
-      keys?: PlayerKeyLike[],
+      keys: readonly PlayerKeyLike[],
    ): PlayersCollection<TRoot, AppendResponsePath<TPath, 'players'>> {
       return PlayersCollection.create(
          this._transport,
          this.createChildState(),
-         keys,
+         copyKeys(keys),
       );
    }
 

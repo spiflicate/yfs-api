@@ -67,7 +67,7 @@ if (!code) {
 // authenticate exchanges the code and saves the resulting tokens via TokenStorage.
 await client.authenticate(code);
 
-const response = await client.api().users().games().get();
+const response = await client.api().users().games([]).get();
 const games = response.users.flatMap((user) => user.games ?? []);
 console.log(`Authenticated. Found ${games.length} fantasy game(s).`);
 for (const game of games) {

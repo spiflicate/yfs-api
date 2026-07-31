@@ -33,8 +33,8 @@ async function main() {
       console.log('Authenticated user info:', user);
 
       await innermain();
-      // const game = await yfs.api().games('nfl').teams().get();
-      // const team = await yfs.api().game('nfl').leagues('').teams().get();
+      // const game = await yfs.api().games(['nfl']).players([]).get();
+      // const team = await yfs.api().game('nfl').leagues(['']).teams([]).get();
 
       // console.log('Authenticated user info:', user);
       // console.log('Game info:', game);

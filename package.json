@@ -24,14 +24,23 @@
       "type-check": "tsc --noEmit",
       "type-check:integration": "tsc -p tsconfig.integration.json",
       "type-check:examples": "tsc -p tsconfig.examples.json",
+      "type-check:research": "tsc -p tsconfig.research.json",
+      "research:routes": "cd research/api-path-validation && bun run static-route-verifier.ts",
       "research:path-probe": "cd research/api-path-validation && bun run path-probe.ts",
+      "research:v3": "bun run research/yahoo-api-investigation/probe-v3.ts",
+      "research:openid": "bun run research/openid/oauth-flow.ts",
+      "test:browser-cookie": "bun test tools/yahoo-browser-cookie",
+      "test:research": "bun test research/api-path-validation",
+      "check:research": "bun run type-check:research && bun run lint:research && bun run lint:tools && bun run test:research && bun run test:browser-cookie",
       "test": "bun test src",
       "test:fixtures": "bun tests/fixtures/sanitize-fixtures.ts",
-      "test:integration": "NODE_ENV=test bun test tests/integration/auth/oauth1.test.ts tests/integration/workflows/e2e.test.ts",
+      "test:integration": "NODE_ENV=test bun test tests/integration/auth/oauth1.test.ts tests/integration/auth/oauth2.test.ts tests/integration/workflows/e2e.test.ts",
       "test:integration:destructive": "RUN_DESTRUCTIVE_INTEGRATION_TESTS=true NODE_ENV=test bun test tests/integration/destructive",
       "test:watch": "bun test --watch",
       "test:coverage": "bun test --coverage",
       "lint": "biome check src scripts examples tests/integration tests/package package.json tsconfig.json tsconfig.build.json tsconfig.integration.json tsconfig.examples.json biome.json",
+      "lint:research": "biome check research/api-path-validation research/openid research/yahoo-api-investigation tsconfig.research.json",
+      "lint:tools": "biome check tools/yahoo-browser-cookie",
       "lint:fix": "biome check --write src scripts examples tests/integration tests/package package.json tsconfig.json tsconfig.build.json tsconfig.integration.json tsconfig.examples.json biome.json",
       "format": "biome format --write src scripts examples tests/integration tests/package package.json tsconfig.json tsconfig.build.json tsconfig.integration.json tsconfig.examples.json biome.json",
       "scan:extensions": "node scripts/scan-extensions.mjs dist",
@@ -41,7 +50,7 @@
       "verify:prepack": "npm pack --dry-run",
       "verify:tarball": "node scripts/verify-tarball.mjs yfs-api-2.1.0.tgz",
       "verify:installed": "node scripts/verify-installed.mjs yfs-api-2.1.0.tgz",
-      "check:source": "bun run type-check && bun run type-check:integration && bun run lint && bun run test && bun run test:fixtures",
+      "check:source": "bun run type-check && bun run type-check:integration && bun run lint && bun run test && bun run test:fixtures && bun run check:research",
       "check": "bun run check:source && bun run clean && bun run build && bun run type-check:examples && bun run scan:extensions",
       "check:package": "bun run verify:prepack && bun run pack:artifact && bun run verify:tarball && bun run verify:installed",
       "clean": "rm -rf dist .package-consumer yfs-api-2.1.0.tgz"
@@ -86,7 +95,10 @@
       "undici": "^8.7.0"
    },
    "dependencies": {
-      "fast-xml-parser": "^5.10.0"
+      "fast-xml-parser": "^5.10.1"
+   },
+   "overrides": {
+      "body-parser": "2.3.0"
    },
    "engines": {
       "node": ">=18.0.0"
