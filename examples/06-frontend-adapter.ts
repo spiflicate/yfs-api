@@ -4,11 +4,12 @@ import {
    YahooFrontendApiClient,
 } from 'yfs-api';
 
-// Internal repository tooling. This module is not included in the published package.
+// Repository tooling for the operator's own browser session. This module is
+// not included in the published package and must not authenticate other users.
 import {
    cookieHeaderForUrl,
    loadStorageState,
-} from '../research/yahoo-browser-cookie-tooling/browser-cookie-client.js';
+} from '../tools/yahoo-browser-cookie/browser-cookie-client.js';
 
 async function publicFrontendRead(): Promise<void> {
    const client = new YahooFrontendApiClient();

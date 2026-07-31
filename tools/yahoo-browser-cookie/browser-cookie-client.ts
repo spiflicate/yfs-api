@@ -1,7 +1,7 @@
 /**
  * Read-only Yahoo frontend API client for an intentionally supplied browser
- * session. This module is research/internal tooling and is not part of the
- * public SDK contract.
+ * session. This module is repository tooling and is not part of the public
+ * SDK contract.
  */
 
 import { readFile } from 'node:fs/promises';

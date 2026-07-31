@@ -8,7 +8,7 @@
       "research/api-path-validation/**/*.ts",
       "research/openid/**/*.ts",
       "research/yahoo-api-investigation/**/*.ts",
-      "research/yahoo-browser-cookie-tooling/**/*.ts",
+      "tools/yahoo-browser-cookie/**/*.ts",
       "src/**/*.ts"
    ],
    "exclude": ["node_modules", "dist"]

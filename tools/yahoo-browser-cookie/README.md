@@ -1,9 +1,10 @@
 # Yahoo Browser-Cookie Tooling
 
-This directory contains internal, read-only tooling for investigating Yahoo's
-browser-authenticated frontend routes. It is deliberately separate from the
-public `yfs-api` client and does not add cookies to `Config` or fall back from
-OAuth bearer authentication.
+This directory contains repository-level, read-only tooling for working with
+your own Yahoo browser-authenticated frontend session. It is deliberately
+separate from the public `yfs-api` client and does not add cookies to `Config`
+or fall back from OAuth bearer authentication. It is not an authentication
+mechanism for other users and is not included in the published package.
 
 `BrowserCookieClient` accepts either a Playwright-compatible `storageState`
 object, its `cookies` array, or an explicitly supplied `Cookie` header. The
