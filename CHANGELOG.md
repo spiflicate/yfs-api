@@ -22,11 +22,13 @@ Experimental Yahoo frontend API adapter layered over the canonical fluent resour
 - `createFrontendApi` for building the fluent resource API over observed Yahoo frontend routes.
 - Public `FrontendResourceApiOptions` and `HttpTransport` types for configuring and extending resource transports.
 - Frontend adapter coverage for public and private resource reads, including route validation and read-only public access enforcement.
+- A frontend chaining example covering public reads and private browser-session reads from storage state or a copied `Cookie` header.
 
 ### Changed
 
 - Frontend v2 route validation now requires resource keys and covers the observed league-to-teams read route.
 - Resource clients depend on the smaller transport interface, allowing them to run through the frontend adapter.
+- Fluent private resource access requires explicit `access: 'private'` configuration and forwards the supplied browser session only to the request.
 
 ### Notes
 
