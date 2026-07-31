@@ -71,17 +71,19 @@ export type {
    FrontendAuthentication,
    FrontendHttpMethod,
    FrontendRequestOptions,
+   FrontendResourceApiOptions,
    FrontendV2Response,
    FrontendV3Response,
    ResolvedFrontendRoute,
 } from './client/frontend.js';
 export {
+   createFrontendApi,
    FRONTEND_API_ORIGINS,
    FrontendApiError,
    resolveFrontendRoute,
    YahooFrontendApiClient,
 } from './client/frontend.js';
-export type { RequestOptions } from './client/http.js';
+export type { HttpTransport, RequestOptions } from './client/http.js';
 export type { Config, TokenStorage } from './client/yahoo.js';
 // Export client
 export { YahooFantasySportsClient as YahooFantasyClient } from './client/yahoo.js';

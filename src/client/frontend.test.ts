@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import {
+   createFrontendApi,
    FrontendApiError,
    resolveFrontendRoute,
    YahooFrontendApiClient,
@@ -43,6 +44,9 @@ describe('Yahoo frontend API adapter', () => {
       ).toThrow(FrontendApiError);
       expect(() =>
          resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/players'),
+      ).toThrow(FrontendApiError);
+      expect(() =>
+         resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1/unknown'),
       ).toThrow(FrontendApiError);
    });
 
@@ -108,6 +112,26 @@ describe('Yahoo frontend API adapter', () => {
       });
    });
 
+   test('accepts a Cookie header copied from browser developer tools', async () => {
+      let requestHeaders: HeadersInit | undefined;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'Cookie: session=secret; crumb=value' },
+         fetch: async (_url, init) => {
+            requestHeaders = init?.headers;
+            return new Response(
+               '<fantasy_content><game><game_key>nhl</game_key></game></fantasy_content>',
+               { headers: { 'content-type': 'application/xml' } },
+            );
+         },
+      });
+
+      await client.get('/fantasy/v2/game/nhl');
+      expect(requestHeaders).toMatchObject({
+         Cookie: 'session=secret; crumb=value',
+      });
+   });
+
    test('rejects public writes and unknown routes before fetch', async () => {
       let called = false;
       const client = new YahooFrontendApiClient({
@@ -152,5 +176,56 @@ describe('Yahoo frontend API adapter', () => {
          status: 401,
          route: '/fantasy/v3/user/subscriptions',
       });
+   });
+
+   test('runs the fluent resource API through the observed v2 adapter', async () => {
+      let requestUrl: URL | undefined;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async (url, init) => {
+            requestUrl = url;
+            expect(init?.headers).toMatchObject({
+               Cookie: 'session=secret',
+            });
+            return new Response(
+               '<fantasy_content><league><league_key>223.l.1</league_key><teams><team><team_key>223.l.1.t.1</team_key></team></teams></league></fantasy_content>',
+               { headers: { 'content-type': 'application/xml' } },
+            );
+         },
+      });
+
+      const response = await createFrontendApi(client, {
+         access: 'private',
+      })
+         .league('223.l.1')
+         .teams([])
+         .get();
+      expect(response.league?.leagueKey).toBe('223.l.1');
+      expect(response.league?.teams?.[0]?.teamKey).toBe('223.l.1.t.1');
+      expect(requestUrl?.toString()).toBe(
+         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
+      );
+   });
+
+   test('keeps private fluent access explicit', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      await expect(
+         createFrontendApi(client, { access: 'private' })
+            .league('223.l.1')
+            .teams([])
+            .get(),
+      ).rejects.toMatchObject({
+         message:
+            'Private frontend reads require browser-session authentication',
+      });
+      expect(called).toBe(false);
    });
 });

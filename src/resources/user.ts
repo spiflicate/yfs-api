@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import type { YahooLoggedInUsersResponseDto } from '../domain/normalized.js';
 import { GamesCollection } from './game.js';
 import {

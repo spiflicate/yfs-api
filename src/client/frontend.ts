@@ -6,7 +6,9 @@
  * layer.
  */
 
+import { type ApiRoot, createApi } from '../resources/api.js';
 import { parseYahooXML } from '../utils/xmlParser.js';
+import type { HttpTransport } from './http.js';
 
 export const FRONTEND_API_ORIGINS = {
    readOnly: 'https://pub-api-ro.fantasysports.yahoo.com',
@@ -45,6 +47,11 @@ export interface FrontendRequestOptions {
    signal?: AbortSignal;
 }
 
+export interface FrontendResourceApiOptions {
+   /** Explicitly select the visibility scope used by resource reads. */
+   access?: 'public' | 'private';
+}
+
 export interface ResolvedFrontendRoute {
    host: FrontendApiHost;
    origin: string;
@@ -55,9 +62,9 @@ export interface ResolvedFrontendRoute {
 type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 
 const V2_ROUTE =
-   /^\/fantasy\/v2\/(?:game|league|player|team|user)(?:\/[^/?;]+)?(?:[?;]|$)/;
+   /^\/fantasy\/v2\/(?:game|league|player|team|user)\/[^/?;]+(?:[?;]|$)/;
 const V2_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats))(?:[?;]|$)/;
+   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats))(?:[?;]|$)/;
 const V3_ROUTE =
    /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[?]|$)/;
 const V2_READ_WRITE_ROUTE =
@@ -134,10 +141,12 @@ export function resolveFrontendRoute(
    };
 }
 
-function validateCookieHeader(cookieHeader: string): void {
-   if (!cookieHeader.trim() || /[\r\n]/.test(cookieHeader)) {
+function normalizeCookieHeader(cookieHeader: string): string {
+   const normalized = cookieHeader.replace(/^\s*cookie\s*:\s*/i, '').trim();
+   if (!normalized || /[\r\n]/.test(normalized)) {
       throw new Error('Browser session cookie header is invalid');
    }
+   return normalized;
 }
 
 function hasHeader(headers: Record<string, string>, name: string): boolean {
@@ -162,7 +171,10 @@ export class YahooFrontendApiClient {
                'A browser session is required for browser-session authentication',
             );
          }
-         validateCookieHeader(this.session.cookieHeader);
+         this.session = {
+            ...this.session,
+            cookieHeader: normalizeCookieHeader(this.session.cookieHeader),
+         };
       } else if (this.session) {
          throw new Error(
             'A browser session requires browser-session authentication',
@@ -305,4 +317,73 @@ export class YahooFrontendApiClient {
          );
       }
    }
+}
+
+class FrontendResourceTransport implements HttpTransport {
+   constructor(
+      private readonly client: YahooFrontendApiClient,
+      private readonly access: 'public' | 'private',
+   ) {}
+
+   get<T = unknown>(path: string): Promise<T> {
+      return this.client.get<T>(frontendResourcePath(path), {
+         access: this.access,
+      });
+   }
+
+   post<T = unknown>(
+      path: string,
+      body?: Record<string, unknown> | string,
+   ): Promise<T | undefined> {
+      const route = frontendResourcePath(path);
+      this.assertPrivateAccess(route);
+      return this.client.post<T>(route, body, {
+         access: this.access,
+      });
+   }
+
+   put<T = unknown>(
+      path: string,
+      body?: Record<string, unknown> | string,
+   ): Promise<T | undefined> {
+      const route = frontendResourcePath(path);
+      this.assertPrivateAccess(route);
+      return this.client.put<T>(route, body, {
+         access: this.access,
+      });
+   }
+
+   delete<T = unknown>(path: string): Promise<T | undefined> {
+      const route = frontendResourcePath(path);
+      this.assertPrivateAccess(route);
+      return this.client.delete<T>(route, {
+         access: this.access,
+      });
+   }
+
+   private assertPrivateAccess(route: string): void {
+      if (this.access === 'public') {
+         throw new FrontendApiError(
+            'Public frontend resource API access is read-only',
+            route,
+         );
+      }
+   }
+}
+
+function frontendResourcePath(path: string): string {
+   return `/fantasy/v2/${path.replace(/^\/+/, '')}`;
+}
+
+/**
+ * Creates the canonical fluent resource API over the observed frontend v2
+ * adapter. Only routes accepted by the frontend adapter's allowlist execute.
+ */
+export function createFrontendApi(
+   client: YahooFrontendApiClient,
+   options: FrontendResourceApiOptions = {},
+): ApiRoot {
+   return createApi(
+      new FrontendResourceTransport(client, options.access ?? 'public'),
+   );
 }

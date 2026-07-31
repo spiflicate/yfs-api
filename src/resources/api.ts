@@ -1,4 +1,4 @@
-import type { HttpClient as Transport } from '../client/http.js';
+import type { HttpTransport as Transport } from '../client/http.js';
 import { GameResource, GamesCollection } from './game.js';
 import { LeagueResource, LeaguesCollection } from './league.js';
 import { PlayerResource, PlayersCollection } from './player.js';
