@@ -42,9 +42,15 @@ describe('Yahoo frontend API adapter', () => {
             '/fantasy/v2/team/223.l.1.t.1/roster/unknown',
          ),
       ).toThrow(FrontendApiError);
-      expect(() =>
+      expect(
          resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/players'),
-      ).toThrow(FrontendApiError);
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/dates'),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute('GET', '/fantasy/v2/games;game_codes=nhl'),
+      ).toMatchObject({ host: 'readOnly' });
       expect(() =>
          resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1/unknown'),
       ).toThrow(FrontendApiError);

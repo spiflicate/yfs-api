@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All releases earlier than `2.1.0` are deprecated and unsupported.
 - Legacy entries remain below for historical reference only.
 
+## [2.2.1] - 2026-07-31
+
+### Added
+
+- Frontend API verification matrix for probing observed and candidate
+  read-only routes against Yahoo without sending writes.
+
+### Changed
+
+- Expanded the experimental frontend adapter allowlist for verified public
+  game collections and game child reads.
+- Documented the verified frontend route coverage and retained rejection of
+  unverified routes.
+
 ## [2.2.0] - 2026-07-31
 
 ### Overview

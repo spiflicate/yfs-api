@@ -63,6 +63,9 @@ type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 
 const V2_ROUTE =
    /^\/fantasy\/v2\/(?:game|league|player|team|user)\/[^/?;]+(?:[?;]|$)/;
+const V2_COLLECTION_READ_ROUTE = /^\/fantasy\/v2\/games(?:[?;]|$)/;
+const V2_GAME_NESTED_READ_ROUTE =
+   /^\/fantasy\/v2\/game\/[^/?;]+\/(?:players|dates|game_weeks|stat_categories|position_types|roster_positions)(?:[?;]|$)/;
 const V2_NESTED_READ_ROUTE =
    /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats))(?:[?;]|$)/;
 const V3_ROUTE =
@@ -104,6 +107,13 @@ function routeHost(
       return 'readWrite';
    }
    if (method === 'GET' && V2_ROUTE.test(pathname)) {
+      return 'readOnly';
+   }
+   if (
+      method === 'GET' &&
+      (V2_COLLECTION_READ_ROUTE.test(pathname) ||
+         V2_GAME_NESTED_READ_ROUTE.test(pathname))
+   ) {
       return 'readOnly';
    }
    if (method === 'GET' && V2_NESTED_READ_ROUTE.test(pathname)) {

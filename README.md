@@ -134,7 +134,7 @@ Live integration tests are manual. Destructive tests require the separate
 
 ## Release History
 
-`2.2.0` is the current stable API. Material for the `2.0.0-beta.*` and `1.x`
+`2.2.1` is the current stable API. Material for the `2.0.0-beta.*` and `1.x`
 lines in the changelog and archive is historical, not current guidance.
 
 MIT licensed. See `LICENSE`.

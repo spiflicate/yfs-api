@@ -30,8 +30,8 @@ type V2 = FrontendV2Response<MyParsedPayload>;
 type V3 = FrontendV3Response<MyPayload>;
 ```
 
-The route allowlist currently covers observed v2 reads for the `game`, `league`,
-`player`, `team`, and `user` resources, the league-to-teams read, the roster
-`PUT`, and the observed v3 `getCrumb`, `suggested_players`, and
-`user/subscriptions` routes. Unknown and unobserved write routes fail before a
-request is sent.
+The route allowlist currently covers observed v2 reads for the `game`, `games`,
+`league`, `player`, `team`, and `user` resources, the verified game child reads,
+the league-to-teams read, the roster `PUT`, and the observed v3 `getCrumb`,
+`suggested_players`, and `user/subscriptions` routes. Unknown and unobserved
+write routes fail before a request is sent.
