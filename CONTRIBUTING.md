@@ -30,7 +30,7 @@ bun run scan:extensions
 bun run check:package
 ```
 
-`check:package` creates and installs the exact `yfs-api-2.1.0.tgz` artifact,
+`check:package` creates and installs the exact `yfs-api-2.2.0.tgz` artifact,
 runs a native Node import/OAuth 1.0 signing smoke test, and compiles a strict
 NodeNext consumer. It never publishes or pushes.
 
