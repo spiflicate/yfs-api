@@ -11,7 +11,22 @@ Examples use placeholders so they do not become stale. Badges indicate evidence 
 - **DRD**: documented/runtime discrepancy
 - **DOC**: documented by Yahoo, not exercised by the current route suite
 
-Current badges derive from `research/api-path-validation/actionable-route-report.md`, run `2026-07-15T19-33-25-809Z`.
+Current public badges derive from `research/api-path-validation/actionable-route-report.md`, run `2026-07-15T19-33-25-809Z`. The public matrix was not refreshed on 2026-07-30 because Yahoo rejected all previously known credentials. The private result is an access blocker, not route evidence.
+
+## Frontend API Surface
+
+These are observed Yahoo web-frontend routes, not additions to the canonical OAuth2 API:
+
+```text
+https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2   # public/read-oriented frontend requests
+https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2   # frontend reads and cookie-session writes
+https://pub-api.fantasysports.yahoo.com/fantasy/v3      # observed JSON services
+```
+
+Unauthenticated public-league reads are the initial integration target. Private
+league reads and writes require a user-managed Yahoo browser-session cookie.
+Do not claim OAuth2 bearer-token support for these routes or exchange tokens for
+cookies.
 
 ## Discovery
 

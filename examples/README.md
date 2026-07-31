@@ -8,5 +8,6 @@ These examples import only from the package root and are compiled by
 - `03-nested-read.ts`: parent-preserving nested response traversal
 - `04-roster-confirmation.ts`: roster write confirmation or `undefined`
 - `05-raw-xml.ts`: unparsed XML access
+- `06-frontend-adapter.ts`: experimental frontend API routes with optional internal browser-cookie tooling
 
 Examples are not run by CI and do not contain credentials.

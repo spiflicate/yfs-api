@@ -49,6 +49,7 @@ research/tmp/**/*.json
 research/tmp/latest-run.txt
 research/api-path-validation/tmp/
 research/xml-vs-json-responses/data/
+research/yahoo-api-investigation/captures/
 tests/tmp/
 
 # Debug and API response files

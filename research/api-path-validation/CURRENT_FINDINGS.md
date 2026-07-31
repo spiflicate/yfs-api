@@ -1,6 +1,34 @@
 # Current Cross-Sport Findings
 
-Latest reproducible evidence: [actionable-route-report.md](actionable-route-report.md), public strict-shape run `2026-07-15T19-33-25-809Z`.
+Latest reproducible evidence: [private-access-baseline.md](private-access-baseline.md), private non-interactive run `2026-07-30T21-11-01-018Z`. The last successful public route audit remains [actionable-route-report.md](actionable-route-report.md), run `2026-07-15T19-33-25-809Z`; Yahoo rejected all previously known credentials when a refresh was attempted on 2026-07-30.
+
+## Authenticated Access Baseline
+
+The 2026-07-30 run exercised the existing Yahoo Fantasy API v2 surface at
+`https://fantasysports.yahooapis.com/fantasy/v2` using OAuth2 bearer-token
+authentication in private mode. All selected requests were read-only; no
+roster or transaction mutations were attempted.
+
+- 104 scenarios selected across NFL, MLB, NBA, and NHL.
+- 20 user/account discovery requests failed as `auth-or-scope`.
+- 84 dependent league, team, roster, player, and transaction scenarios were
+  classified as `fixture-unavailable`, not route failures.
+- 0 routes passed because authorization failed before account fixtures could
+  be discovered.
+- Public requests in the same run also returned Yahoo's application-level
+  authorization failure; this is recorded separately from the private OAuth2
+  blocker in the detailed report.
+
+Safe reproduction, without interactive prompts or mutations:
+
+```bash
+bun run research:routes -- --mode private --sports nfl,mlb,nba,nhl --allow-incomplete --non-interactive
+```
+
+The next human action is to authorize the configured Yahoo application again
+or provide a refreshed OAuth2 token file, then rerun the command. Until that
+happens, these results must not be interpreted as evidence that the private
+resource routes are unsupported.
 
 ## Result Summary
 
@@ -65,9 +93,13 @@ The current NHL public fixture also confirms:
 
 ## Private Coverage Status
 
-Private cross-sport discovery is implemented but could not be refreshed in the automated session because the stored OAuth2 token requires interactive Yahoo authorization.
+Private cross-sport discovery is implemented but the latest non-interactive
+run could not refresh the stored OAuth2 token because Yahoo authorization is
+required.
 
-This is an authentication blocker, not route evidence. The verifier now supports `--non-interactive` so automation fails immediately rather than waiting for an authorization code.
+This is an authentication blocker, not route evidence. The verifier supports
+`--non-interactive` so automation fails immediately rather than waiting for
+an authorization code.
 
 After authorization, private discovery will identify account teams, derive league keys, fetch roster/player/period fixtures, and collect current transaction keys independently for each sport. Sports without account membership remain `fixture-unavailable`.
 

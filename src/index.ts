@@ -64,6 +64,23 @@ export {
    YahooApiError,
    YahooFantasyError,
 } from './client/errors.js';
+export type {
+   BrowserSession,
+   FrontendApiClientOptions,
+   FrontendApiHost,
+   FrontendAuthentication,
+   FrontendHttpMethod,
+   FrontendRequestOptions,
+   FrontendV2Response,
+   FrontendV3Response,
+   ResolvedFrontendRoute,
+} from './client/frontend.js';
+export {
+   FRONTEND_API_ORIGINS,
+   FrontendApiError,
+   resolveFrontendRoute,
+   YahooFrontendApiClient,
+} from './client/frontend.js';
 export type { RequestOptions } from './client/http.js';
 export type { Config, TokenStorage } from './client/yahoo.js';
 // Export client
