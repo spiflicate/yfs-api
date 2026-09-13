@@ -23,6 +23,7 @@ export const teamSubResources = [
    'roster',
    'matchups',
    'stats',
+   'standings',
 ] as const;
 
 type DateString = `${number}-${number}-${number}`;
@@ -30,9 +31,11 @@ type StatsCoverageType = 'season' | 'date' | 'week';
 type TeamSubResource = (typeof teamSubResources)[number];
 type TeamExpansionField<T extends TeamSubResource> = T extends 'stats'
    ? 'teamStats'
-   : T extends 'roster' | 'matchups'
-     ? T
-     : never;
+   : T extends 'standings'
+     ? 'teamStandings'
+     : T extends 'roster' | 'matchups'
+       ? T
+       : never;
 type TeamExpansionPath<
    TPath extends ResponsePath,
    TSubResource extends TeamSubResource,

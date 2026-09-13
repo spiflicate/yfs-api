@@ -69,6 +69,27 @@ describe('Yahoo frontend API adapter', () => {
             '/fantasy/v2/player/386.p.6381/roster',
          ),
       ).toThrow(FrontendApiError);
+      expect(
+         resolveFrontendRoute(
+            'GET',
+            '/fantasy/v2/league/223.l.1/draftresults',
+         ),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute(
+            'GET',
+            '/fantasy/v2/team/223.l.1.t.1/standings',
+         ),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute(
+            'GET',
+            '/fantasy/v2/transactions;transaction_keys=223.l.1.tr.1',
+         ),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(() =>
+         resolveFrontendRoute('POST', '/fantasy/v2/transactions'),
+      ).toThrow(FrontendApiError);
    });
 
    test('allows unauthenticated public reads without OAuth headers', async () => {

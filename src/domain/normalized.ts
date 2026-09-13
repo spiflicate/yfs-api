@@ -188,6 +188,8 @@ export interface YahooLeagueDto {
    players?: YahooPlayerDto[];
    /** Present for a transactions traversal/expansion. */
    transactions?: YahooTransactionDto[];
+   /** Present when the draftresults subresource was requested. */
+   draftResults?: YahooDraftResultDto[];
 }
 
 /** Normalized singular-league wrapper retained for resource response typing. */
@@ -213,6 +215,26 @@ export interface YahooLeagueWithStandingsDto extends YahooLeagueDto {
 /** League variant with the requested scoreboard nested on the league. */
 export interface YahooLeagueWithScoreboardDto extends YahooLeagueDto {
    scoreboard: YahooLeagueScoreboardDto;
+}
+
+/** League variant with the requested draft results nested on the league. */
+export interface YahooLeagueWithDraftResultsDto extends YahooLeagueDto {
+   draftResults: YahooDraftResultDto[];
+}
+
+/**
+ * Single pick from a league's draft results collection. Verified against a
+ * live postdraft league; no captured fixture exercises this shape yet.
+ */
+export interface YahooDraftResultDto {
+   /** Overall pick number. */
+   pick: number;
+   /** Draft round the pick was made in. */
+   round: number;
+   /** Team that made the pick. */
+   teamKey: string;
+   /** Player selected with the pick. */
+   playerKey: string;
 }
 
 /** Captured league configuration returned by the settings subresource. */
@@ -426,6 +448,14 @@ export interface YahooTeamWithStatsDto extends YahooTeamDto {
 /** Team variant with matchup history/current matchup data. */
 export interface YahooTeamWithMatchupsDto extends YahooTeamDto {
    matchups: YahooMatchupDto[];
+}
+
+/**
+ * Team variant with rank/outcome standings nested on the team. Verified
+ * against a live league; no captured fixture exercises this shape yet.
+ */
+export interface YahooTeamWithStandingsDto extends YahooTeamDto {
+   teamStandings: YahooTeamStandingsDto;
 }
 
 /** A Yahoo count/value scoped to a reported coverage period. */

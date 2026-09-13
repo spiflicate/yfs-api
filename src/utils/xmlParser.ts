@@ -279,6 +279,7 @@ const booleanProps = new Set<string>([
 
 const arrayMapping = new Map<string, string>([
    ['baseStats', 'baseStat'],
+   ['draftResults', 'draftResult'],
    ['gameWeeks', 'gameWeek'],
    ['games', 'game'],
    ['groups', 'group'],

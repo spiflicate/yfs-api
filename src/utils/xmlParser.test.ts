@@ -146,6 +146,56 @@ describe('xmlParser', () => {
          ]);
       });
 
+      test('should unwrap draft results into an array', () => {
+         const xml = `
+				<fantasy_content>
+					<league>
+						<league_key>423.l.12345</league_key>
+						<draft_results count="2">
+							<draft_result>
+								<pick>1</pick>
+								<round>1</round>
+								<team_key>423.l.12345.t.8</team_key>
+								<player_key>423.p.5980</player_key>
+							</draft_result>
+							<draft_result>
+								<pick>2</pick>
+								<round>1</round>
+								<team_key>423.l.12345.t.1</team_key>
+								<player_key>423.p.6381</player_key>
+							</draft_result>
+						</draft_results>
+					</league>
+				</fantasy_content>
+			`;
+
+         const result = parseYahooXML<{
+            league: {
+               draftResults: Array<{
+                  pick: number;
+                  round: number;
+                  teamKey: string;
+                  playerKey: string;
+               }>;
+            };
+         }>(xml);
+
+         expect(result.league.draftResults).toEqual([
+            {
+               pick: 1,
+               round: 1,
+               teamKey: '423.l.12345.t.8',
+               playerKey: '423.p.5980',
+            },
+            {
+               pick: 2,
+               round: 1,
+               teamKey: '423.l.12345.t.1',
+               playerKey: '423.p.6381',
+            },
+         ]);
+      });
+
       test('should throw Yahoo API errors from error payloads', () => {
          const xml = `
 				<error>
@@ -249,6 +299,22 @@ describe('xmlParser', () => {
                      managers: [{ nickname: 'Commish' }],
                   },
                ],
+            },
+         });
+      });
+
+      test('should wrap a single draft result in an array', () => {
+         const result = normalizeArrays({
+            league: {
+               draftResults: {
+                  draftResult: { pick: 1, round: 1 },
+               },
+            },
+         });
+
+         expect(result).toEqual({
+            league: {
+               draftResults: [{ pick: 1, round: 1 }],
             },
          });
       });

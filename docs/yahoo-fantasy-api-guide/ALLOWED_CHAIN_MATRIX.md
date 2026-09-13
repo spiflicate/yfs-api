@@ -36,7 +36,7 @@ Evidence classes:
 | `league` | `players` | yes | not current | documented-only | Current player evidence uses `game/leagues;league_keys=.../players` instead |
 | `leagues` | keyed metadata, `teams` | yes | passed | NHL-only | Supply `league_keys`; other collection children are not current |
 | `leagues` | `settings`, `standings`, `scoreboard`, `players`, `draftresults`, `transactions` | yes | not current | documented-only | Yahoo documents collection inheritance; current suite does not test these forms |
-| `team` | `roster`, `matchups`, `stats` | yes | passed | historical-private | `standings` and `draftresults` are official, not yet in suite |
+| `team` | `roster`, `matchups`, `stats`, `standings` | yes | passed | historical-private | `standings` added to the suite; verified live via both `/team/{key}/standings` and `team/{key};out=standings` |
 | `team` | `players` | yes | passed | NHL-only | Explicit public `/team/{key}/players` route |
 | `teams` | `roster`, `matchups`, `stats` | yes | passed | historical-private | Supply `team_keys` |
 | `teams` | `players` | yes | not current | historical-private | Explicit Yahoo collection example; not in the latest route suite |
@@ -57,7 +57,8 @@ The Yahoo web frontend also uses `pub-api-ro`, `pub-api-rw`, and `pub-api` v3 ro
 | `game/{key};out=stat_categories,position_types,game_weeks` | passed | four-sport |
 | `league/{key};out=settings,standings,scoreboard` | not current | documented-only |
 | `leagues;league_keys=...;out=settings,standings` | not current | documented-only |
-| `team/{key};out=roster,stats,matchups` | passed | historical-private |
+| `team/{key};out=roster,stats,matchups,standings` | passed | historical-private |
+| `league/{key};out=draftresults` | passed | historical-private |
 | `teams;team_keys=...;out=roster,stats` | passed | historical-private |
 | `player/{key};out=stats,ownership` | passed | historical-private |
 | `users;use_login=1/games;game_keys=...;out=leagues,teams` | passed | historical-private |

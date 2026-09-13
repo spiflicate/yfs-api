@@ -33,6 +33,17 @@ type V3 = FrontendV3Response<MyPayload>;
 The route allowlist currently covers observed v2 reads for the `game`, `games`,
 `league`, `player`, `team`, and `user` resources, the verified game child reads,
 the league-to-teams read, the player and team `stats` nested reads (including
-date-scoped `stats;type=date;date=YYYY-MM-DD` coverage), the roster `PUT`, and
-the observed v3 `getCrumb`, `suggested_players`, and `user/subscriptions`
-routes. Unknown and unobserved write routes fail before a request is sent.
+date-scoped `stats;type=date;date=YYYY-MM-DD` coverage), the league
+`draftresults` and team `standings` nested reads, the top-level `transactions`
+collection read (by `transaction_keys`), the roster `PUT`, and the observed v3
+`getCrumb`, `suggested_players`, and `user/subscriptions` routes. Unknown and
+unobserved write routes fail before a request is sent.
+
+Team `standings` and league `draftresults` are reachable through the fluent
+resource API via `include()` — `team(key).include('standings')` and
+`league(key).include('draftresults')` — which requests them as `;out=`
+expansions on the base resource rather than as a separate path segment. Both
+forms resolve to the same allowlisted route. The top-level `transactions`
+collection route has no fluent builder yet (`ApiRoot.transactions()` doesn't
+exist); it's reachable only through `YahooFrontendApiClient.get()` with a raw
+path.

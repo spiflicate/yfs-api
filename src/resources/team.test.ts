@@ -45,6 +45,18 @@ describe('TeamResource', () => {
          'team/nfl.l.123.t.1/matchups;weeks=1,5',
       );
    });
+
+   it('includes standings on the team resource', () => {
+      const team = TeamResource.create(
+         transport,
+         emptyState,
+         'nfl.l.123.t.1',
+      );
+
+      expect(team.include('standings').toPath()).toBe(
+         'team/nfl.l.123.t.1;out=standings',
+      );
+   });
 });
 
 describe('TeamsCollection', () => {

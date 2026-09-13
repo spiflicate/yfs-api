@@ -95,7 +95,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'League draft results sub-resource',
       host: 'readOnly',
       path: `/fantasy/v2/league/${leagueKey}/draftresults`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_LEAGUE_KEY'],
    },
    {
@@ -103,7 +103,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'Team standings sub-resource',
       host: 'readOnly',
       path: `/fantasy/v2/team/${teamKey}/standings`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_TEAM_KEY'],
    },
    {
@@ -119,7 +119,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'Top-level transactions collection',
       host: 'readOnly',
       path: `/fantasy/v2/transactions;transaction_keys=${transactionKey}`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_TRANSACTION_KEY'],
    },
    {
