@@ -145,6 +145,15 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       category: 'current',
       requires: ['YAHOO_FRONTEND_PLAYER_KEY'],
    },
+   {
+      id: 'current-player-stats-date',
+      description:
+         'Date-scoped player stats sub-resource (returns coverage_type=date, unlike league-nested player expansions which fall back to season coverage)',
+      host: 'readOnly',
+      path: `/fantasy/v2/player/${playerKey}/stats;type=date;date=2018-11-01`,
+      category: 'current',
+      requires: ['YAHOO_FRONTEND_PLAYER_KEY'],
+   },
 ];
 
 export function localPolicy(path: string): 'allowed' | 'rejected' {

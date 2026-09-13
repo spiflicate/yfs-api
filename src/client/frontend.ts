@@ -67,7 +67,7 @@ const V2_COLLECTION_READ_ROUTE = /^\/fantasy\/v2\/games(?:[?;]|$)/;
 const V2_GAME_NESTED_READ_ROUTE =
    /^\/fantasy\/v2\/game\/[^/?;]+\/(?:players|dates|game_weeks|stat_categories|position_types|roster_positions)(?:[?;]|$)/;
 const V2_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats))(?:[?;]|$)/;
+   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions)|team\/[^/?;]+\/(?:roster|matchups|stats)|player\/[^/?;]+\/stats)(?:[?;]|$)/;
 const V3_ROUTE =
    /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[?]|$)/;
 const V2_READ_WRITE_ROUTE =

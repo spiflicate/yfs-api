@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All releases earlier than `2.1.0` are deprecated and unsupported.
 - Legacy entries remain below for historical reference only.
 
+## [Unreleased]
+
+### Changed
+
+- Expanded the experimental frontend adapter allowlist to accept the
+  observed, read-only `player/{player_key}/stats` nested route (GET only),
+  enabling date-scoped `playerStats` reads (e.g.
+  `stats;type=date;date=YYYY-MM-DD`) through the frontend adapter. Verified
+  against Yahoo's live public read-only host, which returns
+  `coverage_type: date` for this route (unlike league-nested player
+  expansions, which fall back to season coverage).
+
 ## [2.2.1] - 2026-07-31
 
 ### Added
