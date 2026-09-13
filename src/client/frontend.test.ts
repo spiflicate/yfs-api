@@ -42,11 +42,32 @@ describe('Yahoo frontend API adapter', () => {
             '/fantasy/v2/team/223.l.1.t.1/roster/unknown',
          ),
       ).toThrow(FrontendApiError);
-      expect(() =>
+      expect(
          resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/players'),
-      ).toThrow(FrontendApiError);
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/dates'),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(
+         resolveFrontendRoute('GET', '/fantasy/v2/games;game_codes=nhl'),
+      ).toMatchObject({ host: 'readOnly' });
       expect(() =>
          resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1/unknown'),
+      ).toThrow(FrontendApiError);
+      expect(
+         resolveFrontendRoute(
+            'GET',
+            '/fantasy/v2/player/386.p.6381/stats;type=date;date=2018-11-01',
+         ),
+      ).toMatchObject({ host: 'readOnly' });
+      expect(() =>
+         resolveFrontendRoute('PUT', '/fantasy/v2/player/386.p.6381/stats'),
+      ).toThrow(FrontendApiError);
+      expect(() =>
+         resolveFrontendRoute(
+            'GET',
+            '/fantasy/v2/player/386.p.6381/roster',
+         ),
       ).toThrow(FrontendApiError);
    });
 
@@ -205,6 +226,29 @@ describe('Yahoo frontend API adapter', () => {
       expect(response.league?.teams?.[0]?.teamKey).toBe('223.l.1.t.1');
       expect(requestUrl?.toString()).toBe(
          'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
+      );
+   });
+
+   test('resolves date-scoped player stats through the fluent resource API', async () => {
+      let requestUrl: URL | undefined;
+      const client = new YahooFrontendApiClient({
+         fetch: async (url) => {
+            requestUrl = url;
+            return new Response(
+               '<fantasy_content><player><player_key>386.p.6381</player_key><player_stats><coverage_type>date</coverage_type><date>2018-11-01</date></player_stats></player></fantasy_content>',
+               { headers: { 'content-type': 'application/xml' } },
+            );
+         },
+      });
+
+      const response = await createFrontendApi(client)
+         .player('386.p.6381')
+         .stats()
+         .date('2018-11-01')
+         .get();
+      expect(response.player?.playerStats?.coverageType).toBe('date');
+      expect(requestUrl?.toString()).toBe(
+         'https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2/player/386.p.6381/stats;type=date;date=2018-11-01',
       );
    });
 
