@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All releases earlier than `2.1.0` are deprecated and unsupported.
 - Legacy entries remain below for historical reference only.
 
+## [Unreleased]
+
+### Added
+
+- `TeamResource`/`TeamsCollection.include('standings')`, requesting a team's
+  own rank and outcome record (`teamStandings`) as a `;out=` expansion.
+- `LeagueResource`/`LeaguesCollection.include('draftresults')`, requesting a
+  league's draft picks (`draftResults`) as a `;out=` expansion.
+- `YahooDraftResultDto`, `YahooTeamWithStandingsDto`, and
+  `YahooLeagueWithDraftResultsDto` normalized types for the above.
+
+### Changed
+
+- Expanded the experimental frontend adapter allowlist to accept the
+  observed, read-only `league/{league_key}/draftresults` and
+  `team/{team_key}/standings` nested routes, and the top-level
+  `transactions;transaction_keys=...` collection route (GET only). Verified
+  live against Yahoo's public read-only host.
+
 ## [2.2.2] - 2026-09-12
 
 ### Fixed
