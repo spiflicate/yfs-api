@@ -11,9 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All releases earlier than `2.1.0` are deprecated and unsupported.
 - Legacy entries remain below for historical reference only.
 
-## [Unreleased]
+## [2.2.2] - 2026-09-12
 
-### Changed
+### Fixed
 
 - Expanded the experimental frontend adapter allowlist to accept the
   observed, read-only `player/{player_key}/stats` nested route (GET only),

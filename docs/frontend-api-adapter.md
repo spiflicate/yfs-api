@@ -32,6 +32,7 @@ type V3 = FrontendV3Response<MyPayload>;
 
 The route allowlist currently covers observed v2 reads for the `game`, `games`,
 `league`, `player`, `team`, and `user` resources, the verified game child reads,
-the league-to-teams read, the roster `PUT`, and the observed v3 `getCrumb`,
-`suggested_players`, and `user/subscriptions` routes. Unknown and unobserved
-write routes fail before a request is sent.
+the league-to-teams read, the player and team `stats` nested reads (including
+date-scoped `stats;type=date;date=YYYY-MM-DD` coverage), the roster `PUT`, and
+the observed v3 `getCrumb`, `suggested_players`, and `user/subscriptions`
+routes. Unknown and unobserved write routes fail before a request is sent.
