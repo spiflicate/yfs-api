@@ -11,7 +11,9 @@ import { XMLParser } from 'fast-xml-parser';
  * @returns Parsed error description or undefined
  * @internal
  */
-function parseXMLError(responseText: string | unknown): string | undefined {
+export function parseXMLError(
+   responseText: string | unknown,
+): string | undefined {
    if (typeof responseText !== 'string') {
       return undefined;
    }

@@ -2,9 +2,9 @@ import { mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { FRONTEND_API_ORIGINS } from '../../src/client/frontend.js';
 import {
+   adapterHost,
    FRONTEND_PROBE_MATRIX,
    type FrontendProbeDefinition,
-   localPolicy,
    missingRequirements,
    type ProbeAuth,
    type ProbeHost,
@@ -25,7 +25,7 @@ interface ProbeResult {
    auth: ProbeAuth;
    host: ProbeHost;
    path: string;
-   localPolicy: 'allowed' | 'rejected';
+   adapterHost: ProbeHost;
    classification: ProbeClassification;
    status?: number;
    contentType?: string;
@@ -97,7 +97,7 @@ async function probe(
       auth,
       host: definition.host,
       path: definition.path,
-      localPolicy: localPolicy(definition.path),
+      adapterHost: adapterHost(definition.path),
       classification: 'network-error',
    };
    const missing = missingRequirements(definition);
@@ -157,7 +157,7 @@ async function main(): Promise<void> {
               auth,
               host: definition.host,
               path: definition.path,
-              localPolicy: localPolicy(definition.path),
+              adapterHost: adapterHost(definition.path),
               classification: missingRequirements(definition).length
                  ? 'fixture-missing'
                  : 'network-error',

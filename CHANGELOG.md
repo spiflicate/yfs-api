@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking (experimental adapter):** `YahooFrontendApiClient.post()`,
+  `.put()`, and `.delete()`. Frontend writes are only available through typed
+  resource operations (for example `roster().update()`) on
+  `createFrontendApi(client, { access: 'private' })` with browser-session
+  authentication.
+- The frontend adapter route allowlist. Any `GET` under `/fantasy/v2/` or
+  `/fantasy/v3/` is sent; Yahoo rejects routes it does not serve.
+
 ### Added
 
 - `TeamResource`/`TeamsCollection.include('standings')`, requesting a team's
@@ -24,11 +34,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Expanded the experimental frontend adapter allowlist to accept the
-  observed, read-only `league/{league_key}/draftresults` and
-  `team/{team_key}/standings` nested routes, and the top-level
-  `transactions;transaction_keys=...` collection route (GET only). Verified
-  live against Yahoo's public read-only host.
+- `resolveFrontendRoute` now selects a host from the method and API version
+  (v2 reads → `pub-api-ro`, v2 writes → `pub-api-rw`, v3 → `pub-api`) and
+  only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/` or for v3
+  writes. The league-to-teams read stays on `pub-api-rw`, as observed.
+- `FrontendApiError` messages for rejected requests include Yahoo's error
+  description when the response carries one (never for `401`/`403`).
+- The frontend verification matrix records route evidence instead of the
+  adapter's local policy; probe results report `adapterHost`.
+- Verified the read-only `league/{league_key}/draftresults` and
+  `team/{team_key}/standings` nested routes and the top-level
+  `transactions;transaction_keys=...` collection route live against Yahoo's
+  public read-only host, and recorded them in the frontend verification
+  matrix.
 
 ## [2.2.2] - 2026-09-12
 

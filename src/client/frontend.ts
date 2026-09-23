@@ -8,6 +8,7 @@
 
 import { type ApiRoot, createApi } from '../resources/api.js';
 import { parseYahooXML } from '../utils/xmlParser.js';
+import { parseXMLError } from './errors.js';
 import type { HttpTransport } from './http.js';
 
 export const FRONTEND_API_ORIGINS = {
@@ -61,21 +62,16 @@ export interface ResolvedFrontendRoute {
 
 type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 
-const V2_ROUTE =
-   /^\/fantasy\/v2\/(?:game|league|player|team|user)\/[^/?;]+(?:[?;]|$)/;
-const V2_COLLECTION_READ_ROUTE = /^\/fantasy\/v2\/games(?:[?;]|$)/;
-const V2_GAME_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/game\/[^/?;]+\/(?:players|dates|game_weeks|stat_categories|position_types|roster_positions)(?:[?;]|$)/;
-const V2_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions|draftresults)|team\/[^/?;]+\/(?:roster|matchups|stats|standings)|player\/[^/?;]+\/stats)(?:[?;]|$)/;
-const V2_TOP_LEVEL_TRANSACTIONS_ROUTE =
-   /^\/fantasy\/v2\/transactions(?:[?;]|$)/;
-const V3_ROUTE =
-   /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[?]|$)/;
-const V2_READ_WRITE_ROUTE =
-   /^\/fantasy\/v2\/league\/[^/?;]+\/teams(?:[?;]|$)/;
-const V2_ROSTER_WRITE_ROUTE =
-   /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:[?;]|$)/;
+const V2_ROUTE = /^\/fantasy\/v2\/[^/]/;
+const V3_ROUTE = /^\/fantasy\/v3\/[^/]/;
+
+/**
+ * Reads the web app was observed sending to `pub-api-rw`. This table only
+ * selects a host; it never decides whether a route may be requested.
+ */
+const READ_WRITE_HOST_READS = [
+   /^\/fantasy\/v2\/league\/[^/;]+\/teams(?:;[^/]*)?$/,
+];
 
 export class FrontendApiError extends Error {
    readonly status?: number;
@@ -100,35 +96,32 @@ function normalizePath(route: string): string {
    return `${url.pathname}${url.search}`;
 }
 
+/**
+ * Selects the frontend host for a request. The frontend adapter does not keep
+ * a route allowlist: Yahoo rejects paths it does not serve, public access is
+ * read-only, and writes are only reachable through typed resource operations.
+ */
 function routeHost(
    method: FrontendHttpMethod,
    pathname: string,
 ): FrontendApiHost {
-   if (V3_ROUTE.test(pathname)) return 'neutral';
-   if (method === 'GET' && V2_READ_WRITE_ROUTE.test(pathname)) {
-      return 'readWrite';
+   if (V3_ROUTE.test(pathname)) {
+      if (method !== 'GET') {
+         throw new FrontendApiError(
+            'Frontend v3 routes are read-only',
+            pathname,
+         );
+      }
+      return 'neutral';
    }
-   if (method === 'GET' && V2_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (
-      method === 'GET' &&
-      (V2_COLLECTION_READ_ROUTE.test(pathname) ||
-         V2_GAME_NESTED_READ_ROUTE.test(pathname))
-   ) {
-      return 'readOnly';
-   }
-   if (method === 'GET' && V2_NESTED_READ_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (method === 'GET' && V2_TOP_LEVEL_TRANSACTIONS_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (method === 'PUT' && V2_ROSTER_WRITE_ROUTE.test(pathname)) {
-      return 'readWrite';
+   if (V2_ROUTE.test(pathname)) {
+      if (method !== 'GET') return 'readWrite';
+      return READ_WRITE_HOST_READS.some((route) => route.test(pathname))
+         ? 'readWrite'
+         : 'readOnly';
    }
    throw new FrontendApiError(
-      'Route is not in the observed Yahoo frontend API allowlist',
+      'Frontend routes must target /fantasy/v2 or /fantasy/v3',
       pathname,
    );
 }
@@ -140,13 +133,6 @@ export function resolveFrontendRoute(
    const path = normalizePath(route);
    const url = new URL(path, FRONTEND_API_ORIGINS.readOnly);
    const host = routeHost(method, url.pathname);
-
-   if (method !== 'GET' && V3_ROUTE.test(url.pathname)) {
-      throw new FrontendApiError(
-         'The observed v3 frontend routes are read-only',
-         path,
-      );
-   }
 
    return {
       host,
@@ -164,9 +150,51 @@ function normalizeCookieHeader(cookieHeader: string): string {
    return normalized;
 }
 
+const MAX_ERROR_DESCRIPTION_LENGTH = 200;
+
+/**
+ * Extracts Yahoo's error description, e.g. `subresource ... not supported`,
+ * so unsupported routes fail with a useful message. Authentication failures
+ * never surface response content.
+ */
+async function yahooErrorDescription(
+   response: Response,
+): Promise<string | undefined> {
+   if (response.status === 401 || response.status === 403) return undefined;
+   let description: unknown;
+   try {
+      const body = await response.text();
+      const contentType = response.headers.get('content-type') ?? '';
+      description = contentType.includes('json')
+         ? (JSON.parse(body) as { error?: { description?: unknown } }).error
+              ?.description
+         : parseXMLError(body);
+   } catch {
+      return undefined;
+   }
+   if (typeof description !== 'string') return undefined;
+   const normalized = description.replace(/\s+/g, ' ').trim();
+   return normalized.slice(0, MAX_ERROR_DESCRIPTION_LENGTH) || undefined;
+}
+
 function hasHeader(headers: Record<string, string>, name: string): boolean {
    return Object.keys(headers).some((key) => key.toLowerCase() === name);
 }
+
+type FrontendWriter = <T>(
+   method: Exclude<FrontendHttpMethod, 'GET'>,
+   route: string,
+   options: FrontendRequestOptions,
+) => Promise<T | undefined>;
+
+/**
+ * Write access for the typed resource transport. The client deliberately has
+ * no public write methods, so arbitrary write paths cannot be sent through it.
+ */
+const frontendWriters = new WeakMap<
+   YahooFrontendApiClient,
+   FrontendWriter
+>();
 
 export class YahooFrontendApiClient {
    private readonly authentication: FrontendAuthentication;
@@ -195,6 +223,10 @@ export class YahooFrontendApiClient {
             'A browser session requires browser-session authentication',
          );
       }
+
+      frontendWriters.set(this, (method, route, options) =>
+         this.request(method, route, options),
+      );
    }
 
    get<T = unknown>(
@@ -202,29 +234,6 @@ export class YahooFrontendApiClient {
       options?: Omit<FrontendRequestOptions, 'body'>,
    ): Promise<T> {
       return this.request<T>('GET', route, options) as Promise<T>;
-   }
-
-   post<T = unknown>(
-      route: string,
-      body?: Record<string, unknown> | string,
-      options?: Omit<FrontendRequestOptions, 'body'>,
-   ): Promise<T | undefined> {
-      return this.request<T>('POST', route, { ...options, body });
-   }
-
-   put<T = unknown>(
-      route: string,
-      body?: Record<string, unknown> | string,
-      options?: Omit<FrontendRequestOptions, 'body'>,
-   ): Promise<T | undefined> {
-      return this.request<T>('PUT', route, { ...options, body });
-   }
-
-   delete<T = unknown>(
-      route: string,
-      options?: Omit<FrontendRequestOptions, 'body'>,
-   ): Promise<T | undefined> {
-      return this.request<T>('DELETE', route, options);
    }
 
    private async request<T>(
@@ -310,8 +319,9 @@ export class YahooFrontendApiClient {
       }
 
       if (!response.ok) {
+         const description = await yahooErrorDescription(response);
          throw new FrontendApiError(
-            `Frontend API request failed with HTTP ${response.status}`,
+            `Frontend API request failed with HTTP ${response.status}${description ? `: ${description}` : ''}`,
             resolved.path,
             response.status,
          );
@@ -350,30 +360,35 @@ class FrontendResourceTransport implements HttpTransport {
       path: string,
       body?: Record<string, unknown> | string,
    ): Promise<T | undefined> {
-      const route = frontendResourcePath(path);
-      this.assertPrivateAccess(route);
-      return this.client.post<T>(route, body, {
-         access: this.access,
-      });
+      return this.write<T>('POST', path, body);
    }
 
    put<T = unknown>(
       path: string,
       body?: Record<string, unknown> | string,
    ): Promise<T | undefined> {
-      const route = frontendResourcePath(path);
-      this.assertPrivateAccess(route);
-      return this.client.put<T>(route, body, {
-         access: this.access,
-      });
+      return this.write<T>('PUT', path, body);
    }
 
    delete<T = unknown>(path: string): Promise<T | undefined> {
+      return this.write<T>('DELETE', path);
+   }
+
+   private write<T>(
+      method: Exclude<FrontendHttpMethod, 'GET'>,
+      path: string,
+      body?: Record<string, unknown> | string,
+   ): Promise<T | undefined> {
       const route = frontendResourcePath(path);
       this.assertPrivateAccess(route);
-      return this.client.delete<T>(route, {
-         access: this.access,
-      });
+      const writer = frontendWriters.get(this.client);
+      if (!writer) {
+         throw new FrontendApiError(
+            'Frontend writes require a YahooFrontendApiClient',
+            route,
+         );
+      }
+      return writer<T>(method, route, { access: this.access, body });
    }
 
    private assertPrivateAccess(route: string): void {
