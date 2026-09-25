@@ -1,4 +1,7 @@
-import { resolveFrontendRoute } from '../../src/client/frontend.js';
+import {
+   type FrontendApiHost,
+   resolveFrontendRoute,
+} from '../../src/client/frontend.js';
 
 export type ProbeHost = 'readOnly' | 'readWrite' | 'neutral';
 export type ProbeAuth = 'public' | 'cookie';
@@ -8,6 +11,11 @@ export interface FrontendProbeDefinition {
    description: string;
    host: ProbeHost;
    path: string;
+   /**
+    * Evidence label, not an access gate: `current` routes are verified live,
+    * `candidate` routes are unverified, and `negative` routes are expected to
+    * be rejected by Yahoo.
+    */
    category: 'current' | 'candidate' | 'negative';
    requires?: readonly string[];
 }
@@ -28,8 +36,9 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
    },
    {
       id: 'current-league-teams',
-      description: 'Observed league-to-teams read',
-      host: 'readWrite',
+      description:
+         'League-to-teams read (the web app sends it to pub-api-rw; pub-api-ro serves the same body)',
+      host: 'readOnly',
       path: `/fantasy/v2/league/${leagueKey}/teams`,
       category: 'current',
       requires: ['YAHOO_FRONTEND_LEAGUE_KEY'],
@@ -95,7 +104,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'League draft results sub-resource',
       host: 'readOnly',
       path: `/fantasy/v2/league/${leagueKey}/draftresults`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_LEAGUE_KEY'],
    },
    {
@@ -103,7 +112,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'Team standings sub-resource',
       host: 'readOnly',
       path: `/fantasy/v2/team/${teamKey}/standings`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_TEAM_KEY'],
    },
    {
@@ -119,7 +128,7 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
       description: 'Top-level transactions collection',
       host: 'readOnly',
       path: `/fantasy/v2/transactions;transaction_keys=${transactionKey}`,
-      category: 'candidate',
+      category: 'current',
       requires: ['YAHOO_FRONTEND_TRANSACTION_KEY'],
    },
    {
@@ -156,13 +165,9 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
    },
 ];
 
-export function localPolicy(path: string): 'allowed' | 'rejected' {
-   try {
-      resolveFrontendRoute('GET', path);
-      return 'allowed';
-   } catch {
-      return 'rejected';
-   }
+/** The host the frontend adapter would send this GET to. */
+export function adapterHost(path: string): FrontendApiHost {
+   return resolveFrontendRoute('GET', path).host;
 }
 
 export function missingRequirements(

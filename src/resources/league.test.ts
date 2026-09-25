@@ -50,6 +50,18 @@ describe('LeagueResource', () => {
          'league/nfl.l.123/transactions;transaction_keys=nfl.l.123.tr.9',
       );
    });
+
+   it('includes draft results on the league resource', () => {
+      const resource = LeagueResource.create(
+         transport,
+         emptyState,
+         'nfl.l.123',
+      );
+
+      expect(resource.include('draftresults').toPath()).toBe(
+         'league/nfl.l.123;out=draftresults',
+      );
+   });
 });
 
 describe('LeaguesCollection', () => {

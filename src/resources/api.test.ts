@@ -83,6 +83,10 @@ describe('ApiRoot', () => {
          .percentOwned();
       const teamStats = api.teams(['465.l.1.t.1']).stats();
       const playerStats = api.players(['465.p.1']).stats();
+      const teamStandings = api.team('465.l.1.t.1').include('standings');
+      const leagueDraftResults = api
+         .league('465.l.1')
+         .include('draftresults');
 
       type GameActual = Awaited<ReturnType<typeof gameIncludes.get>>;
       type GameExpected = RequireResponsePath<
@@ -220,8 +224,34 @@ describe('ApiRoot', () => {
          >
       >;
 
+      type TeamStandingsActual = Awaited<
+         ReturnType<typeof teamStandings.get>
+      >;
+      type TeamStandingsExpected = RequireResponsePath<
+         import('../domain/normalized.js').YahooTeamResponseDto,
+         readonly ['team', 'teamStandings']
+      >;
+      type _TeamStandingsEqual = Assert<
+         Equal<TeamStandingsActual, TeamStandingsExpected>
+      >;
+
+      type LeagueDraftResultsActual = Awaited<
+         ReturnType<typeof leagueDraftResults.get>
+      >;
+      type LeagueDraftResultsExpected = RequireResponsePath<
+         YahooLeagueResponseDto,
+         readonly ['league', 'draftResults']
+      >;
+      type _LeagueDraftResultsEqual = Assert<
+         Equal<LeagueDraftResultsActual, LeagueDraftResultsExpected>
+      >;
+
       expect(gameIncludes.toPath()).toContain(
          'game_weeks,stat_categories,position_types',
+      );
+      expect(teamStandings.toPath()).toBe('team/465.l.1.t.1;out=standings');
+      expect(leagueDraftResults.toPath()).toBe(
+         'league/465.l.1;out=draftresults',
       );
    });
 

@@ -22,7 +22,7 @@ async function privateResourceRead(
 ): Promise<void> {
    const storageState = await loadStorageState(storageStatePath);
    const apiUrl = new URL(
-      `https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/league/${leagueKey}/teams`,
+      `https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2/league/${leagueKey}/teams`,
    );
    const cookieHeader = cookieHeaderForUrl(storageState, apiUrl);
    if (!cookieHeader) {

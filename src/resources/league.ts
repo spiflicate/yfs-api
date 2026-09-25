@@ -25,14 +25,21 @@ import type {
    TransactionKeyLike,
 } from './types.js';
 
-const leagueSubResources = ['settings', 'standings', 'scoreboard'] as const;
+const leagueSubResources = [
+   'settings',
+   'standings',
+   'scoreboard',
+   'draftresults',
+] as const;
 type LeagueSubResource = (typeof leagueSubResources)[number];
 type LeagueExpansionField<T extends LeagueSubResource> = T extends
    | 'settings'
    | 'standings'
    | 'scoreboard'
    ? T
-   : never;
+   : T extends 'draftresults'
+     ? 'draftResults'
+     : never;
 type LeagueExpansionPath<
    TPath extends ResponsePath,
    TSubResource extends LeagueSubResource,
