@@ -68,8 +68,10 @@ for (const user of response.users) {
 const league = await client
   .api()
   .league('1.l.2')
-  .include('settings', 'standings')
+  .include('settings', 'standings', 'draftresults')
   .get();
+
+const team = await client.api().team('1.l.2.t.3').include('standings').get();
 ```
 
 Root plural selectors require at least one key. Filters and selectors are
@@ -99,6 +101,15 @@ const confirmation = await client
 Transaction mutation builders and resources are intentionally not public.
 Transaction DTOs describe read responses only.
 
+## Experimental Frontend Adapter
+
+`YahooFrontendApiClient` and `createFrontendApi` target Yahoo's observed web
+frontend routes. They are separate from the OAuth client and not a supported
+Yahoo API. Reads under `/fantasy/v2/` and `/fantasy/v3/` are sent as-is; writes
+are limited to an internal allowlist (currently the roster `PUT`) and require
+a user-supplied browser session. See
+[docs/frontend-api-adapter.md](docs/frontend-api-adapter.md).
+
 ## Raw XML
 
 Use `client.requestRawXml(path, options)` when the normalized DTO is not
@@ -109,7 +120,9 @@ suitable. Regular resource reads continue to parse and normalize Yahoo XML.
 The package root exports the client, OAuth 1.0 and OAuth 2.0 clients/types,
 OAuth state request type, `Config`, `TokenStorage`, `RequestOptions`, error
 classes and guards, common key/scalar types, normalized DTOs,
-`RosterMoveBuilder`, `RosterCoverageOptions`, and `parseYahooXML`.
+`RosterMoveBuilder`, `RosterCoverageOptions`, `parseYahooXML`, and the
+experimental frontend adapter (`YahooFrontendApiClient`, `createFrontendApi`,
+`resolveFrontendRoute`, `FrontendApiError`, and their types).
 
 ## Development
 
@@ -131,10 +144,11 @@ Live integration tests are manual. Destructive tests require the separate
 - [OAuth 2.0](docs/OAUTH2_IMPLEMENTATION.md)
 - [Token storage contract](docs/TOKEN_FILE_GUIDE.md)
 - [Integration tests](docs/INTEGRATION_TEST_SETUP.md)
+- [Experimental frontend adapter](docs/frontend-api-adapter.md)
 
 ## Release History
 
-`2.2.2` is the current stable API. Material for the `2.0.0-beta.*` and `1.x`
+`2.3.0` is the current stable API. Material for the `2.0.0-beta.*` and `1.x`
 lines in the changelog and archive is historical, not current guidance.
 
 MIT licensed. See `LICENSE`.
