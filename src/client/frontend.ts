@@ -8,6 +8,7 @@
 
 import { type ApiRoot, createApi } from '../resources/api.js';
 import { parseYahooXML } from '../utils/xmlParser.js';
+import { parseXMLError } from './errors.js';
 import type { HttpTransport } from './http.js';
 
 export const FRONTEND_API_ORIGINS = {
@@ -61,21 +62,41 @@ export interface ResolvedFrontendRoute {
 
 type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 
-const V2_ROUTE =
-   /^\/fantasy\/v2\/(?:game|league|player|team|user)\/[^/?;]+(?:[?;]|$)/;
-const V2_COLLECTION_READ_ROUTE = /^\/fantasy\/v2\/games(?:[?;]|$)/;
-const V2_GAME_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/game\/[^/?;]+\/(?:players|dates|game_weeks|stat_categories|position_types|roster_positions)(?:[?;]|$)/;
-const V2_NESTED_READ_ROUTE =
-   /^\/fantasy\/v2\/(?:league\/[^/?;]+\/(?:settings|standings|scoreboard|teams|players|transactions|draftresults)|team\/[^/?;]+\/(?:roster|matchups|stats|standings)|player\/[^/?;]+\/stats)(?:[?;]|$)/;
-const V2_TOP_LEVEL_TRANSACTIONS_ROUTE =
-   /^\/fantasy\/v2\/transactions(?:[?;]|$)/;
-const V3_ROUTE =
-   /^\/fantasy\/v3\/(?:getCrumb|suggested_players|user\/subscriptions)(?:[?]|$)/;
-const V2_READ_WRITE_ROUTE =
-   /^\/fantasy\/v2\/league\/[^/?;]+\/teams(?:[?;]|$)/;
-const V2_ROSTER_WRITE_ROUTE =
-   /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:[?;]|$)/;
+const V2_ROUTE = /^\/fantasy\/v2\/[^/]/;
+const V3_ROUTE = /^\/fantasy\/v3\/[^/]/;
+
+interface FrontendWriteRoute {
+   readonly method: Exclude<FrontendHttpMethod, 'GET'>;
+   /** Matched against the request pathname (query string excluded). */
+   readonly pattern: RegExp;
+}
+
+/**
+ * Frontend writes the adapter will send. Reads are not allowlisted because
+ * Yahoo rejects paths it does not serve and nothing is mutated, but a write to
+ * a real path changes real data, so every non-GET request must match an entry.
+ * Matrix parameters (`;date=...`) are allowed on the final segment only; the
+ * pattern is anchored at both ends so look-alike paths such as
+ * `.../roster/players` or `.../roster;x=1/players` are rejected. The team key
+ * must have Yahoo's `{game}.l.{league}.t.{team}` shape, which also rejects
+ * percent-encoded keys such as `T%2Fplayers`.
+ */
+const FRONTEND_WRITE_ROUTES: readonly FrontendWriteRoute[] = Object.freeze([
+   Object.freeze({
+      method: 'PUT',
+      pattern:
+         /^\/fantasy\/v2\/team\/[0-9a-z]+\.l\.\d+\.t\.\d+\/roster(?:;[^/?]*)?$/,
+   } as const),
+]);
+
+function isAllowlistedWrite(
+   method: FrontendHttpMethod,
+   pathname: string,
+): boolean {
+   return FRONTEND_WRITE_ROUTES.some(
+      (route) => route.method === method && route.pattern.test(pathname),
+   );
+}
 
 export class FrontendApiError extends Error {
    readonly status?: number;
@@ -100,35 +121,36 @@ function normalizePath(route: string): string {
    return `${url.pathname}${url.search}`;
 }
 
+/**
+ * Selects the frontend host for a request. Reads are not allowlisted: Yahoo
+ * rejects paths it does not serve. Writes must match
+ * {@link FRONTEND_WRITE_ROUTES}, and v3 routes are read-only.
+ */
 function routeHost(
    method: FrontendHttpMethod,
    pathname: string,
 ): FrontendApiHost {
-   if (V3_ROUTE.test(pathname)) return 'neutral';
-   if (method === 'GET' && V2_READ_WRITE_ROUTE.test(pathname)) {
-      return 'readWrite';
+   if (V3_ROUTE.test(pathname)) {
+      if (method !== 'GET') {
+         throw new FrontendApiError(
+            'Frontend v3 routes are read-only',
+            pathname,
+         );
+      }
+      return 'neutral';
    }
-   if (method === 'GET' && V2_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (
-      method === 'GET' &&
-      (V2_COLLECTION_READ_ROUTE.test(pathname) ||
-         V2_GAME_NESTED_READ_ROUTE.test(pathname))
-   ) {
-      return 'readOnly';
-   }
-   if (method === 'GET' && V2_NESTED_READ_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (method === 'GET' && V2_TOP_LEVEL_TRANSACTIONS_ROUTE.test(pathname)) {
-      return 'readOnly';
-   }
-   if (method === 'PUT' && V2_ROSTER_WRITE_ROUTE.test(pathname)) {
+   if (V2_ROUTE.test(pathname)) {
+      if (method === 'GET') return 'readOnly';
+      if (!isAllowlistedWrite(method, pathname)) {
+         throw new FrontendApiError(
+            'Frontend write route is not in the write allowlist',
+            pathname,
+         );
+      }
       return 'readWrite';
    }
    throw new FrontendApiError(
-      'Route is not in the observed Yahoo frontend API allowlist',
+      'Frontend routes must target /fantasy/v2 or /fantasy/v3',
       pathname,
    );
 }
@@ -140,13 +162,6 @@ export function resolveFrontendRoute(
    const path = normalizePath(route);
    const url = new URL(path, FRONTEND_API_ORIGINS.readOnly);
    const host = routeHost(method, url.pathname);
-
-   if (method !== 'GET' && V3_ROUTE.test(url.pathname)) {
-      throw new FrontendApiError(
-         'The observed v3 frontend routes are read-only',
-         path,
-      );
-   }
 
    return {
       host,
@@ -162,6 +177,33 @@ function normalizeCookieHeader(cookieHeader: string): string {
       throw new Error('Browser session cookie header is invalid');
    }
    return normalized;
+}
+
+const MAX_ERROR_DESCRIPTION_LENGTH = 200;
+
+/**
+ * Extracts Yahoo's error description, e.g. `subresource ... not supported`,
+ * so unsupported routes fail with a useful message. Authentication failures
+ * never surface response content.
+ */
+async function yahooErrorDescription(
+   response: Response,
+): Promise<string | undefined> {
+   if (response.status === 401 || response.status === 403) return undefined;
+   let description: unknown;
+   try {
+      const body = await response.text();
+      const contentType = response.headers.get('content-type') ?? '';
+      description = contentType.includes('json')
+         ? (JSON.parse(body) as { error?: { description?: unknown } }).error
+              ?.description
+         : parseXMLError(body);
+   } catch {
+      return undefined;
+   }
+   if (typeof description !== 'string') return undefined;
+   const normalized = description.replace(/\s+/g, ' ').trim();
+   return normalized.slice(0, MAX_ERROR_DESCRIPTION_LENGTH) || undefined;
 }
 
 function hasHeader(headers: Record<string, string>, name: string): boolean {
@@ -310,8 +352,9 @@ export class YahooFrontendApiClient {
       }
 
       if (!response.ok) {
+         const description = await yahooErrorDescription(response);
          throw new FrontendApiError(
-            `Frontend API request failed with HTTP ${response.status}`,
+            `Frontend API request failed with HTTP ${response.status}${description ? `: ${description}` : ''}`,
             resolved.path,
             response.status,
          );
@@ -392,7 +435,8 @@ function frontendResourcePath(path: string): string {
 
 /**
  * Creates the canonical fluent resource API over the observed frontend v2
- * adapter. Only routes accepted by the frontend adapter's allowlist execute.
+ * adapter. Reads go to any v2 path; writes must match
+ * {@link FRONTEND_WRITE_ROUTES}.
  */
 export function createFrontendApi(
    client: YahooFrontendApiClient,

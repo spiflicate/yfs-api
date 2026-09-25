@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- The frontend adapter read allowlist. Any `GET` under `/fantasy/v2/` or
+  `/fantasy/v3/` is sent; Yahoo rejects routes it does not serve.
+
 ### Added
 
 - `TeamResource`/`TeamsCollection.include('standings')`, requesting a team's
@@ -24,11 +29,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Expanded the experimental frontend adapter allowlist to accept the
-  observed, read-only `league/{league_key}/draftresults` and
-  `team/{team_key}/standings` nested routes, and the top-level
-  `transactions;transaction_keys=...` collection route (GET only). Verified
-  live against Yahoo's public read-only host.
+- `resolveFrontendRoute` now selects a host from the method and API version
+  (v2 reads → `pub-api-ro`, v2 writes → `pub-api-rw`, v3 → `pub-api`) and
+  only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/`, for v3
+  writes, or for writes outside the write allowlist. Every v2 read, including `league/{league_key}/teams`, goes to
+  `pub-api-ro`; a live check showed it serves the same body as `pub-api-rw`.
+- Frontend writes are gated by a separate internal write allowlist, which
+  currently holds only `PUT /fantasy/v2/team/{team_key}/roster`. It applies to
+  `YahooFrontendApiClient.post()`, `.put()`, `.delete()` and typed resource
+  writes alike, and is anchored at both ends, so look-alike paths such as
+  `.../roster/players` or `.../roster;x=1/players` (accepted by the previous
+  start-anchored patterns) are now rejected before a request is sent.
+- `FrontendApiError` messages for rejected requests include Yahoo's error
+  description when the response carries one (never for `401`/`403`).
+- The frontend verification matrix records route evidence instead of the
+  adapter's local policy; probe results report `adapterHost`.
+- Verified the read-only `league/{league_key}/draftresults` and
+  `team/{team_key}/standings` nested routes and the top-level
+  `transactions;transaction_keys=...` collection route live against Yahoo's
+  public read-only host, and recorded them in the frontend verification
+  matrix.
 
 ## [2.2.2] - 2026-09-12
 

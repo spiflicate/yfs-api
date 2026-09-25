@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { RosterMoveBuilder } from '../resources/builders/roster-move-builder.js';
 import {
    createFrontendApi,
    FrontendApiError,
@@ -11,16 +12,13 @@ const V2_GAME_FIXTURE =
 const V3_CRUMB_FIXTURE = { service: { crumb: null } };
 
 describe('Yahoo frontend API adapter', () => {
-   test('maps observed routes to their required subdomains', () => {
+   test('selects the frontend host from the method and API version', () => {
       expect(
          resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1'),
       ).toMatchObject({
          host: 'readOnly',
          origin: 'https://pub-api-ro.fantasysports.yahoo.com',
       });
-      expect(
-         resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1/teams'),
-      ).toMatchObject({ host: 'readWrite' });
       expect(
          resolveFrontendRoute('PUT', '/fantasy/v2/team/223.l.1.t.1/roster'),
       ).toMatchObject({
@@ -33,63 +31,55 @@ describe('Yahoo frontend API adapter', () => {
          host: 'neutral',
          origin: 'https://pub-api.fantasysports.yahoo.com',
       });
+   });
+
+   test('sends every v2 read to the read-only host', () => {
+      for (const path of [
+         '/fantasy/v2/league/223.l.1/teams',
+         '/fantasy/v2/league/223.l.1/teams;out=standings',
+         '/fantasy/v2/league/223.l.1/teams/roster',
+         '/fantasy/v2/league/223.l.1;out=teams',
+         '/fantasy/v2/leagues;league_keys=223.l.1/teams',
+      ]) {
+         expect(resolveFrontendRoute('GET', path)).toMatchObject({
+            host: 'readOnly',
+         });
+      }
+   });
+
+   test('does not gate reads on a route allowlist', () => {
+      for (const path of [
+         '/fantasy/v2/users;use_login=1/games;game_keys=nhl/leagues',
+         '/fantasy/v2/players;player_keys=nhl.p.1/stats',
+         '/fantasy/v2/game/nhl/leagues;league_keys=nhl.l.1/teams',
+         '/fantasy/v2/team/223.l.1.t.1/roster/players',
+         '/fantasy/v2/league/223.l.1/unknown',
+         '/fantasy/v3/suggested_players?context=add-drop',
+      ]) {
+         expect(() => resolveFrontendRoute('GET', path)).not.toThrow();
+      }
+   });
+
+   test('rejects routes outside the frontend API namespaces', () => {
+      for (const route of [
+         '/fantasy/v1/game/nhl',
+         '/fantasy/v2',
+         '/fantasy/v2/',
+         '/fantasy/v3/',
+         '/other/v2/game/nhl',
+         '/fantasy/v2/game/nhl/../../../other',
+         'https://example.com/fantasy/v2/game/nhl',
+      ]) {
+         expect(() => resolveFrontendRoute('GET', route)).toThrow(
+            FrontendApiError,
+         );
+      }
+   });
+
+   test('keeps v3 routes read-only', () => {
       expect(() =>
-         resolveFrontendRoute('GET', '/fantasy/v3/getCrumb/unknown'),
-      ).toThrow(FrontendApiError);
-      expect(() =>
-         resolveFrontendRoute(
-            'PUT',
-            '/fantasy/v2/team/223.l.1.t.1/roster/unknown',
-         ),
-      ).toThrow(FrontendApiError);
-      expect(
-         resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/players'),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(
-         resolveFrontendRoute('GET', '/fantasy/v2/game/nhl/dates'),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(
-         resolveFrontendRoute('GET', '/fantasy/v2/games;game_codes=nhl'),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(() =>
-         resolveFrontendRoute('GET', '/fantasy/v2/league/223.l.1/unknown'),
-      ).toThrow(FrontendApiError);
-      expect(
-         resolveFrontendRoute(
-            'GET',
-            '/fantasy/v2/player/386.p.6381/stats;type=date;date=2018-11-01',
-         ),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(() =>
-         resolveFrontendRoute('PUT', '/fantasy/v2/player/386.p.6381/stats'),
-      ).toThrow(FrontendApiError);
-      expect(() =>
-         resolveFrontendRoute(
-            'GET',
-            '/fantasy/v2/player/386.p.6381/roster',
-         ),
-      ).toThrow(FrontendApiError);
-      expect(
-         resolveFrontendRoute(
-            'GET',
-            '/fantasy/v2/league/223.l.1/draftresults',
-         ),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(
-         resolveFrontendRoute(
-            'GET',
-            '/fantasy/v2/team/223.l.1.t.1/standings',
-         ),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(
-         resolveFrontendRoute(
-            'GET',
-            '/fantasy/v2/transactions;transaction_keys=223.l.1.tr.1',
-         ),
-      ).toMatchObject({ host: 'readOnly' });
-      expect(() =>
-         resolveFrontendRoute('POST', '/fantasy/v2/transactions'),
-      ).toThrow(FrontendApiError);
+         resolveFrontendRoute('PUT', '/fantasy/v3/getCrumb'),
+      ).toThrow('Frontend v3 routes are read-only');
    });
 
    test('allows unauthenticated public reads without OAuth headers', async () => {
@@ -125,15 +115,15 @@ describe('Yahoo frontend API adapter', () => {
       );
    });
 
-   test('requires a browser session for writes and sends it only to the request', async () => {
+   test('sends typed resource writes with the browser session to the read-write host', async () => {
       let requestUrl: URL | undefined;
-      let requestHeaders: HeadersInit | undefined;
+      let requestInit: RequestInit | undefined;
       const client = new YahooFrontendApiClient({
          authentication: 'browser-session',
          session: { cookieHeader: 'session=secret' },
          fetch: async (url, init) => {
             requestUrl = url;
-            requestHeaders = init?.headers;
+            requestInit = init;
             return new Response(
                '<fantasy_content><confirmation><status>success</status></confirmation></fantasy_content>',
                { headers: { 'content-type': 'application/xml' } },
@@ -141,17 +131,150 @@ describe('Yahoo frontend API adapter', () => {
          },
       });
 
-      await expect(
-         client.put('/fantasy/v2/team/223.l.1.t.1/roster', '<roster />'),
-      ).resolves.toEqual({ confirmation: { status: 'success' } });
-      expect(requestUrl?.origin).toBe(
-         'https://pub-api-rw.fantasysports.yahoo.com',
+      await createFrontendApi(client, { access: 'private' })
+         .team('223.l.1.t.1')
+         .roster()
+         .date('2026-09-23')
+         .update(new RosterMoveBuilder().movePlayer('223.p.1', 'BN'));
+      expect(requestInit?.method).toBe('PUT');
+      expect(requestUrl?.toString()).toBe(
+         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/team/223.l.1.t.1/roster;date=2026-09-23',
       );
-      expect(requestHeaders).toMatchObject({
+      expect(requestInit?.headers).toMatchObject({
          Accept: 'application/xml',
          Cookie: 'session=secret',
          'Content-Type': 'application/xml',
       });
+   });
+
+   test('sends raw roster writes with the browser session to the read-write host', async () => {
+      let requestUrl: URL | undefined;
+      let requestInit: RequestInit | undefined;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async (url, init) => {
+            requestUrl = url;
+            requestInit = init;
+            return new Response(null, { status: 204 });
+         },
+      });
+
+      await expect(
+         client.put(
+            '/fantasy/v2/team/223.l.1.t.1/roster;date=2026-09-23',
+            '<fantasy_content />',
+            { access: 'private' },
+         ),
+      ).resolves.toBeUndefined();
+      expect(requestInit?.method).toBe('PUT');
+      expect(requestUrl?.toString()).toBe(
+         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/team/223.l.1.t.1/roster;date=2026-09-23',
+      );
+      expect(requestInit?.headers).toMatchObject({
+         Cookie: 'session=secret',
+         'Content-Type': 'application/xml',
+      });
+      expect(requestInit?.body).toBe('<fantasy_content />');
+   });
+
+   test('rejects raw writes to routes outside the write allowlist before fetch', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+      const message = 'Frontend write route is not in the write allowlist';
+
+      await expect(
+         client.post('/fantasy/v2/league/223.l.1/transactions', '<x />'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.put('/fantasy/v2/league/223.l.1/teams', '<x />'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.delete('/fantasy/v2/transaction/223.l.1.tr.1'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.post('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+      ).rejects.toMatchObject({ message });
+      expect(called).toBe(false);
+   });
+
+   test('rejects look-alike roster write paths', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      for (const route of [
+         '/fantasy/v2/team/223.l.1.t.1/roster/players',
+         '/fantasy/v2/team/223.l.1.t.1/roster;x=1/players',
+         '/fantasy/v2/team/223.l.1.t.1/rosterx',
+         '/fantasy/v2/team/223.l.1.t.1%2Fplayers/roster',
+         '/fantasy/v2/team/not-a-team-key/roster',
+         '/fantasy/v2/team/223.l.1.t.1/roster/',
+         '/fantasy/v2/league/223.l.1/team/223.l.1.t.1/roster',
+      ]) {
+         expect(() => resolveFrontendRoute('PUT', route)).toThrow(
+            'Frontend write route is not in the write allowlist',
+         );
+         await expect(client.put(route, '<x />')).rejects.toBeInstanceOf(
+            FrontendApiError,
+         );
+      }
+      expect(called).toBe(false);
+   });
+
+   test('rejects raw writes with public authentication before fetch', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      for (const write of [
+         () => client.put('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+         () => client.post('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+         () => client.delete('/fantasy/v2/team/223.l.1.t.1/roster'),
+      ]) {
+         await expect(write()).rejects.toMatchObject({
+            message: 'Public frontend authentication is read-only',
+         });
+      }
+      expect(called).toBe(false);
+   });
+
+   test('rejects typed writes through public resource access before fetch', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      await expect(
+         createFrontendApi(client)
+            .team('223.l.1.t.1')
+            .roster()
+            .date('2026-09-23')
+            .update(new RosterMoveBuilder().movePlayer('223.p.1', 'BN')),
+      ).rejects.toMatchObject({
+         message: 'Public frontend resource API access is read-only',
+      });
+      expect(called).toBe(false);
    });
 
    test('accepts a Cookie header copied from browser developer tools', async () => {
@@ -174,7 +297,7 @@ describe('Yahoo frontend API adapter', () => {
       });
    });
 
-   test('rejects public writes and unknown routes before fetch', async () => {
+   test('rejects invalid requests before fetch', async () => {
       let called = false;
       const client = new YahooFrontendApiClient({
          fetch: async () => {
@@ -184,10 +307,7 @@ describe('Yahoo frontend API adapter', () => {
       });
 
       await expect(
-         client.post('/fantasy/v2/league/223.l.1'),
-      ).rejects.toBeInstanceOf(FrontendApiError);
-      await expect(
-         client.get('/fantasy/v3/unknown'),
+         client.get('/fantasy/v1/game/nhl'),
       ).rejects.toBeInstanceOf(FrontendApiError);
       await expect(
          client.get('/fantasy/v2/league/223.l.1', { access: 'private' }),
@@ -220,6 +340,27 @@ describe('Yahoo frontend API adapter', () => {
       });
    });
 
+   test("surfaces Yahoo's error description for unsupported routes", async () => {
+      const client = new YahooFrontendApiClient({
+         fetch: async () =>
+            new Response(
+               '<?xml version="1.0"?><error xmlns="http://www.yahooapis.com/v1/base.rng"><description>subresource not-a-real-child not supported</description></error>',
+               {
+                  status: 400,
+                  headers: { 'content-type': 'application/xml' },
+               },
+            ),
+      });
+
+      await expect(
+         client.get('/fantasy/v2/team/223.l.1.t.1/not-a-real-child'),
+      ).rejects.toMatchObject({
+         status: 400,
+         message:
+            'Frontend API request failed with HTTP 400: subresource not-a-real-child not supported',
+      });
+   });
+
    test('runs the fluent resource API through the observed v2 adapter', async () => {
       let requestUrl: URL | undefined;
       const client = new YahooFrontendApiClient({
@@ -246,7 +387,7 @@ describe('Yahoo frontend API adapter', () => {
       expect(response.league?.leagueKey).toBe('223.l.1');
       expect(response.league?.teams?.[0]?.teamKey).toBe('223.l.1.t.1');
       expect(requestUrl?.toString()).toBe(
-         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
+         'https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
       );
    });
 
