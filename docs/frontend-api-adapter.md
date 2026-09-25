@@ -44,8 +44,8 @@ Reads are not allowlisted; writes are.
   message (for example `subresource ... not supported`). Authentication
   failures (`401`/`403`) never include response content.
 - Every write (`client.post()`, `client.put()`, `client.delete()`, or a typed
-  resource operation) must match the write allowlist,
-  `FRONTEND_WRITE_ROUTES`, and fails before a request is sent otherwise. A
+  resource operation) must match the adapter's internal write allowlist, and
+  fails before a request is sent otherwise. A
   write to a real path changes real data, so writes keep a local gate. The
   allowlist currently holds one route:
 

@@ -65,7 +65,7 @@ type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 const V2_ROUTE = /^\/fantasy\/v2\/[^/]/;
 const V3_ROUTE = /^\/fantasy\/v3\/[^/]/;
 
-export interface FrontendWriteRoute {
+interface FrontendWriteRoute {
    readonly method: Exclude<FrontendHttpMethod, 'GET'>;
    /** Matched against the request pathname (query string excluded). */
    readonly pattern: RegExp;
@@ -79,13 +79,12 @@ export interface FrontendWriteRoute {
  * pattern is anchored at both ends so look-alike paths such as
  * `.../roster/players` or `.../roster;x=1/players` are rejected.
  */
-export const FRONTEND_WRITE_ROUTES: readonly FrontendWriteRoute[] =
-   Object.freeze([
-      Object.freeze({
-         method: 'PUT',
-         pattern: /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:;[^/?]*)?$/,
-      } as const),
-   ]);
+const FRONTEND_WRITE_ROUTES: readonly FrontendWriteRoute[] = Object.freeze([
+   Object.freeze({
+      method: 'PUT',
+      pattern: /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:;[^/?]*)?$/,
+   } as const),
+]);
 
 function isAllowlistedWrite(
    method: FrontendHttpMethod,

@@ -34,9 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/` or for v3
   writes. Every v2 read, including `league/{league_key}/teams`, goes to
   `pub-api-ro`; a live check showed it serves the same body as `pub-api-rw`.
-- Frontend writes are gated by a separate write allowlist,
-  `FRONTEND_WRITE_ROUTES`, which currently holds only
-  `PUT /fantasy/v2/team/{team_key}/roster`. It applies to
+- Frontend writes are gated by a separate internal write allowlist, which
+  currently holds only `PUT /fantasy/v2/team/{team_key}/roster`. It applies to
   `YahooFrontendApiClient.post()`, `.put()`, `.delete()` and typed resource
   writes alike, and is anchored at both ends, so look-alike paths such as
   `.../roster/players` or `.../roster;x=1/players` (accepted by the previous
