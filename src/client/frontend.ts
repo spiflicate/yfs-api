@@ -65,6 +65,37 @@ type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 const V2_ROUTE = /^\/fantasy\/v2\/[^/]/;
 const V3_ROUTE = /^\/fantasy\/v3\/[^/]/;
 
+export interface FrontendWriteRoute {
+   readonly method: Exclude<FrontendHttpMethod, 'GET'>;
+   /** Matched against the request pathname (query string excluded). */
+   readonly pattern: RegExp;
+}
+
+/**
+ * Frontend writes the adapter will send. Reads are not allowlisted because
+ * Yahoo rejects paths it does not serve and nothing is mutated, but a write to
+ * a real path changes real data, so every non-GET request must match an entry.
+ * Matrix parameters (`;date=...`) are allowed on the final segment only; the
+ * pattern is anchored at both ends so look-alike paths such as
+ * `.../roster/players` or `.../roster;x=1/players` are rejected.
+ */
+export const FRONTEND_WRITE_ROUTES: readonly FrontendWriteRoute[] =
+   Object.freeze([
+      Object.freeze({
+         method: 'PUT',
+         pattern: /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:;[^/?]*)?$/,
+      } as const),
+   ]);
+
+function isAllowlistedWrite(
+   method: FrontendHttpMethod,
+   pathname: string,
+): boolean {
+   return FRONTEND_WRITE_ROUTES.some(
+      (route) => route.method === method && route.pattern.test(pathname),
+   );
+}
+
 export class FrontendApiError extends Error {
    readonly status?: number;
    readonly route: string;
@@ -89,9 +120,9 @@ function normalizePath(route: string): string {
 }
 
 /**
- * Selects the frontend host for a request. The frontend adapter does not keep
- * a route allowlist: Yahoo rejects paths it does not serve, public access is
- * read-only, and writes are only reachable through typed resource operations.
+ * Selects the frontend host for a request. Reads are not allowlisted: Yahoo
+ * rejects paths it does not serve. Writes must match
+ * {@link FRONTEND_WRITE_ROUTES}, and v3 routes are read-only.
  */
 function routeHost(
    method: FrontendHttpMethod,
@@ -107,7 +138,14 @@ function routeHost(
       return 'neutral';
    }
    if (V2_ROUTE.test(pathname)) {
-      return method === 'GET' ? 'readOnly' : 'readWrite';
+      if (method === 'GET') return 'readOnly';
+      if (!isAllowlistedWrite(method, pathname)) {
+         throw new FrontendApiError(
+            'Frontend write route is not in the write allowlist',
+            pathname,
+         );
+      }
+      return 'readWrite';
    }
    throw new FrontendApiError(
       'Frontend routes must target /fantasy/v2 or /fantasy/v3',
@@ -170,21 +208,6 @@ function hasHeader(headers: Record<string, string>, name: string): boolean {
    return Object.keys(headers).some((key) => key.toLowerCase() === name);
 }
 
-type FrontendWriter = <T>(
-   method: Exclude<FrontendHttpMethod, 'GET'>,
-   route: string,
-   options: FrontendRequestOptions,
-) => Promise<T | undefined>;
-
-/**
- * Write access for the typed resource transport. The client deliberately has
- * no public write methods, so arbitrary write paths cannot be sent through it.
- */
-const frontendWriters = new WeakMap<
-   YahooFrontendApiClient,
-   FrontendWriter
->();
-
 export class YahooFrontendApiClient {
    private readonly authentication: FrontendAuthentication;
    private readonly session?: BrowserSession;
@@ -212,10 +235,6 @@ export class YahooFrontendApiClient {
             'A browser session requires browser-session authentication',
          );
       }
-
-      frontendWriters.set(this, (method, route, options) =>
-         this.request(method, route, options),
-      );
    }
 
    get<T = unknown>(
@@ -223,6 +242,29 @@ export class YahooFrontendApiClient {
       options?: Omit<FrontendRequestOptions, 'body'>,
    ): Promise<T> {
       return this.request<T>('GET', route, options) as Promise<T>;
+   }
+
+   post<T = unknown>(
+      route: string,
+      body?: Record<string, unknown> | string,
+      options?: Omit<FrontendRequestOptions, 'body'>,
+   ): Promise<T | undefined> {
+      return this.request<T>('POST', route, { ...options, body });
+   }
+
+   put<T = unknown>(
+      route: string,
+      body?: Record<string, unknown> | string,
+      options?: Omit<FrontendRequestOptions, 'body'>,
+   ): Promise<T | undefined> {
+      return this.request<T>('PUT', route, { ...options, body });
+   }
+
+   delete<T = unknown>(
+      route: string,
+      options?: Omit<FrontendRequestOptions, 'body'>,
+   ): Promise<T | undefined> {
+      return this.request<T>('DELETE', route, options);
    }
 
    private async request<T>(
@@ -349,35 +391,30 @@ class FrontendResourceTransport implements HttpTransport {
       path: string,
       body?: Record<string, unknown> | string,
    ): Promise<T | undefined> {
-      return this.write<T>('POST', path, body);
+      const route = frontendResourcePath(path);
+      this.assertPrivateAccess(route);
+      return this.client.post<T>(route, body, {
+         access: this.access,
+      });
    }
 
    put<T = unknown>(
       path: string,
       body?: Record<string, unknown> | string,
    ): Promise<T | undefined> {
-      return this.write<T>('PUT', path, body);
+      const route = frontendResourcePath(path);
+      this.assertPrivateAccess(route);
+      return this.client.put<T>(route, body, {
+         access: this.access,
+      });
    }
 
    delete<T = unknown>(path: string): Promise<T | undefined> {
-      return this.write<T>('DELETE', path);
-   }
-
-   private write<T>(
-      method: Exclude<FrontendHttpMethod, 'GET'>,
-      path: string,
-      body?: Record<string, unknown> | string,
-   ): Promise<T | undefined> {
       const route = frontendResourcePath(path);
       this.assertPrivateAccess(route);
-      const writer = frontendWriters.get(this.client);
-      if (!writer) {
-         throw new FrontendApiError(
-            'Frontend writes require a YahooFrontendApiClient',
-            route,
-         );
-      }
-      return writer<T>(method, route, { access: this.access, body });
+      return this.client.delete<T>(route, {
+         access: this.access,
+      });
    }
 
    private assertPrivateAccess(route: string): void {
@@ -396,7 +433,8 @@ function frontendResourcePath(path: string): string {
 
 /**
  * Creates the canonical fluent resource API over the observed frontend v2
- * adapter. Only routes accepted by the frontend adapter's allowlist execute.
+ * adapter. Reads go to any v2 path; writes must match
+ * {@link FRONTEND_WRITE_ROUTES}.
  */
 export function createFrontendApi(
    client: YahooFrontendApiClient,

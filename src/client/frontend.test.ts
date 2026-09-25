@@ -147,14 +147,111 @@ describe('Yahoo frontend API adapter', () => {
       });
    });
 
-   test('exposes no raw write methods on the client', () => {
-      const client = new YahooFrontendApiClient() as unknown as Record<
-         string,
-         unknown
-      >;
-      expect(client.post).toBeUndefined();
-      expect(client.put).toBeUndefined();
-      expect(client.delete).toBeUndefined();
+   test('sends raw roster writes with the browser session to the read-write host', async () => {
+      let requestUrl: URL | undefined;
+      let requestInit: RequestInit | undefined;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async (url, init) => {
+            requestUrl = url;
+            requestInit = init;
+            return new Response(null, { status: 204 });
+         },
+      });
+
+      await expect(
+         client.put(
+            '/fantasy/v2/team/223.l.1.t.1/roster;date=2026-09-23',
+            '<fantasy_content />',
+            { access: 'private' },
+         ),
+      ).resolves.toBeUndefined();
+      expect(requestInit?.method).toBe('PUT');
+      expect(requestUrl?.toString()).toBe(
+         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/team/223.l.1.t.1/roster;date=2026-09-23',
+      );
+      expect(requestInit?.headers).toMatchObject({
+         Cookie: 'session=secret',
+         'Content-Type': 'application/xml',
+      });
+      expect(requestInit?.body).toBe('<fantasy_content />');
+   });
+
+   test('rejects raw writes to routes outside the write allowlist before fetch', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+      const message = 'Frontend write route is not in the write allowlist';
+
+      await expect(
+         client.post('/fantasy/v2/league/223.l.1/transactions', '<x />'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.put('/fantasy/v2/league/223.l.1/teams', '<x />'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.delete('/fantasy/v2/transaction/223.l.1.tr.1'),
+      ).rejects.toMatchObject({ message });
+      await expect(
+         client.post('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+      ).rejects.toMatchObject({ message });
+      expect(called).toBe(false);
+   });
+
+   test('rejects look-alike roster write paths', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         authentication: 'browser-session',
+         session: { cookieHeader: 'session=secret' },
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      for (const route of [
+         '/fantasy/v2/team/223.l.1.t.1/roster/players',
+         '/fantasy/v2/team/223.l.1.t.1/roster;x=1/players',
+         '/fantasy/v2/team/223.l.1.t.1/rosterx',
+         '/fantasy/v2/team/223.l.1.t.1/roster/',
+         '/fantasy/v2/league/223.l.1/team/223.l.1.t.1/roster',
+      ]) {
+         expect(() => resolveFrontendRoute('PUT', route)).toThrow(
+            'Frontend write route is not in the write allowlist',
+         );
+         await expect(client.put(route, '<x />')).rejects.toBeInstanceOf(
+            FrontendApiError,
+         );
+      }
+      expect(called).toBe(false);
+   });
+
+   test('rejects raw writes with public authentication before fetch', async () => {
+      let called = false;
+      const client = new YahooFrontendApiClient({
+         fetch: async () => {
+            called = true;
+            return Response.json({});
+         },
+      });
+
+      for (const write of [
+         () => client.put('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+         () => client.post('/fantasy/v2/team/223.l.1.t.1/roster', '<x />'),
+         () => client.delete('/fantasy/v2/team/223.l.1.t.1/roster'),
+      ]) {
+         await expect(write()).rejects.toMatchObject({
+            message: 'Public frontend authentication is read-only',
+         });
+      }
+      expect(called).toBe(false);
    });
 
    test('rejects typed writes through public resource access before fetch', async () => {

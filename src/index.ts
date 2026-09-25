@@ -74,11 +74,13 @@ export type {
    FrontendResourceApiOptions,
    FrontendV2Response,
    FrontendV3Response,
+   FrontendWriteRoute,
    ResolvedFrontendRoute,
 } from './client/frontend.js';
 export {
    createFrontendApi,
    FRONTEND_API_ORIGINS,
+   FRONTEND_WRITE_ROUTES,
    FrontendApiError,
    resolveFrontendRoute,
    YahooFrontendApiClient,
