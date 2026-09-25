@@ -34,21 +34,33 @@ type V3 = FrontendV3Response<MyPayload>;
 
 ## Request gating
 
-The adapter does not keep a route allowlist. Instead it gates requests on
-capability:
+Reads are not allowlisted; writes are.
 
 - Routes must be relative paths under `/fantasy/v2/` or `/fantasy/v3/`.
   Anything else, including absolute URLs, fails before a request is sent.
 - `public` authentication sends `GET` requests only, never with cookies.
-- `YahooFrontendApiClient` has no public write methods. Writes are only
-  reachable through typed resource operations such as
-  `team(key).roster().date(...).update(moves)` on an API created with
-  `createFrontendApi(client, { access: 'private' })` and browser-session
-  authentication.
 - Unknown read paths are sent to Yahoo, which rejects routes it does not
   serve. Yahoo's error description is included in the `FrontendApiError`
   message (for example `subresource ... not supported`). Authentication
   failures (`401`/`403`) never include response content.
+- Every write (`client.post()`, `client.put()`, `client.delete()`, or a typed
+  resource operation) must match the write allowlist,
+  `FRONTEND_WRITE_ROUTES`, and fails before a request is sent otherwise. A
+  write to a real path changes real data, so writes keep a local gate. The
+  allowlist currently holds one route:
+
+  | Method | Route                                            |
+  | ------ | ------------------------------------------------ |
+  | `PUT`  | `/fantasy/v2/team/{team_key}/roster[;params]`    |
+
+  Matrix parameters such as `;date=YYYY-MM-DD` are allowed on the `roster`
+  segment, but the match is anchored at the end, so look-alike paths such as
+  `.../roster/players`, `.../roster;x=1/players`, or `.../rosterx` are
+  rejected.
+- Writes also require browser-session authentication. Typed resource writes,
+  such as `team(key).roster().date(...).update(moves)`, additionally require
+  an API created with `createFrontendApi(client, { access: 'private' })`.
+- v3 routes are read-only.
 
 `client.get(path)` is an unchecked escape hatch for reads the fluent builder
 does not model, such as the top-level
