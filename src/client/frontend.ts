@@ -77,12 +77,15 @@ interface FrontendWriteRoute {
  * a real path changes real data, so every non-GET request must match an entry.
  * Matrix parameters (`;date=...`) are allowed on the final segment only; the
  * pattern is anchored at both ends so look-alike paths such as
- * `.../roster/players` or `.../roster;x=1/players` are rejected.
+ * `.../roster/players` or `.../roster;x=1/players` are rejected. The team key
+ * must have Yahoo's `{game}.l.{league}.t.{team}` shape, which also rejects
+ * percent-encoded keys such as `T%2Fplayers`.
  */
 const FRONTEND_WRITE_ROUTES: readonly FrontendWriteRoute[] = Object.freeze([
    Object.freeze({
       method: 'PUT',
-      pattern: /^\/fantasy\/v2\/team\/[^/?;]+\/roster(?:;[^/?]*)?$/,
+      pattern:
+         /^\/fantasy\/v2\/team\/[0-9a-z]+\.l\.\d+\.t\.\d+\/roster(?:;[^/?]*)?$/,
    } as const),
 ]);
 

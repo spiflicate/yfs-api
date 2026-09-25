@@ -56,7 +56,8 @@ Reads are not allowlisted; writes are.
   Matrix parameters such as `;date=YYYY-MM-DD` are allowed on the `roster`
   segment, but the match is anchored at the end, so look-alike paths such as
   `.../roster/players`, `.../roster;x=1/players`, or `.../rosterx` are
-  rejected.
+  rejected. `{team_key}` must have Yahoo's `{game}.l.{league}.t.{team}`
+  shape.
 - Writes also require browser-session authentication. Typed resource writes,
   such as `team(key).roster().date(...).update(moves)`, additionally require
   an API created with `createFrontendApi(client, { access: 'private' })`.

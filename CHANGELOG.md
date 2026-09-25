@@ -31,8 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `resolveFrontendRoute` now selects a host from the method and API version
   (v2 reads → `pub-api-ro`, v2 writes → `pub-api-rw`, v3 → `pub-api`) and
-  only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/` or for v3
-  writes. Every v2 read, including `league/{league_key}/teams`, goes to
+  only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/`, for v3
+  writes, or for writes outside the write allowlist. Every v2 read, including `league/{league_key}/teams`, goes to
   `pub-api-ro`; a live check showed it serves the same body as `pub-api-rw`.
 - Frontend writes are gated by a separate internal write allowlist, which
   currently holds only `PUT /fantasy/v2/team/{team_key}/roster`. It applies to

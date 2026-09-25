@@ -220,6 +220,8 @@ describe('Yahoo frontend API adapter', () => {
          '/fantasy/v2/team/223.l.1.t.1/roster/players',
          '/fantasy/v2/team/223.l.1.t.1/roster;x=1/players',
          '/fantasy/v2/team/223.l.1.t.1/rosterx',
+         '/fantasy/v2/team/223.l.1.t.1%2Fplayers/roster',
+         '/fantasy/v2/team/not-a-team-key/roster',
          '/fantasy/v2/team/223.l.1.t.1/roster/',
          '/fantasy/v2/league/223.l.1/team/223.l.1.t.1/roster',
       ]) {
