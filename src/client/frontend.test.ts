@@ -33,16 +33,10 @@ describe('Yahoo frontend API adapter', () => {
       });
    });
 
-   test('keeps the observed league-to-teams read on the read-write host', () => {
+   test('sends every v2 read to the read-only host', () => {
       for (const path of [
          '/fantasy/v2/league/223.l.1/teams',
          '/fantasy/v2/league/223.l.1/teams;out=standings',
-      ]) {
-         expect(resolveFrontendRoute('GET', path)).toMatchObject({
-            host: 'readWrite',
-         });
-      }
-      for (const path of [
          '/fantasy/v2/league/223.l.1/teams/roster',
          '/fantasy/v2/league/223.l.1;out=teams',
          '/fantasy/v2/leagues;league_keys=223.l.1/teams',
@@ -294,7 +288,7 @@ describe('Yahoo frontend API adapter', () => {
       expect(response.league?.leagueKey).toBe('223.l.1');
       expect(response.league?.teams?.[0]?.teamKey).toBe('223.l.1.t.1');
       expect(requestUrl?.toString()).toBe(
-         'https://pub-api-rw.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
+         'https://pub-api-ro.fantasysports.yahoo.com/fantasy/v2/league/223.l.1/teams',
       );
    });
 

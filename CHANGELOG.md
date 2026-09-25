@@ -37,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `resolveFrontendRoute` now selects a host from the method and API version
   (v2 reads → `pub-api-ro`, v2 writes → `pub-api-rw`, v3 → `pub-api`) and
   only throws for paths outside `/fantasy/v2/` and `/fantasy/v3/` or for v3
-  writes. The league-to-teams read stays on `pub-api-rw`, as observed.
+  writes. Every v2 read, including `league/{league_key}/teams`, goes to
+  `pub-api-ro`; a live check showed it serves the same body as `pub-api-rw`.
 - `FrontendApiError` messages for rejected requests include Yahoo's error
   description when the response carries one (never for `401`/`403`).
 - The frontend verification matrix records route evidence instead of the

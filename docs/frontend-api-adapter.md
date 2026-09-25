@@ -11,8 +11,9 @@ client and does not claim that these routes are a supported third-party API.
 - `browser-session` requires an explicitly supplied, user-managed Cookie header.
   It is the only mode that permits writes and is also required when reading
   private league data. Mark a private read with `access: 'private'`.
-- v2 `GET` requests use `pub-api-ro`, except the league-to-teams read
-  (`league/{league_key}/teams`), which the web app sends to `pub-api-rw`.
+- v2 `GET` requests use `pub-api-ro`. The web app sends the league-to-teams
+  read (`league/{league_key}/teams`) to `pub-api-rw`, but `pub-api-ro` returns
+  the same body for it, with or without a browser session.
 - v2 writes use `pub-api-rw`.
 - v3 requests use the neutral `pub-api` host and are read-only.
 

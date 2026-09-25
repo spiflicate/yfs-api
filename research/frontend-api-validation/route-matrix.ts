@@ -36,8 +36,9 @@ export const FRONTEND_PROBE_MATRIX: readonly FrontendProbeDefinition[] = [
    },
    {
       id: 'current-league-teams',
-      description: 'Observed league-to-teams read',
-      host: 'readWrite',
+      description:
+         'League-to-teams read (the web app sends it to pub-api-rw; pub-api-ro serves the same body)',
+      host: 'readOnly',
       path: `/fantasy/v2/league/${leagueKey}/teams`,
       category: 'current',
       requires: ['YAHOO_FRONTEND_LEAGUE_KEY'],

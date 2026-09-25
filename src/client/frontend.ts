@@ -65,14 +65,6 @@ type FetchLike = (input: URL, init?: RequestInit) => Promise<Response>;
 const V2_ROUTE = /^\/fantasy\/v2\/[^/]/;
 const V3_ROUTE = /^\/fantasy\/v3\/[^/]/;
 
-/**
- * Reads the web app was observed sending to `pub-api-rw`. This table only
- * selects a host; it never decides whether a route may be requested.
- */
-const READ_WRITE_HOST_READS = [
-   /^\/fantasy\/v2\/league\/[^/;]+\/teams(?:;[^/]*)?$/,
-];
-
 export class FrontendApiError extends Error {
    readonly status?: number;
    readonly route: string;
@@ -115,10 +107,7 @@ function routeHost(
       return 'neutral';
    }
    if (V2_ROUTE.test(pathname)) {
-      if (method !== 'GET') return 'readWrite';
-      return READ_WRITE_HOST_READS.some((route) => route.test(pathname))
-         ? 'readWrite'
-         : 'readOnly';
+      return method === 'GET' ? 'readOnly' : 'readWrite';
    }
    throw new FrontendApiError(
       'Frontend routes must target /fantasy/v2 or /fantasy/v3',
